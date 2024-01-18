@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { LogOut } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 export default function LogoutButton() {
   return (

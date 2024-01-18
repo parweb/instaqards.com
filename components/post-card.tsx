@@ -1,11 +1,11 @@
-import BlurImage from "@/components/blur-image";
-import { placeholderBlurhash, random } from "@/lib/utils";
-import { Post, Site } from "@prisma/client";
-import { BarChart, ExternalLink } from "lucide-react";
-import Link from "next/link";
+import BlurImage from '@/components/blur-image';
+import { placeholderBlurhash, random } from '@/lib/utils';
+import { Post, Site } from '@prisma/client';
+import { BarChart, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 
 export default function PostCard({
-  data,
+  data
 }: {
   data: Post & { site: Site | null };
 }) {
@@ -19,11 +19,11 @@ export default function PostCard({
       >
         <div className="relative h-44 overflow-hidden">
           <BlurImage
-            alt={data.title ?? "Card thumbnail"}
+            alt={data.title ?? 'Card thumbnail'}
             width={500}
             height={400}
             className="h-full object-cover"
-            src={data.image ?? "/placeholder.png"}
+            src={data.image ?? '/placeholder.png'}
             placeholder="blur"
             blurDataURL={data.imageBlurhash ?? placeholderBlurhash}
           />

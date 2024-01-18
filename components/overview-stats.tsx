@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { random } from "@/lib/utils";
-import { Card, Metric, Text, AreaChart, BadgeDelta, Flex } from "@tremor/react";
-import { useMemo } from "react";
+import { random } from '@/lib/utils';
+import { Card, Metric, Text, AreaChart, BadgeDelta, Flex } from '@tremor/react';
+import { useMemo } from 'react';
 
 export default function OverviewStats() {
   const data = useMemo(() => {
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     return [
-      ...months.map((month) => ({
+      ...months.map(month => ({
         Month: `${month} 23`,
-        "Total Visitors": random(20000, 170418),
+        'Total Visitors': random(20000, 170418)
       })),
       {
-        Month: "Jul 23",
-        "Total Visitors": 170418,
-      },
+        Month: 'Jul 23',
+        'Total Visitors': 170418
+      }
     ];
   }, []);
 
@@ -41,10 +41,10 @@ export default function OverviewStats() {
           data={data}
           index="Month"
           valueFormatter={(number: number) =>
-            `${Intl.NumberFormat("us").format(number).toString()}`
+            `${Intl.NumberFormat('us').format(number).toString()}`
           }
-          categories={["Total Visitors"]}
-          colors={["blue"]}
+          categories={['Total Visitors']}
+          colors={['blue']}
           showXAxis={true}
           showGridLines={false}
           startEndOnly={true}

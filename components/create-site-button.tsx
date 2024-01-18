@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useModal } from "@/components/modal/provider";
-import { ReactNode } from "react";
+import { useModal } from '@/components/modal/provider';
+import { ReactNode } from 'react';
 
 export default function CreateSiteButton({
-  children,
+  children
 }: {
   children: ReactNode;
 }) {

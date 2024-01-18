@@ -1,13 +1,13 @@
-import { notFound } from "next/navigation";
-import prisma from "@/lib/prisma";
-import { getPostData, getSiteData } from "@/lib/fetchers";
-import BlogCard from "@/components/blog-card";
-import BlurImage from "@/components/blur-image";
-import MDX from "@/components/mdx";
-import { placeholderBlurhash, toDateString } from "@/lib/utils";
+import { notFound } from 'next/navigation';
+import prisma from '@/lib/prisma';
+import { getPostData, getSiteData } from '@/lib/fetchers';
+import BlogCard from '@/components/blog-card';
+import BlurImage from '@/components/blur-image';
+import MDX from '@/components/mdx';
+import { placeholderBlurhash, toDateString } from '@/lib/utils';
 
 export async function generateMetadata({
-  params,
+  params
 }: {
   params: { domain: string; slug: string };
 }) {
@@ -16,7 +16,7 @@ export async function generateMetadata({
 
   const [data, siteData] = await Promise.all([
     getPostData(domain, slug),
-    getSiteData(domain),
+    getSiteData(domain)
   ]);
   if (!data || !siteData) {
     return null;
@@ -28,14 +28,14 @@ export async function generateMetadata({
     description,
     openGraph: {
       title,
-      description,
+      description
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title,
       description,
-      creator: "@vercel",
-    },
+      creator: '@vercel'
+    }
     // Optional: Set canonical URL to custom domain if it exists
     // ...(params.domain.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) &&
     //   siteData.customDomain && {
@@ -53,28 +53,28 @@ export async function generateStaticParams() {
       site: {
         select: {
           subdomain: true,
-          customDomain: true,
-        },
-      },
+          customDomain: true
+        }
+      }
     },
     // feel free to remove this filter if you want to generate paths for all posts
     where: {
       site: {
-        subdomain: "demo",
-      },
-    },
+        subdomain: 'demo'
+      }
+    }
   });
 
   const allPaths = allPosts
     .flatMap(({ site, slug }) => [
       site?.subdomain && {
         domain: `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
-        slug,
+        slug
       },
       site?.customDomain && {
         domain: site.customDomain,
-        slug,
-      },
+        slug
+      }
     ])
     .filter(Boolean);
 
@@ -82,7 +82,7 @@ export async function generateStaticParams() {
 }
 
 export default async function SitePostPage({
-  params,
+  params
 }: {
   params: { domain: string; slug: string };
 }) {
@@ -122,7 +122,7 @@ export default async function SitePostPage({
             <div className="relative inline-block h-8 w-8 overflow-hidden rounded-full align-middle md:h-12 md:w-12">
               {data.site?.user?.image ? (
                 <BlurImage
-                  alt={data.site?.user?.name ?? "User Avatar"}
+                  alt={data.site?.user?.name ?? 'User Avatar'}
                   height={80}
                   src={data.site.user.image}
                   width={80}
@@ -141,13 +141,13 @@ export default async function SitePostPage({
       </div>
       <div className="relative m-auto mb-10 h-80 w-full max-w-screen-lg overflow-hidden md:mb-20 md:h-150 md:w-5/6 md:rounded-2xl lg:w-2/3">
         <BlurImage
-          alt={data.title ?? "Post image"}
+          alt={data.title ?? 'Post image'}
           width={1200}
           height={630}
           className="h-full w-full object-cover"
           placeholder="blur"
           blurDataURL={data.imageBlurhash ?? placeholderBlurhash}
-          src={data.image ?? "/placeholder.png"}
+          src={data.image ?? '/placeholder.png'}
         />
       </div>
 

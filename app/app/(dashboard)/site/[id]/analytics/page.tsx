@@ -1,21 +1,21 @@
-import { getSession } from "@/lib/auth";
-import prisma from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
-import AnalyticsMockup from "@/components/analytics";
+import { getSession } from '@/lib/auth';
+import prisma from '@/lib/prisma';
+import { notFound, redirect } from 'next/navigation';
+import AnalyticsMockup from '@/components/analytics';
 
 export default async function SiteAnalytics({
-  params,
+  params
 }: {
   params: { id: string };
 }) {
   const session = await getSession();
   if (!session) {
-    redirect("/login");
+    redirect('/login');
   }
   const data = await prisma.site.findUnique({
     where: {
-      id: decodeURIComponent(params.id),
-    },
+      id: decodeURIComponent(params.id)
+    }
   });
   if (!data || data.userId !== session.user.id) {
     notFound();

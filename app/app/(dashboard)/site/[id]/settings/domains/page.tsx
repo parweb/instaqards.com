@@ -1,16 +1,16 @@
-import prisma from "@/lib/prisma";
-import Form from "@/components/form";
-import { updateSite } from "@/lib/actions";
+import prisma from '@/lib/prisma';
+import Form from '@/components/form';
+import { updateSite } from '@/lib/actions';
 
 export default async function SiteSettingsDomains({
-  params,
+  params
 }: {
   params: { id: string };
 }) {
   const data = await prisma.site.findUnique({
     where: {
-      id: decodeURIComponent(params.id),
-    },
+      id: decodeURIComponent(params.id)
+    }
   });
 
   return (
@@ -20,11 +20,11 @@ export default async function SiteSettingsDomains({
         description="The subdomain for your site."
         helpText="Please use 32 characters maximum."
         inputAttrs={{
-          name: "subdomain",
-          type: "text",
+          name: 'subdomain',
+          type: 'text',
           defaultValue: data?.subdomain!,
-          placeholder: "subdomain",
-          maxLength: 32,
+          placeholder: 'subdomain',
+          maxLength: 32
         }}
         handleSubmit={updateSite}
       />
@@ -33,12 +33,12 @@ export default async function SiteSettingsDomains({
         description="The custom domain for your site."
         helpText="Please enter a valid domain."
         inputAttrs={{
-          name: "customDomain",
-          type: "text",
+          name: 'customDomain',
+          type: 'text',
           defaultValue: data?.customDomain!,
-          placeholder: "yourdomain.com",
+          placeholder: 'yourdomain.com',
           maxLength: 64,
-          pattern: "^[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}$",
+          pattern: '^[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}$'
         }}
         handleSubmit={updateSite}
       />
