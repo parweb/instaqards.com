@@ -81,10 +81,10 @@ export default async function SiteHomePage({
         <video
           className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
           preload="auto"
-          autoplay="true"
-          loop="true"
-          muted="true"
-          playsinline="true"
+          autoPlay
+          loop
+          muted
+          playsInline
         >
           <source src="https://gellyx.fr/video/2.mp4" type="video/mp4" />
         </video>
