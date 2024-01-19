@@ -6,16 +6,50 @@ import { cn, placeholderBlurhash, toDateString } from '@/lib/utils';
 import BlogCard from '@/components/blog-card';
 import { getPostsForSite, getSiteData } from '@/lib/fetchers';
 import Image from 'next/image';
+import { Prisma, Link as PrismaLink } from '@prisma/client';
+
+import 'array-grouping-polyfill';
+
+const LinkItem = (link: PrismaLink) => {
+  if (link.type === 'main') {
+    return (
+      <a
+        href={link.href}
+        className={cn(
+          'transition-all',
+          'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
+          'hover:bg-white hover:text-black'
+        )}
+      >
+        {link.label}
+      </a>
+    );
+  }
+
+  if (link.type === 'social') {
+    return (
+      <a href={link.href} target="_blank">
+        <img
+          className={cn(
+            link.label === 'facebook' && 'h-[65px]',
+            link.label !== 'facebook' && 'h-[50px]',
+            'object-contain transition-all hover:scale-125'
+          )}
+          src={link.logo!}
+          alt={link.label}
+        />
+      </a>
+    );
+  }
+
+  return <></>;
+};
 
 export async function generateStaticParams() {
   const allSites = await prisma.site.findMany({
     select: {
       subdomain: true,
       customDomain: true
-    },
-    // feel free to remove this filter if you want to generate paths for all sites
-    where: {
-      subdomain: 'demo'
     }
   });
 
@@ -39,41 +73,23 @@ export default async function SiteHomePage({
   params: { domain: string };
 }) {
   const domain = decodeURIComponent(params.domain);
-  // const [data, posts] = await Promise.all([
-  //   getSiteData(domain),
-  //   getPostsForSite(domain),
-  // ]);
+  const site = await getSiteData(domain);
 
-  const data = {
-    links: [
-      {
-        label: 'Bookings',
-        href: 'mailto:bookings@gellyx.fr?subject=Demande de Bookings'
-      },
-      {
-        label: 'Soundcloud',
-        href: 'https://soundcloud.com/gellyx-173797483?ref=clipboard&p=i&c=1&si=AB159F783EDE4006AABCA86243513D4D&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'
-      },
-      { label: 'TikTok', href: 'https://www.tiktok.com/@dj.gellyx' },
-      { label: 'Youtube', href: 'https://www.youtube.com/@Gellyx-ek4wm' }
-    ],
-    socials: [
-      {
-        site: 'facebook',
-        logo: 'https://gellyx.fr/logo_facebook.png',
-        href: 'https://www.facebook.com/gauthier.gelly'
-      },
-      {
-        site: 'instagram',
-        logo: 'https://gellyx.fr/logo_insta.png',
-        href: 'https://www.instagram.com/gellyx_/'
-      }
-    ]
-  };
-
-  if (!data) {
+  if (!site) {
     notFound();
   }
+
+  const { main, social }: Record<PrismaLink['type'], PrismaLink[]> = {
+    main: [],
+    social: [],
+
+    ...site.links.groupBy(({ type }: { type: PrismaLink['type'] }) => type)
+  };
+
+  const data = {
+    links: main,
+    socials: social
+  };
 
   return (
     <main className="relative flex-1 self-stretch items-center">
@@ -96,36 +112,16 @@ export default async function SiteHomePage({
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1">
-              {data.links.map(({ href, label }) => (
-                <a
-                  key={`LinkItem-${href}`}
-                  href={href}
-                  className={cn(
-                    'transition-all',
-                    'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
-                    'hover:bg-white hover:text-black'
-                  )}
-                >
-                  {label}
-                </a>
+              {data.links.map(props => (
+                <LinkItem key={`LinkItem-${props.id}`} {...props} />
               ))}
             </div>
           </div>
 
           <footer className="flex flex-col gap-3">
             <div className="flex gap-3 items-center justify-center">
-              {data.socials.map(({ site, href, logo }) => (
-                <a key={`SocialItem-${href}`} href={href} target="_blank">
-                  <img
-                    className={cn(
-                      site === 'facebook' && 'h-[65px]',
-                      site === 'instagram' && 'h-[50px]',
-                      'object-contain'
-                    )}
-                    src={logo}
-                    alt={site}
-                  />
-                </a>
+              {data.socials.map(props => (
+                <LinkItem key={`LinkItem-${props.id}`} {...props} />
               ))}
             </div>
 

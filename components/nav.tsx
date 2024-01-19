@@ -24,7 +24,7 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { getSiteFromPostId } from '@/lib/actions';
 import Image from 'next/image';
 
-const externalLinks = [
+const externalLinks: { name: string; href: string; icon: JSX.Element }[] = [
   // {
   //   name: 'Read announcement',
   //   href: 'https://vercel.com/blog/platforms-starter-kit',

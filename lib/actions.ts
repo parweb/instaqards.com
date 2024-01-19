@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { Post, Site } from '@prisma/client';
+import { Link, Post, Site } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 import { withPostAuth, withSiteAuth } from './auth';
 import { getSession } from '@/lib/auth';
@@ -59,6 +59,63 @@ export const createSite = async (formData: FormData) => {
         error: error.message
       };
     }
+  }
+};
+
+export const updateLink = withSiteAuth(
+  async (formData: FormData, site: Site, linkId: Link['id']) => {
+    const label = formData.get('label') as Link['label'];
+    const href = formData.get('href') as Link['href'];
+    const logo = formData.get('logo') as Link['logo'];
+
+    try {
+      return await prisma.link.update({
+        where: { id: linkId },
+        data: {
+          label,
+          href,
+          logo: logo || null
+        }
+      });
+    } catch (error: any) {
+      return {
+        error: error.message
+      };
+    }
+  }
+);
+
+export const createLink = async (
+  formData: FormData,
+  site: Site['id'],
+  type: Link['type']
+) => {
+  const label = formData.get('label') as Link['label'];
+  const href = formData.get('href') as Link['href'];
+  const logo = formData.get('logo') as Link['logo'];
+
+  try {
+    return await prisma.link.create({
+      data: {
+        type,
+        label,
+        href,
+        logo: logo || null,
+        site: { connect: { id: site } }
+      }
+    });
+  } catch (error: any) {
+    return {
+      error: error.message
+    };
+  }
+};
+
+export const deleteLink = async (linkId: Link['id']) => {
+  try {
+    return await prisma.link.delete({ where: { id: linkId } });
+  } catch (error: any) {
+    return { error: error.message };
   }
 };
 
@@ -176,11 +233,7 @@ export const updateSite = withSiteAuth(
           }
         });
       }
-      console.log(
-        'Updated site data! Revalidating tags: ',
-        `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`,
-        `${site.customDomain}-metadata`
-      );
+
       await revalidateTag(
         `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
       );
