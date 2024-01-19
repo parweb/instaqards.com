@@ -7,9 +7,7 @@ import { withPostAuth, withSiteAuth } from './auth';
 import { getSession } from '@/lib/auth';
 import {
   addDomainToVercel,
-  // getApexDomain,
   removeDomainFromVercelProject,
-  // removeDomainFromVercelTeam,
   validDomainRegex
 } from '@/lib/domains';
 import { put } from '@vercel/blob';
@@ -19,7 +17,7 @@ import { getBlurDataURL } from '@/lib/utils';
 const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
   7
-); // 7-character random string
+);
 
 export const createSite = async (formData: FormData) => {
   const session = await getSession();
@@ -45,9 +43,11 @@ export const createSite = async (formData: FormData) => {
         }
       }
     });
-    await revalidateTag(
-      `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
+
+    // await revalidateTag(
+    //   `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
+    // );
+
     return response;
   } catch (error: any) {
     if (error.code === 'P2002') {
@@ -69,7 +69,8 @@ export const updateLink = withSiteAuth(
     const logo = formData.get('logo') as Link['logo'];
 
     try {
-      return await prisma.link.update({
+      const response = await prisma.link.update({
+        include: { site: true },
         where: { id: linkId },
         data: {
           label,
@@ -77,6 +78,12 @@ export const updateLink = withSiteAuth(
           logo: logo || null
         }
       });
+
+      await revalidateTag(
+        `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
+      );
+
+      return response;
     } catch (error: any) {
       return {
         error: error.message

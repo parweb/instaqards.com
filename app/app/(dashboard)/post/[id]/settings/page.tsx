@@ -11,6 +11,7 @@ export default async function PostSettings({
   params: { id: string };
 }) {
   const session = await getSession();
+
   if (!session) {
     redirect('/login');
   }
@@ -19,9 +20,11 @@ export default async function PostSettings({
       id: decodeURIComponent(params.id)
     }
   });
+
   if (!data || data.userId !== session.user.id) {
     notFound();
   }
+
   return (
     <div className="flex flex-col space-y-12 p-6">
       <div className="flex flex-col space-y-6">
