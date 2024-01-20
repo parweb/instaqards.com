@@ -24,7 +24,7 @@ export default function DeleteLinkButton(link: Link) {
             va.track('Delete link', { id: link.id });
 
             router.refresh();
-            toast.success(`Link updated!`);
+            toast.success(`Link deleted!`);
           }
         })
       }

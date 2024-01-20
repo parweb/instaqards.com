@@ -75,9 +75,11 @@ export const updateLink = withSiteAuth(
         }
       });
 
-      // revalidateTag(
-      //   `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-      // );
+      revalidateTag(
+        `${response?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
+      );
+      response?.site?.customDomain &&
+        revalidateTag(`${response?.site?.customDomain}-metadata`);
 
       return response;
     } catch (error: any) {
@@ -98,7 +100,8 @@ export const createLink = async (
   const logo = formData.get('logo') as Link['logo'];
 
   try {
-    return await prisma.link.create({
+    const response = await prisma.link.create({
+      include: { site: true },
       data: {
         type,
         label,
@@ -107,6 +110,14 @@ export const createLink = async (
         site: { connect: { id: site } }
       }
     });
+
+    revalidateTag(
+      `${response?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
+    );
+    response?.site?.customDomain &&
+      revalidateTag(`${response?.site?.customDomain}-metadata`);
+
+    return response;
   } catch (error: any) {
     return {
       error: error.message
@@ -116,7 +127,18 @@ export const createLink = async (
 
 export const deleteLink = async (linkId: Link['id']) => {
   try {
-    return await prisma.link.delete({ where: { id: linkId } });
+    const response = await prisma.link.delete({
+      include: { site: true },
+      where: { id: linkId }
+    });
+
+    revalidateTag(
+      `${response?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
+    );
+    response?.site?.customDomain &&
+      revalidateTag(`${response?.site?.customDomain}-metadata`);
+
+    return response;
   } catch (error: any) {
     return { error: error.message };
   }
