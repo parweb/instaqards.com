@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const config = {
   matcher: [
@@ -17,6 +17,8 @@ export const config = {
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
+  console.log('middleware', { url });
+
   // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
   let hostname = req.headers
     .get('host')!
@@ -30,6 +32,15 @@ export default async function middleware(req: NextRequest) {
     hostname = `${hostname.split('---')[0]}.${
       process.env.NEXT_PUBLIC_ROOT_DOMAIN
     }`;
+  }
+
+  if (url.pathname.startsWith('/click/')) {
+    console.log({
+      hostname,
+      url: new URL(`/api${url.pathname}`, req.url).toString()
+    });
+
+    return NextResponse.rewrite(new URL(`/api${url.pathname}`, req.url));
   }
 
   const searchParams = req.nextUrl.searchParams.toString();
@@ -48,13 +59,6 @@ export default async function middleware(req: NextRequest) {
     }
     return NextResponse.rewrite(
       new URL(`/app${path === '/' ? '' : path}`, req.url)
-    );
-  }
-
-  // special case for `vercel.pub` domain
-  if (hostname === 'vercel.pub') {
-    return NextResponse.redirect(
-      'https://vercel.com/blog/platforms-starter-kit'
     );
   }
 

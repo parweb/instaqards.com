@@ -1,4 +1,5 @@
 import { Link as PrismaLink } from '@prisma/client';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { getSiteData } from '@/lib/fetchers';
@@ -10,8 +11,9 @@ import 'array-grouping-polyfill';
 const LinkItem = (link: PrismaLink) => {
   if (link.type === 'main') {
     return (
-      <a
-        href={link.href}
+      <Link
+        href={`/click/${link.id}`}
+        target="_blank"
         className={cn(
           'transition-all',
           'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
@@ -19,13 +21,13 @@ const LinkItem = (link: PrismaLink) => {
         )}
       >
         {link.label}
-      </a>
+      </Link>
     );
   }
 
   if (link.type === 'social') {
     return (
-      <a href={link.href} target="_blank">
+      <Link href={`/click/${link.id}`} target="_blank">
         <img
           className={cn(
             link.label === 'facebook' && 'h-[65px]',
@@ -35,7 +37,7 @@ const LinkItem = (link: PrismaLink) => {
           src={link.logo!}
           alt={link.label}
         />
-      </a>
+      </Link>
     );
   }
 
@@ -77,6 +79,12 @@ export default async function SiteHomePage({
   if (!site) {
     notFound();
   }
+
+  await prisma.click.create({
+    data: {
+      siteId: site.id
+    }
+  });
 
   const { main, social }: Record<PrismaLink['type'], PrismaLink[]> = {
     main: [],
