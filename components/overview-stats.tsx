@@ -11,11 +11,11 @@ export default function OverviewStats() {
     return [
       ...months.map(month => ({
         Month: `${month} 23`,
-        'Total Visitors': random(20000, 170418)
+        'Total Clicks': random(20000, 170418)
       })),
       {
         Month: 'Jul 23',
-        'Total Visitors': 170418
+        'Total Clicks': 170418
       }
     ];
   }, []);
@@ -23,7 +23,7 @@ export default function OverviewStats() {
   return (
     <div className="grid gap-6 sm:grid-cols-2">
       <Card className="dark:!bg-stone-900">
-        <Text>Total Visitors</Text>
+        <Text>Total Clicks</Text>
         <Flex
           className="space-x-3 truncate"
           justifyContent="start"
@@ -44,7 +44,7 @@ export default function OverviewStats() {
           valueFormatter={(number: number) =>
             `${Intl.NumberFormat('us').format(number).toString()}`
           }
-          categories={['Total Visitors']}
+          categories={['Total Clicks']}
           colors={['blue']}
           showXAxis={true}
           showGridLines={false}

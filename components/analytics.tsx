@@ -15,31 +15,31 @@ import Image from 'next/image';
 const chartdata = [
   {
     date: 'Jan 23',
-    Visitors: 2890
+    Clicks: 2890
   },
   {
     date: 'Feb 23',
-    Visitors: 2756
+    Clicks: 2756
   },
   {
     date: 'Mar 23',
-    Visitors: 3322
+    Clicks: 3322
   },
   {
     date: 'Apr 23',
-    Visitors: 3470
+    Clicks: 3470
   },
   {
     date: 'May 23',
-    Visitors: 3475
+    Clicks: 3475
   },
   {
     date: 'Jun 23',
-    Visitors: 3129
+    Clicks: 3129
   }
 ];
 
-const pages = [
+const links = [
   { name: '/platforms-starter-kit', value: 1230 },
   { name: '/vercel-is-now-bercel', value: 751 },
   { name: '/nextjs-conf', value: 471 },
@@ -68,9 +68,9 @@ const countries = [
 
 const categories = [
   {
-    title: 'Top Pages',
-    subtitle: 'Page',
-    data: pages
+    title: 'Top Links',
+    subtitle: 'Link',
+    data: links
   },
   {
     title: 'Top Referrers',
@@ -88,12 +88,12 @@ export default function AnalyticsMockup() {
   return (
     <div className="grid gap-6">
       <Card>
-        <Title>Visitors</Title>
+        <Title>Clicks</Title>
         <AreaChart
           className="mt-4 h-72"
           data={chartdata}
           index="date"
-          categories={['Visitors']}
+          categories={['Clicks']}
           colors={['indigo']}
           valueFormatter={(number: number) =>
             Intl.NumberFormat('us').format(number).toString()
@@ -109,7 +109,7 @@ export default function AnalyticsMockup() {
                 <Bold>{subtitle}</Bold>
               </Text>
               <Text>
-                <Bold>Visitors</Bold>
+                <Bold>Clicks</Bold>
               </Text>
             </Flex>
             <BarList
