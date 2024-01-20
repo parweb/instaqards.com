@@ -13,7 +13,14 @@ export async function getSiteData(domain: string) {
     async () => {
       return prisma.site.findUnique({
         where: subdomain ? { subdomain } : { customDomain: domain },
-        include: { user: true, links: true }
+        include: {
+          user: true,
+          links: {
+            orderBy: {
+              createdAt: 'asc'
+            }
+          }
+        }
       });
     },
     [`${domain}-metadata`],

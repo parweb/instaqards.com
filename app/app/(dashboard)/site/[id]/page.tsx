@@ -150,7 +150,9 @@ export default async function SitePosts({
 
   const site = await prisma.site.findUnique({
     where: { id: decodeURIComponent(params.id) },
-    include: { links: true }
+    include: {
+      links: { orderBy: { createdAt: 'asc' } }
+    }
   });
 
   if (!site || site.userId !== session.user.id) {
