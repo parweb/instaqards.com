@@ -12,11 +12,10 @@ import { deleteLink } from '@/lib/actions';
 
 export default function DeleteLinkButton(link: Link) {
   const router = useRouter();
-  const { pending } = useFormStatus();
 
   return (
     <form
-      action={async (data: FormData) =>
+      action={async () =>
         deleteLink(link.id).then((res: any) => {
           if (res.error) {
             toast.error(res.error);
