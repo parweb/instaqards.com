@@ -1,12 +1,9 @@
-import Link from 'next/link';
-import prisma from '@/lib/prisma';
+import { Link as PrismaLink } from '@prisma/client';
 import { notFound } from 'next/navigation';
-import BlurImage from '@/components/blur-image';
-import { cn, placeholderBlurhash, toDateString } from '@/lib/utils';
-import BlogCard from '@/components/blog-card';
-import { getPostsForSite, getSiteData } from '@/lib/fetchers';
-import Image from 'next/image';
-import { Prisma, Link as PrismaLink } from '@prisma/client';
+
+import { getSiteData } from '@/lib/fetchers';
+import prisma from '@/lib/prisma';
+import { cn } from '@/lib/utils';
 
 import 'array-grouping-polyfill';
 

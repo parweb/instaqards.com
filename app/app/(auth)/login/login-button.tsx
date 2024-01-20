@@ -1,15 +1,12 @@
 'use client';
 
-import LoadingDots from '@/components/icons/loading-dots';
-import {
-  BuiltInProviderType,
-  BuiltInProviders,
-  RedirectableProviderType
-} from 'next-auth/providers';
-import { LiteralUnion, signIn } from 'next-auth/react';
+import { BuiltInProviderType } from 'next-auth/providers';
+import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+
+import LoadingDots from '@/components/icons/loading-dots';
 
 export default function LoginButton({
   provider

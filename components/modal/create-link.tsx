@@ -1,15 +1,16 @@
 'use client';
 
-import { toast } from 'sonner';
-import { createLink, createSite, updateLink } from '@/lib/actions';
-import { useParams, useRouter } from 'next/navigation';
-import { useFormStatus } from 'react-dom';
-import { cn } from '@/lib/utils';
-import LoadingDots from '@/components/icons/loading-dots';
-import { useModal } from './provider';
-import va from '@vercel/analytics';
-import { useEffect, useState } from 'react';
 import { Link, Site } from '@prisma/client';
+import va from '@vercel/analytics';
+import { useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { toast } from 'sonner';
+
+import LoadingDots from '@/components/icons/loading-dots';
+import { createLink } from '@/lib/actions';
+import { cn } from '@/lib/utils';
+import { useParams, useRouter } from 'next/navigation';
+import { useModal } from './provider';
 
 export default function CreateLinkModal({ type }: { type: Link['type'] }) {
   const router = useRouter();

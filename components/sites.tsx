@@ -1,8 +1,9 @@
-import { getSession } from '@/lib/auth';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
+
+import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import SiteCard from './site-card';
-import Image from 'next/image';
 
 export default async function Sites({ limit }: { limit?: number }) {
   const session = await getSession();

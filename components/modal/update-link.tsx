@@ -1,15 +1,16 @@
 'use client';
 
-import { toast } from 'sonner';
-import { createSite, updateLink } from '@/lib/actions';
-import { useParams, useRouter } from 'next/navigation';
-import { useFormStatus } from 'react-dom';
-import { cn } from '@/lib/utils';
-import LoadingDots from '@/components/icons/loading-dots';
-import { useModal } from './provider';
-import va from '@vercel/analytics';
-import { useEffect, useState } from 'react';
 import { Link, Site } from '@prisma/client';
+import va from '@vercel/analytics';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { toast } from 'sonner';
+
+import LoadingDots from '@/components/icons/loading-dots';
+import { updateLink } from '@/lib/actions';
+import { cn } from '@/lib/utils';
+import { useModal } from './provider';
 
 export default function UpdateLinkModal(link: Link) {
   const router = useRouter();

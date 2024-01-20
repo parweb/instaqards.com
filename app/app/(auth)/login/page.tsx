@@ -1,6 +1,7 @@
 import Image from 'next/image';
-import LoginButton from './login-button';
 import { Suspense } from 'react';
+
+import LoginButton from './login-button';
 
 export default function LoginPage() {
   return (

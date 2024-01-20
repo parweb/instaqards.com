@@ -1,7 +1,8 @@
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import InstagramProvider from 'next-auth/providers/instagram';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
+
 import prisma from '@/lib/prisma';
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;

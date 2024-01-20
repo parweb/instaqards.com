@@ -1,16 +1,14 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { useModal } from '@/components/modal/provider';
-import { LuTrash2 } from 'react-icons/lu';
-import { deleteLink } from '@/lib/actions';
 import { Link } from '@prisma/client';
-import { toast } from 'sonner';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
-import { cn } from '@/lib/utils';
+import { LuTrash2 } from 'react-icons/lu';
+import { toast } from 'sonner';
+
 import LoadingDots from '@/components/icons/loading-dots';
+import { deleteLink } from '@/lib/actions';
 
 export default function DeleteLinkButton(link: Link) {
   const router = useRouter();

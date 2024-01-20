@@ -1,6 +1,7 @@
-import { unstable_cache } from 'next/cache';
-import prisma from '@/lib/prisma';
 import { serialize } from 'next-mdx-remote/serialize';
+import { unstable_cache } from 'next/cache';
+
+import prisma from '@/lib/prisma';
 import { replaceExamples, replaceTweets } from '@/lib/remark-plugins';
 
 export async function getSiteData(domain: string) {

@@ -1,8 +1,9 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { useModal } from '@/components/modal/provider';
 import { LuPencil } from 'react-icons/lu';
+
+import { useModal } from '@/components/modal/provider';
 
 export default function UpdateLinkButton({
   children

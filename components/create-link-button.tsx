@@ -1,13 +1,9 @@
 'use client';
 
+import { Link } from '@prisma/client';
 import { ReactNode } from 'react';
+
 import { useModal } from '@/components/modal/provider';
-import { LuTrash2 } from 'react-icons/lu';
-import { deleteLink } from '@/lib/actions';
-import { Link, Site } from '@prisma/client';
-import { toast } from 'sonner';
-import va from '@vercel/analytics';
-import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 export default function CreateLinkButton({

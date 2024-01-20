@@ -1,5 +1,3 @@
-// a bunch of loading divs
-
 export default function Loading() {
   return (
     <>

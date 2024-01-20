@@ -1,9 +1,10 @@
-import '@/styles/globals.css';
+import { Metadata } from 'next';
+
+import { cn } from '@/lib/utils';
 import { cal, inter } from '@/styles/fonts';
+import '@/styles/globals.css';
 import { Analytics } from '@vercel/analytics/react';
 import { Providers } from './providers';
-import { Metadata } from 'next';
-import { cn } from '@/lib/utils';
 
 const title = 'Reveal your self right now with instaqards.com';
 const description = 'bla bla bla';

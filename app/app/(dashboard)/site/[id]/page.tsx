@@ -1,17 +1,15 @@
+import { Link, Site } from '@prisma/client';
+import { notFound, redirect } from 'next/navigation';
+import { Suspense } from 'react';
+
+import CreateLinkButton from '@/components/create-link-button';
+import DeleteLinkButton from '@/components/delete-link-button';
+import CreateLinkModal from '@/components/modal/create-link';
+import UpdateLinkModal from '@/components/modal/update-link';
+import UpdateLinkButton from '@/components/update-link-button';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { notFound, redirect } from 'next/navigation';
-import Posts from '@/components/posts';
-import CreatePostButton from '@/components/create-post-button';
 import { cn } from '@/lib/utils';
-import { LuTrash2, LuPencil } from 'react-icons/lu';
-import DeleteLinkButton from '@/components/delete-link-button';
-import UpdateLinkButton from '@/components/update-link-button';
-import UpdateLinkModal from '@/components/modal/update-link';
-import { Prisma, Link, Site } from '@prisma/client';
-import { Suspense } from 'react';
-import CreateLinkButton from '@/components/create-link-button';
-import CreateLinkModal from '@/components/modal/create-link';
 
 import 'array-grouping-polyfill';
 

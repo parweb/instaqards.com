@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { visit } from 'unist-util-visit';
 import type { Example, PrismaClient } from '@prisma/client';
+import Link from 'next/link';
 import { ReactNode } from 'react';
+import { visit } from 'unist-util-visit';
 
 export function replaceLinks({
   href,

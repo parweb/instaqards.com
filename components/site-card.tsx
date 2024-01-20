@@ -1,8 +1,9 @@
+import { Site } from '@prisma/client';
+import { BarChart } from 'lucide-react';
+import Link from 'next/link';
+
 import BlurImage from '@/components/blur-image';
 import { placeholderBlurhash, random } from '@/lib/utils';
-import { Site } from '@prisma/client';
-import { BarChart, ExternalLink } from 'lucide-react';
-import Link from 'next/link';
 
 export default function SiteCard({ data }: { data: Site }) {
   const url = `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;

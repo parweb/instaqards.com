@@ -2,9 +2,10 @@
 
 import { Post } from '@prisma/client';
 import { MDXRemote, MDXRemoteProps } from 'next-mdx-remote';
-import { replaceLinks } from '@/lib/remark-plugins';
 import { Tweet } from 'react-tweet';
+
 import BlurImage from '@/components/blur-image';
+import { replaceLinks } from '@/lib/remark-plugins';
 import styles from './mdx.module.css';
 
 export default function MDX({ source }: { source: MDXRemoteProps }) {
