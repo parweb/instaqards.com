@@ -17,8 +17,6 @@ export const config = {
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
-  console.log('middleware', { url });
-
   // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
   let hostname = req.headers
     .get('host')!
@@ -35,11 +33,6 @@ export default async function middleware(req: NextRequest) {
   }
 
   if (url.pathname.startsWith('/click/')) {
-    console.log({
-      hostname,
-      url: new URL(`/api${url.pathname}`, req.url).toString()
-    });
-
     return NextResponse.rewrite(new URL(`/api${url.pathname}`, req.url));
   }
 

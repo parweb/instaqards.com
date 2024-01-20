@@ -12,79 +12,61 @@ import {
 } from '@tremor/react';
 import Image from 'next/image';
 
-const chartdata = [
-  {
-    date: 'Jan 23',
-    Clicks: 2890
-  },
-  {
-    date: 'Feb 23',
-    Clicks: 2756
-  },
-  {
-    date: 'Mar 23',
-    Clicks: 3322
-  },
-  {
-    date: 'Apr 23',
-    Clicks: 3470
-  },
-  {
-    date: 'May 23',
-    Clicks: 3475
-  },
-  {
-    date: 'Jun 23',
-    Clicks: 3129
-  }
-];
+type Tuple = {
+  name: string;
+  value: number;
+};
 
-const links = [
-  { name: '/platforms-starter-kit', value: 1230 },
-  { name: '/vercel-is-now-bercel', value: 751 },
-  { name: '/nextjs-conf', value: 471 },
-  { name: '/150m-series-d', value: 280 },
-  { name: '/about', value: 78 }
-];
+export default function Analytics({
+  chartdata
+}: {
+  chartdata: { date: string; Clicks: number }[];
+}) {
+  const links: Tuple[] = [
+    // { name: '/platforms-starter-kit', value: 1230 },
+    // { name: '/vercel-is-now-bercel', value: 751 },
+    // { name: '/nextjs-conf', value: 471 },
+    // { name: '/150m-series-d', value: 280 },
+    // { name: '/about', value: 78 }
+  ];
 
-const referrers = [
-  { name: 't.co', value: 453 },
-  { name: 'vercel.com', value: 351 },
-  { name: 'linkedin.com', value: 271 },
-  { name: 'google.com', value: 191 },
-  {
-    name: 'news.ycombinator.com',
-    value: 71
-  }
-];
+  const referrers: Tuple[] = [
+    // { name: 't.co', value: 453 },
+    // { name: 'vercel.com', value: 351 },
+    // { name: 'linkedin.com', value: 271 },
+    // { name: 'google.com', value: 191 },
+    // {
+    //   name: 'news.ycombinator.com',
+    //   value: 71
+    // }
+  ];
 
-const countries = [
-  { name: 'United States of America', value: 789, code: 'US' },
-  { name: 'India', value: 676, code: 'IN' },
-  { name: 'Germany', value: 564, code: 'DE' },
-  { name: 'United Kingdom', value: 234, code: 'GB' },
-  { name: 'Spain', value: 191, code: 'ES' }
-];
+  const countries: Tuple[] = [
+    // { name: 'United States of America', value: 789, code: 'US' },
+    // { name: 'India', value: 676, code: 'IN' },
+    // { name: 'Germany', value: 564, code: 'DE' },
+    // { name: 'United Kingdom', value: 234, code: 'GB' },
+    // { name: 'Spain', value: 191, code: 'ES' }
+  ];
 
-const categories = [
-  {
-    title: 'Top Links',
-    subtitle: 'Link',
-    data: links
-  },
-  {
-    title: 'Top Referrers',
-    subtitle: 'Source',
-    data: referrers
-  },
-  {
-    title: 'Countries',
-    subtitle: 'Country',
-    data: countries
-  }
-];
+  const categories = [
+    {
+      title: 'Top Links',
+      subtitle: 'Link',
+      data: links
+    },
+    {
+      title: 'Top Referrers',
+      subtitle: 'Source',
+      data: referrers
+    },
+    {
+      title: 'Countries',
+      subtitle: 'Country',
+      data: countries
+    }
+  ];
 
-export default function AnalyticsMockup() {
   return (
     <div className="grid gap-6">
       <Card>
@@ -93,8 +75,8 @@ export default function AnalyticsMockup() {
           className="mt-4 h-72"
           data={chartdata}
           index="date"
-          categories={['Clicks']}
-          colors={['indigo']}
+          categories={['Clicks', 'Visitors']}
+          colors={['indigo', 'cyan']}
           valueFormatter={(number: number) =>
             Intl.NumberFormat('us').format(number).toString()
           }

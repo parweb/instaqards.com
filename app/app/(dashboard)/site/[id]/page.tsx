@@ -168,6 +168,7 @@ export default async function SitePosts({
           <h1 className="w-60 truncate font-cal text-xl font-bold dark:text-white sm:w-auto sm:text-3xl">
             Configure {site.name} design
           </h1>
+
           <a
             href={
               process.env.NEXT_PUBLIC_VERCEL_ENV
@@ -178,7 +179,10 @@ export default async function SitePosts({
             rel="noreferrer"
             className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700"
           >
-            {url} ↗
+            {process.env.NEXT_PUBLIC_VERCEL_ENV
+              ? url
+              : `${site.subdomain}.localhost:3000`}{' '}
+            ↗
           </a>
         </div>
 
