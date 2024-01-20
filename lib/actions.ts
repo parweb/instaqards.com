@@ -39,11 +39,7 @@ export const createSite = async (formData: FormData) => {
         name,
         description,
         subdomain,
-        user: {
-          connect: {
-            id: session.user.id
-          }
-        }
+        user: { connect: { id: session.user.id } }
       }
     });
 
@@ -53,15 +49,12 @@ export const createSite = async (formData: FormData) => {
 
     return response;
   } catch (error: any) {
-    if (error.code === 'P2002') {
-      return {
-        error: `This subdomain is already taken`
-      };
-    } else {
-      return {
-        error: error.message
-      };
-    }
+    return {
+      error:
+        error.code === 'P2002'
+          ? `This subdomain is already taken`
+          : error.message
+    };
   }
 };
 
@@ -145,9 +138,7 @@ export const updateSite = withSiteAuth(
           // if the custom domain is valid, we need to add it to Vercel
         } else if (validDomainRegex.test(value)) {
           response = await prisma.site.update({
-            where: {
-              id: site.id
-            },
+            where: { id: site.id },
             data: {
               customDomain: value
             }
@@ -161,9 +152,7 @@ export const updateSite = withSiteAuth(
           // empty value means the user wants to remove the custom domain
         } else if (value === '') {
           response = await prisma.site.update({
-            where: {
-              id: site.id
-            },
+            where: { id: site.id },
             data: {
               customDomain: null
             }
@@ -225,9 +214,7 @@ export const updateSite = withSiteAuth(
         const blurhash = key === 'image' ? await getBlurDataURL(url) : null;
 
         response = await prisma.site.update({
-          where: {
-            id: site.id
-          },
+          where: { id: site.id },
           data: {
             [key]: url,
             ...(blurhash && { imageBlurhash: blurhash })
@@ -235,9 +222,7 @@ export const updateSite = withSiteAuth(
         });
       } else {
         response = await prisma.site.update({
-          where: {
-            id: site.id
-          },
+          where: { id: site.id },
           data: {
             [key]: value
           }
@@ -251,15 +236,12 @@ export const updateSite = withSiteAuth(
 
       return response;
     } catch (error: any) {
-      if (error.code === 'P2002') {
-        return {
-          error: `This ${key} is already taken`
-        };
-      } else {
-        return {
-          error: error.message
-        };
-      }
+      return {
+        error:
+          error.code === 'P2002'
+            ? `This ${key} is already taken`
+            : error.message
+      };
     }
   }
 );
@@ -267,14 +249,15 @@ export const updateSite = withSiteAuth(
 export const deleteSite = withSiteAuth(async (_: FormData, site: Site) => {
   try {
     const response = await prisma.site.delete({
-      where: {
-        id: site.id
-      }
+      where: { id: site.id }
     });
+
     revalidateTag(
       `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
     );
+
     response.customDomain && revalidateTag(`${site.customDomain}-metadata`);
+
     return response;
   } catch (error: any) {
     return {
@@ -285,23 +268,22 @@ export const deleteSite = withSiteAuth(async (_: FormData, site: Site) => {
 
 export const getSiteFromPostId = async (postId: string) => {
   const post = await prisma.post.findUnique({
-    where: {
-      id: postId
-    },
-    select: {
-      siteId: true
-    }
+    where: { id: postId },
+    select: { siteId: true }
   });
+
   return post?.siteId;
 };
 
 export const createPost = withSiteAuth(async (_: FormData, site: Site) => {
   const session = await getSession();
+
   if (!session?.user.id) {
     return {
       error: 'Not authenticated'
     };
   }
+
   const response = await prisma.post.create({
     data: {
       siteId: site.id,
@@ -320,29 +302,27 @@ export const createPost = withSiteAuth(async (_: FormData, site: Site) => {
 // creating a separate function for this because we're not using FormData
 export const updatePost = async (data: Post) => {
   const session = await getSession();
+
   if (!session?.user.id) {
     return {
       error: 'Not authenticated'
     };
   }
+
   const post = await prisma.post.findUnique({
-    where: {
-      id: data.id
-    },
-    include: {
-      site: true
-    }
+    where: { id: data.id },
+    include: { site: true }
   });
+
   if (!post || post.userId !== session.user.id) {
     return {
       error: 'Post not found'
     };
   }
+
   try {
     const response = await prisma.post.update({
-      where: {
-        id: data.id
-      },
+      where: { id: data.id },
       data: {
         title: data.title,
         description: data.description,
@@ -371,17 +351,12 @@ export const updatePost = async (data: Post) => {
 };
 
 export const updatePostMetadata = withPostAuth(
-  async (
-    formData: FormData,
-    post: Post & {
-      site: Site;
-    },
-    key: string
-  ) => {
+  async (formData: FormData, post: Post & { site: Site }, key: string) => {
     const value = formData.get(key) as string;
 
     try {
       let response;
+
       if (key === 'image') {
         const file = formData.get('image') as File;
         const filename = `${nanoid()}.${file.type.split('/')[1]}`;
@@ -393,9 +368,7 @@ export const updatePostMetadata = withPostAuth(
         const blurhash = await getBlurDataURL(url);
 
         response = await prisma.post.update({
-          where: {
-            id: post.id
-          },
+          where: { id: post.id },
           data: {
             image: url,
             imageBlurhash: blurhash
@@ -403,9 +376,7 @@ export const updatePostMetadata = withPostAuth(
         });
       } else {
         response = await prisma.post.update({
-          where: {
-            id: post.id
-          },
+          where: { id: post.id },
           data: {
             [key]: key === 'published' ? value === 'true' : value
           }
@@ -426,15 +397,10 @@ export const updatePostMetadata = withPostAuth(
 
       return response;
     } catch (error: any) {
-      if (error.code === 'P2002') {
-        return {
-          error: `This slug is already in use`
-        };
-      } else {
-        return {
-          error: error.message
-        };
-      }
+      return {
+        error:
+          error.code === 'P2002' ? `This slug is already in use` : error.message
+      };
     }
   }
 );
@@ -442,12 +408,8 @@ export const updatePostMetadata = withPostAuth(
 export const deletePost = withPostAuth(async (_: FormData, post: Post) => {
   try {
     const response = await prisma.post.delete({
-      where: {
-        id: post.id
-      },
-      select: {
-        siteId: true
-      }
+      where: { id: post.id },
+      select: { siteId: true }
     });
     return response;
   } catch (error: any) {
@@ -463,32 +425,28 @@ export const editUser = async (
   key: string
 ) => {
   const session = await getSession();
+
   if (!session?.user.id) {
     return {
       error: 'Not authenticated'
     };
   }
+
   const value = formData.get(key) as string;
 
   try {
     const response = await prisma.user.update({
-      where: {
-        id: session.user.id
-      },
+      where: { id: session.user.id },
       data: {
         [key]: value
       }
     });
+
     return response;
   } catch (error: any) {
-    if (error.code === 'P2002') {
-      return {
-        error: `This ${key} is already in use`
-      };
-    } else {
-      return {
-        error: error.message
-      };
-    }
+    return {
+      error:
+        error.code === 'P2002' ? `This ${key} is already in use` : error.message
+    };
   }
 };
