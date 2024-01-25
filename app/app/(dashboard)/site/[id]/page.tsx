@@ -1,4 +1,5 @@
 import { Link, Site } from '@prisma/client';
+import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -47,8 +48,9 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
             <source src={site?.background ?? ''} type="video/mp4" />
           </video>
         )}
+
         {!site?.background?.endsWith('.mp4') && (
-          <img
+          <Image
             className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
             src={site?.background ?? ''}
             alt="background"

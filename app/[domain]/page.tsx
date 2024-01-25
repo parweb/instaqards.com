@@ -1,4 +1,5 @@
 import { Link as PrismaLink } from '@prisma/client';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -101,16 +102,26 @@ export default async function SiteHomePage({
   return (
     <main className="relative flex-1 self-stretch items-center">
       <div className="absolute inset-0">
-        <video
-          className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
-          preload="auto"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="https://gellyx.fr/video/2.mp4" type="video/mp4" />
-        </video>
+        {site?.background?.endsWith('.mp4') && (
+          <video
+            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
+            preload="auto"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={site?.background ?? ''} type="video/mp4" />
+          </video>
+        )}
+
+        {!site?.background?.endsWith('.mp4') && (
+          <Image
+            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
+            src={site?.background ?? ''}
+            alt="background"
+          />
+        )}
 
         <div className="absolute inset-0  bg-black/30" />
       </div>
