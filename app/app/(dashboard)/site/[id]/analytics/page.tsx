@@ -116,7 +116,7 @@ export default async function SiteAnalytics({
             href={
               process.env.NEXT_PUBLIC_VERCEL_ENV
                 ? `https://${url}`
-                : `http://${site.subdomain}.localhost:3000`
+                : `http://${site.subdomain}.localhost:11000`
             }
             target="_blank"
             rel="noreferrer"
@@ -124,7 +124,7 @@ export default async function SiteAnalytics({
           >
             {process.env.NEXT_PUBLIC_VERCEL_ENV
               ? url
-              : `${site.subdomain}.localhost:3000`}{' '}
+              : `${site.subdomain}.localhost:11000`}
             ↗
           </a>
         </div>
