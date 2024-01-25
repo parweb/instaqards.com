@@ -6,8 +6,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
-import LoadingDots from '@/components/icons/loading-dots';
-import { cn } from '@/lib/utils';
+import LoadingDots from 'components/icons/loading-dots';
+import { cn } from 'lib/utils';
 import DomainConfiguration from './domain-configuration';
 import DomainStatus from './domain-status';
 import Uploader from './uploader';

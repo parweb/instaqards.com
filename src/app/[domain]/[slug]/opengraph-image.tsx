@@ -3,7 +3,7 @@
 import { sql } from '@vercel/postgres';
 import { ImageResponse } from 'next/og';
 
-import { truncate } from '@/lib/utils';
+import { truncate } from 'lib/utils';
 
 export const runtime = 'edge';
 
@@ -40,7 +40,7 @@ export default async function PostOG({
   }
 
   const clashData = await fetch(
-    new URL('@/styles/CalSans-SemiBold.otf', import.meta.url)
+    new URL('styles/CalSans-SemiBold.otf', import.meta.url)
   ).then(res => res.arrayBuffer());
 
   return new ImageResponse(

@@ -3,8 +3,8 @@
 import { Link } from '@prisma/client';
 import { ReactNode } from 'react';
 
-import { useModal } from '@/components/modal/provider';
-import { cn } from '@/lib/utils';
+import { useModal } from 'components/modal/provider';
+import { cn } from 'lib/utils';
 
 export default function CreateLinkButton({
   type,

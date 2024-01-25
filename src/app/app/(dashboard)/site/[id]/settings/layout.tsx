@@ -1,8 +1,8 @@
 import { notFound, redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
-import { getSession } from '@/lib/auth';
-import prisma from '@/lib/prisma';
+import { getSession } from 'lib/auth';
+import prisma from 'lib/prisma';
 import SiteSettingsNav from './nav';
 
 export default async function SiteAnalyticsLayout({

@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 
-import { useModal } from '@/components/modal/provider';
+import { useModal } from 'components/modal/provider';
 
 export default function CreateSiteButton({
   children

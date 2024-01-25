@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { getSession } from '@/lib/auth';
+import { getSession } from 'lib/auth';
 import LogoutButton from './logout-button';
 
 export default async function Profile() {

@@ -3,10 +3,10 @@
 import { Link } from '@prisma/client';
 import { motion } from 'framer-motion';
 
-import DeleteLinkButton from '@/components/delete-link-button';
-import UpdateLinkModal from '@/components/modal/update-link';
-import UpdateLinkButton from '@/components/update-link-button';
-import { cn } from '@/lib/utils';
+import DeleteLinkButton from 'components/delete-link-button';
+import UpdateLinkModal from 'components/modal/update-link';
+import UpdateLinkButton from 'components/update-link-button';
+import { cn } from 'lib/utils';
 
 const LinkUpdate = (link: Link) => {
   return (

@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
-import { cn } from '@/lib/utils';
+import { cn } from 'lib/utils';
 import LoadingDots from './icons/loading-dots';
 
 export default function ReportAbuse() {

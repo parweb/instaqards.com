@@ -7,8 +7,8 @@ import { useEffect, useState, useTransition } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { toast } from 'sonner';
 
-import { updatePost, updatePostMetadata } from '@/lib/actions';
-import { cn } from '@/lib/utils';
+import { updatePost, updatePostMetadata } from 'lib/actions';
+import { cn } from 'lib/utils';
 import LoadingDots from './icons/loading-dots';
 
 type PostWithSite = Post & { site: { subdomain: string | null } | null };

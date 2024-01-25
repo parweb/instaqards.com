@@ -5,14 +5,14 @@ import { put } from '@vercel/blob';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 
-import { getSession } from '@/lib/auth';
+import { getSession } from 'lib/auth';
 import {
   addDomainToVercel,
   removeDomainFromVercelProject,
   validDomainRegex
-} from '@/lib/domains';
-import prisma from '@/lib/prisma';
-import { getBlurDataURL } from '@/lib/utils';
+} from 'lib/domains';
+import prisma from 'lib/prisma';
+import { getBlurDataURL } from 'lib/utils';
 import { withPostAuth, withSiteAuth } from './auth';
 
 const nanoid = customAlphabet(

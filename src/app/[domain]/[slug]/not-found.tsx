@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import Image from 'next/image';
 
-import { getSiteData } from '@/lib/fetchers';
+import { getSiteData } from 'lib/fetchers';
 
 export default async function NotFound() {
   const headersList = headers();

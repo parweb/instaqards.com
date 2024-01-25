@@ -19,7 +19,7 @@ import {
 } from 'next/navigation';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { getSiteFromPostId } from '@/lib/actions';
+import { getSiteFromPostId } from 'lib/actions';
 
 const externalLinks: { name: string; href: string; icon: JSX.Element }[] = [
   // {

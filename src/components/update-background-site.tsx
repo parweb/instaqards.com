@@ -5,7 +5,7 @@ import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-import { updateSite } from '@/lib/actions';
+import { updateSite } from 'lib/actions';
 
 const UpdateBackgroundSite = ({ siteId }: { siteId: Site['id'] }) => {
   const router = useRouter();

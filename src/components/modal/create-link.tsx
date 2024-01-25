@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
-import LoadingDots from '@/components/icons/loading-dots';
-import { createLink } from '@/lib/actions';
-import { cn } from '@/lib/utils';
+import LoadingDots from 'components/icons/loading-dots';
+import { createLink } from 'lib/actions';
+import { cn } from 'lib/utils';
 import { useParams, useRouter } from 'next/navigation';
 import { useModal } from './provider';
 

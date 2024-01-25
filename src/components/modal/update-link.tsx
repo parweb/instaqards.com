@@ -7,9 +7,9 @@ import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
-import LoadingDots from '@/components/icons/loading-dots';
-import { updateLink } from '@/lib/actions';
-import { cn } from '@/lib/utils';
+import LoadingDots from 'components/icons/loading-dots';
+import { updateLink } from 'lib/actions';
+import { cn } from 'lib/utils';
 import { useModal } from './provider';
 
 export default function UpdateLinkModal(link: Link) {

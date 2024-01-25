@@ -3,9 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getSiteData } from '@/lib/fetchers';
-import prisma from '@/lib/prisma';
-import { cn } from '@/lib/utils';
+import { getSiteData } from 'lib/fetchers';
+import prisma from 'lib/prisma';
+import { cn } from 'lib/utils';
 
 import 'array-grouping-polyfill';
 

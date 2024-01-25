@@ -3,7 +3,7 @@ import { getServerSession, type NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import InstagramProvider from 'next-auth/providers/instagram';
 
-import prisma from '@/lib/prisma';
+import prisma from 'lib/prisma';
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 

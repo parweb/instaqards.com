@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import LoadingDots from '@/components/icons/loading-dots';
+import LoadingDots from 'components/icons/loading-dots';
 
 export default function LoginButton({
   provider

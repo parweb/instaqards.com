@@ -3,12 +3,12 @@ import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import LinkItem from '@/components/LinkItem';
-import CreateLinkButton from '@/components/create-link-button';
-import CreateLinkModal from '@/components/modal/create-link';
-import UpdateBackgroundSite from '@/components/update-background-site';
-import { getSession } from '@/lib/auth';
-import prisma from '@/lib/prisma';
+import LinkItem from 'components/LinkItem';
+import CreateLinkButton from 'components/create-link-button';
+import CreateLinkModal from 'components/modal/create-link';
+import UpdateBackgroundSite from 'components/update-background-site';
+import { getSession } from 'lib/auth';
+import prisma from 'lib/prisma';
 
 import 'array-grouping-polyfill';
 

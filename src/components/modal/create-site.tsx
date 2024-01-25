@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
-import LoadingDots from '@/components/icons/loading-dots';
-import { createSite } from '@/lib/actions';
-import { cn } from '@/lib/utils';
+import LoadingDots from 'components/icons/loading-dots';
+import { createSite } from 'lib/actions';
+import { cn } from 'lib/utils';
 import { useModal } from './provider';
 
 export default function CreateSiteModal() {

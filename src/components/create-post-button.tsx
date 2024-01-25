@@ -4,9 +4,9 @@ import va from '@vercel/analytics';
 import { useParams, useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 
-import LoadingDots from '@/components/icons/loading-dots';
-import { createPost } from '@/lib/actions';
-import { cn } from '@/lib/utils';
+import LoadingDots from 'components/icons/loading-dots';
+import { createPost } from 'lib/actions';
+import { cn } from 'lib/utils';
 
 export default function CreatePostButton() {
   const router = useRouter();

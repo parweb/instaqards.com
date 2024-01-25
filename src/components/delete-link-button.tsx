@@ -7,8 +7,8 @@ import { useFormStatus } from 'react-dom';
 import { LuTrash2 } from 'react-icons/lu';
 import { toast } from 'sonner';
 
-import LoadingDots from '@/components/icons/loading-dots';
-import { deleteLink } from '@/lib/actions';
+import LoadingDots from 'components/icons/loading-dots';
+import { deleteLink } from 'lib/actions';
 
 export default function DeleteLinkButton(link: Link) {
   const router = useRouter();

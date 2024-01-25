@@ -3,7 +3,7 @@
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import LoadingDots from '@/components/icons/loading-dots';
+import LoadingDots from 'components/icons/loading-dots';
 
 export default function Uploader() {
   const [data, setData] = useState<{
