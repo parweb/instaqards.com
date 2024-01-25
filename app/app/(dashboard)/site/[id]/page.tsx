@@ -2,28 +2,14 @@ import { Link, Site } from '@prisma/client';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
+import LinkItem from '@/components/LinkItem';
 import CreateLinkButton from '@/components/create-link-button';
-import DeleteLinkButton from '@/components/delete-link-button';
 import CreateLinkModal from '@/components/modal/create-link';
-import UpdateLinkModal from '@/components/modal/update-link';
-import UpdateLinkButton from '@/components/update-link-button';
+import UpdateBackgroundSite from '@/components/update-background-site';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { cn } from '@/lib/utils';
 
 import 'array-grouping-polyfill';
-
-const LinkUpdate = (link: Link) => {
-  return (
-    <UpdateLinkButton>
-      <UpdateLinkModal {...link} />
-    </UpdateLinkButton>
-  );
-};
-
-const LinkDelete = (link: Link) => {
-  return <DeleteLinkButton {...link} />;
-};
 
 const LinkCreate = ({ type }: { type: Link['type'] }) => {
   return (
@@ -31,53 +17,6 @@ const LinkCreate = ({ type }: { type: Link['type'] }) => {
       <CreateLinkModal type={type} />
     </CreateLinkButton>
   );
-};
-
-const LinkItem = (link: Link) => {
-  if (link.type === 'main') {
-    return (
-      <div className="group flex flex-1 items-center gap-2 relative">
-        <a
-          className={cn(
-            'transition-all',
-            'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
-            'hover:bg-white hover:text-black'
-          )}
-        >
-          {link.label}
-        </a>
-
-        <div className="absolute right-10 flex gap-2 items-center p-2 transition-all opacity-0 group-hover:opacity-100 group-hover:right-0">
-          <LinkUpdate {...link} />
-          <LinkDelete {...link} />
-        </div>
-      </div>
-    );
-  }
-
-  if (link.type === 'social') {
-    return (
-      <div className="group flex flex-col flex-1 items-center gap-2 relative">
-        <div className="flex gap-2 absolute items-center p-2 transition-all opacity-0 group-hover:opacity-100 bottom-[100%]">
-          <LinkUpdate {...link} />
-          <LinkDelete {...link} />
-        </div>
-        <a target="_blank">
-          <img
-            className={cn(
-              link.label === 'facebook' && 'h-[65px]',
-              link.label !== 'facebook' && 'h-[50px]',
-              'object-contain transition-all hover:scale-125'
-            )}
-            src={link.logo!}
-            alt={link.label}
-          />
-        </a>
-      </div>
-    );
-  }
-
-  return <></>;
 };
 
 const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
@@ -95,25 +34,38 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
 
   return (
     <main className="relative flex-1 self-stretch items-center">
-      <div className="absolute inset-0">
-        <video
-          className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
-          preload="auto"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="https://gellyx.fr/video/2.mp4" type="video/mp4" />
-        </video>
+      <div className="absolute inset-0 group">
+        {site?.background?.endsWith('.mp4') && (
+          <video
+            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
+            preload="auto"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={site?.background ?? ''} type="video/mp4" />
+          </video>
+        )}
+        {!site?.background?.endsWith('.mp4') && (
+          <img
+            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
+            src={site?.background ?? ''}
+            alt="background"
+          />
+        )}
 
-        <div className="absolute inset-0  bg-black/30" />
+        <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+
+        <div className="z-10 opacity-0 absolute inset-0 transition-all delay-1000 group-hover:opacity-100 flex items-center justify-center pointer-events-none text-5xl uppercase">
+          <UpdateBackgroundSite siteId={site.id} />
+        </div>
       </div>
 
-      <section className="absolute inset-0 flex flex-col p-10">
+      <section className="absolute inset-0 flex flex-col p-10 pointer-events-none">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
           <div className="flex flex-1 self-stretch items-center justify-center">
-            <div className="flex flex-col gap-10 flex-1">
+            <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
               {data.links.map(props => (
                 <LinkItem key={`LinkItem-${props.id}`} {...props} />
               ))}
@@ -123,7 +75,7 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
           </div>
 
           <footer className="flex flex-col gap-3">
-            <div className="flex gap-3 items-center justify-center">
+            <div className="flex gap-3 items-center justify-center pointer-events-auto">
               {data.socials.map(props => (
                 <LinkItem key={`LinkItem-${props.id}`} {...props} />
               ))}
