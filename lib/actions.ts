@@ -218,20 +218,18 @@ export const updateSite = withSiteAuth(
           
           */
         }
-      } else if (key === 'image' || key === 'logo') {
+      } else if (['image', 'logo', 'background'].includes(key)) {
         if (!process.env.BLOB_READ_WRITE_TOKEN) {
           return {
             error:
-              'Missing BLOB_READ_WRITE_TOKEN token. Note: Vercel Blob is currently in beta – please fill out this form for access: https://tally.so/r/nPDMNd'
+              'Missing BLOB_READ_WRITE_TOKEN token. Note: Vercel Blob is currently in beta – please fill out this form for access: https://tally.so/r/nPDMNd'
           };
         }
 
         const file = formData.get(key) as File;
         const filename = `${nanoid()}.${file.type.split('/')[1]}`;
 
-        const { url } = await put(filename, file, {
-          access: 'public'
-        });
+        const { url } = await put(filename, file, { access: 'public' });
 
         const blurhash = key === 'image' ? await getBlurDataURL(url) : null;
 

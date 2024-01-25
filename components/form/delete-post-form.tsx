@@ -12,6 +12,7 @@ import va from '@vercel/analytics';
 export default function DeletePostForm({ postName }: { postName: string }) {
   const { id } = useParams() as { id: string };
   const router = useRouter();
+
   return (
     <form
       action={async (data: FormData) =>
