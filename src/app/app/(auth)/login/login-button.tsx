@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
+import { DEFAULT_LOGIN_REDIRECT } from 'auth.config';
 
 export default function LoginButton({
   provider
@@ -28,7 +29,12 @@ export default function LoginButton({
       disabled={loading}
       onClick={() => {
         setLoading(true);
-        signIn(provider);
+
+        const callbackUrl = searchParams.get('callbackUrl');
+
+        signIn(provider, {
+          callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT
+        });
       }}
       className={`${
         loading
