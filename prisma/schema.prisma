@@ -20,18 +20,101 @@ model User {
   emailVerified DateTime?
   image         String?
 
+  billing_address Json @default("{}")
+  payment_method  Json @default("{}")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  sites    Site[]
-  posts    Post[]
+  accounts     Account[]
+  sessions     Session[]
+  sites        Site[]
+  posts        Post[]
+  Customer     Customer?
+  Subscription Subscription[]
+}
+
+model Customer {
+  stripe_customer_id String @unique
+
+  user User   @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id   String @unique
+}
+
+model Product {
+  id          String  @id
+  active      Boolean
+  name        String
+  description String
+  image       String
+  metadata    Json    @default("{}")
+
+  Price Price[]
+}
+
+enum PricingType {
+  one_time
+  recurring
+}
+
+enum PricingPlanInterval {
+  day
+  week
+  month
+  year
+}
+
+model Price {
+  id                String               @id
+  active            Boolean
+  description       String
+  unit_amount       BigInt?
+  currency          String
+  type              PricingType
+  interval          PricingPlanInterval?
+  interval_count    Int?
+  trial_period_days Int?
+  metadata          Json                 @default("{}")
+
+  Subscription Subscription[]
+  product      Product        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId    String
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  canceled
+  incomplete
+  incomplete_expired
+  past_due
+  unpaid
+  paused
+}
+
+model Subscription {
+  id                   String             @id
+  status               SubscriptionStatus
+  metadata             Json               @default("{}")
+  quantity             Int
+  cancel_at_period_end Boolean
+  created              DateTime           @default(now())
+  current_period_start DateTime           @default(now())
+  current_period_end   DateTime           @default(now())
+  ended_at             DateTime?          @default(now())
+  cancel_at            DateTime?          @default(now())
+  canceled_at          DateTime?          @default(now())
+  trial_start          DateTime?          @default(now())
+  trial_end            DateTime?          @default(now())
+
+  price   Price  @relation(fields: [priceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  priceId String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId  String
 }
 
 model Account {
   id                       String  @id @default(cuid())
-  userId                   String
   type                     String
   provider                 String
   providerAccountId        String
@@ -46,7 +129,8 @@ model Account {
   oauth_token_secret       String?
   oauth_token              String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -55,10 +139,10 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
   expires      DateTime
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
   @@index([userId])
 }
