@@ -1,9 +1,4 @@
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-// import { getServerSession, type NextAuthOptions } from 'next-auth';
-import GitHubProvider from 'next-auth/providers/github';
-import InstagramProvider from 'next-auth/providers/instagram';
-
-import prisma from 'lib/prisma';
+import { db } from 'helpers';
 import { auth } from 'auth';
 
 export function getSession() {
@@ -18,13 +13,13 @@ export function withSiteAuth(action: any) {
   ) => {
     const session = await getSession();
 
-    if (!session) {
+    if (!session || !session?.user) {
       return {
         error: 'Not authenticated'
       };
     }
 
-    const site = await prisma.site.findUnique({
+    const site = await db.site.findUnique({
       where: {
         id: siteId
       }
@@ -47,12 +42,14 @@ export function withPostAuth(action: any) {
     key: string | null
   ) => {
     const session = await getSession();
-    if (!session?.user.id) {
+
+    if (!session?.user?.id) {
       return {
         error: 'Not authenticated'
       };
     }
-    const post = await prisma.post.findUnique({
+
+    const post = await db.post.findUnique({
       where: {
         id: postId
       },
@@ -60,6 +57,7 @@ export function withPostAuth(action: any) {
         site: true
       }
     });
+
     if (!post || post.userId !== session.user.id) {
       return {
         error: 'Post not found'

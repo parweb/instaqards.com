@@ -1,7 +1,5 @@
 import * as z from 'zod';
 
-export type UserRole = 'ADMIN' | 'USER';
-
 export const SettingsSchema = z
   .object({
     name: z.optional(z.string()),

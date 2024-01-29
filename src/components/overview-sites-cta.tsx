@@ -1,18 +1,20 @@
 import Link from 'next/link';
 
+import { db } from 'helpers';
 import { getSession } from 'lib/auth';
-import prisma from 'lib/prisma';
 import CreateSiteButton from './create-site-button';
 import CreateSiteModal from './modal/create-site';
 
 export default async function OverviewSitesCTA() {
   const session = await getSession();
-  if (!session) {
-    return 0;
+
+  if (!session || !session?.user) {
+    return null;
   }
-  const sites = await prisma.site.count({
+
+  const sites = await db.site.count({
     where: {
-      userId: session.user.id as string
+      userId: session?.user.id as string
     }
   });
 

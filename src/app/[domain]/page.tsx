@@ -3,8 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { db } from 'helpers';
 import { getSiteData } from 'lib/fetchers';
-import prisma from 'lib/prisma';
 import { cn } from 'lib/utils';
 
 import 'array-grouping-polyfill';
@@ -29,6 +29,7 @@ const LinkItem = (link: PrismaLink) => {
   if (link.type === 'social') {
     return (
       <Link href={`/click/${link.id}`} target="_blank">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className={cn(
             link.label === 'facebook' && 'h-[65px]',
@@ -46,7 +47,7 @@ const LinkItem = (link: PrismaLink) => {
 };
 
 export async function generateStaticParams() {
-  const allSites = await prisma.site.findMany({
+  const allSites = await db.site.findMany({
     select: {
       subdomain: true,
       customDomain: true
@@ -72,8 +73,6 @@ export default async function SiteHomePage({
 }: {
   params: { domain: string };
 }) {
-  console.log({ 'params.domain': params.domain });
-
   const domain = decodeURIComponent(params.domain);
   const site = await getSiteData(domain);
 
@@ -81,7 +80,7 @@ export default async function SiteHomePage({
     notFound();
   }
 
-  await prisma.click.create({
+  await db.click.create({
     data: {
       siteId: site.id
     }

@@ -1,11 +1,11 @@
+import { eachMinuteOfInterval } from 'date-fns';
 import { notFound, redirect } from 'next/navigation';
 
 import Analytics from 'components/analytics';
+import { db } from 'helpers';
 import { getSession } from 'lib/auth';
-import prisma from 'lib/prisma';
 
 import 'array-grouping-polyfill';
-import { eachMinuteOfInterval } from 'date-fns';
 
 export default async function SiteAnalytics({
   params
@@ -14,11 +14,11 @@ export default async function SiteAnalytics({
 }) {
   const session = await getSession();
 
-  if (!session) {
+  if (!session || !session?.user) {
     redirect('/login');
   }
 
-  const site = await prisma.site.findUnique({
+  const site = await db.site.findUnique({
     where: {
       id: decodeURIComponent(params.id)
     }
@@ -28,7 +28,7 @@ export default async function SiteAnalytics({
     notFound();
   }
 
-  const clicks = await prisma.click.findMany({
+  const clicks = await db.click.findMany({
     where: {
       OR: [{ siteId: site.id }, { link: { siteId: site.id } }]
     },

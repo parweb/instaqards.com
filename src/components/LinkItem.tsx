@@ -2,6 +2,7 @@
 
 import { Link } from '@prisma/client';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 import DeleteLinkButton from 'components/delete-link-button';
 import UpdateLinkModal from 'components/modal/update-link';
@@ -55,6 +56,7 @@ const LinkItem = (link: Link) => {
           <LinkDelete {...link} />
         </div>
         <a target="_blank">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className={cn(
               link.label === 'facebook' && 'h-[65px]',

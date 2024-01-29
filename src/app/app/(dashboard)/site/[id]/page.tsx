@@ -7,8 +7,8 @@ import LinkItem from 'components/LinkItem';
 import CreateLinkButton from 'components/create-link-button';
 import CreateLinkModal from 'components/modal/create-link';
 import UpdateBackgroundSite from 'components/update-background-site';
+import { db } from 'helpers';
 import { getSession } from 'lib/auth';
-import prisma from 'lib/prisma';
 
 import 'array-grouping-polyfill';
 
@@ -102,14 +102,14 @@ export default async function SitePosts({
     redirect('/login');
   }
 
-  const site = await prisma.site.findUnique({
+  const site = await db.site.findUnique({
     where: { id: decodeURIComponent(params.id) },
     include: {
       links: { orderBy: { createdAt: 'asc' } }
     }
   });
 
-  if (!site || site.userId !== session.user.id) {
+  if (!site || site.userId !== session?.user?.id) {
     notFound();
   }
 

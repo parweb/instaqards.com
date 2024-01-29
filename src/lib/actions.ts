@@ -5,13 +5,13 @@ import { put } from '@vercel/blob';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 
+import { db } from 'helpers';
 import { getSession } from 'lib/auth';
 import {
   addDomainToVercel,
   removeDomainFromVercelProject,
   validDomainRegex
 } from 'lib/domains';
-import prisma from 'lib/prisma';
 import { getBlurDataURL } from 'lib/utils';
 import { withPostAuth, withSiteAuth } from './auth';
 
@@ -23,7 +23,7 @@ const nanoid = customAlphabet(
 export const createSite = async (formData: FormData) => {
   const session = await getSession();
 
-  if (!session?.user.id) {
+  if (!session?.user?.id) {
     return {
       error: 'Not authenticated'
     };
@@ -34,7 +34,7 @@ export const createSite = async (formData: FormData) => {
   const subdomain = formData.get('subdomain') as string;
 
   try {
-    const response = await prisma.site.create({
+    const response = await db.site.create({
       data: {
         name,
         description,
@@ -59,13 +59,13 @@ export const createSite = async (formData: FormData) => {
 };
 
 export const updateLink = withSiteAuth(
-  async (formData: FormData, site: Site, linkId: Link['id']) => {
+  async (formData: FormData, _: Site, linkId: Link['id']) => {
     const label = formData.get('label') as Link['label'];
     const href = formData.get('href') as Link['href'];
     const logo = formData.get('logo') as Link['logo'];
 
     try {
-      const response = await prisma.link.update({
+      const response = await db.link.update({
         include: { site: true },
         where: { id: linkId },
         data: {
@@ -100,7 +100,7 @@ export const createLink = async (
   const logo = formData.get('logo') as Link['logo'];
 
   try {
-    const response = await prisma.link.create({
+    const response = await db.link.create({
       include: { site: true },
       data: {
         type,
@@ -127,7 +127,7 @@ export const createLink = async (
 
 export const deleteLink = async (linkId: Link['id']) => {
   try {
-    const response = await prisma.link.delete({
+    const response = await db.link.delete({
       include: { site: true },
       where: { id: linkId }
     });
@@ -159,7 +159,7 @@ export const updateSite = withSiteAuth(
 
           // if the custom domain is valid, we need to add it to Vercel
         } else if (validDomainRegex.test(value)) {
-          response = await prisma.site.update({
+          response = await db.site.update({
             where: { id: site.id },
             data: {
               customDomain: value
@@ -173,7 +173,7 @@ export const updateSite = withSiteAuth(
 
           // empty value means the user wants to remove the custom domain
         } else if (value === '') {
-          response = await prisma.site.update({
+          response = await db.site.update({
             where: { id: site.id },
             data: {
               customDomain: null
@@ -185,11 +185,11 @@ export const updateSite = withSiteAuth(
         if (site.customDomain && site.customDomain !== value) {
           response = await removeDomainFromVercelProject(site.customDomain);
 
-          /* Optional: remove domain from Vercel team 
+          /* Optional: remove domain from Vercel team
 
           // first, we need to check if the apex domain is being used by other sites
           const apexDomain = getApexDomain(`https://${site.customDomain}`);
-          const domainCount = await prisma.site.count({
+          const domainCount = await db.site.count({
             where: {
               OR: [
                 {
@@ -215,7 +215,7 @@ export const updateSite = withSiteAuth(
               site.customDomain
             );
           }
-          
+
           */
         }
       } else if (['image', 'logo', 'background'].includes(key)) {
@@ -233,7 +233,7 @@ export const updateSite = withSiteAuth(
 
         const blurhash = key === 'image' ? await getBlurDataURL(url) : null;
 
-        response = await prisma.site.update({
+        response = await db.site.update({
           where: { id: site.id },
           data: {
             [key]: url,
@@ -241,7 +241,7 @@ export const updateSite = withSiteAuth(
           }
         });
       } else {
-        response = await prisma.site.update({
+        response = await db.site.update({
           where: { id: site.id },
           data: {
             [key]: value
@@ -268,7 +268,7 @@ export const updateSite = withSiteAuth(
 
 export const deleteSite = withSiteAuth(async (_: FormData, site: Site) => {
   try {
-    const response = await prisma.site.delete({
+    const response = await db.site.delete({
       where: { id: site.id }
     });
 
@@ -287,7 +287,7 @@ export const deleteSite = withSiteAuth(async (_: FormData, site: Site) => {
 });
 
 export const getSiteFromPostId = async (postId: string) => {
-  const post = await prisma.post.findUnique({
+  const post = await db.post.findUnique({
     where: { id: postId },
     select: { siteId: true }
   });
@@ -298,13 +298,13 @@ export const getSiteFromPostId = async (postId: string) => {
 export const createPost = withSiteAuth(async (_: FormData, site: Site) => {
   const session = await getSession();
 
-  if (!session?.user.id) {
+  if (!session?.user?.id) {
     return {
       error: 'Not authenticated'
     };
   }
 
-  const response = await prisma.post.create({
+  const response = await db.post.create({
     data: {
       siteId: site.id,
       userId: session.user.id
@@ -323,13 +323,13 @@ export const createPost = withSiteAuth(async (_: FormData, site: Site) => {
 export const updatePost = async (data: Post) => {
   const session = await getSession();
 
-  if (!session?.user.id) {
+  if (!session?.user?.id) {
     return {
       error: 'Not authenticated'
     };
   }
 
-  const post = await prisma.post.findUnique({
+  const post = await db.post.findUnique({
     where: { id: data.id },
     include: { site: true }
   });
@@ -341,7 +341,7 @@ export const updatePost = async (data: Post) => {
   }
 
   try {
-    const response = await prisma.post.update({
+    const response = await db.post.update({
       where: { id: data.id },
       data: {
         title: data.title,
@@ -387,7 +387,7 @@ export const updatePostMetadata = withPostAuth(
 
         const blurhash = await getBlurDataURL(url);
 
-        response = await prisma.post.update({
+        response = await db.post.update({
           where: { id: post.id },
           data: {
             image: url,
@@ -395,7 +395,7 @@ export const updatePostMetadata = withPostAuth(
           }
         });
       } else {
-        response = await prisma.post.update({
+        response = await db.post.update({
           where: { id: post.id },
           data: {
             [key]: key === 'published' ? value === 'true' : value
@@ -427,7 +427,7 @@ export const updatePostMetadata = withPostAuth(
 
 export const deletePost = withPostAuth(async (_: FormData, post: Post) => {
   try {
-    const response = await prisma.post.delete({
+    const response = await db.post.delete({
       where: { id: post.id },
       select: { siteId: true }
     });
@@ -446,16 +446,20 @@ export const editUser = async (
 ) => {
   const session = await getSession();
 
-  if (!session?.user.id) {
+  if (!session?.user?.id) {
     return {
       error: 'Not authenticated'
     };
   }
 
-  const value = formData.get(key) as string;
+  let value = formData.get(key) as string | boolean;
+
+  if (key === 'isTwoFactorEnabled') {
+    value = value === 'on' ? true : false;
+  }
 
   try {
-    const response = await prisma.user.update({
+    const response = await db.user.update({
       where: { id: session.user.id },
       data: {
         [key]: value

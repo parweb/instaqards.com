@@ -1,8 +1,8 @@
 import { notFound, redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
+import { db } from 'helpers';
 import { getSession } from 'lib/auth';
-import prisma from 'lib/prisma';
 import SiteSettingsNav from './nav';
 
 export default async function SiteAnalyticsLayout({
@@ -18,13 +18,13 @@ export default async function SiteAnalyticsLayout({
     redirect('/login');
   }
 
-  const site = await prisma.site.findUnique({
+  const site = await db.site.findUnique({
     where: {
       id: decodeURIComponent(params.id)
     }
   });
 
-  if (!site || site.userId !== session.user.id) {
+  if (!site || site.userId !== session?.user?.id) {
     notFound();
   }
 

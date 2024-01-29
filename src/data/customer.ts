@@ -23,7 +23,7 @@ export const createOrRetrieveCustomer = async ({
       email?: string;
       name?: string;
     } = {
-      metadata: { user_id: uuid }
+      metadata: { user_id: uuid! }
     };
 
     if (email) customerData.email = email;
@@ -34,7 +34,10 @@ export const createOrRetrieveCustomer = async ({
     console.log({ customer });
 
     await db.customer.create({
-      data: { id: uuid, stripe_customer_id: customer.id }
+      data: {
+        id: uuid!,
+        stripe_customer_id: customer.id
+      }
     });
 
     console.log(`New customer created and inserted for ${uuid}.`);
@@ -60,6 +63,7 @@ export const copyBillingDetailsToCustomer = async (
     where: { id: uuid },
     data: {
       billing_address: { ...address },
+      // @ts-ignore
       payment_method: { ...payment_method[payment_method.type] }
     }
   });
@@ -160,7 +164,7 @@ export const upsertPriceRecord = async (price: Stripe.Price) => {
     currency: price.currency,
     description: price.nickname ?? '',
     type: price.type,
-    unit_amount: (price?.unit_amount as unknown as bigint) ?? null,
+    unit_amount: price?.unit_amount ?? null,
     interval: (price.recurring?.interval as PricingPlanInterval) ?? '',
     interval_count: price.recurring?.interval_count ?? null,
     trial_period_days: price.recurring?.trial_period_days ?? null,

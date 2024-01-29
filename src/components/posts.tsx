@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
 import { getSession } from 'lib/auth';
-import prisma from 'lib/prisma';
+import { db } from 'helpers';
 import PostCard from './post-card';
 
 export default async function Posts({
@@ -16,7 +16,7 @@ export default async function Posts({
   if (!session?.user) {
     redirect('/login');
   }
-  const posts = await prisma.post.findMany({
+  const posts = await db.post.findMany({
     where: {
       userId: session.user.id as string,
       ...(siteId ? { siteId } : {})

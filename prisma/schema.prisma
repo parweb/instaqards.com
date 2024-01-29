@@ -11,27 +11,42 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  username      String?
-  gh_username   String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
+enum UserRole {
+  USER
+  ADMIN
+}
 
-  billing_address Json @default("{}")
-  payment_method  Json @default("{}")
+model User {
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String?   @unique
+  emailVerified      DateTime?
+  image              String?
+  password           String?
+  isTwoFactorEnabled Boolean   @default(false)
+  billing_address    Json      @default("{}")
+  payment_method     Json      @default("{}")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts     Account[]
-  sessions     Session[]
-  sites        Site[]
-  posts        Post[]
-  Customer     Customer?
-  Subscription Subscription[]
+  role                  UserRole               @default(USER)
+  accounts              Account[]
+  sessions              Session[]
+  sites                 Site[]
+  posts                 Post[]
+  subscriptions         Subscription[]
+  customer              Customer?
+  twoFactorConfirmation TwoFactorConfirmation?
+}
+
+model TwoFactorConfirmation {
+  id String @id @default(cuid())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([userId])
 }
 
 model Customer {
@@ -49,7 +64,7 @@ model Product {
   image       String
   metadata    Json    @default("{}")
 
-  Price Price[]
+  prices Price[]
 }
 
 enum PricingType {
@@ -68,7 +83,7 @@ model Price {
   id                String               @id
   active            Boolean
   description       String
-  unit_amount       BigInt?
+  unit_amount       Int?
   currency          String
   type              PricingType
   interval          PricingPlanInterval?
@@ -76,9 +91,9 @@ model Price {
   trial_period_days Int?
   metadata          Json                 @default("{}")
 
-  Subscription Subscription[]
-  product      Product        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId    String
+  subscriptions Subscription[]
+  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId     String
 }
 
 enum SubscriptionStatus {
@@ -114,20 +129,17 @@ model Subscription {
 }
 
 model Account {
-  id                       String  @id @default(cuid())
-  type                     String
-  provider                 String
-  providerAccountId        String
-  refresh_token            String?
-  refresh_token_expires_in Int?
-  access_token             String?
-  expires_at               Int?
-  token_type               String?
-  scope                    String?
-  id_token                 String?
-  session_state            String?
-  oauth_token_secret       String?
-  oauth_token              String?
+  id                String  @id @default(cuid())
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
@@ -148,11 +160,30 @@ model Session {
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
 
-  @@unique([identifier, token])
+  @@unique([email, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
 }
 
 model Post {

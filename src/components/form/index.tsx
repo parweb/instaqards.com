@@ -7,6 +7,7 @@ import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
+import { Switch } from 'components/ui/switch';
 import { cn } from 'lib/utils';
 import DomainConfiguration from './domain-configuration';
 import DomainStatus from './domain-status';
@@ -22,14 +23,23 @@ export default function Form({
   title: string;
   description: string;
   helpText: string;
-  inputAttrs: {
-    name: string;
-    type: string;
-    defaultValue: string;
-    placeholder?: string;
-    maxLength?: number;
-    pattern?: string;
-  };
+  inputAttrs:
+    | {
+        name: string;
+        type: string;
+        defaultValue: string;
+        placeholder?: string;
+        maxLength?: number;
+        pattern?: string;
+      }
+    | {
+        name: string;
+        type: 'switch';
+        defaultValue: boolean;
+        placeholder?: string;
+
+        pattern?: string;
+      };
   handleSubmit: any;
 }) {
   const { id } = useParams() as { id?: string };
@@ -71,14 +81,14 @@ export default function Form({
         </p>
         {inputAttrs.name === 'image' || inputAttrs.name === 'logo' ? (
           <Uploader
-            defaultValue={inputAttrs.defaultValue}
+            defaultValue={inputAttrs.defaultValue as string}
             name={inputAttrs.name}
           />
         ) : inputAttrs.name === 'font' ? (
           <div className="flex max-w-sm items-center overflow-hidden rounded-lg border border-stone-600">
             <select
               name="font"
-              defaultValue={inputAttrs.defaultValue}
+              defaultValue={inputAttrs.defaultValue as string}
               className="w-full rounded-none border-none bg-white px-4 py-2 text-sm font-medium text-stone-700 focus:outline-none focus:ring-black dark:bg-black dark:text-stone-200 dark:focus:ring-white"
             >
               <option value="font-cal">Cal Sans</option>
@@ -89,7 +99,10 @@ export default function Form({
         ) : inputAttrs.name === 'subdomain' ? (
           <div className="flex w-full max-w-md">
             <input
-              {...inputAttrs}
+              {...{
+                ...inputAttrs,
+                defaultValue: inputAttrs.defaultValue as string
+              }}
               required
               className="z-10 flex-1 rounded-l-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-none focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
             />
@@ -100,32 +113,46 @@ export default function Form({
         ) : inputAttrs.name === 'customDomain' ? (
           <div className="relative flex w-full max-w-md">
             <input
-              {...inputAttrs}
+              {...{
+                ...inputAttrs,
+                defaultValue: inputAttrs.defaultValue as string
+              }}
               className="z-10 flex-1 rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-none focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
             />
             {inputAttrs.defaultValue && (
               <div className="absolute right-3 z-10 flex h-full items-center">
-                <DomainStatus domain={inputAttrs.defaultValue} />
+                <DomainStatus domain={inputAttrs.defaultValue as string} />
               </div>
             )}
           </div>
         ) : inputAttrs.name === 'description' ? (
           <textarea
-            {...inputAttrs}
+            {...{
+              ...inputAttrs,
+              defaultValue: inputAttrs.defaultValue as string
+            }}
             rows={3}
             required
             className="w-full max-w-xl rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-none focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
           />
+        ) : inputAttrs.type === 'switch' ? (
+          <Switch
+            name={inputAttrs.name}
+            defaultChecked={inputAttrs.defaultValue as boolean}
+          />
         ) : (
           <input
-            {...inputAttrs}
+            {...{
+              ...inputAttrs,
+              defaultValue: inputAttrs.defaultValue as string
+            }}
             required
             className="w-full max-w-md rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-none focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
           />
         )}
       </div>
       {inputAttrs.name === 'customDomain' && inputAttrs.defaultValue && (
-        <DomainConfiguration domain={inputAttrs.defaultValue} />
+        <DomainConfiguration domain={inputAttrs.defaultValue as string} />
       )}
       <div className="flex flex-col items-center justify-center space-y-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 sm:flex-row sm:justify-between sm:space-y-0 sm:px-10">
         <p className="text-sm text-stone-500 dark:text-stone-400">{helpText}</p>

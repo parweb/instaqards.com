@@ -16,6 +16,7 @@ import Leaflet from './leaflet';
 export default function Modal({
   children,
   showModal,
+  // @ts-ignore
   setShowModal
 }: {
   children: React.ReactNode;

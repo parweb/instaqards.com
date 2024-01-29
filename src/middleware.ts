@@ -1,25 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 
-import authConfig from 'auth.config';
-// import {
-//   DEFAULT_LOGIN_REDIRECT,
-//   apiAuthPrefix,
-//   authRoutes,
-//   publicRoutes
-// } from 'routes';
+import authConfig, {
+  apiAuthPrefix,
+  authRoutes,
+  publicRoutes
+} from 'auth.config';
 
 export const config = {
-  matcher: [
-    /*
-     * Match all paths except for:
-     * 1. /api routes
-     * 2. /_next (Next.js internals)
-     * 3. /_static (inside /public)
-     * 4. all root files inside /public (e.g. /favicon.ico)
-     */
-    '/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)'
-  ]
+  matcher: ['/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)']
 };
 
 const { auth } = NextAuth(authConfig);
@@ -27,12 +16,15 @@ const { auth } = NextAuth(authConfig);
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
-  // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:11000)
+  const isApiAuthRoute = url.pathname.startsWith(apiAuthPrefix);
+  const isAuthRoute = authRoutes.includes(url.pathname);
+  const isPublicRoute =
+    publicRoutes.includes(url.pathname) || isAuthRoute || isApiAuthRoute;
+
   let hostname = req.headers
     .get('host')!
     .replace('.localhost:11000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
 
-  // special case for Vercel preview deployment URLs
   if (
     hostname.includes('---') &&
     hostname.endsWith(`.${process.env.NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX}`)
@@ -47,18 +39,16 @@ export default async function middleware(req: NextRequest) {
   }
 
   const searchParams = req.nextUrl.searchParams.toString();
-  // Get the pathname of the request (e.g. /, /about, /blog/first-post)
   const path = `${url.pathname}${
     searchParams.length > 0 ? `?${searchParams}` : ''
   }`;
 
-  // rewrites for app pages
   if (hostname == `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) {
     const session = await auth();
 
-    if (!session && path !== '/login') {
+    if (!session && !isPublicRoute) {
       return NextResponse.redirect(new URL('/login', req.url));
-    } else if (session && path == '/login') {
+    } else if (session && isPublicRoute) {
       return NextResponse.redirect(new URL('/', req.url));
     }
 
@@ -67,7 +57,6 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
-  // rewrite root application to `/home` folder
   if (
     hostname === 'localhost:11000' ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
@@ -77,6 +66,5 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
-  // rewrite everything else to `/[domain]/[slug] dynamic route
   return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }

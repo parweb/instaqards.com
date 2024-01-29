@@ -1,4 +1,5 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import { UserRole } from '@prisma/client';
 import NextAuth from 'next-auth';
 
 import authConfig from 'auth.config';
@@ -6,7 +7,6 @@ import { getAccountByUserId } from 'data/account';
 import { getTwoFactorConfirmationByUserId } from 'data/two-factor-confirmation';
 import { getUserById } from 'data/user';
 import { db } from 'helpers';
-import { UserRole } from 'schemas';
 
 export const {
   handlers: { GET, POST },
@@ -16,15 +16,17 @@ export const {
   unstable_update: update
 } = NextAuth({
   pages: {
-    signIn: '/auth/login',
-    error: '/auth/error'
+    signIn: '/login',
+    error: '/error'
   },
   events: {
-    async linkAccount({ user }) {
-      await db.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() }
-      });
+    async linkAccount(data) {
+      // @ts-ignore
+      await db.account.create({ data });
+      // await db.user.update({
+      //   where: { id: user.id },
+      //   data: { emailVerified: new Date() }
+      // });
     }
   },
   callbacks: {
@@ -58,7 +60,7 @@ export const {
         session.user.id = token.sub;
       }
 
-      if (token.role && session.user) {
+      if (token.role && session?.user) {
         session.user.role = token.role as UserRole;
       }
 
@@ -69,6 +71,7 @@ export const {
       if (session.user) {
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.isOAuth = token.isOAuth as boolean;
         session.user.isOAuth = token.isOAuth as boolean;
       }
 

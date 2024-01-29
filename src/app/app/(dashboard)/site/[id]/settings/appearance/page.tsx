@@ -1,13 +1,13 @@
 import Form from 'components/form';
+import { db } from 'helpers';
 import { updateSite } from 'lib/actions';
-import prisma from 'lib/prisma';
 
 export default async function SiteSettingsAppearance({
   params
 }: {
   params: { id: string };
 }) {
-  const data = await prisma.site.findUnique({
+  const data = await db.site.findUnique({
     where: {
       id: decodeURIComponent(params.id)
     }

@@ -3,9 +3,24 @@ import { Suspense } from 'react';
 import OverviewSitesCTA from 'components/overview-sites-cta';
 import OverviewStats from 'components/overview-stats';
 import PlaceholderCard from 'components/placeholder-card';
+import { PortalButton } from 'components/portal-button';
+import { PriceTable } from 'components/price-table';
 import Sites from 'components/sites';
+import { db } from 'helpers';
 
-export default function Overview() {
+export default async function Overview() {
+  const products = await db.product.findMany({
+    where: { active: { equals: true } },
+    include: {
+      prices: {
+        where: {
+          active: { equals: true },
+          interval_count: { equals: 1 }
+        }
+      }
+    }
+  });
+
   return (
     <div className="flex flex-col space-y-12 p-8">
       <div className="flex flex-col space-y-6">

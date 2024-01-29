@@ -1,7 +1,7 @@
 import { serialize } from 'next-mdx-remote/serialize';
 import { unstable_cache } from 'next/cache';
 
-import prisma from 'lib/prisma';
+import { db } from 'helpers';
 import { replaceExamples, replaceTweets } from 'lib/remark-plugins';
 
 export async function getSiteData(domain: string) {
@@ -11,7 +11,7 @@ export async function getSiteData(domain: string) {
 
   return await unstable_cache(
     async () => {
-      return prisma.site.findUnique({
+      return db.site.findUnique({
         where: subdomain ? { subdomain } : { customDomain: domain },
         include: {
           user: true,
@@ -38,7 +38,7 @@ export async function getPostsForSite(domain: string) {
 
   return await unstable_cache(
     async () => {
-      return prisma.post.findMany({
+      return db.post.findMany({
         where: {
           site: subdomain ? { subdomain } : { customDomain: domain },
           published: true
@@ -73,7 +73,7 @@ export async function getPostData(domain: string, slug: string) {
 
   return await unstable_cache(
     async () => {
-      const data = await prisma.post.findFirst({
+      const data = await db.post.findFirst({
         where: {
           site: subdomain ? { subdomain } : { customDomain: domain },
           slug,
@@ -92,7 +92,7 @@ export async function getPostData(domain: string, slug: string) {
 
       const [mdxSource, adjacentPosts] = await Promise.all([
         getMdxSource(data.content!),
-        prisma.post.findMany({
+        db.post.findMany({
           where: {
             site: subdomain ? { subdomain } : { customDomain: domain },
             published: true,
@@ -133,7 +133,7 @@ async function getMdxSource(postContents: string) {
   // Serialize the content string into MDX
   const mdxSource = await serialize(content, {
     mdxOptions: {
-      remarkPlugins: [replaceTweets, () => replaceExamples(prisma)]
+      remarkPlugins: [replaceTweets, () => replaceExamples(db)]
     }
   });
 

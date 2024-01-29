@@ -1,17 +1,18 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import BlogCard from 'components/blog-card';
 import BlurImage from 'components/blur-image';
 import MDX from 'components/mdx';
+import { db } from 'helpers';
 import { getPostData, getSiteData } from 'lib/fetchers';
-import prisma from 'lib/prisma';
 import { placeholderBlurhash, toDateString } from 'lib/utils';
 
 export async function generateMetadata({
   params
 }: {
   params: { domain: string; slug: string };
-}) {
+}): Promise<Metadata> {
   const domain = decodeURIComponent(params.domain);
   const slug = decodeURIComponent(params.slug);
 
@@ -19,22 +20,24 @@ export async function generateMetadata({
     getPostData(domain, slug),
     getSiteData(domain)
   ]);
+
   if (!data || !siteData) {
-    return null;
+    return {};
   }
+
   const { title, description } = data;
 
   return {
     title,
     description,
     openGraph: {
-      title,
-      description
+      title: title!,
+      description: description!
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description,
+      title: title!,
+      description: description!,
       creator: '@vercel'
     }
     // Optional: Set canonical URL to custom domain if it exists
@@ -48,7 +51,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-  const allPosts = await prisma.post.findMany({
+  const allPosts = await db.post.findMany({
     select: {
       slug: true,
       site: {
@@ -111,11 +114,7 @@ export default async function SitePostPage({
         </div>
         <a
           // if you are using Github OAuth, you can get rid of the Twitter option
-          href={
-            data.site?.user?.username
-              ? `https://twitter.com/${data.site.user.username}`
-              : `https://github.com/${data.site?.user?.gh_username}`
-          }
+          href={'#'}
           rel="noreferrer"
           target="_blank"
         >
