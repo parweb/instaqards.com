@@ -2,7 +2,6 @@
 
 import { Link } from '@prisma/client';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 
 import DeleteLinkButton from 'components/delete-link-button';
 import UpdateLinkModal from 'components/modal/update-link';
