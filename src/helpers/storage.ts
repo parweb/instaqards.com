@@ -21,7 +21,7 @@ export const put = async (
     Bucket: 'instaqards.com',
     Key: key,
     Body: value,
-    ContentType: contentType(key),
+    ContentType: contentType(key) as string,
     ...options
   };
 

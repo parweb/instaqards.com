@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import { InlineSnippet } from 'components/form/domain-configuration';
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <div className="flex h-screen flex-col items-center justify-center space-y-10 bg-black">
       <Image

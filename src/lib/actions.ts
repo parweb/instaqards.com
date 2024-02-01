@@ -1,11 +1,11 @@
 'use server';
 
 import { Link, Post, Site } from '@prisma/client';
-import { put } from '@vercel/blob';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 
 import { db } from 'helpers';
+import { put } from 'helpers/storage';
 import { getSession } from 'lib/auth';
 import {
   addDomainToVercel,
@@ -219,17 +219,10 @@ export const updateSite = withSiteAuth(
           */
         }
       } else if (['image', 'logo', 'background'].includes(key)) {
-        if (!process.env.BLOB_READ_WRITE_TOKEN) {
-          return {
-            error:
-              'Missing BLOB_READ_WRITE_TOKEN token. Note: Vercel Blob is currently in beta – please fill out this form for access: https://tally.so/r/nPDMNd'
-          };
-        }
-
         const file = formData.get(key) as File;
         const filename = `${nanoid()}.${file.type.split('/')[1]}`;
 
-        const { url } = await put(filename, file, { access: 'public' });
+        const { url } = await put(filename, file);
 
         const blurhash = key === 'image' ? await getBlurDataURL(url) : null;
 
@@ -381,9 +374,7 @@ export const updatePostMetadata = withPostAuth(
         const file = formData.get('image') as File;
         const filename = `${nanoid()}.${file.type.split('/')[1]}`;
 
-        const { url } = await put(filename, file, {
-          access: 'public'
-        });
+        const { url } = await put(filename, file);
 
         const blurhash = await getBlurDataURL(url);
 

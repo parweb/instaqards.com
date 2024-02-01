@@ -1,0 +1,28 @@
+import { NextResponse } from 'next/server';
+
+import { get } from 'helpers/storage';
+
+export async function GET(req: Request) {
+  // @ts-ignore
+  const Range = req?.headers?.range ?? 'bytes=0-';
+  const id = new URL(req?.url).searchParams.get('id');
+
+  try {
+    const data = await get(id!, { Range });
+
+    // @ts-ignore
+    const response = new Response(data.Body, {
+      status: 206,
+      headers: {
+        'Content-Type': data.ContentType,
+        'Content-Length': data.ContentLength,
+        'Content-Range': data.ContentRange,
+        'Accept-Ranges': 'bytes'
+      }
+    });
+
+    return response;
+  } catch (error) {
+    return NextResponse.json({ error });
+  }
+}
