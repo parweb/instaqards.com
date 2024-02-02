@@ -11,9 +11,11 @@ export async function generateMetadata({
 }): Promise<Metadata | null> {
   const domain = decodeURIComponent(params.domain);
   const data = await getSiteData(domain);
+
   if (!data) {
     return null;
   }
+
   const {
     name: title,
     description,
