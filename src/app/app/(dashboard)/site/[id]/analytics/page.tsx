@@ -35,49 +35,15 @@ export default async function SiteAnalytics({
     orderBy: { createdAt: 'asc' }
   });
 
-  console.log({ clicks });
-
   const splitByDate = clicks.groupBy(({ createdAt }) =>
-    [
-      createdAt.toDateString(),
-      [createdAt.getHours(), createdAt.getMinutes()].join(':')
-    ].join(' ')
+    [createdAt.toDateString(), createdAt.getHours() + 'h'].join(' ')
   );
-
-  console.log({ splitByDate });
-
-  // const visitors = Object.entries(
-  //   site.clicks.groupBy(({ createdAt }) =>
-  //     [
-  //       createdAt.toDateString(),
-  //       [createdAt.getHours(), createdAt.getMinutes()].join(':')
-  //     ].join(' ')
-  //   )
-  // ).map(([date, links]) => ({
-  //   date,
-  //   Visitors: links.length
-  // }));
-
-  // const clicks = Object.entries(
-  //   site.clicks.groupBy(({ createdAt }) =>
-  //     [
-  //       createdAt.toDateString(),
-  //       [createdAt.getHours(), createdAt.getMinutes()].join(':')
-  //     ].join(' ')
-  //   )
-  // ).map(([date, links]) => ({
-  //   date,
-  //   Visitors: links.length
-  // }));
 
   const start = clicks.at(0)?.createdAt ?? 0;
   const end = clicks.at(-1)?.createdAt ?? 0;
 
   const chartdata = eachMinuteOfInterval({ start, end }).map(date => {
-    const key = [
-      date.toDateString(),
-      [date.getHours(), date.getMinutes()].join(':')
-    ].join(' ');
+    const key = [date.toDateString(), date.getHours() + 'h'].join(' ');
 
     return {
       date: key,
@@ -89,18 +55,6 @@ export default async function SiteAnalytics({
         0
     };
   });
-
-  //   const month = click.createdAt.getMonth() + 1; // JavaScript months are 0-indexed
-  //   const year = click.createdAt.getFullYear();
-  //   const monthYear = `${month < 10 ? '0' + month : month} ${year.toString().slice(-2)}`; // Format as 'MM YY'
-
-  //   return {
-  //     date: monthYear,
-  //     Clicks: click._count.createdAt
-  //   };
-  // });
-
-  console.log({ chartdata });
 
   const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 

@@ -5,21 +5,13 @@ import { useMemo } from 'react';
 
 import { random } from 'lib/utils';
 
-export default function OverviewStats() {
-  const data = useMemo(() => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-    return [
-      ...months.map(month => ({
-        Month: `${month} 23`,
-        'Total Clicks': random(20000, 170418)
-      })),
-      {
-        Month: 'Jul 23',
-        'Total Clicks': 170418
-      }
-    ];
-  }, []);
-
+export default function OverviewStats({
+  chartdata,
+  total
+}: {
+  chartdata: { date: string; Clicks: number }[];
+  total: number;
+}) {
   return (
     <div className="grid gap-6 sm:grid-cols-2">
       <Card className="dark:!bg-stone-900">
@@ -29,7 +21,9 @@ export default function OverviewStats() {
           justifyContent="start"
           alignItems="baseline"
         >
-          <Metric className="font-cal">170,418</Metric>
+          <Metric className="font-cal">
+            {Intl.NumberFormat('us').format(total).toString()}
+          </Metric>
           <BadgeDelta
             deltaType="moderateIncrease"
             className="dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400"
@@ -39,13 +33,13 @@ export default function OverviewStats() {
         </Flex>
         <AreaChart
           className="mt-6 h-28"
-          data={data}
-          index="Month"
+          data={chartdata}
+          index="date"
           valueFormatter={(number: number) =>
-            `${Intl.NumberFormat('us').format(number).toString()}`
+            Intl.NumberFormat('us').format(number).toString()
           }
-          categories={['Total Clicks']}
-          colors={['blue']}
+          categories={['Clicks', 'Visitors']}
+          colors={['indigo', 'cyan']}
           showXAxis={true}
           showGridLines={false}
           startEndOnly={true}

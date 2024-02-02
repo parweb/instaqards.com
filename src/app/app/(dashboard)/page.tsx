@@ -1,18 +1,61 @@
+import { eachMinuteOfInterval } from 'date-fns';
+import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 import OverviewSitesCTA from 'components/overview-sites-cta';
 import OverviewStats from 'components/overview-stats';
 import PlaceholderCard from 'components/placeholder-card';
 import Sites from 'components/sites';
+import { db } from 'helpers';
+import { getSession } from 'lib/auth';
+
+import 'array-grouping-polyfill';
 
 export default async function Overview() {
+  const session = await getSession();
+
+  if (!session || !session?.user) {
+    redirect('/login');
+  }
+
+  const clicks = await db.click.findMany({
+    where: {
+      OR: [
+        { site: { user: { id: session.user.id } } },
+        { link: { site: { user: { id: session.user.id } } } }
+      ]
+    },
+    orderBy: { createdAt: 'asc' }
+  });
+
+  const splitByDate = clicks.groupBy(({ createdAt }) =>
+    createdAt.toDateString()
+  );
+
+  const start = clicks.at(0)?.createdAt ?? 0;
+  const end = clicks.at(-1)?.createdAt ?? 0;
+
+  const chartdata = eachMinuteOfInterval({ start, end }).map(date => {
+    const key = date.toDateString();
+
+    return {
+      date: key,
+      Clicks:
+        splitByDate?.[key]?.filter?.(({ siteId }) => siteId === null)?.length ??
+        0,
+      Visitors:
+        splitByDate?.[key]?.filter?.(({ linkId }) => linkId === null)?.length ??
+        0
+    };
+  });
+
   return (
     <div className="flex flex-col space-y-12 p-8">
       <div className="flex flex-col space-y-6">
         <h1 className="font-cal text-3xl font-bold dark:text-white">
           Overview
         </h1>
-        <OverviewStats />
+        <OverviewStats chartdata={chartdata} total={clicks.length} />
       </div>
 
       <div className="flex flex-col space-y-6">
