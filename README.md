@@ -7,4 +7,5 @@
 - [ ] onboarding (user -> price table -> new site)
 - [ ] free trial (stripe or custom)
 - [ ] block dashboard if not pay
-- [ ] analytics dashboard home
+- [x] analytics dashboard home
+- [x] custom domain
