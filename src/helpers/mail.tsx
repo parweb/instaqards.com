@@ -1,5 +1,9 @@
 import { Resend } from 'resend';
 
+import TwoFactorTokenEmail from '../../emails/two-factor-token';
+import ResetPasswordEmail from '../../emails/reset-password';
+import ConfirmAccountEmail from '../../emails/confirm-account';
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const domain = `http://app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
@@ -9,7 +13,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     from: 'onboarding@resend.dev',
     to: email,
     subject: '2FA Code',
-    html: `<p>Your 2FA code: ${token}</p>`
+    react: <TwoFactorTokenEmail token={token} />
   });
 };
 
@@ -20,7 +24,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     from: 'onboarding@resend.dev',
     to: email,
     subject: 'Reset your password',
-    html: `<p>Click <a href="${resetLink}">here</a> to reset password.</p>`
+    react: <ResetPasswordEmail resetLink={resetLink} />
   });
 };
 
@@ -31,6 +35,6 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     from: 'onboarding@resend.dev',
     to: email,
     subject: 'Confirm your email',
-    html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`
+    react: <ConfirmAccountEmail confirmLink={confirmLink} />
   });
 };
