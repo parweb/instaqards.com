@@ -1,31 +1,31 @@
 import { Site } from '@prisma/client';
 import { BarChart } from 'lucide-react';
 import Link from 'next/link';
+import { LuCog } from 'react-icons/lu';
 
-import BlurImage from 'components/blur-image';
-import { placeholderBlurhash, random } from 'lib/utils';
+import { random } from 'lib/utils';
 
 export default function SiteCard({ data }: { data: Site }) {
   const url = `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+
   return (
-    <div className="relative rounded-lg border border-stone-200 pb-10 shadow-md transition-all hover:shadow-xl dark:border-stone-700 dark:hover:border-white">
+    <div className="group relative rounded-lg border border-stone-200 pb-10 shadow-md transition-all hover:shadow-xl dark:border-stone-700 dark:hover:border-white">
       <Link
         href={`/site/${data.id}`}
         className="flex flex-col overflow-hidden rounded-lg"
       >
-        <BlurImage
-          alt={data.name ?? 'Card thumbnail'}
-          width={500}
-          height={400}
-          className="h-44 object-cover"
-          src={data.image ?? '/placeholder.png'}
-          placeholder="blur"
-          blurDataURL={data.imageBlurhash ?? placeholderBlurhash}
-        />
         <div className="border-t border-stone-200 p-4 dark:border-stone-700">
-          <h3 className="my-0 truncate font-cal text-xl font-bold tracking-wide dark:text-white">
-            {data.name}
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="my-0 truncate font-cal text-xl font-bold tracking-wide dark:text-white">
+              {data.name}
+            </h3>
+            <Link
+              href={`/site/${data.id}/settings`}
+              className="transition-all opacity-0 group-hover:opacity-100"
+            >
+              <LuCog />
+            </Link>
+          </div>
           <p className="mt-2 line-clamp-1 text-sm font-normal leading-snug text-stone-500 dark:text-stone-400">
             {data.description}
           </p>

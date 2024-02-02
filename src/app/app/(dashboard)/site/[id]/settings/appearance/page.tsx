@@ -15,7 +15,7 @@ export default async function SiteSettingsAppearance({
 
   return (
     <div className="flex flex-col space-y-6">
-      <Form
+      {/*<Form
         title="Thumbnail image"
         description="The thumbnail image for your site. Accepted formats: .png, .jpg, .jpeg"
         helpText="Max file size 50MB. Recommended size 1200x630."
@@ -25,7 +25,8 @@ export default async function SiteSettingsAppearance({
           defaultValue: data?.image!
         }}
         handleSubmit={updateSite}
-      />
+      />*/}
+
       <Form
         title="Logo"
         description="The logo for your site. Accepted formats: .png, .jpg, .jpeg"
@@ -37,6 +38,7 @@ export default async function SiteSettingsAppearance({
         }}
         handleSubmit={updateSite}
       />
+
       <Form
         title="Font"
         description="The font for the heading text your site."
@@ -48,6 +50,7 @@ export default async function SiteSettingsAppearance({
         }}
         handleSubmit={updateSite}
       />
+
       <Form
         title="404 Page Message"
         description="Message to be displayed on the 404 page."
