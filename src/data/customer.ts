@@ -5,9 +5,10 @@ import { PricingPlanInterval } from '@prisma/client';
 import { db, stripe } from 'helpers';
 
 export const toDateTime = (secs: number) => {
-  var t = new Date('1970-01-01T00:30:00Z'); // Unix epoch start.
-  t.setSeconds(secs);
-  return t;
+  var date = new Date(+0);
+  date.setSeconds(secs);
+
+  return date;
 };
 
 export const createOrRetrieveCustomer = async ({
