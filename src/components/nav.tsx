@@ -100,27 +100,8 @@ export default function Nav({ children }: { children: ReactNode }) {
           icon: <Settings width={18} />
         }
       ];
-    } else if (segments[0] === 'post' && id) {
-      return [
-        {
-          name: 'Back to All Posts',
-          href: siteId ? `/site/${siteId}` : '/sites',
-          icon: <ArrowLeft width={18} />
-        },
-        {
-          name: 'Editor',
-          href: `/post/${id}`,
-          isActive: segments.length === 2,
-          icon: <Edit3 width={18} />
-        },
-        {
-          name: 'Settings',
-          href: `/post/${id}/settings`,
-          isActive: segments.includes('settings'),
-          icon: <Settings width={18} />
-        }
-      ];
     }
+
     return [
       {
         name: 'Overview',
