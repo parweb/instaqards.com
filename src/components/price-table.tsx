@@ -1,10 +1,6 @@
-'use client';
+import { Price, Product, Subscription } from '@prisma/client';
 
-import { Product, Subscription, Price } from '@prisma/client';
-import { useState } from 'react';
-import { LuLoader } from 'react-icons/lu';
-
-import { getStripe, postData } from 'helpers';
+import { PriceTableButton } from 'components/price-table-button';
 import { cn } from 'lib/utils';
 
 export const PriceTable = ({
@@ -14,31 +10,6 @@ export const PriceTable = ({
   products: (Product & { prices: Price[] })[];
   subscription?: Subscription | null;
 }) => {
-  const [loading, setLoading] = useState(false);
-
-  const onClick = async ({
-    price,
-    quantity
-  }: {
-    price: Price;
-    quantity: number;
-  }) => {
-    try {
-      setLoading(true);
-
-      const { sessionId } = await postData({
-        url: '/api/create-checkout-session',
-        data: { price, quantity }
-      });
-
-      (await getStripe())?.redirectToCheckout({ sessionId });
-    } catch (error) {
-      setLoading(false);
-      alert((error as Error)?.message);
-    } finally {
-    }
-  };
-
   return (
     <div className="flex gap-5">
       {[...products]
@@ -99,24 +70,7 @@ export const PriceTable = ({
               </div>
             )}
 
-            {!subscription && (
-              <button
-                disabled={loading}
-                onClick={() =>
-                  onClick({
-                    price: product?.prices?.[0],
-                    quantity: product?.prices?.[0].interval_count!
-                  })
-                }
-                className={cn(
-                  'flex items-center justify-center',
-                  'bg-black rounded-md p-2 text-white uppercase',
-                  'transition-all hover:scale-105'
-                )}
-              >
-                {loading ? <LuLoader className="animate-spin" /> : 'buy'}
-              </button>
-            )}
+            {!subscription && <PriceTableButton price={product?.prices?.[0]} />}
           </div>
         ))}
     </div>

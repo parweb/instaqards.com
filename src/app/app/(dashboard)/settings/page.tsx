@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation';
 
 import Form from 'components/form';
-import { editUser } from 'lib/actions';
-import { getSession } from 'lib/auth';
-import { db } from 'helpers';
 import { PortalButton } from 'components/portal-button';
 import { PriceTable } from 'components/price-table';
+import { db } from 'helpers';
+import { editUser } from 'lib/actions';
+import { getSession, getSubscription } from 'lib/auth';
 
 export default async function SettingsPage() {
   const session = await getSession();
@@ -14,9 +14,7 @@ export default async function SettingsPage() {
     redirect('/login');
   }
 
-  const subscription = await db.subscription.findFirst({
-    where: { status: 'active', user: { id: session.user.id } }
-  });
+  const subscription = await getSubscription();
 
   console.log({ subscription });
 
@@ -50,15 +48,17 @@ export default async function SettingsPage() {
 
           <PriceTable products={products} subscription={subscription} />
 
-          <div className="flex flex-col items-center justify-center space-y-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 sm:flex-row sm:justify-between sm:space-y-0 sm:px-10">
-            <p className="text-sm text-stone-500 dark:text-stone-400">
-              Manage your subscription on Stripe.
-            </p>
+          {subscription !== null && (
+            <div className="flex flex-col items-center justify-center space-y-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 sm:flex-row sm:justify-between sm:space-y-0 sm:px-10">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
+                Manage your subscription on Stripe.
+              </p>
 
-            <PortalButton>
-              <p>Manage</p>
-            </PortalButton>
-          </div>
+              <PortalButton>
+                <p>Manage</p>
+              </PortalButton>
+            </div>
+          )}
         </div>
 
         <Form

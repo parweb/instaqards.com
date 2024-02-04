@@ -49,15 +49,13 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
           </video>
         )}
 
-        {!site?.background?.endsWith('.mp4') && (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
-              src={site?.background ?? ''}
-              alt="background"
-            />
-          </>
+        {!site?.background?.endsWith('.mp4') && !!site?.background && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
+            src={site.background}
+            alt="background"
+          />
         )}
 
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
