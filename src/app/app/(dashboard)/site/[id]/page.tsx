@@ -1,12 +1,13 @@
 import { Link, Site } from '@prisma/client';
-import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 import LinkItem from 'components/LinkItem';
 import CreateLinkButton from 'components/create-link-button';
 import CreateLinkModal from 'components/modal/create-link';
+import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateBackgroundSite from 'components/update-background-site';
+import UpdateSiteBackgroundButton from 'components/update-site-background-button';
 import { db } from 'helpers';
 import { getSession } from 'lib/auth';
 
@@ -58,11 +59,7 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
           />
         )}
 
-        <div className="absolute inset-0 bg-black/30 pointer-events-none" />
-
-        <div className="z-10 opacity-0 absolute inset-0 transition-all delay-1000 group-hover:opacity-100 flex items-center justify-center pointer-events-none text-5xl uppercase">
-          <UpdateBackgroundSite siteId={site.id} />
-        </div>
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       <section className="absolute inset-0 flex flex-col p-10 pointer-events-none">
@@ -88,6 +85,12 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
           </footer>
         </div>
       </section>
+
+      <div className="absolute left-0 right-0 flex items-center justify-center p-4">
+        <UpdateSiteBackgroundButton>
+          <UpdateSiteBackgroundModal siteId={site.id} />
+        </UpdateSiteBackgroundButton>
+      </div>
     </main>
   );
 };

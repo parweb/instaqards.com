@@ -23,11 +23,11 @@ const isPast = (date: Date | string) =>
 
 type Sub = SubscriptionPrisma & { price: Price & { product: Product } };
 
-class Subscription {
+export class Subscription {
   constructor(subscription: Sub | null) {
-    if (subscription === null) return;
-
     console.log({ subscription });
+
+    if (subscription === null) return;
 
     Object.entries(subscription).forEach(([key, value]) => {
       // @ts-ignore
@@ -156,7 +156,7 @@ type Option = {
 };
 
 export async function getSubscription(option?: Option) {
-  if (option?.site !== null) {
+  if (!!option?.site) {
     return new Subscription(
       await db.subscription.findFirst({
         include: { price: { include: { product: true } } },

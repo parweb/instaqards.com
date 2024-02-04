@@ -16,8 +16,6 @@ export default async function SettingsPage() {
 
   const subscription = await getSubscription();
 
-  console.log({ subscription });
-
   const products = await db.product.findMany({
     where: { active: { equals: true } },
     include: {
@@ -46,9 +44,10 @@ export default async function SettingsPage() {
             </p>
           </div>
 
+          {/* @ts-ignore */}
           <PriceTable products={products} subscription={subscription} />
 
-          {subscription !== null && (
+          {subscription.valid() && (
             <div className="flex flex-col items-center justify-center space-y-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 sm:flex-row sm:justify-between sm:space-y-0 sm:px-10">
               <p className="text-sm text-stone-500 dark:text-stone-400">
                 Manage your subscription on Stripe.
