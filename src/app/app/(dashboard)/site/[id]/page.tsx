@@ -6,7 +6,6 @@ import LinkItem from 'components/LinkItem';
 import CreateLinkButton from 'components/create-link-button';
 import CreateLinkModal from 'components/modal/create-link';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
-import UpdateBackgroundSite from 'components/update-background-site';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
 import { db } from 'helpers';
 import { getSession } from 'lib/auth';

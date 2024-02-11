@@ -1,4 +1,8 @@
-import { Price, Product } from '@prisma/client';
+import {
+  Price,
+  Product,
+  Subscription as SubscriptionPrisma
+} from '@prisma/client';
 
 import { PriceTableButton } from 'components/price-table-button';
 import { Subscription } from 'lib/auth';
@@ -9,7 +13,7 @@ export const PriceTable = ({
   subscription
 }: {
   products: (Product & { prices: Price[] })[];
-  subscription?: Subscription;
+  subscription?: Subscription & SubscriptionPrisma;
 }) => {
   return (
     <div className="flex gap-5">
@@ -23,15 +27,15 @@ export const PriceTable = ({
           <div
             key={`PriceTableItem-${product.id}`}
             className={cn(
-              'relative flex-1 flex flex-col gap-4 bg-white scale-90 z-0',
-              'border-4 border-black rounded-xl p-10',
+              'relative flex-1 flex flex-col gap-4 bg-white scale-90 z-1',
+              'border-4 border-black rounded-xl p-5 sm:p-10',
 
               // @ts-ignore
               product?.metadata?.feature === 'true' &&
                 !subscription?.valid() &&
-                'scale-110 -mx-7 z-5 bg-yellow-50',
+                'scale-110 -mx-7 z-10 bg-yellow-50',
               subscription?.priceId === product?.prices?.[0]?.id &&
-                'z-5 bg-green-100 border-4 border-green-500'
+                'z-10 bg-green-100 border-4 border-green-500'
             )}
           >
             <div className="flex flex-col gap-2">

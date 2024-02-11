@@ -73,8 +73,10 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
+  console.log({ hostname });
+
   if (
-    hostname === 'localhost:11000' ||
+    hostname.includes(':11000') ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
     return NextResponse.rewrite(

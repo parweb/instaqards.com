@@ -4,8 +4,10 @@ import { get } from 'helpers/storage';
 
 export async function GET(req: Request) {
   // @ts-ignore
-  const Range = req?.headers?.range ?? 'bytes=0-';
+  const Range = req?.headers?.get('range') ?? 'bytes=0-';
   const id = new URL(req?.url).searchParams.get('id');
+
+  console.log({ Range });
 
   try {
     const data = await get(id!, { Range });

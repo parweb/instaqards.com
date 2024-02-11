@@ -20,7 +20,7 @@ type Tuple = {
 export default function Analytics({
   chartdata
 }: {
-  chartdata: { date: string; Clicks: number }[];
+  chartdata: { date: string }[];
 }) {
   const links: Tuple[] = [
     // { name: '/platforms-starter-kit', value: 1230 },

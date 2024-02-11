@@ -91,8 +91,10 @@ export default async function SiteHomePage({
           </h2>
 
           <p className="text-gray-600 ">
-            We're sorry for the inconvenience, but this page is currently
-            unavailable. We're working to restore access as quickly as possible.
+            {"We're sorry for the inconvenience, but this page is currently "}
+            {
+              "unavailable. We're working to restore access as quickly as possible."
+            }
           </p>
 
           <div>

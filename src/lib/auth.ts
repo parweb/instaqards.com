@@ -49,24 +49,33 @@ export class Subscription {
   incomplete(): boolean {
     console.log('incomplete', {
       "this.status === SubscriptionStatus['incomplete']":
+        // @ts-ignore
         this.status === SubscriptionStatus['incomplete'],
+      // @ts-ignore
       'this.status': this.status
     });
+
+    // @ts-ignore
     return this.status === SubscriptionStatus['incomplete'];
   }
 
   pastDue(): boolean {
     console.log('pastDue', {
       "this.status === SubscriptionStatus['past_due']":
+        // @ts-ignore
         this.status === SubscriptionStatus['past_due'],
+      // @ts-ignore
       'this.status': this.status
     });
+
+    // @ts-ignore
     return this.status === SubscriptionStatus['past_due'];
   }
 
   active(): boolean {
     console.log('active', {
       'this.ended()': this.ended(),
+      // @ts-ignore
       'this.status': this.status,
 
       result:
@@ -78,6 +87,7 @@ export class Subscription {
           SubscriptionStatus['unpaid'],
           SubscriptionStatus['canceled'],
           SubscriptionStatus['paused']
+          // @ts-ignore
         ].includes(this.status as never)
     });
     return (
@@ -89,6 +99,7 @@ export class Subscription {
         SubscriptionStatus['unpaid'],
         SubscriptionStatus['canceled'],
         SubscriptionStatus['paused']
+        // @ts-ignore
       ].includes(this.status as never)
     );
   }
@@ -96,49 +107,69 @@ export class Subscription {
   hasTrial(): boolean {
     console.log('hasTrial', {
       '!(this.trial_end === this.trial_start)': !(
-        this.trial_end === this.trial_start
+        // @ts-ignore
+        (this.trial_end === this.trial_start)
       ),
+      // @ts-ignore
       'this.trial_start': this.trial_start,
+      // @ts-ignore
       'this.trial_end': this.trial_end
     });
+
+    // @ts-ignore
     return !(this.trial_end === this.trial_start);
   }
 
   onTrial(): boolean {
     console.log('onTrial', {
       'this.hasTrial() && this.trial_end && isFuture(this.trial_end)':
+        // @ts-ignore
         this.hasTrial() && this.trial_end && isFuture(this.trial_end),
       'this.hasTrial()': this.hasTrial(),
+      // @ts-ignore
       'this.trial_end': this.trial_end
     });
+
+    // @ts-ignore
     return this.hasTrial() && this.trial_end && isFuture(this.trial_end);
   }
 
   hasExpiredTrial(): boolean {
     console.log('onTrial', {
       'this.hasTrial() && this.trial_end && isPast(this.trial_end)':
+        // @ts-ignore
         this.hasTrial() && this.trial_end && isPast(this.trial_end),
       'this.hasTrial()': this.hasTrial(),
+      // @ts-ignore
       'this.trial_end': this.trial_end
     });
+
+    // @ts-ignore
     return this.hasTrial() && this.trial_end && isPast(this.trial_end);
   }
 
   onGracePeriod(): boolean {
     console.log('onGracePeriod', {
       'this.ended_at && isFuture(this.ended_at)':
+        // @ts-ignore
         this.ended_at && isFuture(this.ended_at),
+      // @ts-ignore
       'this.ended_at': this.ended_at
     });
 
+    // @ts-ignore
     return this.ended_at && isFuture(this.ended_at);
   }
 
   canceled(): boolean {
     console.log('canceled', {
+      // @ts-ignore
       '!(this.ended_at === null)': !(this.ended_at === null),
+      // @ts-ignore
       'this.ended_at': this.ended_at
     });
+
+    // @ts-ignore
     return !(this.ended_at === null);
   }
 

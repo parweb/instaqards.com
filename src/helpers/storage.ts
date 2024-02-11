@@ -25,8 +25,6 @@ export const put = async (
     ...options
   };
 
-  console.log({ params });
-
   try {
     if (value instanceof File) {
       const parallelUploads3 = new Upload({
@@ -43,13 +41,7 @@ export const put = async (
       await storage.putObject(params);
     }
 
-    return {
-      url:
-        (process.env.NEXTAUTH_URL?.includes('localhost')
-          ? `http://localhost${process.env.NEXTAUTH_URL.split('localhost').at(-1)}`
-          : `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) +
-        `/api/file?id=${key}`
-    };
+    return { url: `/api/file?id=${key}` };
   } catch (error) {
     console.error({ error });
     throw error;
@@ -62,8 +54,6 @@ export const get = (key: string, { ...options } = {}) => {
     Key: key,
     ...options
   };
-
-  console.log({ params });
 
   return storage.getObject(params);
 };

@@ -78,7 +78,7 @@ export default async function SiteAnalytics({
           >
             {process.env.NEXT_PUBLIC_VERCEL_ENV
               ? url
-              : `${site.subdomain}.localhost:11000`}
+              : `${site.subdomain}.localhost:11000`}{' '}
             ↗
           </a>
         </div>

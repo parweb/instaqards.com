@@ -38,6 +38,10 @@ model User {
   subscriptions         Subscription[]
   customer              Customer?
   twoFactorConfirmation TwoFactorConfirmation?
+
+  affiliates User[]  @relation("Affiliation")
+  referer    User?   @relation("Affiliation", fields: [refererId], references: [id])
+  refererId  String?
 }
 
 model TwoFactorConfirmation {

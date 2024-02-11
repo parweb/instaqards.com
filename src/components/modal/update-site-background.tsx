@@ -37,6 +37,7 @@ export default function UpdateSiteBackgroundModal({
   }, []);
 
   const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
+    // @ts-ignore
     useDropzone({ onDrop, multiple: false, accept: 'image/*,video/*' });
 
   return (
@@ -82,7 +83,7 @@ export default function UpdateSiteBackgroundModal({
               </>
             ) : (
               <>
-                <p>Drag 'n' drop some files here,</p>
+                <p>{"Drag 'n' drop some files here,"}</p>
                 <p>or click to select files</p>
               </>
             )}

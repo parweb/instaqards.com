@@ -1,7 +1,9 @@
 'use server';
 
 import bcrypt from 'bcryptjs';
+import { cookies } from 'next/headers';
 import * as z from 'zod';
+import { User } from '@prisma/client';
 
 import { getUserByEmail } from 'data/user';
 import { db } from 'helpers/db';
@@ -11,6 +13,7 @@ import { RegisterSchema } from 'schemas';
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);
+  const referer: User['id'] | null = cookies().get('r')?.value ?? null;
 
   if (!validatedFields.success) {
     return { error: 'Invalid fields!' };
@@ -29,7 +32,8 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     data: {
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      refererId: referer
     }
   });
 

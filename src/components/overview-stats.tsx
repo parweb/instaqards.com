@@ -1,9 +1,6 @@
 'use client';
 
-import { Card, Metric, Text, AreaChart, BadgeDelta, Flex } from '@tremor/react';
-import { useMemo } from 'react';
-
-import { random } from 'lib/utils';
+import { AreaChart, BadgeDelta, Card, Flex, Metric, Text } from '@tremor/react';
 
 export default function OverviewStats({
   chartdata,
