@@ -34,14 +34,30 @@ export default async function middleware(req: NextRequest) {
     }`;
   }
 
-  if (url.pathname.startsWith('/click/')) {
-    return NextResponse.rewrite(new URL(`/api${url.pathname}`, req.url));
-  }
-
   const searchParams = req.nextUrl.searchParams.toString();
   const path = `${url.pathname}${
     searchParams.length > 0 ? `?${searchParams}` : ''
   }`;
+
+  if (url.searchParams.has('r')) {
+    const referer = url.searchParams.get('r');
+
+    const destination = url.clone();
+
+    destination.searchParams.delete('r');
+
+    return new Response(null, {
+      status: 301,
+      headers: {
+        Location: new URL('', destination.toString()).toString(),
+        'Set-Cookie': `r=${encodeURIComponent(referer!)}; Path=/; HttpOnly; SameSite=Strict`
+      }
+    });
+  }
+
+  if (url.pathname.startsWith('/click/')) {
+    return NextResponse.rewrite(new URL(`/api${url.pathname}`, req.url));
+  }
 
   if (hostname == `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) {
     const session = await auth();

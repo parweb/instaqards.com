@@ -5,7 +5,7 @@
 - [x] postgresql (ovh)
 - [x] object storage (ovh)
 - [ ] onboarding (user -> price table -> new site)
-- [ ] free trial (stripe or custom)
-- [ ] block dashboard if not pay
+- [x] free trial (stripe or custom)
+- [x] block dashboard if not pay
 - [x] analytics dashboard home
 - [x] custom domain

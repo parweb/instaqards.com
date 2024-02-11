@@ -9,7 +9,7 @@ module.exports = {
   },
   images: {
     remotePatterns: [
-      { hostname: 'instaqards.com' },
+      { hostname: 'qards.link' },
       { hostname: '*.vercel-storage.com' },
       { hostname: 'public.blob.vercel-storage.com' },
       { hostname: 'res.cloudinary.com' },

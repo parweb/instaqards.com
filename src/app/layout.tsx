@@ -6,7 +6,7 @@ import { cal, inter } from 'styles/fonts';
 import 'styles/globals.css';
 import { Providers } from './providers';
 
-const title = 'Reveal your self right now with instaqards.com';
+const title = 'Reveal your self right now with qards.link';
 const description = 'bla bla bla';
 const image = 'https://vercel.pub/thumbnail.png';
 
