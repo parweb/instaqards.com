@@ -9,7 +9,6 @@ import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
-import { updateSite } from 'lib/actions';
 import { cn } from 'lib/utils';
 import { useModal } from './provider';
 
@@ -42,23 +41,34 @@ export default function UpdateSiteBackgroundModal({
 
   return (
     <form
-      action={async () => {
-        const formData = new FormData();
+      onSubmit={async e => {
+        e.preventDefault();
 
         if (acceptedFiles[0]) {
-          formData.append('background', acceptedFiles[0]);
-        }
+          console.log({ acceptedFiles: acceptedFiles[0] });
 
-        const res = await updateSite(formData, siteId, 'background');
+          try {
+            const { url } = await fetch('/api/upload', {
+              method: 'POST',
+              body: JSON.stringify({ filename: acceptedFiles[0].name })
+            }).then(res => res.json());
 
-        if (res.error) {
-          toast.error(res.error);
-        } else {
-          va.track('Update site', { id: siteId });
+            await fetch(url, {
+              method: 'PUT',
+              body: acceptedFiles[0],
+              headers: {
+                'Content-Type': acceptedFiles[0].type
+              }
+            });
 
-          router.refresh();
-          modal?.hide();
-          toast.success(`Site updated!`);
+            va.track('Update site', { id: siteId });
+
+            router.refresh();
+            modal?.hide();
+            toast.success(`Site updated!`);
+          } catch (error: unknown) {
+            toast.error(error.message);
+          }
         }
       }}
       className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow dark:md:border-stone-700"
