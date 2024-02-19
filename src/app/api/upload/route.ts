@@ -1,31 +1,10 @@
-// import { nanoid } from 'nanoid';
-// import { NextResponse } from 'next/server';
-
-// import { put } from 'helpers/storage';
-
-// export async function POST(req: Request) {
-//   const file = req.body || '';
-//   const contentType = req.headers.get('content-type') || 'text/plain';
-//   const filename = `${nanoid()}.${contentType.split('/')[1]}`;
-//   const blob = await put(filename, file, {
-//     contentType
-//   });
-
-//   return NextResponse.json(blob);
-// }
-
-import * as AWS from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { storage } from 'helpers/storage';
 import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
 
-const createPresignedUrlWithClient = Key =>
-  getSignedUrl(
-    storage,
-    new AWS.GetObjectCommand({ Bucket: 'instaqards.com', Key }),
-    { expiresIn: 3600 }
-  );
+import { db } from 'helpers';
+import { storage } from 'helpers/storage';
 
 const extension = (name: string) => name.split('.').at(-1)?.toLowerCase();
 
@@ -39,9 +18,25 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     console.log({ filename });
 
-    const url = await createPresignedUrlWithClient(filename);
+    const url = await getSignedUrl(
+      storage,
+      new PutObjectCommand({
+        Bucket: 'instaqards.com',
+        Key: filename
+      }),
+      {
+        expiresIn: 3600
+      }
+    );
 
-    return NextResponse.json({ url });
+    await db.site.update({
+      where: { id: body.siteId },
+      data: {
+        background: `/api/file?id=${filename}`
+      }
+    });
+
+    return NextResponse.json({ url, filename });
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },

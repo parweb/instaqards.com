@@ -7,6 +7,7 @@ import { useCallback, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
+import { upload } from '@vercel/blob/client';
 
 import LoadingDots from 'components/icons/loading-dots';
 import { cn } from 'lib/utils';
@@ -48,17 +49,14 @@ export default function UpdateSiteBackgroundModal({
           console.log({ acceptedFiles: acceptedFiles[0] });
 
           try {
-            const { url } = await fetch('/api/upload', {
+            const { url, filename } = await fetch('/api/upload', {
               method: 'POST',
-              body: JSON.stringify({ filename: acceptedFiles[0].name })
+              body: JSON.stringify({ filename: acceptedFiles[0].name, siteId })
             }).then(res => res.json());
 
             await fetch(url, {
               method: 'PUT',
-              body: acceptedFiles[0],
-              headers: {
-                'Content-Type': acceptedFiles[0].type
-              }
+              body: acceptedFiles[0]
             });
 
             va.track('Update site', { id: siteId });
