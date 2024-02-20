@@ -18,6 +18,7 @@ export default function UpdateSiteBackgroundModal({
 }: {
   siteId: Site['id'];
 }) {
+  const [pending, setPending] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
   const [mediaType, setMediaType] = useState<'video' | 'image' | null>(null);
 
@@ -25,12 +26,15 @@ export default function UpdateSiteBackgroundModal({
   const modal = useModal();
 
   const onDrop = useCallback((acceptedFiles: Array<File>) => {
+    setPending(true);
+
     const file = new FileReader();
 
     file.onloadend = function () {
       // @ts-ignore
       setMediaType(acceptedFiles[0].type.split('/').at(0));
       setPreview(file.result);
+      setPending(false);
     };
 
     file.readAsDataURL(acceptedFiles[0]);
@@ -46,6 +50,7 @@ export default function UpdateSiteBackgroundModal({
         e.preventDefault();
 
         if (acceptedFiles[0]) {
+          setPending(true);
           console.log({ acceptedFiles: acceptedFiles[0] });
 
           try {
@@ -67,6 +72,8 @@ export default function UpdateSiteBackgroundModal({
           } catch (error: unknown) {
             // @ts-ignore
             toast.error(error.message);
+          } finally {
+            setPending(false);
           }
         }
       }}
@@ -120,14 +127,14 @@ export default function UpdateSiteBackgroundModal({
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
-        <UpdateSiteBackgroundFormButton />
+        <UpdateSiteBackgroundFormButton pending={pending} />
       </div>
     </form>
   );
 }
 
-function UpdateSiteBackgroundFormButton() {
-  const { pending } = useFormStatus();
+function UpdateSiteBackgroundFormButton({ pending = false }) {
+  // const { pending } = useFormStatus();
 
   return (
     <button
