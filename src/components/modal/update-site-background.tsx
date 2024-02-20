@@ -65,6 +65,7 @@ export default function UpdateSiteBackgroundModal({
             modal?.hide();
             toast.success(`Site updated!`);
           } catch (error: unknown) {
+            // @ts-ignore
             toast.error(error.message);
           }
         }
