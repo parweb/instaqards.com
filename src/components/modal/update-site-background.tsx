@@ -4,10 +4,8 @@ import { Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
-import { useFormStatus } from 'react-dom';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
-import { upload } from '@vercel/blob/client';
 
 import LoadingDots from 'components/icons/loading-dots';
 import { cn } from 'lib/utils';
