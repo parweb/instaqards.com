@@ -175,11 +175,11 @@ export default async function SiteHomePage({
 
             <div className="text-center">
               <a
-                href="https://www.igfilms.fr/"
+                href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/?r=${site.user?.id}`}
                 className="text-white"
                 target="_blank"
               >
-                powered by NotoriousMe
+                create your own qards
               </a>
             </div>
           </footer>
