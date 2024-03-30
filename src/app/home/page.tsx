@@ -1,8 +1,11 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Suspense } from 'react';
 
 import { PriceTable } from 'components/price-table';
+import { Button } from 'components/ui/button';
 import { db } from 'helpers';
+import { cn } from 'lib/utils';
 
 import {
   Carousel,
@@ -70,6 +73,9 @@ const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
 };
 
 const Hero = ({ bg = '06' }) => {
+  const gradient =
+    'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text';
+
   return (
     <div
       id="Hero"
@@ -92,47 +98,59 @@ const Hero = ({ bg = '06' }) => {
       <div className="z-10">
         <div className="flex gap-10 max-w-[900px] items-center flex-col md:flex-row">
           <div className="flex items-center justify-center">
-            <div className="flex flex-col gap-5 bg-white/90 p-4 rounded-md shadow-[0_20px_1000px_-10px_#000]">
-              <div className="text-5xl sm:text-7xl font-[900] b">
+            <div className="flex flex-col gap-5 text-white p-4 rounded-md">
+              <div className={cn('text-5xl sm:text-7xl font-[900] b')}>
                 Your website, reimagined
               </div>
-              <div className="text-gray-600 text-2xl">
+
+              <div className="text-2xl">
                 Our landing page template works on all devices, so you only have
                 to set it up once, and get beautiful results forever.
               </div>
 
-              <ul className="text-gray-600">
+              <ul className="">
                 <li className="flex gap-2">
                   <svg
-                    className="text-teal-400 fill-current shrink-0 w-3"
+                    className="fill-current shrink-0 w-3"
                     viewBox="0 0 12 12"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                   </svg>
-                  <span>bla bla</span>
+
+                  <span>Zero Hassle, Infinite Customization</span>
                 </li>
+
                 <li className="flex gap-2">
                   <svg
-                    className="text-teal-400 fill-current shrink-0 w-3"
+                    className="fill-current shrink-0 w-3"
                     viewBox="0 0 12 12"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                   </svg>
-                  <span>bla bla</span>
+
+                  <span>Unmatched Speed</span>
                 </li>
+
                 <li className="flex gap-2">
                   <svg
-                    className="text-teal-400 fill-current shrink-0 w-3"
+                    className="fill-current shrink-0 w-3"
                     viewBox="0 0 12 12"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                   </svg>
-                  <span>bla bla</span>
+
+                  <span>Almost like magic</span>
                 </li>
               </ul>
+
+              <div>
+                <Link href={(process.env.NEXTAUTH_URL as string) + '/register'}>
+                  <Button>Start now, be unforgettable in an instant</Button>
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -347,10 +365,9 @@ export default async function HomePage({
   return (
     <div className="">
       <Hero bg={searchParams?.bg as string} />
-
       <Gallery />
 
-      <Features />
+      {/*<Features />*/}
 
       <Suspense fallback={null}>
         <Prices />
