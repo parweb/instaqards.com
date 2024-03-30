@@ -1,36 +1,39 @@
 import { Site } from '@prisma/client';
-import { BarChart } from 'lucide-react';
 import Link from 'next/link';
 import { LuCog } from 'react-icons/lu';
 
-import { random } from 'lib/utils';
+import DeleteButton from './DeleteButton';
 
 export default function SiteCard({ data }: { data: Site }) {
   const url = `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
   return (
     <div className="group relative rounded-lg border border-stone-200 pb-10 shadow-md transition-all hover:shadow-xl dark:border-stone-700 dark:hover:border-white">
-      <Link
-        href={`/site/${data.id}`}
-        className="flex flex-col overflow-hidden rounded-lg"
-      >
+      <div className="flex flex-col overflow-hidden rounded-lg">
         <div className="border-t border-stone-200 p-4 dark:border-stone-700">
           <div className="flex items-center justify-between">
-            <h3 className="my-0 truncate font-cal text-xl font-bold tracking-wide dark:text-white">
-              {data.name}
-            </h3>
-            <Link
-              href={`/site/${data.id}/settings`}
-              className="transition-all opacity-0 group-hover:opacity-100"
-            >
-              <LuCog />
+            <Link className="flex-1" href={`/site/${data.id}`}>
+              <h3 className="my-0 truncate font-cal text-xl font-bold tracking-wide dark:text-white">
+                {data.name}
+              </h3>
             </Link>
+
+            <div className="transition-all opacity-0 group-hover:opacity-100 flex items-center gap-2">
+              <Link href={`/site/${data.id}/settings`} className="">
+                <LuCog />
+              </Link>
+
+              <DeleteButton siteId={data.id} />
+            </div>
           </div>
-          <p className="mt-2 line-clamp-1 text-sm font-normal leading-snug text-stone-500 dark:text-stone-400">
-            {data.description}
-          </p>
+
+          <Link href={`/site/${data.id}`}>
+            <p className="mt-2 line-clamp-1 text-sm font-normal leading-snug text-stone-500 dark:text-stone-400">
+              {data.description}
+            </p>
+          </Link>
         </div>
-      </Link>
+      </div>
       <div className="absolute bottom-4 flex w-full justify-between space-x-4 px-4">
         <a
           href={
@@ -44,13 +47,14 @@ export default function SiteCard({ data }: { data: Site }) {
         >
           {url} ↗
         </a>
-        <Link
+
+        {/*<Link
           href={`/site/${data.id}/analytics`}
           className="flex items-center rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400 dark:hover:bg-green-800 dark:hover:bg-opacity-50"
         >
           <BarChart height={16} />
           <p>{random(10, 40)}%</p>
-        </Link>
+        </Link>*/}
       </div>
     </div>
   );
