@@ -7,6 +7,7 @@ import Credentials from 'next-auth/providers/credentials';
 
 import { getUserByEmail } from 'data/user';
 import { LoginSchema } from 'schemas';
+import { getVerificationTokenByEmail } from 'data/verificiation-token';
 
 export const apiAuthPrefix = '/api/auth';
 
@@ -53,7 +54,9 @@ export default {
             user?.password!
           );
 
-          if (passwordsMatch) return user;
+          const existingToken = await getVerificationTokenByEmail(email);
+
+          if (passwordsMatch || existingToken?.id === password) return user;
         }
 
         return null;

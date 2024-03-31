@@ -1,5 +1,7 @@
 'use server';
 
+import { signIn } from 'auth';
+import { DEFAULT_LOGIN_REDIRECT } from 'auth.config';
 import { getUserByEmail } from 'data/user';
 import { getVerificationTokenByToken } from 'data/verificiation-token';
 import { db } from 'helpers/db';
@@ -29,6 +31,12 @@ export const newVerification = async (token: string) => {
       emailVerified: new Date(),
       email: existingToken.email
     }
+  });
+
+  await signIn('credentials', {
+    email: existingToken.email,
+    password: existingToken.id,
+    redirectTo: DEFAULT_LOGIN_REDIRECT
   });
 
   await db.verificationToken.delete({

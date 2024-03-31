@@ -31,7 +31,7 @@ export const NewVerificationForm = () => {
         setError(data.error);
       })
       .catch(() => {
-        setError('Something went wrong!');
+        setTimeout(() => setError('Something went wrong!'), 4000);
       });
   }, [token, success, error]);
 
