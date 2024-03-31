@@ -55,6 +55,7 @@ export default async function Overview() {
         <h1 className="font-cal text-3xl font-bold dark:text-white">
           Overview
         </h1>
+
         <OverviewStats chartdata={chartdata} total={clicks.length} />
       </div>
 
