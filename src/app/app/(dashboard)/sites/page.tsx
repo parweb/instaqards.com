@@ -6,6 +6,7 @@ import PlaceholderCard from 'components/placeholder-card';
 import Sites from 'components/sites';
 
 export default function AllSites({ params }: { params: { id: string } }) {
+  console.log({ 'params.id': params.id });
   return (
     <div className="flex flex-col space-y-12 p-8">
       <div className="flex flex-col space-y-6">
@@ -28,8 +29,7 @@ export default function AllSites({ params }: { params: { id: string } }) {
             </div>
           }
         >
-          {/* @ts-expect-error Server Component */}
-          <Sites siteId={decodeURIComponent(params.id)} />
+          <Sites />
         </Suspense>
       </div>
     </div>
