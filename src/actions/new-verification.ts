@@ -39,9 +39,5 @@ export const newVerification = async (token: string) => {
     redirectTo: DEFAULT_LOGIN_REDIRECT
   });
 
-  await db.verificationToken.delete({
-    where: { id: existingToken.id }
-  });
-
   return { success: 'Email verified!' };
 };
