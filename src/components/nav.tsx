@@ -9,6 +9,7 @@ import {
   BarChart3,
   DollarSign,
   Globe,
+  HelpCircle,
   LayoutDashboard,
   Menu,
   Newspaper,
@@ -76,6 +77,12 @@ export default function Nav({ children }: { children: ReactNode }) {
   }, [segments, id]);
 
   const tabs = useMemo(() => {
+    const help = {
+      name: 'Help',
+      href: '/help',
+      icon: <HelpCircle width={18} />
+    };
+
     if (segments[0] === 'site' && id) {
       return [
         {
@@ -100,7 +107,8 @@ export default function Nav({ children }: { children: ReactNode }) {
           href: `/site/${id}/settings`,
           isActive: segments.includes('settings'),
           icon: <Settings width={18} />
-        }
+        },
+        help
       ];
     }
 
@@ -128,7 +136,8 @@ export default function Nav({ children }: { children: ReactNode }) {
         href: '/settings',
         isActive: segments[0] === 'settings',
         icon: <Settings width={18} />
-      }
+      },
+      help
     ];
   }, [segments, id]);
 

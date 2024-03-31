@@ -179,7 +179,7 @@ export default async function SiteHomePage({
                 className="text-white"
                 target="_blank"
               >
-                create your own qards
+                Get your Qards 🃏
               </a>
             </div>
           </footer>
