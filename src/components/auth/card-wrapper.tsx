@@ -49,7 +49,14 @@ export const CardWrapper = ({
 
       <CardFooter className="flex flex-col gap-4">
         <BackButton label={backButtonLabel} href={backButtonHref} />
-        <BackButton label="back to home" href={'/'} />
+
+        <BackButton
+          label="back to home"
+          href={(process.env.NEXT_PUBLIC_SITE_URL as string).replace(
+            'app.',
+            ''
+          )}
+        />
       </CardFooter>
     </Card>
   );
