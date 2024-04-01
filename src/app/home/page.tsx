@@ -175,7 +175,7 @@ const Hero = ({ bg = '06' }) => {
             </div>
           </div>
 
-          <div className="">
+          <div className="hidden md:block">
             <Iphone url="https://gellyx.qards.link/" scale={20} />
           </div>
         </div>
