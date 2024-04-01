@@ -7,13 +7,13 @@ import 'styles/globals.css';
 import { Providers } from './providers';
 
 const title = 'Reveal your self right now with qards.link';
-const description = 'bla bla bla';
-const image = 'https://vercel.pub/thumbnail.png';
+const description = 'unforgettable in an instant';
+const image = 'https://qards.link/thumbnail-og.png';
 
 export const metadata: Metadata = {
   title,
   description,
-  icons: ['https://vercel.pub/favicon.ico'],
+  icons: ['https://qards.link/favicon.ico'],
   openGraph: {
     title,
     description,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     images: [image],
     creator: '@vercel'
   },
-  metadataBase: new URL('https://vercel.pub')
+  metadataBase: new URL('https://qards.link')
 };
 
 export default function RootLayout({

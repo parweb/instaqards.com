@@ -10,7 +10,7 @@ export default async function Sitemap() {
       ?.replace(
         '.localhost:11000',
         `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
-      ) ?? 'vercel.pub';
+      ) ?? 'qards.link';
 
   const posts = await getPostsForSite(domain);
 
