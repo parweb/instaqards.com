@@ -150,6 +150,8 @@ export default function Nav({ children }: { children: ReactNode }) {
     setShowSidebar(false);
   }, [pathname]);
 
+  const ratio = 0.2;
+
   return (
     <>
       <button
@@ -175,14 +177,11 @@ export default function Nav({ children }: { children: ReactNode }) {
               className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center gap-3 uppercase"
             >
               <Image
-                src="/logo.png"
-                width={24}
-                height={24}
-                alt="Logo"
-                className="dark:scale-110 dark:rounded-full dark:border dark:border-stone-400"
+                src={`/rsz_black-transparent_nolink.png`}
+                alt="Logo qards.link"
+                width={800 * ratio}
+                height={400 * ratio}
               />
-
-              <span>qards</span>
             </Link>
           </div>
           <div className="grid gap-1">
