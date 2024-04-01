@@ -72,6 +72,27 @@ const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   );
 };
 
+const Header = () => {
+  const ratio = 0.2;
+
+  return (
+    <div className="sticky top-0 bg-white/80 z-10">
+      <div className="flex items-center justify-between pr-2 max-w-[1200px] m-auto">
+        <Image
+          src={`/rsz_black-transparent_nolink.png`}
+          alt="Logo qards.link"
+          width={800 * ratio}
+          height={400 * ratio}
+        />
+
+        <Link href={(process.env.NEXTAUTH_URL as string) + '/register'}>
+          <Button>Register</Button>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
 const Hero = ({ bg = '06' }) => {
   const gradient =
     'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text';
@@ -364,7 +385,10 @@ export default async function HomePage({
 }) {
   return (
     <div className="">
+      <Header />
+
       <Hero bg={searchParams?.bg as string} />
+
       <Gallery />
 
       {/*<Features />*/}
