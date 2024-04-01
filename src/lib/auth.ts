@@ -3,7 +3,8 @@ import {
   Product,
   Site,
   Subscription as SubscriptionPrisma,
-  SubscriptionStatus
+  SubscriptionStatus,
+  UserRole
 } from '@prisma/client';
 
 import { auth } from 'auth';
@@ -231,21 +232,19 @@ export function withSiteAuth(action: any) {
     const session = await getSession();
 
     if (!session || !session?.user) {
-      return {
-        error: 'Not authenticated'
-      };
+      return { error: 'Not authenticated' };
     }
 
     const site = await db.site.findUnique({
-      where: {
-        id: siteId
-      }
+      where: { id: siteId }
     });
 
-    if (!site || site.userId !== session.user.id) {
-      return {
-        error: 'Not authorized'
-      };
+    if (
+      !site ||
+      (site.userId !== session?.user?.id &&
+        session.user.role !== UserRole.ADMIN)
+    ) {
+      return { error: 'Not authorized' };
     }
 
     return action(formData, site, key);
@@ -261,24 +260,16 @@ export function withPostAuth(action: any) {
     const session = await getSession();
 
     if (!session?.user?.id) {
-      return {
-        error: 'Not authenticated'
-      };
+      return { error: 'Not authenticated' };
     }
 
     const post = await db.post.findUnique({
-      where: {
-        id: postId
-      },
-      include: {
-        site: true
-      }
+      where: { id: postId },
+      include: { site: true }
     });
 
     if (!post || post.userId !== session.user.id) {
-      return {
-        error: 'Post not found'
-      };
+      return { error: 'Post not found' };
     }
 
     return action(formData, post, key);

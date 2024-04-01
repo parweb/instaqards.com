@@ -1,11 +1,18 @@
+import { User } from '@prisma/client';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
-import { getSession } from 'lib/auth';
 import { db } from 'helpers';
-import SiteCard from './site-card';
+import { getSession } from 'lib/auth';
+import SiteCard from 'components/site-card';
 
-export default async function Sites({ limit }: { limit?: number }) {
+export default async function Sites({
+  limit,
+  userId = null
+}: {
+  limit?: number;
+  userId?: User['id'] | null;
+}) {
   const session = await getSession();
 
   if (!session || !session?.user) {
@@ -15,7 +22,7 @@ export default async function Sites({ limit }: { limit?: number }) {
   const sites = await db.site.findMany({
     where: {
       user: {
-        id: session.user.id!
+        id: userId || session.user.id!
       }
     },
     orderBy: {

@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { eachMinuteOfInterval } from 'date-fns';
 import { notFound, redirect } from 'next/navigation';
 
@@ -24,7 +25,10 @@ export default async function SiteAnalytics({
     }
   });
 
-  if (!site || site.userId !== session.user.id) {
+  if (
+    !site ||
+    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
+  ) {
     notFound();
   }
 

@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { notFound, redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
@@ -24,7 +25,10 @@ export default async function SiteAnalyticsLayout({
     }
   });
 
-  if (!site || site.userId !== session?.user?.id) {
+  if (
+    !site ||
+    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
+  ) {
     notFound();
   }
 

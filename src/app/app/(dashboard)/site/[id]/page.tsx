@@ -1,4 +1,4 @@
-import { Link, Site } from '@prisma/client';
+import { Link, Site, UserRole } from '@prisma/client';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -112,7 +112,10 @@ export default async function SitePosts({
     }
   });
 
-  if (!site || site.userId !== session?.user?.id) {
+  if (
+    !site ||
+    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
+  ) {
     notFound();
   }
 
