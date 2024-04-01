@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import { BackButton } from 'components/auth/back-button';
 import { Header } from 'components/auth/header';
 import { Social } from 'components/auth/social';
@@ -20,9 +22,20 @@ export const CardWrapper = ({
   backButtonHref,
   showSocial
 }: CardWrapperProps) => {
+  const ratio = 0.3333;
+
   return (
     <Card className="max-w-[500px] border-none shadow-none">
       <CardHeader>
+        <div className="block lg:hidden flex items-center justify-center">
+          <Image
+            src={`/rsz_black-transparent_withlink.png`}
+            alt="Logo qards.link"
+            width={800 * ratio}
+            height={400 * ratio}
+          />
+        </div>
+
         <Header label={headerLabel} />
       </CardHeader>
 
@@ -34,8 +47,9 @@ export const CardWrapper = ({
         </CardFooter>
       )}
 
-      <CardFooter>
+      <CardFooter className="flex flex-col gap-4">
         <BackButton label={backButtonLabel} href={backButtonHref} />
+        <BackButton label="back to home" href={'/'} />
       </CardFooter>
     </Card>
   );
