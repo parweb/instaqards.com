@@ -13,7 +13,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     from: 'contact@qards.link',
     to: email,
     subject: '2FA Code',
-    react: <TwoFactorTokenEmail token={token} />
+    react: <TwoFactorTokenEmail lang="en" token={token} />
   });
 };
 
@@ -24,7 +24,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     from: 'contact@qards.link',
     to: email,
     subject: 'Reset your password',
-    react: <ResetPasswordEmail resetLink={resetLink} />
+    react: <ResetPasswordEmail lang="en" resetLink={resetLink} />
   });
 };
 
@@ -35,6 +35,6 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     from: 'contact@qards.link',
     to: email,
     subject: 'Confirm your email',
-    react: <ConfirmAccountEmail confirmLink={confirmLink} />
+    react: <ConfirmAccountEmail lang="en" confirmLink={confirmLink} />
   });
 };

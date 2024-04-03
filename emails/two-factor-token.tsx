@@ -11,26 +11,44 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
+const translations = {
+  en: {
+    preview_text: '2FA Code',
+    title: 'Login',
+    activation_text: 'Here is your account activation code:',
+    message_not_my_action:
+      "If you didn't try to login, you can safely ignore this email."
+  },
+  fr: {
+    preview_text: '2FA Code',
+    title: 'Login',
+    activation_text: "Voici votre code d'activation:",
+    message_not_my_action:
+      "Si vous n'avez pas tenté de vous connecter, vous pouvez ignorer cet e-mail en toute sécurité."
+  }
+};
+
 interface TwoFactorTokenProps {
   token?: string;
+  lang: keyof typeof translations;
 }
 
 const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const TwoFactorToken = ({ token }: TwoFactorTokenProps) => (
+export const TwoFactorToken = ({ token, lang }: TwoFactorTokenProps) => (
   <Html>
     <Head />
 
-    <Preview>2FA Code</Preview>
+    <Preview>{translations[lang].preview_text}</Preview>
 
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Login</Heading>
+        <Heading style={h1}>{translations[lang].title}</Heading>
 
         <Text style={{ ...text, marginBottom: '14px' }}>
-          Here is your account activation code:
+          {translations[lang].activation_text}
         </Text>
 
         <code style={code}>{token}</code>
@@ -43,7 +61,7 @@ export const TwoFactorToken = ({ token }: TwoFactorTokenProps) => (
             marginBottom: '16px'
           }}
         >
-          If you didn&apos;t try to login, you can safely ignore this email.
+          {translations[lang].message_not_my_action}
         </Text>
 
         <Img

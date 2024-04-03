@@ -11,23 +11,39 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
+const translations = {
+  en: {
+    title: 'Reset your password',
+    reset_text: 'Click here to reset your password',
+    message_not_my_action:
+      "If you didn't try to reset your password, you can safely ignore this email."
+  },
+  fr: {
+    title: 'Changez votre mot de passe',
+    reset_text: 'Clickez ici pour changez votre email',
+    message_not_my_action:
+      "Si vous n'avez pas tenté de réinitialiser votre mot de passe, vous pouvez ignorer cet e-mail en toute sécurité."
+  }
+};
+
 interface ResetPasswordProps {
   resetLink?: string;
+  lang: keyof typeof translations;
 }
 
 const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const ResetPassword = ({ resetLink }: ResetPasswordProps) => (
+export const ResetPassword = ({ resetLink, lang }: ResetPasswordProps) => (
   <Html>
     <Head />
 
-    <Preview>Reset your password</Preview>
+    <Preview>{translations[lang].title}</Preview>
 
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Reset your password</Heading>
+        <Heading style={h1}>{translations[lang].title}</Heading>
 
         <Link
           href={resetLink}
@@ -38,7 +54,7 @@ export const ResetPassword = ({ resetLink }: ResetPasswordProps) => (
             marginBottom: '16px'
           }}
         >
-          Click here to reset your password
+          {translations[lang].reset_text}
         </Link>
 
         <Text
@@ -49,8 +65,7 @@ export const ResetPassword = ({ resetLink }: ResetPasswordProps) => (
             marginBottom: '16px'
           }}
         >
-          If you didn&apos;t try to reset your password, you can safely ignore
-          this email.
+          {translations[lang].message_not_my_action}
         </Text>
 
         <Img
