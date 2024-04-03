@@ -11,23 +11,39 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
+const translations = {
+  en: {
+    title: 'Confirm your email',
+    confirm_text: 'Click here to confirm your email',
+    message_not_my_action:
+      "If you didn't try to create an account, you can safely ignore this email."
+  },
+  fr: {
+    title: 'Confirmez votre email',
+    confirm_text: 'Clickez ici pour confirmer votre email',
+    message_not_my_action:
+      "Si vous n'avez pas tenté de créer un compte, vous pouvez ignorer cet email en toute sécurité."
+  }
+};
+
 interface ConfirmAccountProps {
   confirmLink?: string;
+  lang: keyof typeof translations;
 }
 
 const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const ConfirmAccount = ({ confirmLink }: ConfirmAccountProps) => (
+export const ConfirmAccount = ({ confirmLink, lang }: ConfirmAccountProps) => (
   <Html>
     <Head />
 
-    <Preview>Confirm your email</Preview>
+    <Preview>{translations[lang].title}</Preview>
 
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Confirm your email</Heading>
+        <Heading style={h1}>{translations[lang].title}</Heading>
 
         <Link
           href={confirmLink}
@@ -38,7 +54,7 @@ export const ConfirmAccount = ({ confirmLink }: ConfirmAccountProps) => (
             marginBottom: '16px'
           }}
         >
-          Click here to confirm your email
+          {translations[lang].confirm_text}
         </Link>
 
         <Text
@@ -49,8 +65,7 @@ export const ConfirmAccount = ({ confirmLink }: ConfirmAccountProps) => (
             marginBottom: '16px'
           }}
         >
-          If you didn&apos;t try to create an account, you can safely ignore
-          this email.
+          {translations[lang].message_not_my_action}
         </Text>
 
         <Img
@@ -124,14 +139,4 @@ const footer = {
   lineHeight: '22px',
   marginTop: '12px',
   marginBottom: '24px'
-};
-
-const code = {
-  display: 'inline-block',
-  padding: '16px 4.5%',
-  width: '90.5%',
-  backgroundColor: '#f4f4f4',
-  borderRadius: '5px',
-  border: '1px solid #eee',
-  color: '#333'
 };
