@@ -185,22 +185,28 @@ const Hero = ({ bg = '06' }) => {
 };
 
 const Gallery = () => {
+  const qards = [
+    { url: 'https://nora-peintures.qards.link/' },
+    { url: 'https://chloe-jnr.qards.link/' },
+    { url: 'https://by-ayya.qards.link/' }
+  ];
+
   return (
     <div id="Gallery" className="flex flex-col p-10 gap-10">
       <hgroup className="text-center flex flex-col gap-4">
         <h2 className="text-5xl font-[900]">{"See What's Possible"}</h2>
-        <p className="text-gray-600 text-2xl">sky is the limit</p>
+        <p className="text-gray-600 text-2xl">Discover some user Qards</p>
       </hgroup>
 
       <div className="p-5">
         <Carousel opts={{ align: 'start', loop: true }} className="">
           <CarouselContent>
-            {Array.from({ length: 4 }).map((_, index) => (
+            {qards.map((qard, index) => (
               <CarouselItem
                 key={index}
                 className="md:basis-1/2 lg:basis-1/3 justify-center flex"
               >
-                <Iphone url="https://gellyx.qards.link/" scale={25} />
+                <Iphone url={qard.url} scale={25} />
               </CarouselItem>
             ))}
           </CarouselContent>
