@@ -10,6 +10,7 @@ import { db } from 'helpers';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
+import { UserRole } from '@prisma/client';
 
 export default async function Overview() {
   const session = await getSession();
@@ -18,15 +19,20 @@ export default async function Overview() {
     redirect('/login');
   }
 
-  const clicks = await db.click.findMany({
-    where: {
-      OR: [
-        { site: { user: { id: session.user.id } } },
-        { link: { site: { user: { id: session.user.id } } } }
-      ]
-    },
-    orderBy: { createdAt: 'asc' }
-  });
+  const clicks =
+    session.user.role === UserRole.ADMIN
+      ? await db.click.findMany({
+          orderBy: { createdAt: 'asc' }
+        })
+      : await db.click.findMany({
+          where: {
+            OR: [
+              { site: { user: { id: session.user.id } } },
+              { link: { site: { user: { id: session.user.id } } } }
+            ]
+          },
+          orderBy: { createdAt: 'asc' }
+        });
 
   const splitByDate = clicks.groupBy(({ createdAt }) =>
     createdAt.toDateString()
