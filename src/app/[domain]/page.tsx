@@ -59,9 +59,7 @@ export async function generateStaticParams() {
       subdomain && {
         domain: `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
       },
-      customDomain && {
-        domain: customDomain
-      }
+      customDomain && { domain: customDomain }
     ])
     .filter(Boolean);
 
