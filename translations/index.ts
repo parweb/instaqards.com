@@ -110,6 +110,26 @@ const translations = {
   'actions.reset.form.success': {
     fr: 'Email de réinitialisation envoyé !',
     en: 'Reset email sent!'
+  },
+  'actions.settings.unauthorized': {
+    fr: 'Non autorisé',
+    en: 'Unauthorized'
+  },
+  'actions.settings.email.error': {
+    fr: 'Email déjà utilisé !',
+    en: 'Email already in use!'
+  },
+  'actions.settings.email.success': {
+    fr: 'Email déjà utilisé !',
+    en: 'Verification email sent!'
+  },
+  'actions.settings.password.error': {
+    fr: 'Mot de passe incorrect !',
+    en: 'Incorrect password!'
+  },
+  'actions.settings.form.success': {
+    fr: 'Paramètres mis à jour !',
+    en: 'Settings Updated!'
   }
 } as const;
 
