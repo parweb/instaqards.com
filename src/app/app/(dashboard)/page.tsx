@@ -1,5 +1,5 @@
 import { UserRole } from '@prisma/client';
-import { eachMinuteOfInterval } from 'date-fns';
+import { eachDayOfInterval } from 'date-fns';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -42,7 +42,7 @@ export default async function Overview() {
   const start = clicks.at(0)?.createdAt ?? 0;
   const end = clicks.at(-1)?.createdAt ?? 0;
 
-  const chartdata = eachMinuteOfInterval({ start, end }).map(date => {
+  const chartdata = eachDayOfInterval({ start, end }).map(date => {
     const key = date.toDateString();
 
     return {
@@ -56,6 +56,10 @@ export default async function Overview() {
     };
   });
 
+  const [yesterday, today] = chartdata.slice(-2);
+
+  const pourcentVisitors = (today.Visitors / yesterday.Visitors - 1) * 100;
+
   return (
     <div className="flex flex-col space-y-12 p-8">
       <div className="flex flex-col space-y-6">
@@ -63,7 +67,11 @@ export default async function Overview() {
           {translate('dashboard.home.title')}
         </h1>
 
-        <OverviewStats chartdata={chartdata} total={clicks.length} />
+        <OverviewStats
+          dailyGrowth={pourcentVisitors}
+          chartdata={chartdata}
+          total={clicks.length}
+        />
       </div>
 
       <div className="flex flex-col space-y-6">
