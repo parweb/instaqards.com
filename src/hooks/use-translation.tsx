@@ -9,10 +9,7 @@ const useTranslation = () => {
   );
 
   const handle = (key: Part) => {
-    console.log('translate', { lang });
-    console.log('translate', { 'translations[key]': translations[key] });
-
-    return translations[key][lang];
+    return translations?.[key]?.[lang] ?? key;
   };
 
   handle.lang = lang;
