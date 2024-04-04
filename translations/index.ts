@@ -70,6 +70,22 @@ const translations = {
   'actions.new-password.password.form.success': {
     fr: 'Mot de passe mis à jour !',
     en: 'Password updated!'
+  },
+  'actions.new-verification.token.error': {
+    fr: "Le jeton n'existe pas !",
+    en: 'Token does not exist!'
+  },
+  'actions.new-verification.token.expire': {
+    fr: 'Le jeton a expiré !',
+    en: 'Token has expired!'
+  },
+  'actions.new-verification.email.error': {
+    fr: "L'email n'existe pas !",
+    en: 'Email does not exist!'
+  },
+  'actions.new-verification.email.form.success': {
+    fr: 'Email vérifié !',
+    en: 'Email verified!'
   }
 } as const;
 
