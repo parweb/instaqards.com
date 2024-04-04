@@ -6,10 +6,12 @@ import useTranslation from 'hooks/use-translation';
 
 export default function OverviewStats({
   chartdata,
-  total
+  total,
+  dailyGrowth
 }: {
   chartdata: { date: string; Clicks: number }[];
   total: number;
+  dailyGrowth: number;
 }) {
   const translate = useTranslation();
 
@@ -30,10 +32,12 @@ export default function OverviewStats({
           </Metric>
 
           <BadgeDelta
-            deltaType="moderateIncrease"
+            deltaType={
+              dailyGrowth >= 0 ? 'moderateIncrease' : 'moderateDecrease'
+            }
             className="dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400"
           >
-            34.3%
+            {dailyGrowth.toFixed(2)}%
           </BadgeDelta>
         </Flex>
 
