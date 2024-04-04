@@ -11,18 +11,19 @@ import { db } from 'helpers/db';
 import { sendVerificationEmail } from 'helpers/mail';
 import { generateVerificationToken } from 'helpers/tokens';
 import { SettingsSchema } from 'schemas';
+import { translate } from 'helpers/translate';
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
 
   if (!user?.id) {
-    return { error: 'Unauthorized' };
+    return { error: translate('actions.settings.unauthorized') };
   }
 
   const dbUser = await getUserById(user.id);
 
   if (!dbUser) {
-    return { error: 'Unauthorized' };
+    return { error: translate('actions.settings.unauthorized') };
   }
 
   if (user.isOAuth) {
@@ -36,7 +37,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     const existingUser = await getUserByEmail(values.email);
 
     if (existingUser && existingUser.id !== user.id) {
-      return { error: 'Email already in use!' };
+      return { error: translate('actions.settings.email.error') };
     }
 
     const verificationToken = await generateVerificationToken(values.email);
@@ -45,7 +46,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
       verificationToken.token
     );
 
-    return { success: 'Verification email sent!' };
+    return { success: translate('actions.settings.email.success') };
   }
 
   if (values.password && values.newPassword && dbUser.password) {
@@ -55,7 +56,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     );
 
     if (!passwordsMatch) {
-      return { error: 'Incorrect password!' };
+      return { error: translate('actions.settings.password.error') };
     }
 
     const hashedPassword = await bcrypt.hash(values.newPassword, 10);
@@ -79,5 +80,5 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     }
   });
 
-  return { success: 'Settings Updated!' };
+  return { success: translate('actions.settings.form.success') };
 };
