@@ -15,6 +15,7 @@ import {
 } from 'helpers/tokens';
 import { LoginSchema } from 'schemas';
 import { DEFAULT_LOGIN_REDIRECT } from 'auth.config';
+import { translate } from 'helpers/translate';
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
@@ -23,7 +24,7 @@ export const login = async (
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: 'Invalid fields!' };
+    return { error: translate('actions.login.validation.error') };
   }
 
   const { email, password, code } = validatedFields.data;
@@ -31,7 +32,7 @@ export const login = async (
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: 'Email does not exist!' };
+    return { error: translate('actions.login.validation.email.error') };
   }
 
   if (!existingUser.emailVerified) {
@@ -44,7 +45,7 @@ export const login = async (
       verificationToken.token
     );
 
-    return { success: 'Confirmation email sent!' };
+    return { success: translate('actions.login.validation.form.success') };
   }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -52,17 +53,17 @@ export const login = async (
       const twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
 
       if (!twoFactorToken) {
-        return { error: 'Invalid code!' };
+        return { error: translate('actions.login.token.error') };
       }
 
       if (twoFactorToken.token !== code) {
-        return { error: 'Invalid code!' };
+        return { error: translate('actions.login.token.error') };
       }
 
       const hasExpired = new Date(twoFactorToken.expires) < new Date();
 
       if (hasExpired) {
-        return { error: 'Code expired!' };
+        return { error: translate('actions.login.token.expire') };
       }
 
       await db.twoFactorToken.delete({
@@ -80,9 +81,7 @@ export const login = async (
       }
 
       await db.twoFactorConfirmation.create({
-        data: {
-          userId: existingUser.id
-        }
+        data: { userId: existingUser.id }
       });
     } else {
       const twoFactorToken = await generateTwoFactorToken(existingUser.email);
@@ -102,9 +101,9 @@ export const login = async (
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return { error: 'Invalid credentials!' };
+          return { error: translate('actions.login.credentials.invalid') };
         default:
-          return { error: 'Something went wrong!' };
+          return { error: translate('actions.login.credentials.oops') };
       }
     }
 
