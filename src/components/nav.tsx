@@ -23,6 +23,7 @@ import {
 } from 'next/navigation';
 
 import { getSiteFromPostId } from 'lib/actions';
+import { LanguageChooser } from 'components/LanguageChooser';
 
 const externalLinks: { name: string; href: string; icon: JSX.Element }[] = [
   // {
@@ -197,6 +198,10 @@ export default function Nav({ children }: { children: ReactNode }) {
                 <span className="text-sm font-medium">{name}</span>
               </Link>
             ))}
+
+            <div>
+              <LanguageChooser />
+            </div>
           </div>
         </div>
         <div>
