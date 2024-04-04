@@ -8,8 +8,11 @@ const useTranslation = () => {
     () => (Cookies.get('lang') || DEFAULT_LANG) as Lang
   );
 
-  const handle = (key: Part) => {
-    return translations?.[key]?.[lang] ?? key;
+  const handle = (key: Part, options: Record<string, string> = {}) => {
+    return Object.entries(options).reduce(
+      (carry, [key, value]) => carry.replaceAll(`{${key}}`, value),
+      (translations?.[key]?.[lang] ?? key) as string
+    );
   };
 
   handle.lang = lang;
