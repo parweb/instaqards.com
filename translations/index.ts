@@ -146,6 +146,26 @@ const translations = {
   'page.public.site.ads': {
     fr: 'Réservez votre Qards 🃏',
     en: 'Get your Qards 🃏'
+  },
+  'lib.actions.auth.error': {
+    fr: 'Non authentifié',
+    en: 'Not authenticated'
+  },
+  'lib.actions.domain.taken': {
+    fr: 'Ce sous-domaine est déjà pris',
+    en: 'This subdomain is already taken'
+  },
+  'lib.actions.vercel.domain.error': {
+    fr: 'Vous ne pouvez pas utiliser le sous-domaine vercel.pub comme votre domaine personnalisé',
+    en: 'Cannot use vercel.pub subdomain as your custom domain'
+  },
+  'lib.actions.update-site.error': {
+    fr: 'Cette {key} est déjà prise',
+    en: 'This {key} is already taken'
+  },
+  'lib.actions.edit-user.error': {
+    fr: 'Cette {key} est déjà utilisée',
+    en: 'This {key} is already in use'
   }
 } as const;
 

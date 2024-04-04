@@ -1,14 +1,14 @@
 'use server';
 
-import { Link, Post, Site } from '@prisma/client';
+import { Link, Site } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 
 import { db } from 'helpers';
 import { put } from 'helpers/storage';
-import { getSession } from 'lib/auth';
+import { translate } from 'helpers/translate';
+import { getSession, withSiteAuth } from 'lib/auth';
 import { getBlurDataURL } from 'lib/utils';
-import { withPostAuth, withSiteAuth } from './auth';
 
 import {
   addDomainToVercel,
@@ -25,7 +25,7 @@ export const createSite = async (formData: FormData) => {
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: 'Not authenticated' };
+    return { error: translate('lib.actions.auth.error') };
   }
 
   const name = formData.get('name') as string;
@@ -51,7 +51,7 @@ export const createSite = async (formData: FormData) => {
     return {
       error:
         error.code === 'P2002'
-          ? `This subdomain is already taken`
+          ? translate(`lib.actions.domain.taken`)
           : error.message
     };
   }
@@ -148,9 +148,7 @@ export const updateSite = withSiteAuth(
 
       if (key === 'customDomain') {
         if (value.includes('vercel.pub')) {
-          return {
-            error: 'Cannot use vercel.pub subdomain as your custom domain'
-          };
+          return { error: translate('lib.actions.vercel.domain.error') };
         } else if (validDomainRegex.test(value)) {
           response = await db.site.update({
             where: { id: site.id },
@@ -205,7 +203,7 @@ export const updateSite = withSiteAuth(
       return {
         error:
           error.code === 'P2002'
-            ? `This ${key} is already taken`
+            ? translate('lib.actions.update-site.error')
             : error.message
       };
     }
@@ -230,146 +228,6 @@ export const deleteSite = withSiteAuth(async (_: FormData, site: Site) => {
   }
 });
 
-export const getSiteFromPostId = async (postId: string) => {
-  const post = await db.post.findUnique({
-    where: { id: postId },
-    select: { siteId: true }
-  });
-
-  return post?.siteId;
-};
-
-export const createPost = withSiteAuth(async (_: FormData, site: Site) => {
-  const session = await getSession();
-
-  if (!session?.user?.id) {
-    return { error: 'Not authenticated' };
-  }
-
-  const response = await db.post.create({
-    data: {
-      siteId: site.id,
-      userId: session.user.id
-    }
-  });
-
-  revalidateTag(
-    `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-posts`
-  );
-  site.customDomain && revalidateTag(`${site.customDomain}-posts`);
-
-  return response;
-});
-
-export const updatePost = async (data: Post) => {
-  const session = await getSession();
-
-  if (!session?.user?.id) {
-    return { error: 'Not authenticated' };
-  }
-
-  const post = await db.post.findUnique({
-    where: { id: data.id },
-    include: { site: true }
-  });
-
-  if (!post || post.userId !== session.user.id) {
-    return { error: 'Post not found' };
-  }
-
-  try {
-    const response = await db.post.update({
-      where: { id: data.id },
-      data: {
-        title: data.title,
-        description: data.description,
-        content: data.content
-      }
-    });
-
-    revalidateTag(
-      `${post.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-posts`
-    );
-    revalidateTag(
-      `${post.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-${post.slug}`
-    );
-
-    // if the site has a custom domain, we need to revalidate those tags too
-    post.site?.customDomain &&
-      (revalidateTag(`${post.site?.customDomain}-posts`),
-      revalidateTag(`${post.site?.customDomain}-${post.slug}`));
-
-    return response;
-  } catch (error: any) {
-    return { error: error.message };
-  }
-};
-
-export const updatePostMetadata = withPostAuth(
-  async (formData: FormData, post: Post & { site: Site }, key: string) => {
-    const value = formData.get(key) as string;
-
-    try {
-      let response;
-
-      if (key === 'image') {
-        const file = formData.get('image') as File;
-        const filename = `${nanoid()}.${file.type.split('/')[1]}`;
-
-        const { url } = await put(filename, file);
-
-        const blurhash = await getBlurDataURL(url);
-
-        response = await db.post.update({
-          where: { id: post.id },
-          data: {
-            image: url,
-            imageBlurhash: blurhash
-          }
-        });
-      } else {
-        response = await db.post.update({
-          where: { id: post.id },
-          data: {
-            [key]: key === 'published' ? value === 'true' : value
-          }
-        });
-      }
-
-      revalidateTag(
-        `${post.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-posts`
-      );
-      revalidateTag(
-        `${post.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-${post.slug}`
-      );
-
-      // if the site has a custom domain, we need to revalidate those tags too
-      post.site?.customDomain &&
-        (revalidateTag(`${post.site?.customDomain}-posts`),
-        revalidateTag(`${post.site?.customDomain}-${post.slug}`));
-
-      return response;
-    } catch (error: any) {
-      return {
-        error:
-          error.code === 'P2002' ? `This slug is already in use` : error.message
-      };
-    }
-  }
-);
-
-export const deletePost = withPostAuth(async (_: FormData, post: Post) => {
-  try {
-    const response = await db.post.delete({
-      where: { id: post.id },
-      select: { siteId: true }
-    });
-    return response;
-  } catch (error: any) {
-    return { error: error.message };
-  }
-});
-
 export const editUser = async (
   formData: FormData,
   _id: unknown,
@@ -378,7 +236,7 @@ export const editUser = async (
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: 'Not authenticated' };
+    return { error: translate('lib.actions.auth.error') };
   }
 
   let value = formData.get(key) as string | boolean;
@@ -390,16 +248,16 @@ export const editUser = async (
   try {
     const response = await db.user.update({
       where: { id: session.user.id },
-      data: {
-        [key]: value
-      }
+      data: { [key]: value }
     });
 
     return response;
   } catch (error: any) {
     return {
       error:
-        error.code === 'P2002' ? `This ${key} is already in use` : error.message
+        error.code === 'P2002'
+          ? translate('lib.actions.edit-user.error')
+          : error.message
     };
   }
 };
