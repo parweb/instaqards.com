@@ -147,9 +147,13 @@ const translations = {
     fr: 'Réservez votre Qards 🃏',
     en: 'Get your Qards 🃏'
   },
-  'lib.actions.auth.error': {
+  'auth.error': {
     fr: 'Non authentifié',
     en: 'Not authenticated'
+  },
+  'auth.authorized.error': {
+    fr: 'Non autorisé',
+    en: 'Not authorized'
   },
   'lib.actions.domain.taken': {
     fr: 'Ce sous-domaine est déjà pris',

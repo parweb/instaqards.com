@@ -25,7 +25,7 @@ export const createSite = async (formData: FormData) => {
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: translate('lib.actions.auth.error') };
+    return { error: translate('auth.error') };
   }
 
   const name = formData.get('name') as string;
@@ -236,7 +236,7 @@ export const editUser = async (
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: translate('lib.actions.auth.error') };
+    return { error: translate('auth.error') };
   }
 
   let value = formData.get(key) as string | boolean;
