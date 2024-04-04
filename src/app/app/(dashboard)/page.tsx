@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { eachMinuteOfInterval } from 'date-fns';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -7,10 +8,10 @@ import OverviewStats from 'components/overview-stats';
 import PlaceholderCard from 'components/placeholder-card';
 import Sites from 'components/sites';
 import { db } from 'helpers';
+import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
-import { UserRole } from '@prisma/client';
 
 export default async function Overview() {
   const session = await getSession();
@@ -59,7 +60,7 @@ export default async function Overview() {
     <div className="flex flex-col space-y-12 p-8">
       <div className="flex flex-col space-y-6">
         <h1 className="font-cal text-3xl font-bold dark:text-white">
-          Overview
+          {translate('dashboard.home.title')}
         </h1>
 
         <OverviewStats chartdata={chartdata} total={clicks.length} />
@@ -68,12 +69,14 @@ export default async function Overview() {
       <div className="flex flex-col space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="font-cal text-3xl font-bold dark:text-white">
-            Top Sites
+            {translate('dashboard.home.top-sites')}
           </h1>
+
           <Suspense fallback={null}>
             <OverviewSitesCTA />
           </Suspense>
         </div>
+
         <Suspense
           fallback={
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
