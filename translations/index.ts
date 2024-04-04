@@ -130,6 +130,22 @@ const translations = {
   'actions.settings.form.success': {
     fr: 'Paramètres mis à jour !',
     en: 'Settings Updated!'
+  },
+  'page.public.site.title': {
+    fr: 'Page temporairement indisponible',
+    en: 'Page Temporarily Unavailable'
+  },
+  'page.public.site.description': {
+    fr: "Nous sommes désolés pour le désagrément, mais cette page est actuellement indisponible. Nous travaillons à rétablir l'accès aussi rapidement que possible.",
+    en: "We're sorry for the inconvenience, but this page is currently unavailable. We're working to restore access as quickly as possible."
+  },
+  'page.public.site.link': {
+    fr: 'Créez votre propre page',
+    en: 'Create your own page'
+  },
+  'page.public.site.ads': {
+    fr: 'Réservez votre Qards 🃏',
+    en: 'Get your Qards 🃏'
   }
 } as const;
 
