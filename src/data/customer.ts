@@ -32,8 +32,6 @@ export const createOrRetrieveCustomer = async ({
 
     const customer = await stripe.customers.create(customerData);
 
-    console.log({ customer });
-
     await db.customer.create({
       data: {
         id: uuid!,
@@ -41,7 +39,6 @@ export const createOrRetrieveCustomer = async ({
       }
     });
 
-    console.log(`New customer created and inserted for ${uuid}.`);
     return customer.id;
   }
 
@@ -90,7 +87,6 @@ export const manageSubscriptionStatusChange = async (
     metadata: subscription.metadata,
     status: subscription.status,
     priceId: subscription.items.data[0].price.id,
-    //TODO check quantity on subscription
     // @ts-ignore
     quantity: subscription.quantity,
     cancel_at_period_end: subscription.cancel_at_period_end,
@@ -124,12 +120,6 @@ export const manageSubscriptionStatusChange = async (
     update: subscriptionData
   });
 
-  console.log(
-    `Inserted/updated subscription [${subscription.id}] for user [${uuid}]`
-  );
-
-  // For a new subscription copy the billing details to the customer object.
-  // NOTE: This is a costly operation and should happen at the very end.
   if (createAction && subscription.default_payment_method && uuid)
     //@ts-ignore
     await copyBillingDetailsToCustomer(
@@ -147,15 +137,11 @@ export const upsertProductRecord = async (product: Stripe.Product) => {
     metadata: product.metadata
   };
 
-  console.log({ productData });
-
   await db.product.upsert({
     where: { id: product.id },
     create: { ...productData, id: product.id },
     update: productData
   });
-
-  console.log(`Product inserted/updated: ${product.id}`);
 };
 
 export const upsertPriceRecord = async (price: Stripe.Price) => {
@@ -177,6 +163,4 @@ export const upsertPriceRecord = async (price: Stripe.Price) => {
     create: { ...priceData, id: price.id },
     update: priceData
   });
-
-  console.log(`Price inserted/updated: ${price.id}`);
 };

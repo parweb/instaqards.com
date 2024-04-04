@@ -32,9 +32,7 @@ export const put = async (
         params
       });
 
-      parallelUploads3.on('httpUploadProgress', progress => {
-        console.log({ progress });
-      });
+      parallelUploads3.on('httpUploadProgress', progress => {});
 
       await parallelUploads3.done();
     } else {
