@@ -5,6 +5,8 @@ import { cn } from 'lib/utils';
 import { cal, inter } from 'styles/fonts';
 import 'styles/globals.css';
 import { Providers } from './providers';
+import { cookies } from 'next/headers';
+import { DEFAULT_LANG } from '../../translations';
 
 const title = 'Reveal your self right now with qards.link';
 const description = 'unforgettable in an instant';
@@ -35,7 +37,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang={cookies().get('lang')?.value ?? DEFAULT_LANG}
+      suppressHydrationWarning
+    >
       <body
         className={cn(cal.variable, inter.variable, 'flex flex-col h-[100vh]')}
       >
