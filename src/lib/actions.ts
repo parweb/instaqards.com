@@ -7,13 +7,14 @@ import { revalidateTag } from 'next/cache';
 import { db } from 'helpers';
 import { put } from 'helpers/storage';
 import { getSession } from 'lib/auth';
+import { getBlurDataURL } from 'lib/utils';
+import { withPostAuth, withSiteAuth } from './auth';
+
 import {
   addDomainToVercel,
   removeDomainFromVercelProject,
   validDomainRegex
 } from 'lib/domains';
-import { getBlurDataURL } from 'lib/utils';
-import { withPostAuth, withSiteAuth } from './auth';
 
 const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -24,9 +25,7 @@ export const createSite = async (formData: FormData) => {
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return {
-      error: 'Not authenticated'
-    };
+    return { error: 'Not authenticated' };
   }
 
   const name = formData.get('name') as string;
@@ -83,9 +82,7 @@ export const updateLink = withSiteAuth(
 
       return response;
     } catch (error: any) {
-      return {
-        error: error.message
-      };
+      return { error: error.message };
     }
   }
 );
@@ -156,8 +153,6 @@ export const updateSite = withSiteAuth(
           return {
             error: 'Cannot use vercel.pub subdomain as your custom domain'
           };
-
-          // if the custom domain is valid, we need to add it to Vercel
         } else if (validDomainRegex.test(value)) {
           response = await db.site.update({
             where: { id: site.id },
@@ -165,13 +160,7 @@ export const updateSite = withSiteAuth(
               customDomain: value
             }
           });
-          await Promise.all([
-            addDomainToVercel(value)
-            // Optional: add www subdomain as well and redirect to apex domain
-            // addDomainToVercel(`www.${value}`),
-          ]);
-
-          // empty value means the user wants to remove the custom domain
+          await Promise.all([addDomainToVercel(value)]);
         } else if (value === '') {
           response = await db.site.update({
             where: { id: site.id },
@@ -181,42 +170,8 @@ export const updateSite = withSiteAuth(
           });
         }
 
-        // if the site had a different customDomain before, we need to remove it from Vercel
         if (site.customDomain && site.customDomain !== value) {
           response = await removeDomainFromVercelProject(site.customDomain);
-
-          /* Optional: remove domain from Vercel team
-
-          // first, we need to check if the apex domain is being used by other sites
-          const apexDomain = getApexDomain(`https://${site.customDomain}`);
-          const domainCount = await db.site.count({
-            where: {
-              OR: [
-                {
-                  customDomain: apexDomain,
-                },
-                {
-                  customDomain: {
-                    endsWith: `.${apexDomain}`,
-                  },
-                },
-              ],
-            },
-          });
-
-          // if the apex domain is being used by other sites
-          // we should only remove it from our Vercel project
-          if (domainCount >= 1) {
-            await removeDomainFromVercelProject(site.customDomain);
-          } else {
-            // this is the only site using this apex domain
-            // so we can remove it entirely from our Vercel team
-            await removeDomainFromVercelTeam(
-              site.customDomain
-            );
-          }
-
-          */
         }
       } else if (['image', 'logo', 'background'].includes(key)) {
         const file = formData.get(key) as File;
@@ -292,9 +247,7 @@ export const createPost = withSiteAuth(async (_: FormData, site: Site) => {
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return {
-      error: 'Not authenticated'
-    };
+    return { error: 'Not authenticated' };
   }
 
   const response = await db.post.create({
@@ -312,14 +265,11 @@ export const createPost = withSiteAuth(async (_: FormData, site: Site) => {
   return response;
 });
 
-// creating a separate function for this because we're not using FormData
 export const updatePost = async (data: Post) => {
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return {
-      error: 'Not authenticated'
-    };
+    return { error: 'Not authenticated' };
   }
 
   const post = await db.post.findUnique({
@@ -328,9 +278,7 @@ export const updatePost = async (data: Post) => {
   });
 
   if (!post || post.userId !== session.user.id) {
-    return {
-      error: 'Post not found'
-    };
+    return { error: 'Post not found' };
   }
 
   try {
@@ -438,9 +386,7 @@ export const editUser = async (
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return {
-      error: 'Not authenticated'
-    };
+    return { error: 'Not authenticated' };
   }
 
   let value = formData.get(key) as string | boolean;

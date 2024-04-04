@@ -10,7 +10,7 @@ import {
   useRef
 } from 'react';
 
-import useWindowSize from 'lib/hooks/use-window-size';
+import useWindowSize from 'hooks/use-window-size';
 import Leaflet from './leaflet';
 
 export default function Modal({
@@ -40,7 +40,6 @@ export default function Modal({
   }, [onKeyDown]);
 
   const { isMobile, isDesktop } = useWindowSize();
-
   return (
     <AnimatePresence>
       {showModal && (
