@@ -7,19 +7,20 @@ import { getPasswordResetTokenByToken } from 'data/password-reset-token';
 import { getUserByEmail } from 'data/user';
 import { db } from 'helpers/db';
 import { NewPasswordSchema } from 'schemas';
+import { translate } from 'helpers/translate';
 
 export const newPassword = async (
   values: z.infer<typeof NewPasswordSchema>,
   token?: string | null
 ) => {
   if (!token) {
-    return { error: 'Missing token!' };
+    return { error: translate('actions.new-password.token.missing') };
   }
 
   const validatedFields = NewPasswordSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: 'Invalid fields!' };
+    return { error: translate('actions.new-password.field.error') };
   }
 
   const { password } = validatedFields.data;
@@ -27,19 +28,19 @@ export const newPassword = async (
   const existingToken = await getPasswordResetTokenByToken(token);
 
   if (!existingToken) {
-    return { error: 'Invalid token!' };
+    return { error: translate('actions.new-password.token.error') };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) {
-    return { error: 'Token has expired!' };
+    return { error: translate('actions.new-password.token.expire') };
   }
 
   const existingUser = await getUserByEmail(existingToken.email);
 
   if (!existingUser) {
-    return { error: 'Email does not exist!' };
+    return { error: translate('actions.new-password.email.error') };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -53,5 +54,5 @@ export const newPassword = async (
     where: { id: existingToken.id }
   });
 
-  return { success: 'Password updated!' };
+  return { success: translate('actions.new-password.password.form.success') };
 };

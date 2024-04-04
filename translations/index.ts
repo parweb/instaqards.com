@@ -46,6 +46,30 @@ const translations = {
   'component.overview-stats.title': {
     fr: 'Tous les cliques',
     en: 'Total Clicks'
+  },
+  'actions.new-password.token.missing': {
+    fr: 'Jeton manquant !',
+    en: 'Missing token!'
+  },
+  'actions.new-password.field.error': {
+    fr: 'Champs invalides !',
+    en: 'Invalid fields!'
+  },
+  'actions.new-password.token.error': {
+    fr: 'Jeton invalide !',
+    en: 'Invalid token!'
+  },
+  'actions.new-password.token.expire': {
+    fr: 'Le jeton a expiré !',
+    en: 'Token has expired!'
+  },
+  'actions.new-password.email.error': {
+    fr: "L'email n'existe pas !",
+    en: 'Email does not exist!'
+  },
+  'actions.new-password.password.form.success': {
+    fr: 'Mot de passe mis à jour !',
+    en: 'Password updated!'
   }
 } as const;
 
