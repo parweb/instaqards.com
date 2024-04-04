@@ -86,6 +86,18 @@ const translations = {
   'actions.new-verification.email.form.success': {
     fr: 'Email vérifié !',
     en: 'Email verified!'
+  },
+  'actions.register.field.error': {
+    fr: 'Champs invalide !',
+    en: 'Invalid fields!'
+  },
+  'actions.register.email.error': {
+    fr: 'Email déjà utilisé !',
+    en: 'Email already in use!'
+  },
+  'actions.register.form.success': {
+    fr: 'Email de confirmation envoyé !',
+    en: 'Confirmation email sent!'
   }
 } as const;
 
