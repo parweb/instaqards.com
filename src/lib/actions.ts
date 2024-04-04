@@ -116,9 +116,7 @@ export const createLink = async (
 
     return response;
   } catch (error: any) {
-    return {
-      error: error.message
-    };
+    return { error: error.message };
   }
 };
 
@@ -228,9 +226,7 @@ export const deleteSite = withSiteAuth(async (_: FormData, site: Site) => {
 
     return response;
   } catch (error: any) {
-    return {
-      error: error.message
-    };
+    return { error: error.message };
   }
 });
 
@@ -305,9 +301,7 @@ export const updatePost = async (data: Post) => {
 
     return response;
   } catch (error: any) {
-    return {
-      error: error.message
-    };
+    return { error: error.message };
   }
 };
 
@@ -372,9 +366,7 @@ export const deletePost = withPostAuth(async (_: FormData, post: Post) => {
     });
     return response;
   } catch (error: any) {
-    return {
-      error: error.message
-    };
+    return { error: error.message };
   }
 });
 
