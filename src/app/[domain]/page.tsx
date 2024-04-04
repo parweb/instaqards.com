@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { db } from 'helpers';
+import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
 import { getSiteData } from 'lib/fetchers';
 import { cn } from 'lib/utils';
@@ -65,14 +66,11 @@ export default async function SiteHomePage({
       <div className="flex items-center justify-center flex-1 self-stretch">
         <div className="max-w-md m-2 p-6 border border-gray-200 rounded-lg shadow-lg bg-white flex flex-col gap-5">
           <h2 className="text-xl font-semibold text-gray-800">
-            Page Temporarily Unavailable
+            {translate('page.public.site.title')}
           </h2>
 
           <p className="text-gray-600 ">
-            {"We're sorry for the inconvenience, but this page is currently "}
-            {
-              "unavailable. We're working to restore access as quickly as possible."
-            }
+            {translate('page.public.site.description')}
           </p>
 
           <div>
@@ -80,7 +78,7 @@ export default async function SiteHomePage({
               className="bg-black rounded-md px-3 py-2 text-white"
               href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`}
             >
-              Create your own page
+              {translate('page.public.site.link')}
             </Link>
           </div>
         </div>
@@ -157,7 +155,7 @@ export default async function SiteHomePage({
                 className="text-white"
                 target="_blank"
               >
-                Get your Qards 🃏
+                {translate('page.public.site.ads')}
               </a>
             </div>
           </footer>
