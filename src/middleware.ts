@@ -21,13 +21,9 @@ export default async function middleware(req: NextRequest) {
   const isPublicRoute =
     publicRoutes.includes(url.pathname) || isAuthRoute || isApiAuthRoute;
 
-  console.log({ isApiAuthRoute, isAuthRoute, isPublicRoute });
-
   let hostname = req.headers
     .get('host')!
     .replace('.localhost:11000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
-
-  console.log({ hostname });
 
   if (
     hostname.includes('---') &&
@@ -43,25 +39,14 @@ export default async function middleware(req: NextRequest) {
     searchParams.length > 0 ? `?${searchParams}` : ''
   }`;
 
-  console.log({
-    'url.searchParams.entries()': [...url.searchParams.entries()]
-  });
-  console.log({ "url.searchParams.has('r')": url.searchParams.has('r') });
-
   if (url.searchParams.has('r')) {
     const referer = url.searchParams.get('r');
-
-    console.log({ referer });
 
     const destination = url.clone();
 
     destination.searchParams.delete('r');
 
     const domain = new URL(process.env.NEXTAUTH_URL as string);
-
-    console.log({
-      'Set-Cookie': `r=${encodeURIComponent(referer!)}; Path=/; Domain=${domain.host.replace('app.', '.')}; HttpOnly; SameSite=Strict`
-    });
 
     return new Response(null, {
       status: 301,
@@ -89,8 +74,6 @@ export default async function middleware(req: NextRequest) {
       new URL(`/app${path === '/' ? '' : path}`, req.url)
     );
   }
-
-  console.log({ hostname });
 
   if (
     hostname.includes(':11000') ||
