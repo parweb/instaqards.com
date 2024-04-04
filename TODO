@@ -1,0 +1,75 @@
+TODO
+
+DONE -> Mettre le logo officiel
+     -> Admin -> creer et transférer les Qards / voir toute les Qards
+DONE -> bouton -> Créer votre QARDS (call to action)
+     -> Overview - > Petit carré avec les news et update a coté du truc de statistique
+     -> Stats -> Range de date modifiable
+
+        Page «All Sites & Qards»
+DONE -> Stats a coté des Qards a rendre dispo (masqué si donnée fake)
+     -> Dupliquer Qards sous un autre nom (transfert)
+DONE -> Suppression -> ajouter croix + modal de confirmation
+
+        Page «Qards.link»
+     -> Ajout d’un logo ou une bulle perso au dessus des link (margin top set par défaut et editable)
+DONE -> Lien Notorious -> suppression
+     -> Modifier les couleurs ?
+     -> Label footer -> Menu déroulant avec logo présélectionné ou -> customize
+
+        Settings
+DONE -> Paiement -> rendre dispo les paiement
+DONE -> Mot de passe -> modifier ?
+DONE -> rediriger apres: login confirm
+
+     -> checks pk lien bio insta marche pas
+DONE -> qards unavailable meme apres paiement (cache)
+DONE -> lien public marche pas -> https://app.qards.link/site/cltps29wl0000e0g01sw1fiyu
+     -> logo par default des site mettre logo qards au lieu de vercel
+     -> image OG par default des site changer l'image par default
+     -> multi-langue
+     -> compte email contact@qards.link
+
+compte email
+
+email: contact@instaqards.com
+password: 3O)[E]O=L(8xbeU
+
+resend
+
+email: osmia.000002@gmail.com
+password: 3O)[E]O=L(8xbeU
+
+pop.hostinger.com     995
+smtp.hostinger.com    465
+
+                                      |     basic  |  premium  | elite                                 
+     template perso                   |       x    |     ✅    |    ✅       
+     nom de domain                    |            |     ✅    |    ✅       
+     nombre de lien de lien par site  |       3    | illimité  | illimité                          
+     nombre de qards                  |       1    |     3     | illimité
+     enlever le footer (pub qards)    |            |           |    ✅                           
+     affiliation possible             |            |     ✅    |    ✅                  
+     support & assistane 24/24        |            |           |    ✅                      
+     analytics                        |            |     ✅    |    ✅                      
+
+Template Prédéfinis :
+* Offre une sélection de thèmes prédéfinis attrayants et professionnels pour personnaliser facilement la carte de visite numérique selon les préférences de l'utilisateur
+Template Personnalité :
+* Possibilités de créer et de personnaliser facilement la carte de visite numérique selon les préférences de l'utilisateur.
+Nom de Domaine :
+* Permet aux utilisateurs d'intégrer leur propre nom de domaine personnalisé à leur carte de visite numérique pour une présence en ligne professionnelle.
+Nombre de Liens :
+* Fournit une flexibilité quant au nombre de liens que les utilisateurs peuvent inclure sur leur carte de visite numérique, permettant de connecter efficacement les contacts aux réseaux sociaux, aux sites Web, et plus encore.
+Footer Affiliation :
+* Intègre un footer d'affiliation discret sur les cartes de visite numériques des utilisateurs, offrant une opportunité supplémentaire de promouvoir votre programme d'affiliation.
+Programme d’Affiliation :
+* Propose un programme d'affiliation attractif permettant aux utilisateurs de générer des revenus en recommandant Qards à d'autres utilisateurs.
+Nombre de Qards :
+* Offre différentes options de forfaits pour répondre aux besoins en matière de nombre de cartes de visite numériques que les utilisateurs peuvent créer et gérer sur la plateforme.
+Support 24h :
+* Met à disposition une assistance clientèle disponible 24 heures sur 24, 7 jours sur 7, pour répondre aux questions et résoudre les problèmes des utilisateurs rapidement et efficacement.
+Assistance & Suivi :
+* Assure un suivi personnalisé et une assistance continue pour aider les utilisateurs à tirer le meilleur parti de leur expérience avec Qards, y compris des conseils et des recommandations personnalisés.
+Analytics :
+* Fournit des outils d'analyse puissants pour permettre aux utilisateurs de suivre et d'évaluer les performances de leur carte de visite numérique, y compris des informations sur les vues, les clics, et d'autres métriques importantes.
