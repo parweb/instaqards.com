@@ -98,6 +98,18 @@ const translations = {
   'actions.register.form.success': {
     fr: 'Email de confirmation envoyé !',
     en: 'Confirmation email sent!'
+  },
+  'actions.reset.email.error': {
+    fr: 'Email invalide !',
+    en: 'Invalid email!'
+  },
+  'actions.reset.email.not-found': {
+    fr: 'Email non trouvé !',
+    en: 'Email not found!'
+  },
+  'actions.reset.form.success': {
+    fr: 'Email de réinitialisation envoyé !',
+    en: 'Reset email sent!'
   }
 } as const;
 
