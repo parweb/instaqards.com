@@ -43,6 +43,22 @@ const translations = {
     fr: 'Meilleur sites',
     en: 'Top Sites'
   },
+  'dashboard.help.title': {
+    fr: "Besoin d'aide",
+    en: 'Help'
+  },
+  'dashboard.help.description': {
+    fr: 'Vous pouvez nous joindre ici',
+    en: 'You can reach us here'
+  },
+  'dashboard.sites.title': {
+    fr: 'Tous les sites',
+    en: 'All Sites'
+  },
+  'components.site.create.button': {
+    fr: 'Créez un site',
+    en: 'Create New Site'
+  },
   'component.overview-stats.title': {
     fr: 'Tous les cliques',
     en: 'Total Clicks'
