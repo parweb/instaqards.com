@@ -222,6 +222,86 @@ const translations = {
   'menu.affiliation': {
     fr: 'Affiliation',
     en: 'Affiliation'
+  },
+  'page.home.register': {
+    fr: 'Inscription',
+    en: 'Register'
+  },
+  'page.home.hero.title': {
+    fr: 'Votre site web, réinventé',
+    en: 'Your website, reimagined'
+  },
+  'page.home.hero.description': {
+    fr: "Notre modèle de page d'atterrissage fonctionne sur tous les appareils, vous n'avez donc à le configurer qu'une seule fois pour obtenir de beaux résultats pour toujours.",
+    en: 'Our landing page template works on all devices, so you only have to set it up once, and get beautiful results forever.'
+  },
+  'page.home.gallery.title': {
+    fr: 'Découvrez les possibilités',
+    en: "See What's Possible"
+  },
+  'page.home.gallery.description': {
+    fr: "Découvrez quelques Qards d'utilisateurs",
+    en: 'Discover some user Qards'
+  },
+  'page.home.price.title': {
+    fr: 'Agissez Maintenant',
+    en: 'Take Action Now'
+  },
+  'page.home.price.description': {
+    fr: 'Commencez votre voyage en toute simplicité',
+    en: 'Start your journey with ease'
+  },
+  'page.home.testimonial.title': {
+    fr: 'Témoignage',
+    en: 'Testimonial'
+  },
+  'page.home.testimonial.description': {
+    fr: 'Ils parlent pour nous ❤️',
+    en: 'They speak for ourself ❤️'
+  },
+  'page.home.features.title': {
+    fr: 'Fonctionnalités',
+    en: 'Features'
+  },
+  'page.home.features.bullet.one': {
+    fr: 'feature 01',
+    en: 'feature 01'
+  },
+  'page.home.features.bullet.two': {
+    fr: 'feature 02',
+    en: 'feature 02'
+  },
+  'page.home.features.bullet.three': {
+    fr: 'feature 03',
+    en: 'feature 03'
+  },
+  'page.home.features.bullet.four': {
+    fr: 'feature 04',
+    en: 'feature 04'
+  },
+  'page.home.features.bullet.five': {
+    fr: 'feature 05',
+    en: 'feature 05'
+  },
+  'page.home.features.description': {
+    fr: 'Faites-le vite, faites-le bien',
+    en: 'Do it fast do it well'
+  },
+  'page.home.hero.bullet.one': {
+    fr: 'Sans Tracas, Personnalisation Infinie',
+    en: 'Zero Hassle, Infinite Customization'
+  },
+  'page.home.hero.bullet.two': {
+    fr: 'Vitesse Inégalée',
+    en: 'Unmatched Speed'
+  },
+  'page.home.hero.bullet.three': {
+    fr: 'Presque comme par magie',
+    en: 'Almost like magic'
+  },
+  'page.home.hero.call-to-action': {
+    fr: 'Commencez maintenant, soyez inoubliable en un instant',
+    en: 'Start now, be unforgettable in an instant'
   }
 } as const;
 
