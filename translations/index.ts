@@ -302,6 +302,27 @@ const translations = {
   'page.home.hero.call-to-action': {
     fr: 'Commencez maintenant, soyez inoubliable en un instant',
     en: 'Start now, be unforgettable in an instant'
+  },
+
+  'api.stripe.user.error': {
+    fr: 'Impossible de créer un paiement si non connecté',
+    en: 'Cannot create a checkout if not logged'
+  },
+  'api.stripe.user.not-found': {
+    fr: "Impossible de récupérer l'utilisateur",
+    en: 'Could not get user'
+  },
+  'api.stripe.customer.error': {
+    fr: 'Impossible de récupérer le client',
+    en: 'Could not get customer'
+  },
+  'api.stripe.error': {
+    fr: "La session n'est pas définie",
+    en: 'Session is not defined'
+  },
+  'api.method.not-allowed': {
+    fr: 'Méthode non autorisée',
+    en: 'Method Not Allowed'
   }
 } as const;
 

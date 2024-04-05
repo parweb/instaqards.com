@@ -1,6 +1,7 @@
 import { auth } from 'auth';
 import { createOrRetrieveCustomer } from 'data/customer';
 import { getURL, stripe } from 'helpers';
+import { translate } from 'helpers/translate';
 // import { Database } from '@/types_db';
 
 export async function POST(req: Request) {
@@ -11,8 +12,7 @@ export async function POST(req: Request) {
   try {
     const { user = null } = (await auth()) || {};
 
-    if (user === null)
-      throw new Error('Cannot create a checkout if not logged');
+    if (user === null) throw new Error(translate('api.stripe.user.error'));
 
     // 3. Retrieve or create the customer in Stripe
     const customer = await createOrRetrieveCustomer(user);
@@ -68,7 +68,10 @@ export async function POST(req: Request) {
     } else {
       return new Response(
         JSON.stringify({
-          error: { statusCode: 500, message: 'Session is not defined' }
+          error: {
+            statusCode: 500,
+            message: translate('api.stripe.error')
+          }
         }),
         { status: 500 }
       );
