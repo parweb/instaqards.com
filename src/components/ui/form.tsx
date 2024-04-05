@@ -12,6 +12,7 @@ import {
 
 import { Label } from 'components/ui/label';
 import { cn } from 'lib/utils';
+import useTranslation from 'hooks/use-translation';
 
 const Form = FormProvider;
 
@@ -145,8 +146,13 @@ const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
+  const translate = useTranslation();
+
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+  // @ts-ignore
+  const body = translate(error ? String(error?.message) : children, {
+    char: 6
+  });
 
   if (!body) {
     return null;

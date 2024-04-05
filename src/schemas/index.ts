@@ -9,63 +9,45 @@ export const SettingsSchema = z
     password: z.optional(z.string().min(6)),
     newPassword: z.optional(z.string().min(6))
   })
-  .refine(
-    data => {
-      if (data.password && !data.newPassword) {
-        return false;
-      }
-
-      return true;
-    },
-    {
-      message: 'New password is required!',
-      path: ['newPassword']
-    }
-  )
-  .refine(
-    data => {
-      if (data.newPassword && !data.password) {
-        return false;
-      }
-
-      return true;
-    },
-    {
-      message: 'Password is required!',
-      path: ['password']
-    }
-  );
+  .refine(data => (data.password && !data.newPassword ? false : true), {
+    message: 'schemas.new-password.required',
+    path: ['newPassword']
+  })
+  .refine(data => (data.newPassword && !data.password ? false : true), {
+    message: 'schemas.password.required',
+    path: ['password']
+  });
 
 export const NewPasswordSchema = z.object({
   password: z.string().min(6, {
-    message: 'Minimum of 6 characters required'
+    message: 'schemas.string.min'
   })
 });
 
 export const ResetSchema = z.object({
   email: z.string().email({
-    message: 'Email is required'
+    message: 'schemas.email.required'
   })
 });
 
 export const LoginSchema = z.object({
   email: z.string().email({
-    message: 'Email is required'
+    message: 'schemas.email.required'
   }),
   password: z.string().min(1, {
-    message: 'Password is required'
+    message: 'schemas.password.required'
   }),
   code: z.optional(z.string())
 });
 
 export const RegisterSchema = z.object({
   email: z.string().email({
-    message: 'Email is required'
+    message: 'schemas.email.required'
   }),
   password: z.string().min(6, {
-    message: 'Minimum 6 characters required'
+    message: 'schemas.string.min'
   }),
   name: z.string().min(1, {
-    message: 'Name is required'
+    message: 'schemas.name.required'
   })
 });

@@ -170,10 +170,30 @@ const translations = {
   'lib.actions.edit-user.error': {
     fr: 'Cette {key} est déjà utilisée',
     en: 'This {key} is already in use'
+  },
+  'schemas.password.required': {
+    fr: 'Un mot de passe est requis !',
+    en: 'Password is required!'
+  },
+  'schemas.new-password.required': {
+    fr: 'Un nouveau mot de passe est requis !',
+    en: 'New password is required!'
+  },
+  'schemas.email.required': {
+    fr: 'Un email est requis !',
+    en: 'Email is required!'
+  },
+  'schemas.name.required': {
+    fr: 'Un nom est requis !',
+    en: 'Name is required!'
+  },
+  'schemas.string.min': {
+    fr: 'Un minimum de {char} caractères est requis',
+    en: 'Minimum of {char} characters required'
   }
 } as const;
 
-export const DEFAULT_LANG: Lang = 'fr';
+export const DEFAULT_LANG: Lang = 'en';
 
 export default translations;
 
