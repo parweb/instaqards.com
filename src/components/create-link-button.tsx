@@ -4,6 +4,7 @@ import { Link } from '@prisma/client';
 import { ReactNode } from 'react';
 
 import { useModal } from 'components/modal/provider';
+import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
 
 export default function CreateLinkButton({
@@ -14,6 +15,7 @@ export default function CreateLinkButton({
   children: ReactNode;
 }) {
   const modal = useModal();
+  const translate = useTranslation();
 
   if (type === 'main') {
     return (
@@ -25,7 +27,7 @@ export default function CreateLinkButton({
           'hover:bg-transparent hover:text-white/90'
         )}
       >
-        + Add a link
+        {'+ ' + translate('components.create.link.button')}
       </button>
     );
   }

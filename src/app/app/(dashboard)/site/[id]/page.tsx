@@ -8,6 +8,7 @@ import CreateLinkModal from 'components/modal/create-link';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
 import { db } from 'helpers';
+import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
@@ -126,7 +127,7 @@ export default async function SitePosts({
       <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
         <div className="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 flex-1 justify-between">
           <h1 className="w-60 truncate font-cal text-xl font-bold dark:text-white sm:w-auto sm:text-3xl">
-            Configure {site.name} design
+            {translate('dashboard.site.detail.title', { name: site.name! })}
           </h1>
 
           <a
