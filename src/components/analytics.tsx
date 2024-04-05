@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import {
   AreaChart,
   BarList,
@@ -10,11 +12,13 @@ import {
   Text,
   Title
 } from '@tremor/react';
-import Image from 'next/image';
+
+import useTranslation from 'hooks/use-translation';
 
 type Tuple = {
   name: string;
   value: number;
+  code?: string;
 };
 
 export default function Analytics({
@@ -22,6 +26,7 @@ export default function Analytics({
 }: {
   chartdata: { date: string }[];
 }) {
+  const translate = useTranslation();
   const links: Tuple[] = [
     // { name: '/platforms-starter-kit', value: 1230 },
     // { name: '/vercel-is-now-bercel', value: 751 },
@@ -51,18 +56,18 @@ export default function Analytics({
 
   const categories = [
     {
-      title: 'Top Links',
-      subtitle: 'Link',
+      title: 'components.analytics.link.title',
+      subtitle: 'components.analytics.link.subtitle',
       data: links
     },
     {
-      title: 'Top Referrers',
-      subtitle: 'Source',
+      title: 'components.analytics.source.title',
+      subtitle: 'components.analytics.source.subtitle',
       data: referrers
     },
     {
-      title: 'Countries',
-      subtitle: 'Country',
+      title: 'components.analytics.country.title',
+      subtitle: 'components.analytics.country.subtitle',
       data: countries
     }
   ];
@@ -71,6 +76,7 @@ export default function Analytics({
     <div className="grid gap-6">
       <Card>
         <Title>Clicks</Title>
+
         <AreaChart
           className="mt-4 h-72"
           data={chartdata}
@@ -78,29 +84,38 @@ export default function Analytics({
           categories={['Clicks', 'Visitors']}
           colors={['indigo', 'cyan']}
           valueFormatter={(number: number) =>
-            Intl.NumberFormat('us').format(number).toString()
+            Intl.NumberFormat({ en: 'us', fr: 'fr' }[translate.lang])
+              .format(number)
+              .toString()
           }
         />
       </Card>
+
       <Grid numItemsSm={2} numItemsLg={3} className="gap-6">
         {categories.map(({ title, subtitle, data }) => (
           <Card key={title} className="max-w-lg">
-            <Title>{title}</Title>
+            {/* @ts-ignore */}
+            <Title>{translate(title)}</Title>
+
             <Flex className="mt-4">
               <Text>
-                <Bold>{subtitle}</Bold>
+                {/* @ts-ignore */}
+                <Bold>{translate(subtitle)}</Bold>
               </Text>
+
               <Text>
-                <Bold>Clicks</Bold>
+                <Bold>{translate('components.analytics.clicks')}</Bold>
               </Text>
             </Flex>
+
             <BarList
               // @ts-ignore
+              className="mt-2"
               data={data.map(({ name, value, code }) => ({
                 name,
                 value,
                 icon: () => {
-                  if (title === 'Top Referrers') {
+                  if (title === 'components.analytics.source.title') {
                     return (
                       <Image
                         src={`https://www.google.com/s2/favicons?sz=64&domain_url=${name}`}
@@ -110,7 +125,7 @@ export default function Analytics({
                         height={20}
                       />
                     );
-                  } else if (title === 'Countries') {
+                  } else if (title === 'components.analytics.country.title') {
                     return (
                       <Image
                         src={`https://flag.vercel.app/m/${code}.svg`}
@@ -125,7 +140,6 @@ export default function Analytics({
                   }
                 }
               }))}
-              className="mt-2"
             />
           </Card>
         ))}

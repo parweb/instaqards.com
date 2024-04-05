@@ -35,6 +35,10 @@ const translations = {
     fr: 'Un problème est survenu !',
     en: 'Something went wrong!'
   },
+  'dashboard.site.detail.title': {
+    fr: 'Configurer le design de {name}',
+    en: 'Configure {name} design'
+  },
   'dashboard.home.title': {
     fr: 'Aperçu',
     en: 'Overview'
@@ -54,6 +58,62 @@ const translations = {
   'dashboard.sites.title': {
     fr: 'Tous les sites',
     en: 'All Sites'
+  },
+  'components.prices.plan.renews': {
+    fr: 'Votre abonnement se renouvelle le',
+    en: 'Your plan renews on'
+  },
+  'components.prices.plan.canceled': {
+    fr: 'Votre abonnement sera annulé le',
+    en: 'Your plan will be canceled on'
+  },
+  'components.prices.buy': {
+    fr: 'commandez',
+    en: 'buy'
+  },
+  'components.create.link.button': {
+    fr: 'Ajoutez un lien',
+    en: 'Add a link'
+  },
+  'components.analytics.link.title': {
+    fr: 'Liens Principaux',
+    en: 'Top Links'
+  },
+  'components.analytics.clicks': {
+    fr: 'Cliques',
+    en: 'Clicks'
+  },
+  'components.analytics.link.subtitle': {
+    fr: 'Lien',
+    en: 'Link'
+  },
+  'components.analytics.source.title': {
+    fr: 'Principaux Référents',
+    en: 'Top Referrers'
+  },
+  'components.analytics.source.subtitle': {
+    fr: 'Source',
+    en: 'Source'
+  },
+  'components.analytics.country.title': {
+    fr: 'Pays',
+    en: 'Countries'
+  },
+  'components.analytics.country.subtitle': {
+    fr: 'Pays',
+    en: 'Country'
+  },
+  'components.sites.empty.title': {
+    fr: 'Pas encore de sites',
+    en: 'No Sites Yet'
+  },
+  'components.sites.empty.description': {
+    fr: "Vous n'avez encore aucun site. Créez-en un pour commencer.",
+    en: 'You do not have any sites yet. Create one to get started.'
+  },
+  'components.site.update.background': {
+    fr: 'Modifier le fond',
+    en: 'Change Background'
   },
   'components.site.create.button': {
     fr: 'Créez un site',

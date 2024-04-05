@@ -5,10 +5,13 @@ import { useState } from 'react';
 import { LuLoader } from 'react-icons/lu';
 
 import { getStripe, postData } from 'helpers';
+import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
 
 export const PriceTableButton = ({ price }: { price: Price }) => {
   const [loading, setLoading] = useState(false);
+
+  const translate = useTranslation();
 
   const onClick = async ({
     price,
@@ -43,7 +46,11 @@ export const PriceTableButton = ({ price }: { price: Price }) => {
         'transition-all hover:scale-105'
       )}
     >
-      {loading ? <LuLoader className="animate-spin" /> : 'buy'}
+      {loading ? (
+        <LuLoader className="animate-spin" />
+      ) : (
+        translate('components.prices.buy')
+      )}
     </button>
   );
 };

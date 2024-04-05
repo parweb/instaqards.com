@@ -5,6 +5,7 @@ import {
 } from '@prisma/client';
 
 import { PriceTableButton } from 'components/price-table-button';
+import { translate } from 'helpers/translate';
 import { Subscription } from 'lib/auth';
 import { cn } from 'lib/utils';
 
@@ -42,6 +43,7 @@ export const PriceTable = ({
               <div className="font-normal text-2xl uppercase">
                 {product.name}
               </div>
+
               <div className="text-gray-500">{product?.description}</div>
             </div>
 
@@ -56,8 +58,9 @@ export const PriceTable = ({
             {subscription?.priceId === product?.prices?.[0]?.id && (
               <div className="flex justify-center">
                 {!subscription?.cancel_at && (
-                  <div className="">
-                    Your plan renews on{' '}
+                  <div className="flex gap-2">
+                    <span>{translate('components.prices.plan.renews')}</span>
+
                     <span className="text-white bg-green-600 px-2 py-1 rounded-md">
                       {subscription?.current_period_end.toLocaleDateString()}
                     </span>
@@ -66,7 +69,8 @@ export const PriceTable = ({
 
                 {subscription?.cancel_at && (
                   <div className="">
-                    Your plan will be canceled on{' '}
+                    <span>{translate('components.prices.plan.canceled')}</span>
+
                     <span className="text-white bg-orange-500 px-2 py-1 rounded-md">
                       {subscription?.cancel_at?.toLocaleDateString()}
                     </span>
