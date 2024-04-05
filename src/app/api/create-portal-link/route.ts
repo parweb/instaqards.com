@@ -1,17 +1,18 @@
 import { auth } from 'auth';
 import { createOrRetrieveCustomer } from 'data/customer';
 import { getURL, stripe } from 'helpers';
+import { translate } from 'helpers/translate';
 
 export async function POST(req: Request) {
   if (req.method === 'POST') {
     try {
       const { user = null } = (await auth()) || {};
 
-      if (!user) throw Error('Could not get user');
+      if (!user) throw Error(translate('api.stripe.user.not-found'));
 
       const customer = await createOrRetrieveCustomer(user);
 
-      if (!customer) throw Error('Could not get customer');
+      if (!customer) throw Error(translate('api.stripe.customer.error'));
 
       const { url } = await stripe.billingPortal.sessions.create({
         customer,
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
       );
     }
   } else {
-    return new Response('Method Not Allowed', {
+    return new Response(translate('api.method.not-allowed'), {
       headers: { Allow: 'POST' },
       status: 405
     });
