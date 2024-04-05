@@ -23,14 +23,16 @@ import {
 } from 'next/navigation';
 
 import { LanguageChooser } from 'components/LanguageChooser';
+import useTranslation from 'hooks/use-translation';
 
 export default function Nav({ children }: { children: ReactNode }) {
   const segments = useSelectedLayoutSegments();
   const { id } = useParams() as { id?: string };
+  const translate = useTranslation();
 
   const tabs = useMemo(() => {
     const help = {
-      name: 'Help',
+      name: translate('menu.help'),
       href: '/help',
       icon: <HelpCircle width={18} />
     };
@@ -38,24 +40,24 @@ export default function Nav({ children }: { children: ReactNode }) {
     if (segments[0] === 'site' && id) {
       return [
         {
-          name: 'Back to All Sites',
+          name: translate('menu.back.site'),
           href: '/sites',
           icon: <ArrowLeft width={18} />
         },
         {
-          name: 'Design',
+          name: translate('menu.design'),
           href: `/site/${id}`,
           isActive: segments.length === 2,
           icon: <Newspaper width={18} />
         },
         {
-          name: 'Analytics',
+          name: translate('menu.analytics'),
           href: `/site/${id}/analytics`,
           isActive: segments.includes('analytics'),
           icon: <BarChart3 width={18} />
         },
         {
-          name: 'Settings',
+          name: translate('menu.settings'),
           href: `/site/${id}/settings`,
           isActive: segments.includes('settings'),
           icon: <Settings width={18} />
@@ -66,32 +68,32 @@ export default function Nav({ children }: { children: ReactNode }) {
 
     return [
       {
-        name: 'Overview',
+        name: translate('menu.overview'),
         href: '/',
         isActive: segments.length === 0,
         icon: <LayoutDashboard width={18} />
       },
       {
-        name: 'Sites',
+        name: translate('menu.sites'),
         href: '/sites',
         isActive: segments[0] === 'sites',
         icon: <Globe width={18} />
       },
       {
-        name: 'Affiliation',
+        name: translate('menu.affiliation'),
         href: '/affiliation',
         isActive: segments[0] === 'affiliation',
         icon: <DollarSign width={18} />
       },
       {
-        name: 'Settings',
+        name: translate('menu.settings'),
         href: '/settings',
         isActive: segments[0] === 'settings',
         icon: <Settings width={18} />
       },
       help
     ];
-  }, [segments, id]);
+  }, [translate, segments, id]);
 
   const [showSidebar, setShowSidebar] = useState(false);
 

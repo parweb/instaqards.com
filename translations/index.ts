@@ -190,6 +190,38 @@ const translations = {
   'schemas.string.min': {
     fr: 'Un minimum de {char} caractères est requis',
     en: 'Minimum of {char} characters required'
+  },
+  'menu.help': {
+    fr: 'Aide',
+    en: 'Help'
+  },
+  'menu.back.site': {
+    fr: 'Retour aux sites',
+    en: 'Back to All Sites'
+  },
+  'menu.design': {
+    fr: 'Design',
+    en: 'Design'
+  },
+  'menu.analytics': {
+    fr: 'Statistiques',
+    en: 'Analytics'
+  },
+  'menu.settings': {
+    fr: 'Paramètres',
+    en: 'Settings'
+  },
+  'menu.overview': {
+    fr: 'Accueil',
+    en: 'Overview'
+  },
+  'menu.sites': {
+    fr: 'Sites',
+    en: 'Sites'
+  },
+  'menu.affiliation': {
+    fr: 'Affiliation',
+    en: 'Affiliation'
   }
 } as const;
 
