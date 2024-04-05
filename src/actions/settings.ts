@@ -66,9 +66,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
   const updatedUser = await db.user.update({
     where: { id: dbUser.id },
-    data: {
-      ...values
-    }
+    data: { ...values }
   });
 
   update({

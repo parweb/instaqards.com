@@ -11,6 +11,9 @@ import { CardWrapper } from 'components/auth/card-wrapper';
 import { FormError } from 'components/form-error';
 import { FormSuccess } from 'components/form-success';
 import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { NewPasswordSchema } from 'schemas';
+
 import {
   Form,
   FormControl,
@@ -19,8 +22,6 @@ import {
   FormLabel,
   FormMessage
 } from 'components/ui/form';
-import { Input } from 'components/ui/input';
-import { NewPasswordSchema } from 'schemas';
 
 export const NewPasswordForm = () => {
   const searchParams = useSearchParams();
@@ -32,9 +33,7 @@ export const NewPasswordForm = () => {
 
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
-    defaultValues: {
-      password: ''
-    }
+    defaultValues: { password: '' }
   });
 
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
@@ -64,6 +63,7 @@ export const NewPasswordForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
+
                   <FormControl>
                     <Input
                       {...field}
@@ -72,13 +72,16 @@ export const NewPasswordForm = () => {
                       type="password"
                     />
                   </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+
           <FormError message={error} />
           <FormSuccess message={success} />
+
           <Button disabled={isPending} type="submit" className="w-full">
             Reset password
           </Button>

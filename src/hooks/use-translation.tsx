@@ -10,7 +10,7 @@ const useTranslation = () => {
 
   const handle = (key: Part, options: Record<string, string> = {}) => {
     return Object.entries(options).reduce(
-      (carry, [key, value]) => carry.replaceAll(`{${key}}`, value),
+      (carry, [key, value]) => (carry || '').replaceAll(`{${key}}`, value),
       (translations?.[key]?.[lang] ?? key) as string
     );
   };
