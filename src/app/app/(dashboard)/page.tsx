@@ -56,9 +56,10 @@ export default async function Overview() {
     };
   });
 
-  const [yesterday, today] = chartdata.slice(-2);
+  const [yesterday = null, today = null] = chartdata.slice(-2);
 
-  const pourcentVisitors = (today.Visitors / yesterday.Visitors - 1) * 100;
+  const pourcentVisitors =
+    yesterday && today ? (today.Visitors / yesterday.Visitors - 1) * 100 : 0;
 
   return (
     <div className="flex flex-col space-y-12 p-8">

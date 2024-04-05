@@ -13,17 +13,31 @@ import { RegisterSchema } from 'schemas';
 import { translate } from 'helpers/translate';
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
+  console.log({ values });
+
   const validatedFields = RegisterSchema.safeParse(values);
+
+  console.log({ validatedFields });
+
   const referer: User['id'] | null = cookies().get('r')?.value ?? null;
+
+  console.log({ referer });
 
   if (!validatedFields.success) {
     return { error: translate('actions.register.field.error') };
   }
 
   const { email, password, name } = validatedFields.data;
+
+  console.log({ email, password, name });
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  console.log({ hashedPassword });
+
   const existingUser = await getUserByEmail(email);
+
+  console.log({ existingUser });
 
   if (existingUser) {
     return { error: translate('actions.register.email.error') };
@@ -39,7 +53,15 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   });
 
   const verificationToken = await generateVerificationToken(email);
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+
+  console.log({ verificationToken });
+
+  await sendVerificationEmail(
+    verificationToken.email,
+    verificationToken.token
+  ).catch(console.error);
+
+  console.log({ success: translate('actions.register.form.success') });
 
   return { success: translate('actions.register.form.success') };
 };

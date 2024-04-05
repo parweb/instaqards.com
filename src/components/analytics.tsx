@@ -128,9 +128,9 @@ export default function Analytics({
                   } else if (title === 'components.analytics.country.title') {
                     return (
                       <Image
-                        src={`https://flag.vercel.app/m/${code}.svg`}
+                        src={`https://flag.vercel.app/m/${code!}.svg`}
                         className="mr-2.5"
-                        alt={code}
+                        alt={code!}
                         width={24}
                         height={16}
                       />
