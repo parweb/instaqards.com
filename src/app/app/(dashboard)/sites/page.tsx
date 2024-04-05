@@ -8,6 +8,7 @@ import PlaceholderCard from 'components/placeholder-card';
 import Sites from 'components/sites';
 import { getSession } from 'lib/auth';
 import { db } from 'helpers';
+import { translate } from 'helpers/translate';
 
 export default async function AllSites() {
   const session = await getSession();
@@ -34,7 +35,7 @@ export default async function AllSites() {
       <div className="flex flex-col space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="font-cal text-3xl font-bold dark:text-white">
-            All Sites
+            {translate('dashboard.sites.title')}
           </h1>
 
           <CreateSiteButton>
