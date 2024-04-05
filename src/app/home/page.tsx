@@ -6,6 +6,7 @@ import { PriceTable } from 'components/price-table';
 import { Button } from 'components/ui/button';
 import { db } from 'helpers';
 import { cn } from 'lib/utils';
+import { translate } from 'helpers/translate';
 
 import {
   Carousel,
@@ -86,7 +87,7 @@ const Header = () => {
         />
 
         <Link href={(process.env.NEXTAUTH_URL as string) + '/register'}>
-          <Button>Register</Button>
+          <Button>{translate('page.home.register')}</Button>
         </Link>
       </div>
     </div>
@@ -121,12 +122,11 @@ const Hero = ({ bg = '06' }) => {
           <div className="flex items-center justify-center">
             <div className="flex flex-col gap-5 text-white p-4 rounded-md">
               <div className={cn('text-5xl sm:text-7xl font-[900] b')}>
-                Your website, reimagined
+                {translate('page.home.hero.title')}
               </div>
 
               <div className="text-2xl">
-                Our landing page template works on all devices, so you only have
-                to set it up once, and get beautiful results forever.
+                {translate('page.home.hero.description')}
               </div>
 
               <ul className="">
@@ -139,7 +139,7 @@ const Hero = ({ bg = '06' }) => {
                     <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                   </svg>
 
-                  <span>Zero Hassle, Infinite Customization</span>
+                  <span>{translate('page.home.hero.bullet.one')}</span>
                 </li>
 
                 <li className="flex gap-2">
@@ -151,7 +151,7 @@ const Hero = ({ bg = '06' }) => {
                     <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                   </svg>
 
-                  <span>Unmatched Speed</span>
+                  <span>{translate('page.home.hero.bullet.two')}</span>
                 </li>
 
                 <li className="flex gap-2">
@@ -163,13 +163,13 @@ const Hero = ({ bg = '06' }) => {
                     <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                   </svg>
 
-                  <span>Almost like magic</span>
+                  <span>{translate('page.home.hero.bullet.three')}</span>
                 </li>
               </ul>
 
               <div>
                 <Link href={(process.env.NEXTAUTH_URL as string) + '/register'}>
-                  <Button>Start now, be unforgettable in an instant</Button>
+                  <Button>{translate('page.home.hero.call-to-action')}</Button>
                 </Link>
               </div>
             </div>
@@ -194,8 +194,12 @@ const Gallery = () => {
   return (
     <div id="Gallery" className="flex flex-col p-10 gap-10">
       <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-5xl font-[900]">{"See What's Possible"}</h2>
-        <p className="text-gray-600 text-2xl">Discover some user Qards</p>
+        <h2 className="text-5xl font-[900]">
+          {translate('page.home.gallery.title')}
+        </h2>
+        <p className="text-gray-600 text-2xl">
+          {translate('page.home.gallery.description')}
+        </p>
       </hgroup>
 
       <div className="p-5">
@@ -223,15 +227,20 @@ const Features = () => {
   return (
     <div id="Features" className="flex flex-col p-10 gap-10">
       <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-5xl font-[900]">Features</h2>
-        <p className="text-gray-600 text-2xl">do it fast do it well</p>
+        <h2 className="text-5xl font-[900]">
+          {translate('page.home.features.title')}
+        </h2>
+        <p className="text-gray-600 text-2xl">
+          {translate('page.home.features.description')}
+        </p>
       </hgroup>
 
       <div className="">
-        <p>feature 01</p>
-        <p>feature 02</p>
-        <p>feature 03</p>
-        <p>feature 05</p>
+        <p>{translate('page.home.features.bullet.one')}</p>
+        <p>{translate('page.home.features.bullet.two')}</p>
+        <p>{translate('page.home.features.bullet.three')}</p>
+        <p>{translate('page.home.features.bullet.four')}</p>
+        <p>{translate('page.home.features.bullet.five')}</p>
       </div>
     </div>
   );
@@ -253,8 +262,12 @@ const Prices = async () => {
   return (
     <div id="Prices" className="flex flex-col p-10 gap-20 overflow-hidden">
       <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-5xl font-[900]">Take Action Now</h2>
-        <p className="text-gray-600 text-2xl">start your journey with ease</p>
+        <h2 className="text-5xl font-[900]">
+          {translate('page.home.price.title')}
+        </h2>
+        <p className="text-gray-600 text-2xl">
+          {translate('page.home.price.description')}
+        </p>
       </hgroup>
 
       <div className="flex items-center justify-center">
@@ -351,8 +364,12 @@ const Testimonial = () => {
   return (
     <div id="Testimonial" className="flex flex-col p-5 sm:p-10 gap-20">
       <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-5xl font-[900]">Testimonial</h2>
-        <p className="text-gray-600 text-2xl">they speak for ourself ❤️</p>
+        <h2 className="text-5xl font-[900]">
+          {translate('page.home.testimonial.title')}
+        </h2>
+        <p className="text-gray-600 text-2xl">
+          {translate('page.home.testimonial.description')}
+        </p>
       </hgroup>
 
       <div>
