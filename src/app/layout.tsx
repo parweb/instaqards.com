@@ -1,12 +1,13 @@
 import { Analytics } from '@vercel/analytics/react';
 import { Metadata } from 'next';
+import Script from 'next/script';
 
 import { cn } from 'lib/utils';
+import { cookies } from 'next/headers';
 import { cal, inter } from 'styles/fonts';
 import 'styles/globals.css';
-import { Providers } from './providers';
-import { cookies } from 'next/headers';
 import { DEFAULT_LANG } from '../../translations';
+import { Providers } from './providers';
 
 const title = 'Reveal your self right now with qards.link';
 const description = 'unforgettable in an instant';
@@ -48,6 +49,21 @@ export default function RootLayout({
           {children}
           <Analytics />
         </Providers>
+
+        <Script id="counterscale-script-init" strategy="afterInteractive">
+          {`(function () {
+            debugger;
+              window.counterscale = {
+                  q: [["set", "siteId", "b9e25c8d-2282-4ad3-ab4c-27818a51b910"], ["trackPageview"]],
+              };
+          })();`}
+        </Script>
+
+        <Script
+          id="counterscale-script"
+          src="https://counterscale.parweb.workers.dev/tracker.js"
+          strategy="beforeInteractive"
+        ></Script>
       </body>
     </html>
   );
