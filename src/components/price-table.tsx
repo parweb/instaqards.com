@@ -1,4 +1,4 @@
-import {
+import type {
   Price,
   Product,
   Subscription as SubscriptionPrisma
@@ -6,7 +6,7 @@ import {
 
 import { PriceTableButton } from 'components/price-table-button';
 import { translate } from 'helpers/translate';
-import { Subscription } from 'lib/auth';
+import type { Subscription } from 'lib/auth';
 import { cn } from 'lib/utils';
 
 export const PriceTable = ({

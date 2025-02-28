@@ -1,8 +1,9 @@
 'use client';
 
-import { Price } from '@prisma/client';
+import type { Price } from '@prisma/client';
 import { useState } from 'react';
 import { LuLoader } from 'react-icons/lu';
+import { useRouter } from 'next/navigation';
 
 import { getStripe, postData } from 'helpers';
 import useTranslation from 'hooks/use-translation';
@@ -12,6 +13,7 @@ export const PriceTableButton = ({ price }: { price: Price }) => {
   const [loading, setLoading] = useState(false);
 
   const translate = useTranslation();
+  const router = useRouter();
 
   const onClick = async ({
     price,
@@ -31,15 +33,16 @@ export const PriceTableButton = ({ price }: { price: Price }) => {
       (await getStripe())?.redirectToCheckout({ sessionId });
     } catch (error) {
       setLoading(false);
-      alert((error as Error)?.message);
+      router.push(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL as string}/register`);
     } finally {
     }
   };
 
   return (
     <button
+      type="button"
       disabled={loading}
-      onClick={() => onClick({ price, quantity: price.interval_count! })}
+      onClick={() => onClick({ price, quantity: Number(price.interval_count) })}
       className={cn(
         'flex items-center justify-center',
         'bg-black rounded-md p-2 text-white uppercase',
