@@ -1,11 +1,12 @@
 import { cookies } from 'next/headers';
 
-import translations, { DEFAULT_LANG, Lang, Part } from '../../translations';
+import translations, {
+  DEFAULT_LANG,
+  type Lang,
+  type Part
+} from '../../translations';
 
-export const translate = (
-  key: Part,
-  options: Record<string, string> = {}
-): string => {
+export const getLang = () => {
   let lang = (cookies().get('lang')?.value || DEFAULT_LANG) as Lang;
 
   switch (true) {
@@ -22,6 +23,16 @@ export const translate = (
       lang = 'en';
       break;
   }
+
+  return lang;
+};
+
+export const translate = (
+  key: Part,
+  options: Record<string, string> = {}
+): string => {
+  const lang = getLang();
+
 
   return Object.entries(options).reduce(
     (carry, [key, value]) => carry.replaceAll(`{${key}}`, value),

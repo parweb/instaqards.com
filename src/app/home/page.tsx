@@ -6,7 +6,7 @@ import { PriceTable } from 'components/price-table';
 import { Button } from 'components/ui/button';
 import { db } from 'helpers';
 import { cn } from 'lib/utils';
-import { translate } from 'helpers/translate';
+import { translate, getLang } from 'helpers/translate';
 import { FlagPicker } from 'components/flag-picker';
 
 import {
@@ -17,6 +17,7 @@ import {
   CarouselPrevious
 } from 'components/ui/carousel';
 import { cookies } from 'next/headers';
+import { Lang } from '../../../translations';
 
 const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   const ratio = 2283 / 1109;
@@ -171,7 +172,7 @@ const Hero = ({ bg = '06' }) => {
               </ul>
 
               <div>
-                <Link href={(process.env.NEXTAUTH_URL as string) + '/register'}>
+                <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
                   <Button>{translate('page.home.hero.call-to-action')}</Button>
                 </Link>
               </div>
@@ -278,86 +279,140 @@ const Prices = async () => {
 };
 
 const Testimonial = () => {
-  const comments = [
+  const lang = getLang();
+
+  const comments: {
+    id: string;
+    name: string;
+    text: { [key in Lang]: string };
+  }[] = [
     {
       id: '01',
       name: 'Spencer C.',
-      text: "I've been using qards for a few months now, and the difference it has made is incredible. Highly recommended for anyone looking to improve visibility!"
+      text: {
+        fr: "J'utilise qards depuis quelques mois déjà, et la différence est incroyable. Je le recommande vivement à tous ceux qui souhaitent améliorer leur visibilité !",
+        en: "I've been using qards for a few months now, and the difference it has made is incredible. Highly recommended for anyone looking to improve visibility!"
+      }
     },
     {
       id: '02',
       name: 'Ashley R.',
-      text: 'The team at qards went above and beyond to ensure my satisfaction. Their attention to detail and customer service is unmatched.'
+      text: {
+        fr: "L'équipe de qards est allée au-delà de mes attentes pour garantir ma satisfaction. Leur sens du détail et leur service client sont inégalés.",
+        en: 'The team at qards went above and beyond to ensure my satisfaction. Their attention to detail and customer service is unmatched.'
+      }
     },
     {
       id: '03',
       name: 'Emma S.',
-      text: "From start to finish, my experience with qards was seamless. It's clear that quality is their top priority."
+      text: {
+        fr: 'Du début à la fin, mon expérience avec qards a été fluide. Il est évident que la qualité est leur priorité absolue.',
+        en: "From start to finish, my experience with qards was seamless. It's clear that quality is their top priority."
+      }
     },
     {
       id: '04',
       name: 'Jamie F.',
-      text: "I was hesitant at first, but I'm so glad I decided to go with qards. They've exceeded all my expectations."
+      text: {
+        fr: "J'étais hésitant(e) au début, mais je suis tellement heureux(se) d'avoir choisi qards. Ils ont dépassé toutes mes attentes.",
+        en: "I was hesitant at first, but I'm so glad I decided to go with qards. They've exceeded all my expectations."
+      }
     },
     {
       id: '05',
       name: 'Sonia G.',
-      text: "qards has been a game-changer for me. It's rare to find something that delivers on every promise, but this does."
+      text: {
+        fr: 'qards a vraiment changé la donne pour moi. Il est rare de trouver un service qui tienne toutes ses promesses, mais celui-ci le fait.',
+        en: "qards has been a game-changer for me. It's rare to find something that delivers on every promise, but this does."
+      }
     },
     {
       id: '06',
       name: 'Brianna A.',
-      text: 'The customer support at qards is fantastic. They were responsive, helpful, and made sure all my questions were answered.'
+      text: {
+        fr: 'Le support client de qards est fantastique. Ils ont été réactifs, serviables et ont veillé à répondre à toutes mes questions.',
+        en: 'The customer support at qards is fantastic. They were responsive, helpful, and made sure all my questions were answered.'
+      }
     },
     {
       id: '07',
       name: 'David R.',
-      text: "I can't recommend qards enough. It's not just the results, but also the experience that makes them stand out."
+      text: {
+        fr: "Je ne peux pas assez recommander qards. Ce ne sont pas seulement les résultats, mais aussi l'expérience globale qui les distingue.",
+        en: "I can't recommend qards enough. It's not just the results, but also the experience that makes them stand out."
+      }
     },
     {
       id: '08',
       name: 'Craig J.',
-      text: "Investing in qards was one of the best decisions I've made. It's worth every penny."
+      text: {
+        fr: "Investir dans qards a été l'une des meilleures décisions que j'aie prises. Ça vaut chaque centime.",
+        en: "Investing in qards was one of the best decisions I've made. It's worth every penny."
+      }
     },
     {
       id: '09',
       name: 'Amy V.',
-      text: "The level of professionalism and expertise at qards is impressive. They truly know what they're doing."
+      text: {
+        fr: "Le niveau de professionnalisme et d'expertise chez qards est impressionnant. Ils savent vraiment ce qu'ils font.",
+        en: "The level of professionalism and expertise at qards is impressive. They truly know what they're doing."
+      }
     },
     {
       id: '10',
       name: 'Terri S.',
-      text: "I've tried many qards in the past, but nothing compares to this. I'm a customer for life."
+      text: {
+        fr: "J'ai essayé de nombreux services similaires par le passé, mais rien ne se compare à qards. Je resterai client(e) à vie.",
+        en: "I've tried many qards in the past, but nothing compares to this. I'm a customer for life."
+      }
     },
     {
       id: '11',
       name: 'Patrick M.',
-      text: "The results speak for themselves. qards has significantly improved visibility, and I couldn't be happier."
+      text: {
+        fr: "Les résultats parlent d'eux-mêmes. qards a considérablement amélioré ma visibilité, et je ne pourrais pas être plus satisfait(e).",
+        en: "The results speak for themselves. qards has significantly improved visibility, and I couldn't be happier."
+      }
     },
     {
       id: '12',
       name: 'Samantha D.',
-      text: "qards's commitment to excellence is evident in everything they do. I'm so glad I chose them."
+      text: {
+        fr: "L'engagement de qards envers l'excellence est évident dans tout ce qu'ils font. Je suis tellement ravi(e) de les avoir choisis.",
+        en: "qards's commitment to excellence is evident in everything they do. I'm so glad I chose them."
+      }
     },
     {
       id: '13',
       name: 'James H.',
-      text: "The ease of use and effectiveness of qards is unmatched. It's an essential for anyone in music production."
+      text: {
+        fr: "La facilité d'utilisation et l'efficacité de qards sont inégalées. C'est un incontournable pour toute personne travaillant dans la production musicale.",
+        en: "The ease of use and effectiveness of qards is unmatched. It's an essential for anyone in music production."
+      }
     },
     {
       id: '14',
       name: 'Joshua J.',
-      text: "I was blown away by the immediate results I saw with qards. It's been incredibly beneficial."
+      text: {
+        fr: "J'ai été bluffé(e) par les résultats immédiats que j'ai obtenus avec qards. Ça a été incroyablement bénéfique.",
+        en: "I was blown away by the immediate results I saw with qards. It's been incredibly beneficial."
+      }
     },
     {
       id: '15',
       name: 'Thomas R.',
-      text: 'The team at qards is passionate about what they do, and it shows. Their dedication to customer satisfaction is commendable.'
+      text: {
+        fr: "L'équipe de qards est passionnée par ce qu'elle fait, et cela se voit. Leur dévouement à la satisfaction client est remarquable.",
+        en: 'The team at qards is passionate about what they do, and it shows. Their dedication to customer satisfaction is commendable.'
+      }
     },
     {
       id: '16',
       name: 'Austin M.',
-      text: "Choosing qards was a turning point for me. It has brought joy into my life, and I'm grateful for the impact it's had."
+      text: {
+        fr: "Choisir qards a été un véritable tournant pour moi. Cela a apporté de la joie dans ma vie, et je suis reconnaissant(e) de l'impact que cela a eu.",
+        en: "Choosing qards was a turning point for me. It has brought joy into my life, and I'm grateful for the impact it's had."
+      }
     }
   ];
 
@@ -391,7 +446,7 @@ const Testimonial = () => {
               </div>
 
               <div className="flex-1 flex items-center justify-center">
-                <div className="italic">{comment.text}</div>
+                <div className="italic">{comment.text[lang]}</div>
               </div>
             </div>
           ))}
