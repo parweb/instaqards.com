@@ -1,7 +1,7 @@
 'use client';
 
 import useTranslation from 'hooks/use-translation';
-import { Lang } from '../../translations';
+import type { Lang } from '../../translations';
 
 import {
   Select,
@@ -29,6 +29,8 @@ export const LanguageChooser = () => {
       <SelectContent>
         <SelectItem value="en">English</SelectItem>
         <SelectItem value="fr">Français</SelectItem>
+        <SelectItem value="it">Italiano</SelectItem>
+        <SelectItem value="es">Español</SelectItem>
       </SelectContent>
     </Select>
   );

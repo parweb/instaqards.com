@@ -15,11 +15,7 @@ import {
 
 import useTranslation from 'hooks/use-translation';
 
-type Tuple = {
-  name: string;
-  value: number;
-  code?: string;
-};
+type Tuple = { name: string; value: number; code?: string };
 
 export default function Analytics({
   chartdata
@@ -84,7 +80,9 @@ export default function Analytics({
           categories={['Clicks', 'Visitors']}
           colors={['indigo', 'cyan']}
           valueFormatter={(number: number) =>
-            Intl.NumberFormat({ en: 'us', fr: 'fr' }[translate.lang])
+            Intl.NumberFormat(
+              { en: 'us', fr: 'fr', it: 'it', es: 'es' }[translate.lang]
+            )
               .format(number)
               .toString()
           }

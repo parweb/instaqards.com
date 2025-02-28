@@ -26,7 +26,9 @@ export default function OverviewStats({
           alignItems="baseline"
         >
           <Metric className="font-cal">
-            {Intl.NumberFormat({ en: 'us', fr: 'fr' }[translate.lang])
+            {Intl.NumberFormat(
+              { en: 'us', fr: 'fr', it: 'it', es: 'es' }[translate.lang]
+            )
               .format(total)
               .toString()}
           </Metric>
@@ -46,7 +48,9 @@ export default function OverviewStats({
           data={chartdata}
           index="date"
           valueFormatter={(number: number) =>
-            Intl.NumberFormat({ en: 'us', fr: 'fr' }[translate.lang])
+            Intl.NumberFormat(
+              { en: 'us', fr: 'fr', it: 'it', es: 'es' }[translate.lang]
+            )
               .format(number)
               .toString()
           }

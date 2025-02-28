@@ -1,9 +1,7 @@
 import Image from 'next/image';
-import { ReactNode, Suspense } from 'react';
+import { type ReactNode, Suspense } from 'react';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
-  const ratio = 1;
-
   return (
     <Suspense fallback={null}>
       <div className="flex min-h-screen">
@@ -11,12 +9,13 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           {children}
         </div>
 
-        <div className="flex-1 hidden bg-muted lg:flex items-center justify-center">
+        <div className="flex-1 hidden lg:flex items-center justify-center">
           <Image
-            src={`/rsz_black-transparent_withlink.png`}
+            className="rounded-lg"
+            src="/splash.jpg"
             alt="Logo qards.link"
-            width={800 * ratio}
-            height={400 * ratio}
+            width={500}
+            height={500}
           />
         </div>
       </div>

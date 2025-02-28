@@ -18,7 +18,14 @@ const useTranslation = () => {
       country = 'en';
       break;
     case lang.toLowerCase().includes('us'):
+    case lang.toLowerCase().includes('gb'):
       country = 'en';
+      break;
+    case lang.toLowerCase().includes('it'):
+      country = 'it';
+      break;
+    case lang.toLowerCase().includes('es'):
+      country = 'es';
       break;
     default:
       country = 'en';

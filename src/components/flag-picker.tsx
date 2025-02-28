@@ -9,17 +9,24 @@ import { setLang } from 'actions/lang-chooser';
 import { LuLoader } from 'react-icons/lu';
 
 const lang2flag = (lang: string) => {
-  const mapping: Record<string, string> = { fr: 'FR', en: 'US' };
+  const mapping: Record<string, string> = {
+    fr: 'FR',
+    en: 'US',
+    it: 'IT',
+    de: 'DE',
+    es: 'ES',
+    gb: 'GB'
+  };
 
   return mapping?.[lang] ?? lang;
 };
 
 export const FlagPicker = ({
-  options = ['fr', 'en'],
-  value = 'fr'
+  options = ['fr', 'en', 'it', 'es', 'gb'],
+  value
 }: {
   options?: string[];
-  value: string | undefined;
+  value: string;
 }) => {
   const [selectedFlag, action, pending] = useFormState(setLang, value);
   // const [selectedFlag, action] = useFormState(setLang, value);

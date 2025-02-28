@@ -17,7 +17,14 @@ export const getLang = (): Lang => {
       lang = 'en';
       break;
     case lang.toLowerCase().includes('us'):
+    case lang.toLowerCase().includes('gb'):
       lang = 'en';
+      break;
+    case lang.toLowerCase().includes('it'):
+      lang = 'it';
+      break;
+    case lang.toLowerCase().includes('es'):
+      lang = 'es';
       break;
     default:
       lang = 'en';
