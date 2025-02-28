@@ -174,7 +174,18 @@ export const auth = betterAuth({
   plugins: [nextCookies()],
   database: prismaAdapter(db, { provider: 'postgresql' }),
   emailAndPassword: {
-    enabled: true
+    enabled: true,
+    password: {
+      hash: async (password: string) => {
+        console.log('hash', { password });
+        return password;
+      },
+      verify: async (data: { password: string, hash: string }) => {
+        console.log('verify', data);
+        return true;
+        // return data.password === data.hash;
+      }
+    }
   },
   session: {
     fields: {
@@ -182,13 +193,15 @@ export const auth = betterAuth({
       token: "sessionToken"
     }
   },
-  accounts: {
+  account: {
     fields: {
       accountId: "providerAccountId",
       refreshToken: "refresh_token",
       accessToken: "access_token",
       accessTokenExpiresAt: "access_token_expires",
       idToken: "id_token",
+      providerId: "provider",
+      password: "providerAccountId"
     }
   },
 });

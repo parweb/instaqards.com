@@ -8,6 +8,7 @@ import translations, {
 
 export const getLang = async (): Promise<Lang> => {
   const cookieStore = await cookies();
+
   let lang = (cookieStore.get('lang')?.value || DEFAULT_LANG) as Lang;
 
   switch (true) {
