@@ -1,6 +1,7 @@
-import { Link as PrismaLink } from '@prisma/client';
+import type { Link as PrismaLink } from '@prisma/client';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 
 import { db } from 'helpers';
 import { translate } from 'helpers/translate';
@@ -86,11 +87,7 @@ export default async function SiteHomePage({
     );
   }
 
-  await db.click.create({
-    data: {
-      siteId: site.id
-    }
-  });
+  await db.click.create({ data: { siteId: site.id } });
 
   const { main, social }: Record<PrismaLink['type'], PrismaLink[]> = {
     main: [],
@@ -99,10 +96,7 @@ export default async function SiteHomePage({
     ...site.links.groupBy(({ type }: { type: PrismaLink['type'] }) => type)
   };
 
-  const data = {
-    links: main,
-    socials: social
-  };
+  const data = { links: main, socials: social };
 
   return (
     <main className="relative flex-1 self-stretch items-center">
@@ -134,6 +128,19 @@ export default async function SiteHomePage({
 
       <section className="absolute inset-0 flex flex-col p-10">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
+          <header className="flex flex-col justify-center items-center gap-6  pt-4">
+            <div className="bg-white rounded-full overflow-hidden">
+              <Image
+                src={site.logo ?? ''}
+                alt={site.name ?? ''}
+                width={100}
+                height={100}
+              />
+            </div>
+
+            <h1 className="text-white text-4xl font-bold">{site.name}</h1>
+          </header>
+
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1">
               {data.links.map(props => (

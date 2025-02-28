@@ -18,15 +18,10 @@ export default async function AllSites() {
   }
 
   const users =
-    session?.user.role === UserRole.ADMIN
+    session?.user.role === 'ADMIN'
       ? await db.user.findMany({
           include: { sites: true },
-          where: {
-            id: { not: session.user.id },
-            sites: {
-              some: {}
-            }
-          }
+          where: { id: { not: session.user.id }, sites: { some: {} } }
         })
       : [];
 

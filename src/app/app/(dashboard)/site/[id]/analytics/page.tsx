@@ -20,22 +20,18 @@ export default async function SiteAnalytics({
   }
 
   const site = await db.site.findUnique({
-    where: {
-      id: decodeURIComponent(params.id)
-    }
+    where: { id: decodeURIComponent(params.id) }
   });
 
   if (
     !site ||
-    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
+    (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
   ) {
     notFound();
   }
 
   const clicks = await db.click.findMany({
-    where: {
-      OR: [{ siteId: site.id }, { link: { siteId: site.id } }]
-    },
+    where: { OR: [{ siteId: site.id }, { link: { siteId: site.id } }] },
     orderBy: { createdAt: 'asc' }
   });
 

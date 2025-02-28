@@ -91,7 +91,7 @@ const Header = () => {
             <Button>{translate('page.home.register')}</Button>
           </Link>
 
-          <FlagPicker value={cookies().get('lang')?.value || ''} />
+          <FlagPicker value={cookies().get('lang')?.value || undefined} />
         </div>
       </div>
     </div>

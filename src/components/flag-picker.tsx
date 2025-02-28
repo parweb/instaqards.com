@@ -19,7 +19,7 @@ export const FlagPicker = ({
   value = 'fr'
 }: {
   options?: string[];
-  value: string;
+  value: string | undefined;
 }) => {
   const [selectedFlag, action, pending] = useFormState(setLang, value);
   // const [selectedFlag, action] = useFormState(setLang, value);

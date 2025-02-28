@@ -153,7 +153,7 @@ export function withSiteAuth(action: any) {
     if (
       !site ||
       (site.userId !== session?.user?.id &&
-        session.user.role !== UserRole.ADMIN)
+        session.user.role !== 'ADMIN')
     ) {
       return { error: translate('auth.authorized.error') };
     }

@@ -1,4 +1,5 @@
-import { Link, Site, UserRole } from '@prisma/client';
+import type { Link, Site, UserRole } from '@prisma/client';
+import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -29,10 +30,7 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
     ...site.links.groupBy(({ type }: { type: Link['type'] }) => type)
   };
 
-  const data = {
-    links: main,
-    socials: social
-  };
+  const data = { links: main, socials: social };
 
   return (
     <main className="relative flex-1 self-stretch items-center">
@@ -64,6 +62,19 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
 
       <section className="absolute inset-0 flex flex-col p-10 pointer-events-none">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
+          <header className="flex flex-col justify-center items-center gap-3">
+            <h1 className="text-white text-4xl font-bold">{site.name}</h1>
+
+            <div className="bg-white rounded-full overflow-hidden">
+              <Image
+                src={site.logo ?? ''}
+                alt={site.name ?? ''}
+                width={100}
+                height={100}
+              />
+            </div>
+          </header>
+
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
               {data.links.map(props => (
@@ -108,14 +119,12 @@ export default async function SitePosts({
 
   const site = await db.site.findUnique({
     where: { id: decodeURIComponent(params.id) },
-    include: {
-      links: { orderBy: { createdAt: 'asc' } }
-    }
+    include: { links: { orderBy: { createdAt: 'asc' } } }
   });
 
   if (
     !site ||
-    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
+    (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
   ) {
     notFound();
   }

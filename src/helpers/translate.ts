@@ -6,7 +6,7 @@ import translations, {
   type Part
 } from '../../translations';
 
-export const getLang = () => {
+export const getLang = (): Lang => {
   let lang = (cookies().get('lang')?.value || DEFAULT_LANG) as Lang;
 
   switch (true) {

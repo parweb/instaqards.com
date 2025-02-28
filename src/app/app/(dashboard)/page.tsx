@@ -21,10 +21,8 @@ export default async function Overview() {
   }
 
   const clicks =
-    session.user.role === UserRole.ADMIN
-      ? await db.click.findMany({
-          orderBy: { createdAt: 'asc' }
-        })
+    session.user.role === 'ADMIN'
+      ? await db.click.findMany({ orderBy: { createdAt: 'asc' } })
       : await db.click.findMany({
           where: {
             OR: [

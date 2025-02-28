@@ -20,14 +20,12 @@ export default async function SiteAnalyticsLayout({
   }
 
   const site = await db.site.findUnique({
-    where: {
-      id: decodeURIComponent(params.id)
-    }
+    where: { id: decodeURIComponent(params.id) }
   });
 
   if (
     !site ||
-    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
+    (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
   ) {
     notFound();
   }

@@ -1,7 +1,7 @@
 'use client';
 
-import { Link } from '@prisma/client';
-import { ReactNode } from 'react';
+import type { Link } from '@prisma/client';
+import type { ReactNode } from 'react';
 
 import { useModal } from 'components/modal/provider';
 import useTranslation from 'hooks/use-translation';
@@ -20,6 +20,7 @@ export default function CreateLinkButton({
   if (type === 'main') {
     return (
       <button
+        type="button"
         onClick={() => modal?.show(children)}
         className={cn(
           'transition-all',
@@ -27,7 +28,7 @@ export default function CreateLinkButton({
           'hover:bg-transparent hover:text-white/90'
         )}
       >
-        {'+ ' + translate('components.create.link.button')}
+        {`+ ${translate('components.create.link.button')}`}
       </button>
     );
   }
@@ -35,6 +36,7 @@ export default function CreateLinkButton({
   if (type === 'social') {
     return (
       <button
+        type="button"
         onClick={() => modal?.show(children)}
         className="border border-white/90 rounded-full bg-white text-black h-[45px] aspect-square hover:bg-transparent hover:text-white/90 transition-all hover:scale-125"
       >
