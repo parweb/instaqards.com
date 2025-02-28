@@ -17,7 +17,7 @@ export default function OverviewStats({
 
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      <Card className="dark:!bg-stone-900">
+      <Card className="dark:bg-stone-900!">
         <Text>{translate('component.overview-stats.title')}</Text>
 
         <Flex

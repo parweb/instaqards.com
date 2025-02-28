@@ -36,7 +36,7 @@ export const PortalButton = ({ children }: PropsWithChildren) => {
         disabled={loading}
         onClick={onClick}
         className={cn(
-          'flex h-8 w-32 items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-none sm:h-10 border-black bg-black text-white hover:bg-white hover:text-black dark:border-stone-700 dark:hover:border-stone-200 dark:hover:bg-black dark:hover:text-white dark:active:bg-stone-800'
+          'flex h-8 w-32 items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-hidden sm:h-10 border-black bg-black text-white hover:bg-white hover:text-black dark:border-stone-700 dark:hover:border-stone-200 dark:hover:bg-black dark:hover:text-white dark:active:bg-stone-800'
         )}
       >
         {loading ? <LuLoader className="animate-spin" /> : children}
