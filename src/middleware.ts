@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
+import { getSessionCookie } from "better-auth";
 
 import authConfig, {
   apiAuthPrefix,
@@ -14,6 +15,10 @@ export const config = {
 const { auth } = NextAuth(authConfig);
 
 export default async function middleware(req: NextRequest) {
+  const sessionCookie = getSessionCookie(req);
+
+
+
   const url = req.nextUrl;
 
   const isApiAuthRoute = url.pathname.startsWith(apiAuthPrefix);

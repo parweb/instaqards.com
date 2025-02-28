@@ -1,21 +1,21 @@
 'use server';
 
 import { AuthError } from 'next-auth';
-import * as z from 'zod';
+import type * as z from 'zod';
 
-import { signIn } from 'auth';
 import { getTwoFactorConfirmationByUserId } from 'data/two-factor-confirmation';
 import { getTwoFactorTokenByEmail } from 'data/two-factor-token';
 import { getUserByEmail } from 'data/user';
 import { db } from 'helpers/db';
 import { sendTwoFactorTokenEmail, sendVerificationEmail } from 'helpers/mail';
+import { translate } from 'helpers/translate';
+import { auth, } from 'lib/auth';
+import { LoginSchema } from 'schemas';
+
 import {
   generateTwoFactorToken,
   generateVerificationToken
 } from 'helpers/tokens';
-import { LoginSchema } from 'schemas';
-import { DEFAULT_LOGIN_REDIRECT } from 'auth.config';
-import { translate } from 'helpers/translate';
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
@@ -92,10 +92,11 @@ export const login = async (
   }
 
   try {
-    await signIn('credentials', {
-      email,
-      password,
-      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT
+    await auth.api.signInEmail({
+      body: {
+        email,
+        password
+      }
     });
   } catch (error) {
     if (error instanceof AuthError) {

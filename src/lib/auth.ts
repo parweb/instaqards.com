@@ -1,18 +1,21 @@
-import { SubscriptionStatus } from '@prisma/client';
+import { betterAuth } from 'better-auth';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { nextCookies } from 'better-auth/next-js';
 
-import type {
-  Price,
-  Product,
-  Site,
-  Subscription as SubscriptionPrisma
+import {
+  type Price,
+  type Product,
+  type Site,
+  type Subscription as SubscriptionPrisma,
+  SubscriptionStatus
 } from '@prisma/client';
 
-import { auth } from 'auth';
+import { auth as nextAuth } from 'auth';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 
 export function getSession() {
-  return auth();
+  return nextAuth();
 }
 
 const isFuture = (date: Date | string) =>
@@ -149,7 +152,7 @@ export function withSiteAuth<T>(
     const session = await getSession();
 
     if (!session || !session?.user) {
-      return { error: translate('auth.error') };
+      return { error: await translate('auth.error') };
     }
 
     const site = await db.site.findUnique({
@@ -160,9 +163,32 @@ export function withSiteAuth<T>(
       !site ||
       (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
     ) {
-      return { error: translate('auth.authorized.error') };
+      return { error: await translate('auth.authorized.error') };
     }
 
     return action(formData, site, key);
   };
 }
+
+export const auth = betterAuth({
+  plugins: [nextCookies()],
+  database: prismaAdapter(db, { provider: 'postgresql' }),
+  emailAndPassword: {
+    enabled: true
+  },
+  session: {
+    fields: {
+      expiresAt: "expires",
+      token: "sessionToken"
+    }
+  },
+  accounts: {
+    fields: {
+      accountId: "providerAccountId",
+      refreshToken: "refresh_token",
+      accessToken: "access_token",
+      accessTokenExpiresAt: "access_token_expires",
+      idToken: "id_token",
+    }
+  },
+});

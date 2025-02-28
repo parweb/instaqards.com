@@ -5,13 +5,16 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import type * as z from 'zod';
 
 import { login } from 'actions';
 import { CardWrapper } from 'components/auth/card-wrapper';
 import { FormError } from 'components/form-error';
 import { FormSuccess } from 'components/form-success';
 import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { LoginSchema } from 'schemas';
+
 import {
   Form,
   FormControl,
@@ -20,8 +23,6 @@ import {
   FormLabel,
   FormMessage
 } from 'components/ui/form';
-import { Input } from 'components/ui/input';
-import { LoginSchema } from 'schemas';
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -38,10 +39,7 @@ export const LoginForm = () => {
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
-    defaultValues: {
-      email: '',
-      password: ''
-    }
+    defaultValues: { email: '', password: '' }
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {

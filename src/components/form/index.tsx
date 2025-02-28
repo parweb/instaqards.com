@@ -1,7 +1,7 @@
 'use client';
 
 import va from '@vercel/analytics';
-import { useSession } from 'next-auth/react';
+import { useSession } from 'lib/auth-client';
 import { useParams, useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
@@ -53,7 +53,7 @@ export default function Form({
 }) {
   const { id } = useParams() as { id?: string };
   const router = useRouter();
-  const { update } = useSession();
+  const { refetch } = useSession();
 
   return (
     <form
@@ -77,7 +77,7 @@ export default function Form({
             if (id) {
               router.refresh();
             } else {
-              await update();
+              refetch();
               router.refresh();
             }
             toast.success(`Successfully updated ${inputAttrs.name}!`);
