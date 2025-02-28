@@ -7,6 +7,7 @@ import { Button } from 'components/ui/button';
 import { db } from 'helpers';
 import { cn } from 'lib/utils';
 import { translate } from 'helpers/translate';
+import { FlagPicker } from 'components/flag-picker';
 
 import {
   Carousel,
@@ -15,6 +16,7 @@ import {
   CarouselNext,
   CarouselPrevious
 } from 'components/ui/carousel';
+import { cookies } from 'next/headers';
 
 const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   const ratio = 2283 / 1109;
@@ -38,10 +40,7 @@ const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   return (
     <div
       className="pointer-events-none"
-      style={{
-        width: width * factor + 'px',
-        height: height * factor + 'px'
-      }}
+      style={{ width: width * factor + 'px', height: height * factor + 'px' }}
     >
       <div
         style={{
@@ -86,9 +85,13 @@ const Header = () => {
           height={400 * ratio}
         />
 
-        <Link href={(process.env.NEXTAUTH_URL as string) + '/register'}>
-          <Button>{translate('page.home.register')}</Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
+            <Button>{translate('page.home.register')}</Button>
+          </Link>
+
+          <FlagPicker value={cookies().get('lang')?.value || ''} />
+        </div>
       </div>
     </div>
   );
@@ -251,10 +254,7 @@ const Prices = async () => {
     where: { active: { equals: true } },
     include: {
       prices: {
-        where: {
-          active: { equals: true },
-          interval_count: { equals: 1 }
-        }
+        where: { active: { equals: true }, interval_count: { equals: 1 } }
       }
     }
   });
