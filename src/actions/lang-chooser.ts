@@ -2,9 +2,10 @@
 
 import { cookies } from 'next/headers';
 
-export const setLang = (prev: string, form: FormData) => {
+export const setLang = async (prev: string, form: FormData) => {
+  const cookieStore = await cookies();
   const lang = form.get('lang') as string;
-  cookies().set('lang', lang);
+  cookieStore.set('lang', lang);
 
   return lang
 };

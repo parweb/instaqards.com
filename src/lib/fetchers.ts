@@ -1,6 +1,6 @@
 import { unstable_cache } from 'next/cache';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 
 export async function getSiteData(domain: string) {
   const subdomain = domain.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)

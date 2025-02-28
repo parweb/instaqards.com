@@ -1,6 +1,6 @@
 import Form from 'components/form';
 import DeleteSiteForm from 'components/form/delete-site-form';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { updateSite } from 'lib/actions';
 
 export default async function SiteSettingsIndex({
@@ -9,9 +9,7 @@ export default async function SiteSettingsIndex({
   params: { id: string };
 }) {
   const data = await db.site.findUnique({
-    where: {
-      id: decodeURIComponent(params.id)
-    }
+    where: { id: decodeURIComponent(params.id) }
   });
 
   return (

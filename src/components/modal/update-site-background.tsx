@@ -68,10 +68,7 @@ export default function UpdateSiteBackgroundModal({
               })
             }).then(res => res.json());
 
-            await fetch(url, {
-              method: 'PUT',
-              body: acceptedFiles[0]
-            });
+            await fetch(url, { method: 'PUT', body: acceptedFiles[0] });
 
             va.track('Update site', { id: siteId });
 

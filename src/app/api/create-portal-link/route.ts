@@ -1,6 +1,7 @@
 import { auth } from 'auth';
 import { createOrRetrieveCustomer } from 'data/customer';
-import { getURL, stripe } from 'helpers';
+import { getURL } from 'helpers/getURL';
+import { stripe } from 'helpers/stripe';
 import { translate } from 'helpers/translate';
 
 export async function POST(req: Request) {
@@ -8,11 +9,11 @@ export async function POST(req: Request) {
     try {
       const { user = null } = (await auth()) || {};
 
-      if (!user) throw Error(translate('api.stripe.user.not-found'));
+      if (!user) throw Error(await translate('api.stripe.user.not-found'));
 
       const customer = await createOrRetrieveCustomer(user);
 
-      if (!customer) throw Error(translate('api.stripe.customer.error'));
+      if (!customer) throw Error(await translate('api.stripe.customer.error'));
 
       const { url } = await stripe.billingPortal.sessions.create({
         customer,
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
       );
     }
   } else {
-    return new Response(translate('api.method.not-allowed'), {
+    return new Response(await translate('api.method.not-allowed'), {
       headers: { Allow: 'POST' },
       status: 405
     });

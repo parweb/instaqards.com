@@ -1,11 +1,13 @@
+import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { LuCheck } from 'react-icons/lu';
 
 import { FlagPicker } from 'components/flag-picker';
 import { PriceTable } from 'components/price-table';
 import { Button } from 'components/ui/button';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getLang, translate } from 'helpers/translate';
 import { cn } from 'lib/utils';
 import { DEFAULT_LANG, type Lang } from '../../../translations';
@@ -17,8 +19,6 @@ import {
   CarouselNext,
   CarouselPrevious
 } from 'components/ui/carousel';
-import { cookies } from 'next/headers';
-import { LuCheck } from 'react-icons/lu';
 
 const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   const ratio = 2283 / 1109;
@@ -53,9 +53,7 @@ const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
           paddingRight: '46px',
           paddingBottom: '43px',
           paddingLeft: '50px',
-
           scale: factor,
-          // margin: '-' + 100 - 100 * scale + '% 0',
           transform: `translate(${translate}%, ${translate}%)`
         }}
       >
@@ -75,7 +73,8 @@ const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   );
 };
 
-const Header = () => {
+const Header = async () => {
+  const cookieStore = await cookies();
   const ratio = 0.2;
 
   return (
@@ -90,17 +89,17 @@ const Header = () => {
 
         <div className="flex items-center gap-2">
           <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
-            <Button>{translate('page.home.register')}</Button>
+            <Button>{await translate('page.home.register')}</Button>
           </Link>
 
-          <FlagPicker value={cookies().get('lang')?.value || DEFAULT_LANG} />
+          <FlagPicker value={cookieStore.get('lang')?.value || DEFAULT_LANG} />
         </div>
       </div>
     </div>
   );
 };
 
-const Hero = ({ bg = '06' }) => {
+const Hero = async ({ bg = '06' }) => {
   return (
     <div
       id="Hero"
@@ -125,36 +124,30 @@ const Hero = ({ bg = '06' }) => {
           <div className="flex items-center justify-center">
             <div className="flex flex-col gap-5 text-white p-4 rounded-md">
               <div className={cn('text-5xl sm:text-7xl font-[900] b')}>
-                {translate('page.home.hero.title')}
+                {await translate('page.home.hero.title')}
               </div>
 
               <div className="text-2xl">
-                {translate('page.home.hero.description')}
+                {await translate('page.home.hero.description')}
               </div>
 
               <ul className="">
-                <li className="flex gap-2">
-                  <LuCheck />
+                {(['one', 'two', 'three'] as const).map(async bullet => (
+                  <li key={bullet} className="flex gap-2 items-center">
+                    <LuCheck />
 
-                  <span>{translate('page.home.hero.bullet.one')}</span>
-                </li>
-
-                <li className="flex gap-2">
-                  <LuCheck />
-
-                  <span>{translate('page.home.hero.bullet.two')}</span>
-                </li>
-
-                <li className="flex gap-2">
-                  <LuCheck />
-
-                  <span>{translate('page.home.hero.bullet.three')}</span>
-                </li>
+                    <span>
+                      {await translate(`page.home.hero.bullet.${bullet}`)}
+                    </span>
+                  </li>
+                ))}
               </ul>
 
               <div>
                 <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
-                  <Button>{translate('page.home.hero.call-to-action')}</Button>
+                  <Button>
+                    {await translate('page.home.hero.call-to-action')}
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -169,7 +162,7 @@ const Hero = ({ bg = '06' }) => {
   );
 };
 
-const Gallery = () => {
+const Gallery = async () => {
   const qards = [
     { url: 'https://nora-peintures.qards.link/' },
     { url: 'https://chloe-jnr.qards.link/' },
@@ -180,10 +173,10 @@ const Gallery = () => {
     <div id="Gallery" className="flex flex-col p-10 gap-10">
       <hgroup className="text-center flex flex-col gap-4">
         <h2 className="text-5xl font-[900]">
-          {translate('page.home.gallery.title')}
+          {await translate('page.home.gallery.title')}
         </h2>
         <p className="text-gray-600 text-2xl">
-          {translate('page.home.gallery.description')}
+          {await translate('page.home.gallery.description')}
         </p>
       </hgroup>
 
@@ -208,24 +201,24 @@ const Gallery = () => {
   );
 };
 
-// const Features = () => {
+// const Features = async () => {
 //   return (
 //     <div id="Features" className="flex flex-col p-10 gap-10">
 //       <hgroup className="text-center flex flex-col gap-4">
 //         <h2 className="text-5xl font-[900]">
-//           {translate('page.home.features.title')}
+//           {await translate('page.home.features.title')}
 //         </h2>
 //         <p className="text-gray-600 text-2xl">
-//           {translate('page.home.features.description')}
+//           {await translate('page.home.features.description')}
 //         </p>
 //       </hgroup>
 
 //       <div className="">
-//         <p>{translate('page.home.features.bullet.one')}</p>
-//         <p>{translate('page.home.features.bullet.two')}</p>
-//         <p>{translate('page.home.features.bullet.three')}</p>
-//         <p>{translate('page.home.features.bullet.four')}</p>
-//         <p>{translate('page.home.features.bullet.five')}</p>
+//         <p>{await translate('page.home.features.bullet.one')}</p>
+//         <p>{await translate('page.home.features.bullet.two')}</p>
+//         <p>{await translate('page.home.features.bullet.three')}</p>
+//         <p>{await translate('page.home.features.bullet.four')}</p>
+//         <p>{await translate('page.home.features.bullet.five')}</p>
 //       </div>
 //     </div>
 //   );
@@ -245,10 +238,10 @@ const Prices = async () => {
     <div id="Prices" className="flex flex-col p-10 gap-20 overflow-hidden">
       <hgroup className="text-center flex flex-col gap-4">
         <h2 className="text-5xl font-[900]">
-          {translate('page.home.price.title')}
+          {await translate('page.home.price.title')}
         </h2>
         <p className="text-gray-600 text-2xl">
-          {translate('page.home.price.description')}
+          {await translate('page.home.price.description')}
         </p>
       </hgroup>
 
@@ -259,8 +252,8 @@ const Prices = async () => {
   );
 };
 
-const Testimonial = () => {
-  const lang = getLang();
+const Testimonial = async () => {
+  const lang = await getLang();
 
   const comments: {
     id: string;
@@ -433,10 +426,10 @@ const Testimonial = () => {
     <div id="Testimonial" className="flex flex-col p-5 sm:p-10 gap-20">
       <hgroup className="text-center flex flex-col gap-4">
         <h2 className="text-5xl font-[900]">
-          {translate('page.home.testimonial.title')}
+          {await translate('page.home.testimonial.title')}
         </h2>
         <p className="text-gray-600 text-2xl">
-          {translate('page.home.testimonial.description')}
+          {await translate('page.home.testimonial.description')}
         </p>
       </hgroup>
 
@@ -472,13 +465,15 @@ const Testimonial = () => {
 export default async function HomePage({
   searchParams
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const params = await searchParams;
+
   return (
     <div className="">
       <Header />
 
-      <Hero bg={searchParams?.bg as string} />
+      <Hero bg={params?.bg as string} />
 
       <Gallery />
 

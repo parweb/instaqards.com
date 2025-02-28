@@ -17,11 +17,7 @@ export const metadata: Metadata = {
   title,
   description,
   icons: ['https://qards.link/favicon.ico'],
-  openGraph: {
-    title,
-    description,
-    images: [image]
-  },
+  openGraph: { title, description, images: [image] },
   twitter: {
     card: 'summary_large_image',
     title,
@@ -32,14 +28,16 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://qards.link')
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+
   return (
     <html
-      lang={cookies().get('lang')?.value ?? DEFAULT_LANG}
+      lang={cookieStore.get('lang')?.value ?? DEFAULT_LANG}
       suppressHydrationWarning
     >
       <body

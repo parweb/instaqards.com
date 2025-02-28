@@ -39,6 +39,7 @@ export const getBlurDataURL = async (url: string | null) => {
 
     return `data:image/png;base64,${base64}`;
   } catch (error) {
+    console.error(error);
     return 'data:image/webp;base64,AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
   }
 };

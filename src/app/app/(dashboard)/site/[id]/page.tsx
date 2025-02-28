@@ -10,7 +10,7 @@ import UpdateSiteProfilePictureModal from 'components/modal/update-profile-pictu
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
 import UpdateSiteProfilePictureButton from 'components/update-site-profile-picture-button';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 

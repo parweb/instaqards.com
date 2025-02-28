@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 import CreateSiteButton from './create-site-button';
 import CreateSiteModal from './modal/create-site';
@@ -13,9 +13,7 @@ export default async function OverviewSitesCTA() {
   }
 
   const sites = await db.site.count({
-    where: {
-      userId: session?.user.id as string
-    }
+    where: { userId: session?.user.id as string }
   });
 
   return sites > 0 ? (

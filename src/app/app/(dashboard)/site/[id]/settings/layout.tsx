@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 import SiteSettingsNav from './nav';
 

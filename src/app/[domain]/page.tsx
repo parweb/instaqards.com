@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
 import { getSiteData } from 'lib/fetchers';

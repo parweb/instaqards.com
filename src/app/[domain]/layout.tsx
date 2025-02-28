@@ -4,16 +4,17 @@ import type { ReactNode } from 'react';
 
 import { getSiteData } from 'lib/fetchers';
 
-export async function generateMetadata({
-  params
-}: {
-  params: { domain: string };
-}): Promise<Metadata | null> {
-  const domain = decodeURIComponent(params.domain);
+type Props = { params: Promise<{ domain: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const param = await params;
+  console.log({ param });
+
+  const domain = decodeURIComponent(param.domain);
   const data = await getSiteData(domain);
 
   if (!data) {
-    return null;
+    return {};
   }
 
   const {
@@ -31,11 +32,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      images: [image]
-    },
+    openGraph: { title, description, images: [image] },
     twitter: {
       card: 'summary_large_image',
       title,

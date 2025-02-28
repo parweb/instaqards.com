@@ -8,7 +8,7 @@ import type {
 } from '@prisma/client';
 
 import { auth } from 'auth';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 
 export function getSession() {

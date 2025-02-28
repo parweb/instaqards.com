@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { LuLoader } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
 
-import { getStripe, postData } from 'helpers';
+import { postData } from 'helpers/api';
+import { getStripe } from 'helpers/getStripe';
 import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
 

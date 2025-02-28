@@ -1,5 +1,5 @@
 import Form from 'components/form';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { updateSite } from 'lib/actions';
 
 export default async function SiteSettingsDomains({
@@ -8,9 +8,7 @@ export default async function SiteSettingsDomains({
   params: { id: string };
 }) {
   const data = await db.site.findUnique({
-    where: {
-      id: decodeURIComponent(params.id)
-    }
+    where: { id: decodeURIComponent(params.id) }
   });
 
   return (

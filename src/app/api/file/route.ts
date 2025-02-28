@@ -7,8 +7,6 @@ export async function GET(req: Request) {
   const Range = req?.headers?.get('range') ?? 'bytes=0-';
   const id = String(new URL(req?.url).searchParams.get('id'));
 
-  console.log({ Range });
-
   try {
     const data = await get(id, { Range });
 

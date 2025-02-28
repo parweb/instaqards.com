@@ -1,8 +1,8 @@
 'use client';
 
+import Form from 'next/form';
 import type { ComponentType } from 'react';
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState, useState } from 'react';
 import Flag from 'react-world-flags';
 
 import { setLang } from 'actions/lang-chooser';
@@ -35,10 +35,9 @@ export const FlagPicker = ({
   value
 }: {
   options?: string[];
-  value: string | undefined;
+  value: string;
 }) => {
-  const [selectedFlag, action, pending] = useFormState(setLang, value);
-  // const [selectedFlag, action] = useFormState(setLang, value);
+  const [selectedFlag, action, pending] = useActionState(setLang, value);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -64,7 +63,7 @@ export const FlagPicker = ({
       )}
 
       {isOpen && (
-        <form action={action} className="absolute flex flex-col gap-2 py-2">
+        <Form action={action} className="absolute flex flex-col gap-2 py-2">
           {otherFlags.map(code => (
             <button type="submit" name="lang" value={code} key={code}>
               <FlagComponent
@@ -75,7 +74,7 @@ export const FlagPicker = ({
               />
             </button>
           ))}
-        </form>
+        </Form>
       )}
     </div>
   );

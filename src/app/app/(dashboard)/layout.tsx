@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import Nav from 'components/nav';
 import { PriceTable } from 'components/price-table';
 import Profile from 'components/profile';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getSubscription } from 'lib/auth';
 
 export default async function DashboardLayout({
@@ -18,10 +18,7 @@ export default async function DashboardLayout({
     where: { active: { equals: true } },
     include: {
       prices: {
-        where: {
-          active: { equals: true },
-          interval_count: { equals: 1 }
-        }
+        where: { active: { equals: true }, interval_count: { equals: 1 } }
       }
     }
   });

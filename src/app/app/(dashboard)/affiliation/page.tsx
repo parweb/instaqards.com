@@ -2,7 +2,7 @@ import { eachMinuteOfInterval } from 'date-fns';
 import { redirect } from 'next/navigation';
 
 import Analytics from 'components/analytics';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
@@ -15,9 +15,7 @@ export default async function AllAffiliation() {
   }
 
   const affiliates = await db.user.findMany({
-    where: {
-      referer: { id: session.user.id }
-    }
+    where: { referer: { id: session.user.id } }
   });
 
   const splitByDate = affiliates.groupBy(({ createdAt }) =>
@@ -30,10 +28,7 @@ export default async function AllAffiliation() {
   const chartdata = eachMinuteOfInterval({ start, end }).map(date => {
     const key = [date.toDateString(), `${date.getHours()}h`].join(' ');
 
-    return {
-      date: key,
-      Clicks: splitByDate?.[key]?.length ?? 0
-    };
+    return { date: key, Clicks: splitByDate?.[key]?.length ?? 0 };
   });
 
   return (

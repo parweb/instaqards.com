@@ -2,7 +2,8 @@ import type { User } from 'next-auth';
 import type Stripe from 'stripe';
 
 import type { PricingPlanInterval } from '@prisma/client';
-import { db, stripe } from 'helpers';
+import { db } from 'helpers/db';
+import { stripe } from 'helpers/stripe';
 
 export const toDateTime = (secs: number) => {
   const date = new Date(+0);

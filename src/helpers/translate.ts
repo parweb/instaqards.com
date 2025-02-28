@@ -6,8 +6,9 @@ import translations, {
   type Part
 } from '../../translations';
 
-export const getLang = (): Lang => {
-  let lang = (cookies().get('lang')?.value || DEFAULT_LANG) as Lang;
+export const getLang = async (): Promise<Lang> => {
+  const cookieStore = await cookies();
+  let lang = (cookieStore.get('lang')?.value || DEFAULT_LANG) as Lang;
 
   switch (true) {
     case lang.toLowerCase().includes('fr'):
@@ -34,12 +35,11 @@ export const getLang = (): Lang => {
   return lang;
 };
 
-export const translate = (
+export const translate = async (
   key: Part,
   options: Record<string, string> = {}
-): string => {
-  const lang = getLang();
-
+): Promise<string> => {
+  const lang = await getLang();
 
   return Object.entries(options).reduce(
     (carry, [key, value]) => carry.replaceAll(`{${key}}`, value),
