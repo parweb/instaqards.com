@@ -32,7 +32,9 @@ export const createSite = async (
 
   const name = formData.get('name') as string;
   const description = formData.get('description') as string;
-  const subdomain = formData.get('subdomain') as string;
+  const subdomain = String(formData.get('subdomain')).toLowerCase()
+    .trim()
+    .replace(/[\W_]+/g, '-');
 
   try {
     const response = await db.site.create({
@@ -174,7 +176,7 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
         response = await db.site.update({
           where: { id: site.id },
           data: {
-            customDomain: value
+            customDomain: value.toLowerCase()
           }
         });
         await Promise.all([addDomainToVercel(value)]);

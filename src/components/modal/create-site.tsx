@@ -84,9 +84,17 @@ export default function CreateSiteModal() {
               type="text"
               placeholder="subdomain"
               value={data.subdomain}
-              onChange={e => setData({ ...data, subdomain: e.target.value })}
+              onChange={e =>
+                setData({
+                  ...data,
+                  subdomain: e.target.value
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[\W_]+/g, '-')
+                })
+              }
               autoCapitalize="off"
-              pattern="[a-zA-Z0-9\-]+" // only allow lowercase letters, numbers, and dashes
+              pattern="[a-zA-Z0-9\-]+"
               maxLength={32}
               required
               className="w-full rounded-l-lg border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"

@@ -10,7 +10,7 @@ export async function getSiteData(domain: string) {
   return await unstable_cache(
     async () => {
       return db.site.findUnique({
-        where: subdomain ? { subdomain } : { customDomain: domain },
+        where: subdomain ? { subdomain: subdomain.toLowerCase() } : { customDomain: domain.toLowerCase() },
         include: {
           user: true,
           links: {
