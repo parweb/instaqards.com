@@ -2,8 +2,9 @@
 
 import type { Link, Site } from '@prisma/client';
 import va from '@vercel/analytics';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
+import { SocialIcon, getKeys } from 'react-social-icons';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
@@ -11,17 +12,29 @@ import { createLink } from 'lib/actions';
 import { cn } from 'lib/utils';
 import { useParams, useRouter } from 'next/navigation';
 import { useModal } from './provider';
+import { Input } from 'components/ui/input';
 
 export default function CreateLinkModal({ type }: { type: Link['type'] }) {
   const router = useRouter();
   const params = useParams();
   const modal = useModal();
 
-  const [data, setData] = useState({
+  const [data, setData] = useState<{
+    label: string;
+    href: string;
+    logo: string;
+    filter: string | null;
+  }>({
     label: '',
     href: '',
-    logo: ''
+    logo: '',
+    filter: null
   });
+
+  const socials =
+    data.filter === null
+      ? getKeys()
+      : getKeys().filter(key => key.includes(data?.filter ?? ''));
 
   return (
     <form
@@ -51,7 +64,7 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
             Label
           </label>
 
-          <input
+          <Input
             id="label"
             name="label"
             type="text"
@@ -59,7 +72,6 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
             value={data.label}
             onChange={e => setData({ ...data, label: e.target.value })}
             required
-            className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
           />
         </div>
 
@@ -71,16 +83,39 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
             Link
           </label>
 
-          <input
-            id="href"
-            name="href"
-            type="text"
-            placeholder="https://instagram.com/..."
-            value={data.href}
-            onChange={e => setData({ ...data, href: e.target.value })}
-            required
-            className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
-          />
+          <div className="flex items-center gap-2">
+            {type === 'social' && (
+              <div>
+                <SocialIcon
+                  network={data.logo}
+                  fallback={{ color: '#000000', path: 'M0' }}
+                  style={{ width: 28, height: 28 }}
+                />
+              </div>
+            )}
+
+            <Input
+              id="href"
+              name="href"
+              type="text"
+              placeholder="https://instagram.com/..."
+              value={data.href}
+              onChange={e => {
+                setData(state => ({ ...state, href: e.target.value }));
+
+                try {
+                  const url = new URL(e.target.value);
+                  const domain = url.hostname.replace('www.', '');
+                  const logo = String(domain.split('.').at(0));
+
+                  setData(state => ({ ...state, logo }));
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+              required
+            />
+          </div>
         </div>
 
         {type === 'social' && (
@@ -92,16 +127,35 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
               Logo
             </label>
 
-            <input
-              id="logo"
-              name="logo"
+            <Input
+              id="filter"
+              name="filter"
               type="text"
-              placeholder="https://exemple.com/logo.png"
-              value={data.logo ?? ''}
-              onChange={e => setData({ ...data, logo: e.target.value })}
-              required
-              className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
+              placeholder="facebook, twitter, ..."
+              value={data.filter ?? ''}
+              onChange={e => setData({ ...data, filter: e.target.value })}
             />
+
+            <div className="grid grid-cols-8 gap-2">
+              {socials.map(key => (
+                <SocialIcon
+                  title={key}
+                  key={key}
+                  network={key}
+                  style={{
+                    width: 34,
+                    height: 34,
+                    boxShadow: `0 0 0 2px ${data.logo === key ? 'black' : 'white'}`
+                  }}
+                  className={cn(
+                    'rounded-full transition-all duration-300 border-2 border-white'
+                  )}
+                  onClick={() =>
+                    setData({ ...data, logo: data.logo === key ? '' : key })
+                  }
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

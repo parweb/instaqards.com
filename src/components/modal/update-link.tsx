@@ -5,9 +5,11 @@ import va from '@vercel/analytics';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { SocialIcon, getKeys } from 'react-social-icons';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
+import { Input } from 'components/ui/input';
 import { updateLink } from 'lib/actions';
 import { cn } from 'lib/utils';
 import { useModal } from './provider';
@@ -18,6 +20,13 @@ export default function UpdateLinkModal(link: Link) {
   const modal = useModal();
 
   const [data, setData] = useState(link);
+  const [filter, setFilter] = useState<string | null>(null);
+  const [logo, setLogo] = useState<string>('');
+
+  const socials =
+    filter === null
+      ? getKeys()
+      : getKeys().filter(key => key.includes(filter ?? ''));
 
   return (
     <form
@@ -67,16 +76,29 @@ export default function UpdateLinkModal(link: Link) {
             Link
           </label>
 
-          <input
-            id="href"
-            name="href"
-            type="text"
-            placeholder="https://instagram.com/..."
-            value={data.href}
-            onChange={e => setData({ ...data, href: e.target.value })}
-            required
-            className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
-          />
+          <div className="flex items-center gap-2">
+            {link.type === 'social' && (
+              <div>
+                <SocialIcon
+                  href={data.href}
+                  network={logo}
+                  fallback={{ color: '#000000', path: 'M0' }}
+                  style={{ width: 28, height: 28 }}
+                />
+              </div>
+            )}
+
+            <input
+              id="href"
+              name="href"
+              type="text"
+              placeholder="https://instagram.com/..."
+              value={data.href}
+              onChange={e => setData({ ...data, href: e.target.value })}
+              required
+              className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
+            />
+          </div>
         </div>
 
         {link.type === 'social' && (
@@ -88,16 +110,33 @@ export default function UpdateLinkModal(link: Link) {
               Logo
             </label>
 
-            <input
-              id="logo"
-              name="logo"
+            <Input
+              id="filter"
+              name="filter"
               type="text"
-              placeholder="https://exemple.com/logo.png"
-              value={data.logo ?? ''}
-              onChange={e => setData({ ...data, logo: e.target.value })}
-              required
-              className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
+              placeholder="facebook, twitter, ..."
+              value={filter ?? ''}
+              onChange={e => setFilter(e.target.value)}
             />
+
+            <div className="grid grid-cols-8 gap-2">
+              {socials.map(key => (
+                <SocialIcon
+                  title={key}
+                  key={key}
+                  network={key}
+                  style={{
+                    width: 34,
+                    height: 34,
+                    boxShadow: `0 0 0 2px ${logo === key ? 'black' : 'white'}`
+                  }}
+                  className={cn(
+                    'rounded-full transition-all duration-300 border-2 border-white'
+                  )}
+                  onClick={() => setLogo(logo === key ? '' : key)}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
