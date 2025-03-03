@@ -1,14 +1,35 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-}
-
 generator client {
   provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("POSTGRES_PRISMA_URL")
+  directUrl         = env("POSTGRES_URL_NON_POOLING")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum PricingType {
+  one_time
+  recurring
+}
+
+enum PricingPlanInterval {
+  day
+  week
+  month
+  year
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  canceled
+  incomplete
+  incomplete_expired
+  past_due
+  unpaid
+  paused
 }
 
 enum UserRole {
@@ -32,30 +53,30 @@ model User {
 
   role                  UserRole               @default(USER)
   accounts              Account[]
+  customer              Customer?
   sessions              Session[]
   sites                 Site[]
   subscriptions         Subscription[]
-  customer              Customer?
   twoFactorConfirmation TwoFactorConfirmation?
-
-  affiliates User[]  @relation("Affiliation")
-  referer    User?   @relation("Affiliation", fields: [refererId], references: [id])
-  refererId  String?
+  referer               User?                  @relation("Affiliation", fields: [refererId], references: [id])
+  refererId             String?
+  affiliates            User[]                 @relation("Affiliation")
+  Passkey               Passkey[]
+  Member                Member[]
+  Invitation            Invitation[]
 }
 
 model TwoFactorConfirmation {
   id String @id @default(cuid())
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-
-  @@unique([userId])
+  userId String @unique
 }
 
 model Customer {
   stripe_customer_id String @unique
 
-  user User   @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user User   @relation(fields: [id], references: [id], onDelete: Cascade)
   id   String @unique
 }
 
@@ -70,65 +91,43 @@ model Product {
   prices Price[]
 }
 
-enum PricingType {
-  one_time
-  recurring
-}
-
-enum PricingPlanInterval {
-  day
-  week
-  month
-  year
-}
-
 model Price {
-  id                String               @id
+  id                String  @id
   active            Boolean
   description       String
   unit_amount       Int?
   currency          String
-  type              PricingType
-  interval          PricingPlanInterval?
   interval_count    Int?
   trial_period_days Int?
-  metadata          Json                 @default("{}")
+  metadata          Json    @default("{}")
 
-  subscriptions Subscription[]
-  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  interval      PricingPlanInterval?
+  type          PricingType
+  product       Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId     String
-}
-
-enum SubscriptionStatus {
-  trialing
-  active
-  canceled
-  incomplete
-  incomplete_expired
-  past_due
-  unpaid
-  paused
+  subscriptions Subscription[]
 }
 
 model Subscription {
-  id                   String             @id
-  status               SubscriptionStatus
-  metadata             Json               @default("{}")
+  id                   String    @id
+  metadata             Json      @default("{}")
   quantity             Int
   cancel_at_period_end Boolean
-  created              DateTime           @default(now())
-  current_period_start DateTime           @default(now())
-  current_period_end   DateTime           @default(now())
-  ended_at             DateTime?          @default(now())
-  cancel_at            DateTime?          @default(now())
-  canceled_at          DateTime?          @default(now())
-  trial_start          DateTime?          @default(now())
-  trial_end            DateTime?          @default(now())
+  created              DateTime  @default(now())
+  current_period_start DateTime  @default(now())
+  current_period_end   DateTime  @default(now())
+  ended_at             DateTime? @default(now())
+  cancel_at            DateTime? @default(now())
+  canceled_at          DateTime? @default(now())
+  trial_start          DateTime? @default(now())
+  trial_end            DateTime? @default(now())
 
-  price   Price  @relation(fields: [priceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  priceId String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId  String
+  status       SubscriptionStatus
+  price        Price              @relation(fields: [priceId], references: [id], onDelete: Cascade)
+  priceId      String
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  Organization Organization[]
 }
 
 model Account {
@@ -156,8 +155,10 @@ model Session {
   sessionToken String   @unique
   expires      DateTime
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
 
   @@index([userId])
 }
@@ -201,18 +202,17 @@ model Click {
 }
 
 model Link {
-  id       String  @id @default(cuid())
-  type     String  @db.Text
-  position Int     @default(0)
-  label    String  @db.Text
-  href     String  @db.Text
-  logo     String? @db.Text
-
+  id        String   @id @default(cuid())
+  type      String
+  position  Int      @default(0)
+  label     String
+  href      String
+  logo      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   clicks Click[]
-  site   Site?   @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  site   Site?   @relation(fields: [siteId], references: [id], onDelete: Cascade)
   siteId String?
 
   @@unique([type, href, siteId])
@@ -227,20 +227,20 @@ model Site {
   description   String? @db.Text
   logo          String? @default("https://qards.link/rsz_noir-fon-transparent.png") @db.Text
   font          String  @default("font-cal")
-  image         String? @default("https://qards.link/site-default.png") @db.Text
-  imageBlurhash String? @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC") @db.Text
+  image         String? @default("https://qards.link/site-default.png")
+  imageBlurhash String? @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC")
   subdomain     String? @unique
   customDomain  String? @unique
-  message404    String? @default("Blimey! You've found a page that doesn't exist.") @db.Text
-  background    String? @db.Text
+  message404    String? @default("Blimey! You've found a page that doesn't exist.")
+  background    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String?
-  links  Link[]
   clicks Click[]
+  links  Link[]
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
 
   @@index([userId])
 }
@@ -248,9 +248,86 @@ model Site {
 model Example {
   id            Int     @id @default(autoincrement())
   name          String?
-  description   String? @db.Text
+  description   String?
   domainCount   Int?
   url           String?
-  image         String? @db.Text
-  imageBlurhash String? @db.Text
+  image         String?
+  imageBlurhash String?
+}
+
+model Verification {
+  id         String   @id @default(ulid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
+model Passkey {
+  id           String   @id @default(ulid())
+  name         String?
+  publicKey    String
+  credentialID String
+  counter      Int
+  deviceType   String
+  backedUp     Boolean
+  transports   String?
+  createdAt    DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("passkey")
+}
+
+model Organization {
+  id               String   @id @default(ulid())
+  name             String
+  slug             String?
+  logo             String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  metadata         String?
+  stripeCustomerId String?
+
+  members     Member[]
+  invitations Invitation[]
+
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  Session        Session[]
+  subscriptionId String?
+
+  @@map("organization")
+}
+
+model Member {
+  id        String   @id @default(ulid())
+  role      String
+  createdAt DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+
+  @@map("member")
+}
+
+model Invitation {
+  id        String   @id @default(ulid())
+  email     String
+  role      String?
+  status    String
+  expiresAt DateTime
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  inviterId      String
+
+  @@map("invitation")
 }
