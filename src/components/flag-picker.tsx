@@ -1,12 +1,21 @@
 'use client';
 
+import type { ComponentType } from 'react';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
-
 import Flag from 'react-world-flags';
 
 import { setLang } from 'actions/lang-chooser';
 import { LuLoader } from 'react-icons/lu';
+
+interface FlagProps {
+  code: string;
+  height?: number;
+  width?: number;
+  className?: string;
+}
+
+const FlagComponent = Flag as ComponentType<FlagProps>;
 
 const lang2flag = (lang: string) => {
   const mapping: Record<string, string> = {
@@ -46,7 +55,7 @@ export const FlagPicker = ({
           <LuLoader className="animate-spin" />
         </div>
       ) : (
-        <Flag
+        <FlagComponent
           code={lang2flag(selectedFlag)}
           height={45}
           width={45}
@@ -58,7 +67,7 @@ export const FlagPicker = ({
         <form action={action} className="absolute flex flex-col gap-2 py-2">
           {otherFlags.map(code => (
             <button type="submit" name="lang" value={code} key={code}>
-              <Flag
+              <FlagComponent
                 code={lang2flag(code)}
                 height={100}
                 width={100}
