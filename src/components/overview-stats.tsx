@@ -16,7 +16,7 @@ export default function OverviewStats({
   const translate = useTranslation();
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2">
+    <div className="grid gap-6 sm:grid-cols-1">
       <Card className="dark:!bg-stone-900">
         <Text>{translate('component.overview-stats.title')}</Text>
 

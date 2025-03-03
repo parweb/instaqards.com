@@ -1,13 +1,13 @@
 TODO
 
-- lien social list de logo
-- prix trial a mettre en avant
+DONE -> lien social list de logo
+DONE -> prix trial a mettre en avant
 
 
 
 
 DONE -> Mettre le logo officiel
-     -> Admin -> creer et transférer les Qards / voir toute les Qards
+DONE -> Admin -> creer et transférer les Qards / voir toute les Qards
 DONE -> bouton -> Créer votre QARDS (call to action)
      -> Overview - > Petit carré avec les news et update a coté du truc de statistique
      -> Stats -> Range de date modifiable
