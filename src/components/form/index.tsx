@@ -12,6 +12,7 @@ import { cn } from 'lib/utils';
 import DomainConfiguration from './domain-configuration';
 import DomainStatus from './domain-status';
 import Uploader from './uploader';
+import { Combobox } from 'components/ui/combobox';
 
 export default function Form({
   title,
@@ -26,6 +27,14 @@ export default function Form({
   inputAttrs:
     | {
         name: string;
+        type: 'select';
+        defaultValue: string;
+        placeholder?: string;
+        searchPlaceholder?: string;
+        options: { id: string; name: string }[];
+      }
+    | {
+        name: string;
         type: string;
         defaultValue: string;
         placeholder?: string;
@@ -37,7 +46,6 @@ export default function Form({
         type: 'switch';
         defaultValue: boolean;
         placeholder?: string;
-
         pattern?: string;
       };
   handleSubmit: <T>(
@@ -137,6 +145,9 @@ export default function Form({
               </div>
             )}
           </div>
+        ) : inputAttrs.type === 'select' ? (
+          // @ts-ignore
+          <Combobox {...inputAttrs} />
         ) : inputAttrs.name === 'description' ? (
           <textarea
             {...{
@@ -163,9 +174,11 @@ export default function Form({
           />
         )}
       </div>
+
       {inputAttrs.name === 'customDomain' && inputAttrs.defaultValue && (
         <DomainConfiguration domain={inputAttrs.defaultValue as string} />
       )}
+
       <div className="flex flex-col items-center justify-center space-y-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 sm:flex-row sm:justify-between sm:space-y-0 sm:px-10">
         <p className="text-sm text-stone-500 dark:text-stone-400">{helpText}</p>
         <FormButton />

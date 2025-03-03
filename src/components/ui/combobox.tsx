@@ -17,24 +17,26 @@ import {
 } from 'components/ui/command';
 
 export function Combobox({
+  name,
   options,
   placeholder,
   searchPlaceholder,
-  value,
+  defaultValue,
   onChange = () => {}
 }: {
+  name: string;
   options: { id: string; name: string }[];
   placeholder?: string;
   searchPlaceholder?: string;
   onChange?: (value: string) => void;
-  value: string;
+  defaultValue?: string;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [data, setData] = React.useState(value);
+  const [value, setValue] = React.useState(defaultValue ?? '');
 
   React.useEffect(() => {
-    onChange(data);
-  }, [data, onChange]);
+    onChange(value);
+  }, [value, onChange]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,8 +46,9 @@ export function Combobox({
           // biome-ignore lint/a11y/useSemanticElements: shut up
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="justify-between"
         >
+          <input type="hidden" name={name} value={value} />
           {value
             ? options.find(option => option.id === value)?.name
             : placeholder}
@@ -53,7 +56,7 @@ export function Combobox({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="p-0" side="bottom" align="start">
         <Command>
           <CommandInput placeholder={searchPlaceholder ?? 'Search ...'} />
 
@@ -66,7 +69,7 @@ export function Combobox({
                   key={option.id}
                   value={option.id}
                   onSelect={currentValue => {
-                    setData(currentValue === data ? '' : currentValue);
+                    setValue(currentValue === value ? '' : currentValue);
                     setOpen(false);
                   }}
                 >
@@ -74,7 +77,7 @@ export function Combobox({
                   <Check
                     className={cn(
                       'ml-auto',
-                      data === option.id ? 'opacity-100' : 'opacity-0'
+                      value === option.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                 </CommandItem>

@@ -2,17 +2,17 @@
 
 import type { Link, Site } from '@prisma/client';
 import va from '@vercel/analytics';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { SocialIcon, getKeys } from 'react-social-icons';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
+import { Input } from 'components/ui/input';
 import { createLink } from 'lib/actions';
 import { cn } from 'lib/utils';
 import { useParams, useRouter } from 'next/navigation';
 import { useModal } from './provider';
-import { Input } from 'components/ui/input';
 
 export default function CreateLinkModal({ type }: { type: Link['type'] }) {
   const router = useRouter();
