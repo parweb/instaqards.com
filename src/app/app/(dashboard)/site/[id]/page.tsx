@@ -82,10 +82,11 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
 
             <div className="group relative bg-white rounded-full overflow-hidden w-24 h-24 cursor-pointer flex items-center justify-center">
               <Image
+                className="object-cover"
                 src={site.logo ?? ''}
                 alt={site.name ?? ''}
-                fill
-                objectFit="cover"
+                width={96}
+                height={96}
               />
 
               <div className="absolute inset-0 pointer-events-auto flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -131,10 +131,11 @@ export default async function SiteHomePage({
           <header className="flex flex-col justify-center items-center gap-6  pt-4">
             <div className="bg-white rounded-full overflow-hidden w-24 h-24 flex items-center justify-center">
               <Image
+                className="object-cover"
                 src={site.logo ?? ''}
                 alt={site.name ?? ''}
-                fill
-                objectFit="cover"
+                width={96}
+                height={96}
               />
             </div>
 
