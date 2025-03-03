@@ -1,12 +1,31 @@
-import { UserRole } from '@prisma/client';
-import { eachMinuteOfInterval } from 'date-fns';
+import { eachHourOfInterval } from 'date-fns';
+import { unstable_cache } from 'next/cache';
 import { notFound, redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
 import Analytics from 'components/analytics';
 import { db } from 'helpers';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
+
+const getCachedClicks = unstable_cache(
+  async (siteId: string) => {
+    // const thirtyDaysAgo = new Date();
+    // thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    return db.click.findMany({
+      where: {
+        OR: [{ siteId }, { link: { siteId } }]
+        // createdAt: { gte: thirtyDaysAgo }
+      },
+      orderBy: { createdAt: 'asc' },
+      select: { createdAt: true, siteId: true, linkId: true }
+    });
+  },
+  ['site-clicks'], // clé de cache
+  { revalidate: 3600 } // revalider toutes les heures
+);
 
 export default async function SiteAnalytics({
   params
@@ -30,29 +49,37 @@ export default async function SiteAnalytics({
     notFound();
   }
 
-  const clicks = await db.click.findMany({
-    where: { OR: [{ siteId: site.id }, { link: { siteId: site.id } }] },
-    orderBy: { createdAt: 'asc' }
-  });
+  const clicks = await getCachedClicks(site.id);
 
   const splitByDate = clicks.groupBy(({ createdAt }) =>
-    [createdAt.toDateString(), createdAt.getHours() + 'h'].join(' ')
+    [
+      new Date(createdAt).toDateString(),
+      `${new Date(createdAt).getHours()}h`
+    ].join(' ')
   );
 
   const start = clicks.at(0)?.createdAt ?? 0;
   const end = clicks.at(-1)?.createdAt ?? 0;
 
-  const chartdata = eachMinuteOfInterval({ start, end }).map(date => {
-    const key = [date.toDateString(), date.getHours() + 'h'].join(' ');
+  const chartdata = eachHourOfInterval({ start, end }).map(date => {
+    const when = new Date(date);
+
+    const key = `${when.toDateString()} ${when.getHours()}h`;
+
+    const dateClicks = splitByDate?.[key] || [];
+
+    const clicksCount = dateClicks.filter(
+      ({ siteId }) => siteId === null
+    ).length;
+
+    const visitorsCount = dateClicks.filter(
+      ({ linkId }) => linkId === null
+    ).length;
 
     return {
       date: key,
-      Clicks:
-        splitByDate?.[key]?.filter?.(({ siteId }) => siteId === null)?.length ??
-        0,
-      Visitors:
-        splitByDate?.[key]?.filter?.(({ linkId }) => linkId === null)?.length ??
-        0
+      Clicks: clicksCount,
+      Visitors: visitorsCount
     };
   });
 
@@ -84,7 +111,9 @@ export default async function SiteAnalytics({
         </div>
       </div>
 
-      <Analytics chartdata={chartdata} />
+      <Suspense fallback={<div>Chargement des analytics...</div>}>
+        <Analytics chartdata={chartdata} />
+      </Suspense>
     </>
   );
 }
