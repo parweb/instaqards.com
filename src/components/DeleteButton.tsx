@@ -1,6 +1,6 @@
 'use client';
 
-import { Site } from '@prisma/client';
+import type { Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
@@ -21,13 +21,13 @@ const DeleteButton = ({ siteId }: { siteId: Site['id'] }) => {
         window.confirm('Are you sure you want to delete your site?') &&
         deleteSite(data, siteId, 'delete')
           .then(async res => {
-            if (res.error) {
+            if ('error' in res) {
               toast.error(res.error);
             } else {
               va.track('Deleted Site');
               router.refresh();
               router.push('/sites');
-              toast.success(`Successfully deleted site!`);
+              toast.success('Successfully deleted site!');
             }
           })
           .catch((err: Error) => toast.error(err.message))
@@ -43,6 +43,7 @@ function FormButton() {
 
   return (
     <button
+      type="submit"
       disabled={pending}
       className={cn(
         'flex items-center justify-center transition-all',

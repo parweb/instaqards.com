@@ -1,4 +1,4 @@
-import Stripe from 'stripe';
+import type Stripe from 'stripe';
 
 import {
   manageSubscriptionStatusChange,
@@ -29,9 +29,11 @@ export async function POST(req: Request) {
       return new Response('Webhook secret not found.', { status: 400 });
 
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-  } catch (err: any) {
-    console.error(`❌ Error message: ${err.message}`);
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 });
+  } catch (error: unknown) {
+    const message = (error as Error)?.message ?? 'Unknown error';
+
+    console.error(`❌ Error message: ${message}`);
+    return new Response(`Webhook Error: ${message}`, { status: 400 });
   }
 
   console.log({ event, data: event.data });
@@ -49,15 +51,18 @@ export async function POST(req: Request) {
           break;
         case 'customer.subscription.created':
         case 'customer.subscription.updated':
-        case 'customer.subscription.deleted':
+        case 'customer.subscription.deleted': {
           const subscription = event.data.object as Stripe.Subscription;
+
           await manageSubscriptionStatusChange(
             subscription.id,
             subscription.customer as string,
             event.type === 'customer.subscription.created'
           );
+
           break;
-        case 'checkout.session.completed':
+        }
+        case 'checkout.session.completed': {
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
           if (checkoutSession.mode === 'subscription') {
             const subscriptionId = checkoutSession.subscription;
@@ -67,7 +72,9 @@ export async function POST(req: Request) {
               true
             );
           }
+
           break;
+        }
         default:
           throw new Error('Unhandled relevant event!');
       }

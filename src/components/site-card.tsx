@@ -1,4 +1,4 @@
-import { Site } from '@prisma/client';
+import type { Site } from '@prisma/client';
 import Link from 'next/link';
 import { LuCog } from 'react-icons/lu';
 

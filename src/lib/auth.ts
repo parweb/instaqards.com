@@ -1,10 +1,10 @@
-import {
+import { SubscriptionStatus } from '@prisma/client';
+
+import type {
   Price,
   Product,
   Site,
-  Subscription as SubscriptionPrisma,
-  SubscriptionStatus,
-  UserRole
+  Subscription as SubscriptionPrisma
 } from '@prisma/client';
 
 import { auth } from 'auth';
@@ -29,10 +29,10 @@ export class Subscription {
   constructor(subscription: Sub | null) {
     if (subscription === null) return;
 
-    Object.entries(subscription).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(subscription)) {
       // @ts-ignore
       this[key] = value;
-    });
+    }
   }
 
   valid(): boolean {
@@ -41,24 +41,24 @@ export class Subscription {
 
   incomplete(): boolean {
     // @ts-ignore
-    return this.status === SubscriptionStatus['incomplete'];
+    return this.status === SubscriptionStatus.incomplete;
   }
 
   pastDue(): boolean {
     // @ts-ignore
-    return this.status === SubscriptionStatus['past_due'];
+    return this.status === SubscriptionStatus.past_due;
   }
 
   active(): boolean {
     return (
       !this.ended() &&
       ![
-        SubscriptionStatus['incomplete'],
-        SubscriptionStatus['incomplete_expired'],
-        SubscriptionStatus['past_due'],
-        SubscriptionStatus['unpaid'],
-        SubscriptionStatus['canceled'],
-        SubscriptionStatus['paused']
+        SubscriptionStatus.incomplete,
+        SubscriptionStatus.incomplete_expired,
+        SubscriptionStatus.past_due,
+        SubscriptionStatus.unpaid,
+        SubscriptionStatus.canceled,
+        SubscriptionStatus.paused
         // @ts-ignore
       ].includes(this.status as never)
     );
@@ -99,7 +99,7 @@ type Option = {
 };
 
 export async function getSubscription(option?: Option) {
-  if (!!option?.site) {
+  if (option?.site) {
     return new Subscription(
       await db.subscription.findFirst({
         include: { price: { include: { product: true } } },
@@ -109,23 +109,23 @@ export async function getSubscription(option?: Option) {
         }
       })
     );
-  } else {
-    const session = await getSession();
-
-    if (!session || !session?.user) {
-      throw new Error('Your are not logged in');
-    }
-
-    return new Subscription(
-      await db.subscription.findFirst({
-        include: { price: { include: { product: true } } },
-        where: {
-          user: { id: session.user.id },
-          status: { in: ['trialing', 'active'] }
-        }
-      })
-    );
   }
+
+  const session = await getSession();
+
+  if (!session || !session?.user) {
+    throw new Error('Your are not logged in');
+  }
+
+  return new Subscription(
+    await db.subscription.findFirst({
+      include: { price: { include: { product: true } } },
+      where: {
+        user: { id: session.user.id },
+        status: { in: ['trialing', 'active'] }
+      }
+    })
+  );
 }
 
 export async function isPaid() {
@@ -134,12 +134,18 @@ export async function isPaid() {
   return subscription;
 }
 
-export function withSiteAuth(action: any) {
+export function withSiteAuth<T>(
+  action: (
+    form: FormData,
+    site: Site,
+    key: string | null
+  ) => Promise<{ error: string } | T>
+) {
   return async (
-    formData: FormData | null,
+    formData: FormData,
     siteId: string,
     key: string | null
-  ) => {
+  ): Promise<{ error: string } | T> => {
     const session = await getSession();
 
     if (!session || !session?.user) {
@@ -152,8 +158,7 @@ export function withSiteAuth(action: any) {
 
     if (
       !site ||
-      (site.userId !== session?.user?.id &&
-        session.user.role !== 'ADMIN')
+      (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
     ) {
       return { error: translate('auth.authorized.error') };
     }

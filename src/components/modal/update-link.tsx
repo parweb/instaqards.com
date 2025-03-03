@@ -23,7 +23,7 @@ export default function UpdateLinkModal(link: Link) {
     <form
       action={async (data: FormData) =>
         updateLink(data, params.id as Site['id'], link.id).then(res => {
-          if (res.error) {
+          if ('error' in res) {
             toast.error(res.error);
           } else {
             va.track('Update link', { id: link.id });

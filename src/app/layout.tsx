@@ -1,7 +1,6 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 
 import { cn } from 'lib/utils';
 import { cookies } from 'next/headers';

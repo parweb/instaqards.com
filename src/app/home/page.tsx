@@ -18,6 +18,7 @@ import {
   CarouselPrevious
 } from 'components/ui/carousel';
 import { cookies } from 'next/headers';
+import { LuCheck } from 'react-icons/lu';
 
 const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   const ratio = 2283 / 1109;
@@ -41,12 +42,12 @@ const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   return (
     <div
       className="pointer-events-none"
-      style={{ width: width * factor + 'px', height: height * factor + 'px' }}
+      style={{ width: `${width * factor}px`, height: `${height * factor}px` }}
     >
       <div
         style={{
-          width: width + 'px',
-          height: height + 'px',
+          width: `${width}px`,
+          height: `${height}px`,
           background: 'url(/iPhone-15-Pro2.png)',
           paddingTop: '44px',
           paddingRight: '46px',
@@ -55,10 +56,11 @@ const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
 
           scale: factor,
           // margin: '-' + 100 - 100 * scale + '% 0',
-          transform: 'translate(' + translate + '%, ' + translate + '%)'
+          transform: `translate(${translate}%, ${translate}%)`
         }}
       >
         <iframe
+          title={url}
           style={{
             transformOrigin: '0 0',
             transform: 'scale(2)',
@@ -80,7 +82,7 @@ const Header = () => {
     <div className="sticky top-0 bg-white/80 z-10">
       <div className="flex items-center justify-between pr-2 max-w-[1200px] m-auto">
         <Image
-          src={`/rsz_black-transparent_nolink.png`}
+          src="/rsz_black-transparent_nolink.png"
           alt="Logo qards.link"
           width={800 * ratio}
           height={400 * ratio}
@@ -99,9 +101,6 @@ const Header = () => {
 };
 
 const Hero = ({ bg = '06' }) => {
-  const gradient =
-    'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-block text-transparent bg-clip-text';
-
   return (
     <div
       id="Hero"
@@ -135,37 +134,19 @@ const Hero = ({ bg = '06' }) => {
 
               <ul className="">
                 <li className="flex gap-2">
-                  <svg
-                    className="fill-current shrink-0 w-3"
-                    viewBox="0 0 12 12"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
-                  </svg>
+                  <LuCheck />
 
                   <span>{translate('page.home.hero.bullet.one')}</span>
                 </li>
 
                 <li className="flex gap-2">
-                  <svg
-                    className="fill-current shrink-0 w-3"
-                    viewBox="0 0 12 12"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
-                  </svg>
+                  <LuCheck />
 
                   <span>{translate('page.home.hero.bullet.two')}</span>
                 </li>
 
                 <li className="flex gap-2">
-                  <svg
-                    className="fill-current shrink-0 w-3"
-                    viewBox="0 0 12 12"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
-                  </svg>
+                  <LuCheck />
 
                   <span>{translate('page.home.hero.bullet.three')}</span>
                 </li>
@@ -209,9 +190,9 @@ const Gallery = () => {
       <div className="p-5">
         <Carousel opts={{ align: 'start', loop: true }} className="">
           <CarouselContent>
-            {qards.map((qard, index) => (
+            {qards.map(qard => (
               <CarouselItem
-                key={index}
+                key={qard.url}
                 className="md:basis-1/2 lg:basis-1/3 justify-center flex"
               >
                 <Iphone url={qard.url} scale={25} />
@@ -227,28 +208,28 @@ const Gallery = () => {
   );
 };
 
-const Features = () => {
-  return (
-    <div id="Features" className="flex flex-col p-10 gap-10">
-      <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-5xl font-[900]">
-          {translate('page.home.features.title')}
-        </h2>
-        <p className="text-gray-600 text-2xl">
-          {translate('page.home.features.description')}
-        </p>
-      </hgroup>
+// const Features = () => {
+//   return (
+//     <div id="Features" className="flex flex-col p-10 gap-10">
+//       <hgroup className="text-center flex flex-col gap-4">
+//         <h2 className="text-5xl font-[900]">
+//           {translate('page.home.features.title')}
+//         </h2>
+//         <p className="text-gray-600 text-2xl">
+//           {translate('page.home.features.description')}
+//         </p>
+//       </hgroup>
 
-      <div className="">
-        <p>{translate('page.home.features.bullet.one')}</p>
-        <p>{translate('page.home.features.bullet.two')}</p>
-        <p>{translate('page.home.features.bullet.three')}</p>
-        <p>{translate('page.home.features.bullet.four')}</p>
-        <p>{translate('page.home.features.bullet.five')}</p>
-      </div>
-    </div>
-  );
-};
+//       <div className="">
+//         <p>{translate('page.home.features.bullet.one')}</p>
+//         <p>{translate('page.home.features.bullet.two')}</p>
+//         <p>{translate('page.home.features.bullet.three')}</p>
+//         <p>{translate('page.home.features.bullet.four')}</p>
+//         <p>{translate('page.home.features.bullet.five')}</p>
+//       </div>
+//     </div>
+//   );
+// };
 
 const Prices = async () => {
   const products = await db.product.findMany({

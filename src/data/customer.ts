@@ -1,13 +1,12 @@
-import { User } from 'next-auth';
-import Stripe from 'stripe';
+import type { User } from 'next-auth';
+import type Stripe from 'stripe';
 
-import { PricingPlanInterval } from '@prisma/client';
+import type { PricingPlanInterval } from '@prisma/client';
 import { db, stripe } from 'helpers';
 
 export const toDateTime = (secs: number) => {
-  var date = new Date(+0);
+  const date = new Date(+0);
   date.setSeconds(secs);
-
   return date;
 };
 
@@ -24,7 +23,7 @@ export const createOrRetrieveCustomer = async ({
       email?: string;
       name?: string;
     } = {
-      metadata: { user_id: uuid! }
+      metadata: { user_id: String(uuid) }
     };
 
     if (email) customerData.email = email;
@@ -34,7 +33,7 @@ export const createOrRetrieveCustomer = async ({
 
     await db.customer.create({
       data: {
-        id: uuid!,
+        id: String(uuid),
         stripe_customer_id: customer.id
       }
     });
@@ -76,7 +75,7 @@ export const manageSubscriptionStatusChange = async (
     where: { stripe_customer_id: customerId }
   });
 
-  const { id: uuid } = customerData!;
+  const { id: uuid } = customerData ?? {};
 
   const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
     expand: ['default_payment_method']
@@ -116,12 +115,15 @@ export const manageSubscriptionStatusChange = async (
 
   await db.subscription.upsert({
     where: { id: subscription.id },
-    create: { ...subscriptionData, id: subscription.id },
+    create: {
+      ...subscriptionData,
+      id: subscription.id,
+      userId: String(subscriptionData.userId)
+    },
     update: subscriptionData
   });
 
   if (createAction && subscription.default_payment_method && uuid)
-    //@ts-ignore
     await copyBillingDetailsToCustomer(
       uuid,
       subscription.default_payment_method as Stripe.PaymentMethod

@@ -22,10 +22,15 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ url }), {
         status: 200
       });
-    } catch (err: any) {
-      console.log(err);
+    } catch (error: unknown) {
+      console.log(error);
       return new Response(
-        JSON.stringify({ error: { statusCode: 500, message: err.message } }),
+        JSON.stringify({
+          error: {
+            statusCode: 500,
+            message: (error as Error)?.message ?? 'Unknown error'
+          }
+        }),
         {
           status: 500
         }

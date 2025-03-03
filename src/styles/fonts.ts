@@ -5,6 +5,7 @@ export const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin']
 });
+
 export const cal = localFont({
   src: './CalSans-SemiBold.otf',
   variable: '--font-cal',
@@ -18,12 +19,14 @@ export const calTitle = localFont({
   weight: '600',
   display: 'swap'
 });
+
 export const lora = Lora({
   variable: '--font-title',
   subsets: ['latin'],
   weight: '600',
   display: 'swap'
 });
+
 export const work = Work_Sans({
   variable: '--font-title',
   subsets: ['latin'],

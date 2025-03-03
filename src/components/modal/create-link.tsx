@@ -27,7 +27,7 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
     <form
       action={async (data: FormData) =>
         createLink(data, params.id as Site['id'], type).then(res => {
-          if (res.error) {
+          if ('error' in res) {
             toast.error(res.error);
           } else {
             va.track('Create link', { id: res.id });
@@ -97,7 +97,7 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
               name="logo"
               type="text"
               placeholder="https://exemple.com/logo.png"
-              value={data.logo!}
+              value={data.logo ?? ''}
               onChange={e => setData({ ...data, logo: e.target.value })}
               required
               className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"

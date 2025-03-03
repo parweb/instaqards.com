@@ -1,4 +1,3 @@
-import { UserRole } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -41,8 +40,9 @@ export default async function AllSites() {
         <Suspense
           fallback={
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <PlaceholderCard key={i} />
+              {Array.from({ length: 8 }).map((_, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: shut up
+                <PlaceholderCard key={index} />
               ))}
             </div>
           }
@@ -62,8 +62,9 @@ export default async function AllSites() {
                 <Suspense
                   fallback={
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                      {Array.from({ length: 8 }).map((_, i) => (
-                        <PlaceholderCard key={i} />
+                      {Array.from({ length: 8 }).map((_, index) => (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: shut up
+                        <PlaceholderCard key={index} />
                       ))}
                     </div>
                   }

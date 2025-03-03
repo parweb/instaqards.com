@@ -36,7 +36,9 @@ export default function DomainConfiguration({ domain }: { domain: string }) {
 
   const txtVerification =
     (status === 'Pending Verification' &&
-      domainJson.verification.find((x: any) => x.type === 'TXT')) ||
+      domainJson.verification.find(
+        (x: { type: string }) => x.type === 'TXT'
+      )) ||
     null;
 
   return (
@@ -102,7 +104,7 @@ export default function DomainConfiguration({ domain }: { domain: string }) {
               type="button"
               onClick={() => setRecordType('A')}
               className={`${
-                recordType == 'A'
+                recordType === 'A'
                   ? 'border-black text-black dark:border-white dark:text-white'
                   : 'border-white text-stone-400 dark:border-black dark:text-stone-600'
               } ease border-b-2 pb-1 text-sm transition-all duration-150`}
@@ -113,7 +115,7 @@ export default function DomainConfiguration({ domain }: { domain: string }) {
               type="button"
               onClick={() => setRecordType('CNAME')}
               className={`${
-                recordType == 'CNAME'
+                recordType === 'CNAME'
                   ? 'border-black text-black dark:border-white dark:text-white'
                   : 'border-white text-stone-400 dark:border-black dark:text-stone-600'
               } ease border-b-2 pb-1 text-sm transition-all duration-150`}
@@ -139,14 +141,14 @@ export default function DomainConfiguration({ domain }: { domain: string }) {
               <div>
                 <p className="text-sm font-bold">Name</p>
                 <p className="mt-2 font-mono text-sm">
-                  {recordType === 'A' ? '@' : subdomain ?? 'www'}
+                  {recordType === 'A' ? '@' : (subdomain ?? 'www')}
                 </p>
               </div>
               <div>
                 <p className="text-sm font-bold">Value</p>
                 <p className="mt-2 font-mono text-sm">
                   {recordType === 'A'
-                    ? `76.76.21.21`
+                    ? '76.76.21.21'
                     : `cname.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`}
                 </p>
               </div>

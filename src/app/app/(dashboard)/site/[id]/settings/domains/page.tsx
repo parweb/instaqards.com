@@ -22,11 +22,17 @@ export default async function SiteSettingsDomains({
         inputAttrs={{
           name: 'subdomain',
           type: 'text',
-          defaultValue: data?.subdomain!,
+          defaultValue: data?.subdomain ?? '',
           placeholder: 'subdomain',
           maxLength: 32
         }}
-        handleSubmit={updateSite}
+        handleSubmit={
+          updateSite as <T>(
+            data: FormData,
+            id: string,
+            name: string
+          ) => Promise<T | { error?: string }>
+        }
       />
 
       <Form
@@ -36,12 +42,18 @@ export default async function SiteSettingsDomains({
         inputAttrs={{
           name: 'customDomain',
           type: 'text',
-          defaultValue: data?.customDomain!,
+          defaultValue: data?.customDomain ?? '',
           placeholder: 'yourdomain.com',
           maxLength: 64,
           pattern: '^[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}$'
         }}
-        handleSubmit={updateSite}
+        handleSubmit={
+          updateSite as <T>(
+            data: FormData,
+            id: string,
+            name: string
+          ) => Promise<T | { error?: string }>
+        }
       />
     </div>
   );

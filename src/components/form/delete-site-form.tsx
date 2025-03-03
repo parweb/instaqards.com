@@ -18,13 +18,13 @@ export default function DeleteSiteForm({ siteName }: { siteName: string }) {
         window.confirm('Are you sure you want to delete your site?') &&
         deleteSite(data, id, 'delete')
           .then(async res => {
-            if (res.error) {
+            if ('error' in res) {
               toast.error(res.error);
             } else {
               va.track('Deleted Site');
               router.refresh();
               router.push('/sites');
-              toast.success(`Successfully deleted site!`);
+              toast.success('Successfully deleted site!');
             }
           })
           .catch((err: Error) => toast.error(err.message))
@@ -64,6 +64,7 @@ function FormButton() {
   const { pending } = useFormStatus();
   return (
     <button
+      type="submit"
       className={cn(
         'flex h-8 w-32 items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-none sm:h-10',
         pending

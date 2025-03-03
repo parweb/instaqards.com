@@ -1,6 +1,6 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { getSiteData } from 'lib/fetchers';
 

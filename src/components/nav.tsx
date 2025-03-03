@@ -2,7 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { useParams, useSelectedLayoutSegments } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   ArrowLeft,
@@ -15,12 +17,6 @@ import {
   Newspaper,
   Settings
 } from 'lucide-react';
-
-import {
-  useParams,
-  usePathname,
-  useSelectedLayoutSegments
-} from 'next/navigation';
 
 import { LanguageChooser } from 'components/LanguageChooser';
 import useTranslation from 'hooks/use-translation';
@@ -97,17 +93,16 @@ export default function Nav({ children }: { children: ReactNode }) {
 
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const pathname = usePathname();
-
   useEffect(() => {
     setShowSidebar(false);
-  }, [pathname]);
+  }, []);
 
   const ratio = 0.2;
 
   return (
     <>
       <button
+        type="button"
         className="fixed z-20 right-5 top-7 sm:hidden"
         onClick={() => setShowSidebar(!showSidebar)}
       >
@@ -126,7 +121,7 @@ export default function Nav({ children }: { children: ReactNode }) {
               className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center gap-3 uppercase"
             >
               <Image
-                src={`/rsz_black-transparent_nolink.png`}
+                src="/rsz_black-transparent_nolink.png"
                 alt="Logo qards.link"
                 width={800 * ratio}
                 height={400 * ratio}

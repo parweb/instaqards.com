@@ -40,7 +40,16 @@ export default function Form({
 
         pattern?: string;
       };
-  handleSubmit: any;
+  handleSubmit: <T>(
+    data: FormData,
+    id: string,
+    name: string
+  ) => Promise<
+    | {
+        error?: string;
+      }
+    | T
+  >;
 }) {
   const { id } = useParams() as { id?: string };
   const router = useRouter();
@@ -57,8 +66,11 @@ export default function Form({
         ) {
           return;
         }
-        handleSubmit(data, id, inputAttrs.name).then(async (res: any) => {
+
+        handleSubmit(data, String(id), inputAttrs.name).then(async res => {
+          // @ts-ignore
           if (res.error) {
+            // @ts-ignore
             toast.error(res.error);
           } else {
             va.track(`Updated ${inputAttrs.name}`, id ? { id } : {});
@@ -166,6 +178,7 @@ function FormButton() {
   const { pending } = useFormStatus();
   return (
     <button
+      type="submit"
       className={cn(
         'flex h-8 w-32 items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-none sm:h-10',
         pending

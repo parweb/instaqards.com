@@ -34,9 +34,15 @@ export default async function SiteSettingsAppearance({
         inputAttrs={{
           name: 'logo',
           type: 'file',
-          defaultValue: data?.logo!
+          defaultValue: data?.logo ?? ''
         }}
-        handleSubmit={updateSite}
+        handleSubmit={
+          updateSite as <T>(
+            data: FormData,
+            id: string,
+            name: string
+          ) => Promise<T | { error?: string }>
+        }
       />
 
       <Form
@@ -46,9 +52,15 @@ export default async function SiteSettingsAppearance({
         inputAttrs={{
           name: 'font',
           type: 'select',
-          defaultValue: data?.font!
+          defaultValue: data?.font ?? ''
         }}
-        handleSubmit={updateSite}
+        handleSubmit={
+          updateSite as <T>(
+            data: FormData,
+            id: string,
+            name: string
+          ) => Promise<T | { error?: string }>
+        }
       />
 
       <Form
@@ -58,11 +70,17 @@ export default async function SiteSettingsAppearance({
         inputAttrs={{
           name: 'message404',
           type: 'text',
-          defaultValue: data?.message404!,
+          defaultValue: data?.message404 ?? '',
           placeholder: "Blimey! You've found a page that doesn't exist.",
           maxLength: 240
         }}
-        handleSubmit={updateSite}
+        handleSubmit={
+          updateSite as <T>(
+            data: FormData,
+            id: string,
+            name: string
+          ) => Promise<T | { error?: string }>
+        }
       />
     </div>
   );

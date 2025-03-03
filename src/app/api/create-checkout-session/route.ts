@@ -2,7 +2,7 @@ import { auth } from 'auth';
 import { createOrRetrieveCustomer } from 'data/customer';
 import { getURL, stripe } from 'helpers';
 import { translate } from 'helpers/translate';
-// import { Database } from '@/types_db';
+import type Stripe from 'stripe';
 
 export async function POST(req: Request) {
   // 1. Destructure the price and quantity from the POST body
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     console.log({ customer });
 
     // 4. Create a checkout session in Stripe
-    let session;
+    let session: Stripe.Checkout.Session | null = null;
 
     if (price.type === 'recurring') {
       session = await stripe.checkout.sessions.create({
@@ -65,18 +65,18 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ sessionId: session.id }), {
         status: 200
       });
-    } else {
-      return new Response(
-        JSON.stringify({
-          error: {
-            statusCode: 500,
-            message: translate('api.stripe.error')
-          }
-        }),
-        { status: 500 }
-      );
     }
-  } catch (err: any) {
+
+    return new Response(
+      JSON.stringify({
+        error: {
+          statusCode: 500,
+          message: translate('api.stripe.error')
+        }
+      }),
+      { status: 500 }
+    );
+  } catch (err: unknown) {
     console.log(err);
     return new Response(JSON.stringify(err), { status: 500 });
   }

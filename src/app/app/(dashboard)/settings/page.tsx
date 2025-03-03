@@ -67,10 +67,16 @@ export default async function SettingsPage() {
           inputAttrs={{
             name: 'isTwoFactorEnabled',
             type: 'switch',
-            defaultValue: session.user.isTwoFactorEnabled!,
+            defaultValue: session.user.isTwoFactorEnabled ?? false,
             placeholder: 'Your name'
           }}
-          handleSubmit={editUser}
+          handleSubmit={
+            editUser as <T>(
+              data: FormData,
+              id: string,
+              name: string
+            ) => Promise<T | { error?: string }>
+          }
         />
 
         <Form
@@ -80,11 +86,17 @@ export default async function SettingsPage() {
           inputAttrs={{
             name: 'name',
             type: 'text',
-            defaultValue: session.user.name!,
+            defaultValue: session.user.name ?? '',
             placeholder: 'Your name',
             maxLength: 32
           }}
-          handleSubmit={editUser}
+          handleSubmit={
+            editUser as <T>(
+              data: FormData,
+              id: string,
+              name: string
+            ) => Promise<T | { error?: string }>
+          }
         />
 
         <Form
@@ -94,10 +106,16 @@ export default async function SettingsPage() {
           inputAttrs={{
             name: 'email',
             type: 'email',
-            defaultValue: session.user.email!,
+            defaultValue: session.user.email ?? '',
             placeholder: 'Your email'
           }}
-          handleSubmit={editUser}
+          handleSubmit={
+            editUser as <T>(
+              data: FormData,
+              id: string,
+              name: string
+            ) => Promise<T | { error?: string }>
+          }
         />
       </div>
     </div>

@@ -21,14 +21,14 @@ export default async function AllAffiliation() {
   });
 
   const splitByDate = affiliates.groupBy(({ createdAt }) =>
-    [createdAt.toDateString(), createdAt.getHours() + 'h'].join(' ')
+    [createdAt.toDateString(), `${createdAt.getHours()}h`].join(' ')
   );
 
   const start = affiliates.at(0)?.createdAt ?? 0;
   const end = affiliates.at(-1)?.createdAt ?? 0;
 
   const chartdata = eachMinuteOfInterval({ start, end }).map(date => {
-    const key = [date.toDateString(), date.getHours() + 'h'].join(' ');
+    const key = [date.toDateString(), `${date.getHours()}h`].join(' ');
 
     return {
       date: key,

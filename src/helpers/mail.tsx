@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import TwoFactorTokenEmail from '../../emails/two-factor-token';
 import ResetPasswordEmail from '../../emails/reset-password';
 import ConfirmAccountEmail from '../../emails/confirm-account';
-import { DEFAULT_LANG, Lang } from '../../translations';
+import { DEFAULT_LANG, type Lang } from '../../translations';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

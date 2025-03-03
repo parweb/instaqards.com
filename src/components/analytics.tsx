@@ -107,7 +107,6 @@ export default function Analytics({
             </Flex>
 
             <BarList
-              // @ts-ignore
               className="mt-2"
               data={data.map(({ name, value, code }) => ({
                 name,
@@ -123,19 +122,21 @@ export default function Analytics({
                         height={20}
                       />
                     );
-                  } else if (title === 'components.analytics.country.title') {
+                  }
+
+                  if (title === 'components.analytics.country.title') {
                     return (
                       <Image
-                        src={`https://flag.vercel.app/m/${code!}.svg`}
+                        src={`https://flag.vercel.app/m/${code}.svg`}
                         className="mr-2.5"
-                        alt={code!}
+                        alt={code ?? ''}
                         width={24}
                         height={16}
                       />
                     );
-                  } else {
-                    return null;
                   }
+
+                  return null;
                 }
               }))}
             />

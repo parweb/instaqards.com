@@ -1,7 +1,8 @@
 'use client';
 
+import type { PropsWithChildren } from 'react';
 import { useRouter } from 'next/navigation';
-import { PropsWithChildren, useState } from 'react';
+import { useState } from 'react';
 import { LuLoader } from 'react-icons/lu';
 
 import { postData } from 'helpers';
@@ -31,6 +32,7 @@ export const PortalButton = ({ children }: PropsWithChildren) => {
   return (
     <div className="flex flex-col">
       <button
+        type="button"
         disabled={loading}
         onClick={onClick}
         className={cn(

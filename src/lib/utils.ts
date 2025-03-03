@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-export async function fetcher<JSON = any>(
+export async function fetcher<JSON>(
   input: RequestInfo,
   init?: RequestInit
 ): Promise<JSON> {
@@ -23,7 +23,7 @@ export const truncate = (str: string, num: number) => {
   if (str.length <= num) {
     return str;
   }
-  return str.slice(0, num) + '...';
+  return `${str.slice(0, num)}...`;
 };
 
 export const getBlurDataURL = async (url: string | null) => {

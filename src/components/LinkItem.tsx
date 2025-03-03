@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from '@prisma/client';
+import type { Link } from '@prisma/client';
 import { motion } from 'framer-motion';
 
 import DeleteLinkButton from 'components/delete-link-button';
@@ -29,15 +29,16 @@ const LinkItem = (link: Link) => {
         exit={{ opacity: 0 }}
         className="group flex flex-1 items-center gap-2 relative"
       >
-        <a
+        <div
           className={cn(
+            'cursor-pointer',
             'transition-all',
             'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
             'hover:bg-white hover:text-black'
           )}
         >
           {link.label}
-        </a>
+        </div>
 
         <div className="absolute right-10 flex gap-2 items-center p-2 transition-all opacity-0 group-hover:opacity-100 group-hover:right-0">
           <LinkUpdate {...link} />
@@ -54,7 +55,7 @@ const LinkItem = (link: Link) => {
           <LinkUpdate {...link} />
           <LinkDelete {...link} />
         </div>
-        <a target="_blank">
+        <div className="cursor-pointer">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className={cn(
@@ -62,10 +63,10 @@ const LinkItem = (link: Link) => {
               link.label !== 'facebook' && 'h-[50px]',
               'object-contain transition-all hover:scale-125'
             )}
-            src={link.logo!}
+            src={link.logo ?? ''}
             alt={link.label}
           />
-        </a>
+        </div>
       </div>
     );
   }

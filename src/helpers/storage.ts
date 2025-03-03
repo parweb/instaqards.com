@@ -1,14 +1,14 @@
 import * as AWS from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { StreamingBlobPayloadInputTypes } from '@smithy/types';
+import type { StreamingBlobPayloadInputTypes } from '@smithy/types';
 import { contentType } from 'mime-types';
 
 export const storage = new AWS.S3({
-  region: process.env.S3_REGION!,
-  endpoint: process.env.S3_ENDPOINT!,
+  region: String(process.env.S3_REGION),
+  endpoint: String(process.env.S3_ENDPOINT),
   credentials: {
-    accessKeyId: process.env.S3_ACCESSKEYID!,
-    secretAccessKey: process.env.S3_SECRETACCESSKEY!
+    accessKeyId: String(process.env.S3_ACCESSKEYID),
+    secretAccessKey: String(process.env.S3_SECRETACCESSKEY)
   }
 });
 
@@ -31,8 +31,6 @@ export const put = async (
         client: storage,
         params
       });
-
-      parallelUploads3.on('httpUploadProgress', progress => {});
 
       await parallelUploads3.done();
     } else {

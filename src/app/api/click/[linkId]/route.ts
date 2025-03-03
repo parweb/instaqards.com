@@ -11,5 +11,5 @@ export async function GET(
     data: { linkId }
   });
 
-  return NextResponse.redirect(click.link!.href);
+  return NextResponse.redirect(click.link?.href ?? '');
 }

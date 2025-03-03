@@ -74,11 +74,13 @@ export default function Uploader({
           onDrop={e => {
             e.preventDefault();
             e.stopPropagation();
+
             setDragActive(false);
 
-            const file = e.dataTransfer.files && e.dataTransfer.files[0];
-            inputRef.current!.files = e.dataTransfer.files; // set input file to dropped file
-            handleUpload(file);
+            if (inputRef.current) {
+              inputRef.current.files = e.dataTransfer.files;
+            }
+            handleUpload(e.dataTransfer.files?.[0]);
           }}
         />
         <div
@@ -90,6 +92,7 @@ export default function Uploader({
               : 'bg-white opacity-100 hover:bg-gray-50'
           }`}
         >
+          {/* biome-ignore lint/a11y/noSvgWithoutTitle: shut up */}
           <svg
             className={`${
               dragActive ? 'scale-110' : 'scale-100'
@@ -104,9 +107,9 @@ export default function Uploader({
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
-            <path d="M12 12v9"></path>
-            <path d="m16 16-4-4-4 4"></path>
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+            <path d="M12 12v9" />
+            <path d="m16 16-4-4-4 4" />
           </svg>
           <p className="mt-2 text-center text-sm text-gray-500">
             Drag and drop or click to upload.
@@ -125,6 +128,7 @@ export default function Uploader({
           />
         )}
       </label>
+
       <div className="mt-1 flex rounded-md shadow-sm">
         <input
           id={`${name}-upload`}
@@ -134,8 +138,7 @@ export default function Uploader({
           accept="image/*"
           className="sr-only"
           onChange={e => {
-            const file = e.currentTarget.files && e.currentTarget.files[0];
-            handleUpload(file);
+            handleUpload(e.currentTarget.files?.[0] ?? null);
           }}
         />
       </div>

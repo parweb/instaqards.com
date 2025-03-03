@@ -32,7 +32,7 @@ export default function UpdateSiteDisplayNameModal({
     <form
       action={async (data: FormData) =>
         updateSite(data, siteId, 'display_name').then(res => {
-          if (res.error) {
+          if ('error' in res) {
             toast.error(res.error);
           } else {
             va.track('Update site display name', { id: siteId });

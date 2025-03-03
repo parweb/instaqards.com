@@ -23,11 +23,17 @@ export default async function SiteSettingsIndex({
         inputAttrs={{
           name: 'name',
           type: 'text',
-          defaultValue: data?.name!,
+          defaultValue: data?.name ?? '',
           placeholder: 'My Awesome Site',
           maxLength: 32
         }}
-        handleSubmit={updateSite}
+        handleSubmit={
+          updateSite as <T>(
+            data: FormData,
+            id: string,
+            name: string
+          ) => Promise<T | { error?: string }>
+        }
       />
 
       <Form
@@ -37,13 +43,19 @@ export default async function SiteSettingsIndex({
         inputAttrs={{
           name: 'description',
           type: 'text',
-          defaultValue: data?.description!,
+          defaultValue: data?.description ?? '',
           placeholder: 'A blog about really interesting things.'
         }}
-        handleSubmit={updateSite}
+        handleSubmit={
+          updateSite as <T>(
+            data: FormData,
+            id: string,
+            name: string
+          ) => Promise<T | { error?: string }>
+        }
       />
 
-      <DeleteSiteForm siteName={data?.name!} />
+      <DeleteSiteForm siteName={data?.name ?? ''} />
     </div>
   );
 }

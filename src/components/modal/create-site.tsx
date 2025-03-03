@@ -35,7 +35,7 @@ export default function CreateSiteModal() {
     <form
       action={async (data: FormData) =>
         createSite(data).then(res => {
-          if (res.error) {
+          if ('error' in res) {
             toast.error(res.error);
           } else {
             va.track('Created Site');

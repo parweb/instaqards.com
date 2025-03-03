@@ -1,6 +1,6 @@
 'use client';
 
-import { BuiltInProviderType } from 'next-auth/providers';
+import type { BuiltInProviderType } from 'next-auth/providers';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -26,6 +26,7 @@ export default function LoginButton({
 
   return (
     <button
+      type="button"
       disabled={loading}
       onClick={() => {
         setLoading(true);
