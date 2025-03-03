@@ -18,7 +18,7 @@ import {
   CarouselPrevious
 } from 'components/ui/carousel';
 import { cookies } from 'next/headers';
-import { LuCheck } from 'react-icons/lu';
+import { LuArrowBigDown, LuCheck } from 'react-icons/lu';
 
 const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   const ratio = 2283 / 1109;
@@ -242,7 +242,10 @@ const Prices = async () => {
   });
 
   return (
-    <div id="Prices" className="flex flex-col p-10 gap-20 overflow-hidden">
+    <div
+      id="Prices"
+      className="flex flex-col p-10 gap-20 overflow-hidden max-w-[1200px] justify-center items-center justify-self-center"
+    >
       <hgroup className="text-center flex flex-col gap-4">
         <h2 className="text-5xl font-[900]">
           {translate('page.home.price.title')}
@@ -251,6 +254,30 @@ const Prices = async () => {
           {translate('page.home.price.description')}
         </p>
       </hgroup>
+
+      <section className="text-center p-4 border-2 border-green-500 bg-green-50 rounded-lg max-w-[1200px] text-green-900">
+        <div className="flex flex-col gap-2">
+          <div className="font-bold text-2xl">
+            {translate('page.home.price.trial.primary')}
+          </div>
+
+          <div className="text-xl flex items-center gap-6">
+            <div className="flex items-center">
+              <LuArrowBigDown />
+              <LuArrowBigDown />
+              <LuArrowBigDown />
+            </div>
+
+            {translate('page.home.price.trial.secondary')}
+
+            <div className="flex items-center">
+              <LuArrowBigDown />
+              <LuArrowBigDown />
+              <LuArrowBigDown />
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className="flex items-center justify-center">
         <PriceTable products={products} />

@@ -533,6 +533,18 @@ const translations = {
     it: 'Inizia il tuo percorso con facilità',
     es: 'Comienza tu camino con facilidad'
   },
+  'page.home.price.trial.primary': {
+    fr: 'Essayez gratuitement pendant 30 jours',
+    en: 'Try for free for 30 days',
+    it: 'Prova gratis per 30 giorni',
+    es: 'Prueba gratis por 30 días'
+  },
+  'page.home.price.trial.secondary': {
+    fr: 'Aucune carte de crédit nécessaire',
+    en: 'No credit card required',
+    it: 'Nessuna carta di credito richiesta',
+    es: 'No se requiere tarjeta de crédito'
+  },
   'page.home.testimonial.title': {
     fr: 'Témoignage',
     en: 'Testimonial',
