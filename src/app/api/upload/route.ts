@@ -32,7 +32,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     await db.site.update({
       where: { id: body.siteId },
       data: {
-        background: `/api/file?id=${filename}`
+        [body.attr]: `/api/file?id=${filename}`
       }
     });
 

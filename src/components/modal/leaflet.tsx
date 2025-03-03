@@ -1,5 +1,12 @@
-import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import { Dispatch, ReactNode, SetStateAction, useEffect, useRef } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import { useEffect, useRef } from 'react';
+
+import {
+  AnimatePresence,
+  motion,
+  type PanInfo,
+  useAnimation
+} from 'framer-motion';
 
 export default function Leaflet({
   setShow,
@@ -11,6 +18,8 @@ export default function Leaflet({
   const leafletRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
   const transitionProps = { type: 'spring', stiffness: 500, damping: 30 };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: shut up
   useEffect(() => {
     controls.start({
       y: 20,
@@ -19,10 +28,11 @@ export default function Leaflet({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function handleDragEnd(_: any, info: any) {
+  async function handleDragEnd(_: unknown, info: PanInfo) {
     const offset = info.offset.y;
     const velocity = info.velocity.y;
     const height = leafletRef.current?.getBoundingClientRect().height || 0;
+
     if (offset > height / 2 || velocity > 800) {
       await controls.start({ y: '100%', transition: transitionProps });
       setShow(false);
@@ -47,14 +57,14 @@ export default function Leaflet({
         dragElastic={{ top: 0, bottom: 1 }}
         dragConstraints={{ top: 0, bottom: 0 }}
       >
-        <div
-          className={`rounded-t-4xl -mb-1 flex h-7 w-full items-center justify-center border-t border-gray-200`}
-        >
+        <div className="rounded-t-4xl -mb-1 flex h-7 w-full items-center justify-center border-t border-gray-200">
           <div className="-mr-1 h-1 w-6 rounded-full bg-gray-300 transition-all group-active:rotate-12" />
           <div className="h-1 w-6 rounded-full bg-gray-300 transition-all group-active:-rotate-12" />
         </div>
+
         {children}
       </motion.div>
+
       <motion.div
         key="leaflet-backdrop"
         className="fixed inset-0 z-30 bg-gray-100 bg-opacity-10 backdrop-blur"

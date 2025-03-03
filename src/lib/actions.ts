@@ -1,6 +1,6 @@
 'use server';
 
-import { Link, Site } from '@prisma/client';
+import type { Link, Site } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 
@@ -36,6 +36,7 @@ export const createSite = async (formData: FormData) => {
     const response = await db.site.create({
       data: {
         name,
+        display_name: name,
         description,
         subdomain,
         user: { connect: { id: session.user.id } }
@@ -47,12 +48,14 @@ export const createSite = async (formData: FormData) => {
     );
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       error:
-        error.code === 'P2002'
-          ? translate(`lib.actions.domain.taken`)
-          : error.message
+        error instanceof Error && 'code' in error && error.code === 'P2002'
+          ? translate('lib.actions.domain.taken')
+          : error instanceof Error
+            ? error.message
+            : 'An unknown error occurred'
     };
   }
 };
@@ -81,8 +84,8 @@ export const updateLink = withSiteAuth(
         revalidateTag(`${response?.site?.customDomain}-metadata`);
 
       return response;
-    } catch (error: any) {
-      return { error: error.message };
+    } catch (error: unknown) {
+      return { error: error instanceof Error ? error.message : 'An unknown error occurred' };
     }
   }
 );
@@ -115,8 +118,8 @@ export const createLink = async (
       revalidateTag(`${response?.site?.customDomain}-metadata`);
 
     return response;
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : 'An unknown error occurred' };
   }
 };
 
@@ -134,8 +137,8 @@ export const deleteLink = async (linkId: Link['id']) => {
       revalidateTag(`${response?.site?.customDomain}-metadata`);
 
     return response;
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : 'An unknown error occurred' };
   }
 };
 
@@ -144,12 +147,14 @@ export const updateSite = withSiteAuth(
     const value = formData.get(key) as string;
 
     try {
-      let response;
+      let response: Site = site;
 
       if (key === 'customDomain') {
         if (value.includes('vercel.pub')) {
           return { error: translate('lib.actions.vercel.domain.error') };
-        } else if (validDomainRegex.test(value)) {
+        }
+
+        if (validDomainRegex.test(value)) {
           response = await db.site.update({
             where: { id: site.id },
             data: {
@@ -196,15 +201,19 @@ export const updateSite = withSiteAuth(
       revalidateTag(
         `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
       );
+
       site.customDomain && revalidateTag(`${site.customDomain}-metadata`);
 
+
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         error:
-          error.code === 'P2002'
+          error instanceof Error && 'code' in error && error.code === 'P2002'
             ? translate('lib.actions.update-site.error')
-            : error.message
+            : error instanceof Error
+              ? error.message
+              : 'An unknown error occurred'
       };
     }
   }
@@ -223,8 +232,8 @@ export const deleteSite = withSiteAuth(async (_: FormData, site: Site) => {
     response.customDomain && revalidateTag(`${site.customDomain}-metadata`);
 
     return response;
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : 'An unknown error occurred' };
   }
 });
 
@@ -242,7 +251,7 @@ export const editUser = async (
   let value = formData.get(key) as string | boolean;
 
   if (key === 'isTwoFactorEnabled') {
-    value = value === 'on' ? true : false;
+    value = value === 'on';
   }
 
   try {
@@ -252,12 +261,14 @@ export const editUser = async (
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       error:
-        error.code === 'P2002'
+        error instanceof Error && 'code' in error && error.code === 'P2002'
           ? translate('lib.actions.edit-user.error')
-          : error.message
+          : error instanceof Error
+            ? error.message
+            : 'An unknown error occurred'
     };
   }
 };

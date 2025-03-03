@@ -1,4 +1,4 @@
-import type { Link, Site, UserRole } from '@prisma/client';
+import type { Link, Site } from '@prisma/client';
 import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -6,13 +6,17 @@ import { Suspense } from 'react';
 import LinkItem from 'components/LinkItem';
 import CreateLinkButton from 'components/create-link-button';
 import CreateLinkModal from 'components/modal/create-link';
+import UpdateSiteProfilePictureModal from 'components/modal/update-profile-picture';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
+import UpdateSiteProfilePictureButton from 'components/update-site-profile-picture-button';
 import { db } from 'helpers';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
+import UpdateSiteDisplayNameButton from 'components/update-site-displayName-button';
+import UpdateSiteDisplayNameModal from 'components/modal/update-display-name';
 
 const LinkCreate = ({ type }: { type: Link['type'] }) => {
   return (
@@ -33,8 +37,8 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
   const data = { links: main, socials: social };
 
   return (
-    <main className="relative flex-1 self-stretch items-center">
-      <div className="absolute inset-0 group">
+    <main className="relative flex-1 self-stretch items-center pointer-events-auto">
+      <div className="absolute inset-0 group pointer-events-auto">
         {site?.background?.endsWith('.mp4') && (
           <video
             className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
@@ -57,21 +61,38 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
           />
         )}
 
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
       </div>
 
-      <section className="absolute inset-0 flex flex-col p-10 pointer-events-none">
+      <section className="absolute inset-0 flex flex-col p-10 pointer-events-auto">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
-          <header className="flex flex-col justify-center items-center gap-3">
-            <h1 className="text-white text-4xl font-bold">{site.name}</h1>
+          <header className="flex flex-col justify-center items-center gap-3 mt-4">
+            <h1 className="text-white text-4xl font-bold relative group">
+              {site.display_name}
 
-            <div className="bg-white rounded-full overflow-hidden">
+              <div className="absolute -right-12 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <UpdateSiteDisplayNameButton>
+                  <UpdateSiteDisplayNameModal
+                    siteId={site.id}
+                    displayName={site.display_name}
+                  />
+                </UpdateSiteDisplayNameButton>
+              </div>
+            </h1>
+
+            <div className="group relative bg-white rounded-full overflow-hidden w-24 h-24 cursor-pointer flex items-center justify-center">
               <Image
                 src={site.logo ?? ''}
                 alt={site.name ?? ''}
-                width={100}
-                height={100}
+                fill
+                objectFit="cover"
               />
+
+              <div className="absolute inset-0 pointer-events-auto flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <UpdateSiteProfilePictureButton>
+                  <UpdateSiteProfilePictureModal siteId={site.id} />
+                </UpdateSiteProfilePictureButton>
+              </div>
             </div>
           </header>
 
@@ -136,7 +157,9 @@ export default async function SitePosts({
       <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
         <div className="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 flex-1 justify-between">
           <h1 className="w-60 truncate font-cal text-xl font-bold dark:text-white sm:w-auto sm:text-3xl">
-            {translate('dashboard.site.detail.title', { name: site.name! })}
+            {translate('dashboard.site.detail.title', {
+              name: site.name ?? ''
+            })}
           </h1>
 
           <a
@@ -161,7 +184,6 @@ export default async function SitePosts({
 
       <div className="flex flex-col h-[100vh]">
         <Suspense fallback={null}>
-          {/* @ts-ignore */}
           <Landing site={site} />
         </Suspense>
       </div>

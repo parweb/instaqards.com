@@ -1,6 +1,6 @@
 'use client';
 
-import { Link, Site } from '@prisma/client';
+import type { Link, Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -26,7 +26,7 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
   return (
     <form
       action={async (data: FormData) =>
-        createLink(data, params.id as Site['id'], type).then((res: any) => {
+        createLink(data, params.id as Site['id'], type).then(res => {
           if (res.error) {
             toast.error(res.error);
           } else {
@@ -34,7 +34,7 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
 
             router.refresh();
             modal?.hide();
-            toast.success(`Link created!`);
+            toast.success('Link created!');
           }
         })
       }
@@ -56,7 +56,6 @@ export default function CreateLinkModal({ type }: { type: Link['type'] }) {
             name="label"
             type="text"
             placeholder="Label"
-            autoFocus
             value={data.label}
             onChange={e => setData({ ...data, label: e.target.value })}
             required
@@ -119,6 +118,7 @@ function CreateLinkFormButton() {
 
   return (
     <button
+      type="submit"
       className={cn(
         'flex h-10 w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-none',
         pending

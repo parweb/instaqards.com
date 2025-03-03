@@ -29,12 +29,12 @@ export default function CreateSiteModal() {
         .trim()
         .replace(/[\W_]+/g, '-')
     }));
-  }, [data.name]);
+  }, []);
 
   return (
     <form
       action={async (data: FormData) =>
-        createSite(data).then((res: any) => {
+        createSite(data).then(res => {
           if (res.error) {
             toast.error(res.error);
           } else {
@@ -43,7 +43,7 @@ export default function CreateSiteModal() {
             router.refresh();
             router.push(`/site/${id}`);
             modal?.hide();
-            toast.success(`Successfully created site!`);
+            toast.success('Successfully created site!');
           }
         })
       }
@@ -63,7 +63,6 @@ export default function CreateSiteModal() {
             name="name"
             type="text"
             placeholder="My Awesome Site"
-            autoFocus
             value={data.name}
             onChange={e => setData({ ...data, name: e.target.value })}
             maxLength={32}
@@ -124,8 +123,10 @@ export default function CreateSiteModal() {
 }
 function CreateSiteFormButton() {
   const { pending } = useFormStatus();
+
   return (
     <button
+      type="submit"
       className={cn(
         'flex h-10 w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-none',
         pending

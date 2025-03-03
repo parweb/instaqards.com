@@ -2,13 +2,8 @@
 
 import FocusTrap from 'focus-trap-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef
-} from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import useWindowSize from 'hooks/use-window-size';
 import Leaflet from './leaflet';
@@ -16,14 +11,13 @@ import Leaflet from './leaflet';
 export default function Modal({
   children,
   showModal,
-  // @ts-ignore
   setShowModal
 }: {
   children: React.ReactNode;
   showModal: boolean;
   setShowModal: Dispatch<SetStateAction<boolean>>;
 }) {
-  const desktopModalRef = useRef(null);
+  const desktopModalRef = useRef<HTMLDivElement>(null);
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {

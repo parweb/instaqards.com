@@ -2,6 +2,7 @@
 
 import type { Site } from '@prisma/client';
 import va from '@vercel/analytics';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -12,18 +13,18 @@ import { cn } from 'lib/utils';
 import { useModal } from './provider';
 import useTranslation from 'hooks/use-translation';
 
-export default function UpdateSiteBackgroundModal({
+export default function UpdateSiteProfilePictureModal({
   siteId
 }: {
   siteId: Site['id'];
 }) {
+  const translate = useTranslation();
+
   const [pending, setPending] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-  const [mediaType, setMediaType] = useState<'video' | 'image' | null>(null);
 
   const router = useRouter();
   const modal = useModal();
-  const translate = useTranslation();
 
   const onDrop = useCallback((acceptedFiles: Array<File>) => {
     setPending(true);
@@ -31,10 +32,6 @@ export default function UpdateSiteBackgroundModal({
     const file = new FileReader();
 
     file.onloadend = () => {
-      setMediaType(
-        (acceptedFiles[0].type.split('/').at(0) as 'video' | 'image') ?? null
-      );
-
       setPreview(file.result);
       setPending(false);
     };
@@ -43,11 +40,7 @@ export default function UpdateSiteBackgroundModal({
   }, []);
 
   const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
-    useDropzone({
-      onDrop,
-      multiple: false,
-      accept: { 'image/*': [], 'video/*': [] }
-    });
+    useDropzone({ onDrop, multiple: false, accept: { 'image/*': [] } });
 
   return (
     <form
@@ -64,7 +57,7 @@ export default function UpdateSiteBackgroundModal({
               body: JSON.stringify({
                 filename: acceptedFiles[0].name,
                 siteId,
-                attr: 'background'
+                attr: 'logo'
               })
             }).then(res => res.json());
 
@@ -93,7 +86,7 @@ export default function UpdateSiteBackgroundModal({
     >
       <div className="relative flex flex-col p-5 md:p-10 gap-5">
         <h2 className="font-cal text-2xl dark:text-white">
-          {translate('components.site.updateBackground.title')}
+          {translate('components.site.updateProfilePicture.title')}
         </h2>
 
         <div
@@ -104,7 +97,7 @@ export default function UpdateSiteBackgroundModal({
           )}
         >
           <div {...getRootProps()} className="text-center">
-            <input {...getInputProps({ name: 'background' })} />
+            <input {...getInputProps({ name: 'logo' })} />
 
             {isDragActive ? (
               <>
@@ -121,34 +114,25 @@ export default function UpdateSiteBackgroundModal({
         </div>
 
         {preview && (
-          <>
-            {mediaType === 'image' && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                className="aspect-video object-contain"
-                src={preview as string}
-                alt="Upload preview"
-              />
-            )}
-
-            {mediaType === 'video' && (
-              <video className="aspect-video object-contain" controls>
-                <source src={preview as string} />
-                <track kind="captions" src="" label="no captions" />
-              </video>
-            )}
-          </>
+          <div className="relative w-full h-40">
+            <Image
+              className="aspect-video object-contain"
+              src={preview as string}
+              alt="Upload preview"
+              fill
+            />
+          </div>
         )}
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
-        <UpdateSiteBackgroundFormButton pending={pending} />
+        <UpdateSiteProfilePictureFormButton pending={pending} />
       </div>
     </form>
   );
 }
 
-function UpdateSiteBackgroundFormButton({ pending = false }) {
+function UpdateSiteProfilePictureFormButton({ pending = false }) {
   const translate = useTranslation();
 
   return (
@@ -165,7 +149,7 @@ function UpdateSiteBackgroundFormButton({ pending = false }) {
       {pending ? (
         <LoadingDots color="#808080" />
       ) : (
-        <p>{translate('components.site.updateBackground.button')}</p>
+        <p>{translate('components.site.updateProfilePicture.button')}</p>
       )}
     </button>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { Link, Site } from '@prisma/client';
+import type { Link, Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -22,7 +22,7 @@ export default function UpdateLinkModal(link: Link) {
   return (
     <form
       action={async (data: FormData) =>
-        updateLink(data, params.id as Site['id'], link.id).then((res: any) => {
+        updateLink(data, params.id as Site['id'], link.id).then(res => {
           if (res.error) {
             toast.error(res.error);
           } else {
@@ -30,7 +30,7 @@ export default function UpdateLinkModal(link: Link) {
 
             router.refresh();
             modal?.hide();
-            toast.success(`Link updated!`);
+            toast.success('Link updated!');
           }
         })
       }
@@ -52,7 +52,6 @@ export default function UpdateLinkModal(link: Link) {
             name="label"
             type="text"
             placeholder="Label"
-            autoFocus
             value={data.label}
             onChange={e => setData({ ...data, label: e.target.value })}
             required
@@ -94,7 +93,7 @@ export default function UpdateLinkModal(link: Link) {
               name="logo"
               type="text"
               placeholder="https://exemple.com/logo.png"
-              value={data.logo!}
+              value={data.logo ?? ''}
               onChange={e => setData({ ...data, logo: e.target.value })}
               required
               className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
@@ -114,6 +113,7 @@ function UpdateLinkFormButton() {
   const { pending } = useFormStatus();
   return (
     <button
+      type="submit"
       className={cn(
         'flex h-10 w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-none',
         pending

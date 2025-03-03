@@ -30,7 +30,7 @@ const LinkItem = (link: PrismaLink) => {
 
   if (link.type === 'social') {
     return (
-      <Link href={`/click/${link.id}`} target="_blank">
+      <Link href={`/click/${link.id}`} target="_blank" rel="noreferrer">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className={cn(
@@ -38,8 +38,8 @@ const LinkItem = (link: PrismaLink) => {
             link.label !== 'facebook' && 'h-[50px]',
             'object-contain transition-all hover:scale-125'
           )}
-          src={link.logo!}
-          alt={link.label}
+          src={link.logo ?? ''}
+          alt={link.label ?? ''}
         />
       </Link>
     );
@@ -129,12 +129,12 @@ export default async function SiteHomePage({
       <section className="absolute inset-0 flex flex-col p-10">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
           <header className="flex flex-col justify-center items-center gap-6  pt-4">
-            <div className="bg-white rounded-full overflow-hidden">
+            <div className="bg-white rounded-full overflow-hidden w-24 h-24 flex items-center justify-center">
               <Image
                 src={site.logo ?? ''}
                 alt={site.name ?? ''}
-                width={100}
-                height={100}
+                fill
+                objectFit="cover"
               />
             </div>
 
@@ -161,6 +161,7 @@ export default async function SiteHomePage({
                 href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/?r=${site.user?.id}`}
                 className="text-white"
                 target="_blank"
+                rel="noreferrer"
               >
                 {translate('page.public.site.ads')}
               </a>

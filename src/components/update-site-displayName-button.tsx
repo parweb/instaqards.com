@@ -4,8 +4,9 @@ import type { ReactNode } from 'react';
 
 import { useModal } from 'components/modal/provider';
 import useTranslation from 'hooks/use-translation';
+import { LuPencil } from 'react-icons/lu';
 
-export default function CreateSiteButton({
+export default function UpdateSiteDisplayNameButton({
   children
 }: {
   children: ReactNode;
@@ -15,11 +16,12 @@ export default function CreateSiteButton({
 
   return (
     <button
+      aria-label={translate('components.site.update.profile-picture')}
       type="button"
       onClick={() => modal?.show(children)}
-      className="rounded-lg border border-black bg-black px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-white hover:text-black active:bg-stone-100 dark:border-stone-700 dark:hover:border-stone-200 dark:hover:bg-black dark:hover:text-white dark:active:bg-stone-800"
+      className="bg-black text-white rounded-full p-2 w-10 h-10 flex items-center justify-center"
     >
-      {translate('components.site.create.button')}
+      <LuPencil />
     </button>
   );
 }

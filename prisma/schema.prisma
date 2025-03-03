@@ -223,6 +223,7 @@ model Link {
 model Site {
   id            String  @id @default(cuid())
   name          String?
+  display_name  String?
   description   String? @db.Text
   logo          String? @default("https://qards.link/rsz_noir-fon-transparent.png") @db.Text
   font          String  @default("font-cal")

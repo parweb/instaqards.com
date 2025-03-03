@@ -167,7 +167,49 @@ const translations = {
     it: 'Non hai ancora nessun sito. Creane uno per iniziare.',
     es: 'Todavía no tienes ningún sitio. Crea uno para comenzar.'
   },
+  'components.site.updateDisplayName.button': {
+    fr: 'Modifier le nom',
+    en: 'Change Display Name',
+    it: 'Cambia il nome',
+    es: 'Cambiar el nombre'
+  },
+  'components.site.updateDisplayName.title': {
+    fr: 'Modifier le nom',
+    en: 'Change Display Name',
+    it: 'Cambia il nome',
+    es: 'Cambiar el nombre'
+  },
   'components.site.update.background': {
+    fr: 'Modifier le fond',
+    en: 'Change Background',
+    it: 'Cambia sfondo',
+    es: 'Cambiar fondo'
+  },
+  'components.site.update.profile-picture': {
+    fr: 'Modifier la photo de profil',
+    en: 'Change Profile Picture',
+    it: 'Cambia la foto di profilo',
+    es: 'Cambiar la foto de perfil'
+  },
+  'components.site.updateProfilePicture.title': {
+    fr: 'Modifier la photo de profil',
+    en: 'Change Profile Picture',
+    it: 'Cambia la foto di profilo',
+    es: 'Cambiar la foto de perfil'
+  },
+  'components.site.updateProfilePicture.button': {
+    fr: 'Modifier la photo de profil',
+    en: 'Change Profile Picture',
+    it: 'Cambia la foto di profilo',
+    es: 'Cambiar la foto de perfil'
+  },
+  'components.site.updateBackground.title': {
+    fr: 'Modifier le fond',
+    en: 'Change Background',
+    it: 'Cambia sfondo',
+    es: 'Cambiar fondo'
+  },
+  'components.site.updateBackground.button': {
     fr: 'Modifier le fond',
     en: 'Change Background',
     it: 'Cambia sfondo',
