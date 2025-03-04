@@ -1,7 +1,8 @@
 import type { Link as PrismaLink } from '@prisma/client';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
+import { SocialIcon } from 'react-social-icons';
 
 import { db } from 'helpers';
 import { translate } from 'helpers/translate';
@@ -31,16 +32,29 @@ const LinkItem = (link: PrismaLink) => {
   if (link.type === 'social') {
     return (
       <Link href={`/click/${link.id}`} target="_blank" rel="noreferrer">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          className={cn(
-            link.label === 'facebook' && 'h-[65px]',
-            link.label !== 'facebook' && 'h-[50px]',
-            'object-contain transition-all hover:scale-125'
+        <div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {link.logo?.includes('http') ? (
+            <img
+              className={cn(
+                link.label === 'facebook' && 'h-[65px]',
+                link.label !== 'facebook' && 'h-[50px]',
+                'object-contain transition-all hover:scale-125'
+              )}
+              src={link.logo ?? ''}
+              alt={link.label}
+            />
+          ) : (
+            <SocialIcon
+              className={cn(
+                link.label === 'facebook' && 'h-[65px]',
+                link.label !== 'facebook' && 'h-[50px]',
+                'object-contain transition-all hover:scale-125'
+              )}
+              url={link.href ?? ''}
+            />
           )}
-          src={link.logo ?? ''}
-          alt={link.label ?? ''}
-        />
+        </div>
       </Link>
     );
   }

@@ -3,20 +3,20 @@ import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import LinkItem from 'components/LinkItem';
+import LinkItem, { LinkList } from 'components/LinkItem';
 import CreateLinkButton from 'components/create-link-button';
 import CreateLinkModal from 'components/modal/create-link';
+import UpdateSiteDisplayNameModal from 'components/modal/update-display-name';
 import UpdateSiteProfilePictureModal from 'components/modal/update-profile-picture';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
+import UpdateSiteDisplayNameButton from 'components/update-site-displayName-button';
 import UpdateSiteProfilePictureButton from 'components/update-site-profile-picture-button';
 import { db } from 'helpers';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
-import UpdateSiteDisplayNameButton from 'components/update-site-displayName-button';
-import UpdateSiteDisplayNameModal from 'components/modal/update-display-name';
 
 const LinkCreate = ({ type }: { type: Link['type'] }) => {
   return (
@@ -99,9 +99,7 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
 
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
-              {data.links.map(props => (
-                <LinkItem key={`LinkItem-${props.id}`} {...props} />
-              ))}
+              <LinkList links={data.links} site={site} type="main" />
 
               <LinkCreate type="main" />
             </div>
@@ -109,9 +107,7 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
 
           <footer className="flex flex-col gap-3">
             <div className="flex gap-3 items-center justify-center pointer-events-auto">
-              {data.socials.map(props => (
-                <LinkItem key={`LinkItem-${props.id}`} {...props} />
-              ))}
+              <LinkList links={data.socials} site={site} type="social" />
 
               <LinkCreate type="social" />
             </div>
@@ -141,7 +137,7 @@ export default async function SitePosts({
 
   const site = await db.site.findUnique({
     where: { id: decodeURIComponent(params.id) },
-    include: { links: { orderBy: { createdAt: 'asc' } } }
+    include: { links: { orderBy: { position: 'asc' } } }
   });
 
   if (

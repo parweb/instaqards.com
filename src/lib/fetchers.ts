@@ -10,15 +10,10 @@ export async function getSiteData(domain: string) {
   return await unstable_cache(
     async () => {
       return db.site.findUnique({
-        where: subdomain ? { subdomain: subdomain.toLowerCase() } : { customDomain: domain.toLowerCase() },
-        include: {
-          user: true,
-          links: {
-            orderBy: {
-              createdAt: 'asc'
-            }
-          }
-        }
+        where: subdomain
+          ? { subdomain: subdomain.toLowerCase() }
+          : { customDomain: domain.toLowerCase() },
+        include: { user: true, links: { orderBy: { position: 'asc' } } }
       });
     },
     [`${domain}-metadata`],

@@ -1,9 +1,10 @@
 TODO
 
-     -> sortable link main & social
+DONE -> sortable link main & social
      -> style sur les liens (apply on all)
      -> email transactional 
      -> tableaux des prix (one price for all)
+     -> bug on social link (logo) 
 
 DONE -> T’avais pas mis en prod pour l’affiliation les stats ?
 DONE -> lien social list de logo
