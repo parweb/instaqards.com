@@ -618,10 +618,10 @@ const translations = {
     es: 'Casi como magia'
   },
   'page.home.hero.call-to-action': {
-    fr: 'Commencez maintenant, soyez inoubliable en un instant',
-    en: 'Start now, be unforgettable in an instant',
-    it: 'Inizia ora, sii indimenticabile all’istante',
-    es: 'Empieza ahora, sé inolvidable en un instante'
+    fr: 'Commencez maintenant, soyez inoubliable',
+    en: 'Start now, be unforgettable',
+    it: 'Inizia ora, sii indimenticabile',
+    es: 'Empieza ahora, sé inolvidable'
   },
   'api.stripe.user.error': {
     fr: 'Impossible de créer un paiement si non connecté',

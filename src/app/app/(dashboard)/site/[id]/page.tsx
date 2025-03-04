@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import LinkItem, { LinkList } from 'components/LinkItem';
+import { LinkList } from 'components/LinkItem';
 import CreateLinkButton from 'components/create-link-button';
 import CreateLinkModal from 'components/modal/create-link';
 import UpdateSiteDisplayNameModal from 'components/modal/update-display-name';

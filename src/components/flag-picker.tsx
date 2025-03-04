@@ -1,9 +1,10 @@
 'use client';
 
 import type { ComponentType } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useFormState } from 'react-dom';
 import Flag from 'react-world-flags';
+import { useOnClickOutside } from 'usehooks-ts';
 
 import { setLang } from 'actions/lang-chooser';
 import { LuLoader } from 'react-icons/lu';
@@ -37,18 +38,24 @@ export const FlagPicker = ({
   options?: string[];
   value: string;
 }) => {
-  const [selectedFlag, action, pending] = useFormState(setLang, value);
-  // const [selectedFlag, action] = useFormState(setLang, value);
+  const ref = useRef(null);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  useOnClickOutside(ref, () => {
+    setIsOpen(false);
+  });
+
+  const [selectedFlag, action, pending] = useFormState(setLang, value);
 
   const otherFlags = options.filter(code => code !== selectedFlag);
 
   return (
     <div
+      ref={ref}
       className="relative"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
+      onClick={() => setIsOpen(state => !state)}
+      onKeyDown={() => {}}
     >
       {pending ? (
         <div className="rounded-md bg-gray-100 py-2 px-4 border border-gray-200 cursor-pointer">
@@ -66,7 +73,13 @@ export const FlagPicker = ({
       {isOpen && (
         <form action={action} className="absolute flex flex-col gap-2 py-2">
           {otherFlags.map(code => (
-            <button type="submit" name="lang" value={code} key={code}>
+            <button
+              onClick={e => e.stopPropagation()}
+              type="submit"
+              name="lang"
+              value={code}
+              key={code}
+            >
               <FlagComponent
                 code={lang2flag(code)}
                 height={100}

@@ -124,7 +124,7 @@ const Hero = ({ bg = '06' }) => {
         <div className="flex gap-10 max-w-[900px] items-center flex-col md:flex-row">
           <div className="flex items-center justify-center">
             <div className="flex flex-col gap-5 text-white p-4 rounded-md">
-              <div className={cn('text-5xl sm:text-7xl font-[900] b')}>
+              <div className={cn('text-4xl sm:text-7xl font-[900] b')}>
                 {translate('page.home.hero.title')}
               </div>
 
@@ -179,7 +179,7 @@ const Gallery = () => {
   return (
     <div id="Gallery" className="flex flex-col p-10 gap-10">
       <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-5xl font-[900]">
+        <h2 className="text-4xl sm:text-5xl font-[900]">
           {translate('page.home.gallery.title')}
         </h2>
         <p className="text-gray-600 text-2xl">
@@ -212,7 +212,7 @@ const Gallery = () => {
 //   return (
 //     <div id="Features" className="flex flex-col p-10 gap-10">
 //       <hgroup className="text-center flex flex-col gap-4">
-//         <h2 className="text-5xl font-[900]">
+//         <h2 className="text-4xl sm:text-5xl font-[900]">
 //           {translate('page.home.features.title')}
 //         </h2>
 //         <p className="text-gray-600 text-2xl">
@@ -247,7 +247,7 @@ const Prices = async () => {
       className="flex flex-col p-10 gap-20 overflow-hidden max-w-[1200px] justify-center items-center justify-self-center"
     >
       <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-5xl font-[900]">
+        <h2 className="text-4xl sm:text-5xl font-[900]">
           {translate('page.home.price.title')}
         </h2>
         <p className="text-gray-600 text-2xl">
@@ -280,7 +280,7 @@ const Prices = async () => {
       </section>
 
       <div className="flex items-center justify-center">
-        <PriceTable products={products} />
+        <PriceTable products={products} className="flex-col sm:flex-row" />
       </div>
     </div>
   );
@@ -459,7 +459,7 @@ const Testimonial = () => {
   return (
     <div id="Testimonial" className="flex flex-col p-5 sm:p-10 gap-20">
       <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-5xl font-[900]">
+        <h2 className="text-4xl sm:text-5xl font-[900]">
           {translate('page.home.testimonial.title')}
         </h2>
         <p className="text-gray-600 text-2xl">

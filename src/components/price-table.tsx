@@ -12,16 +12,18 @@ import { cn } from 'lib/utils';
 
 export const PriceTable = ({
   products,
-  subscription
+  subscription,
+  className
 }: {
   products: (Product & { prices: Price[] })[];
   subscription?: Subscription &
     Prisma.SubscriptionGetPayload<{
       include: { price: { include: { product: true } } };
     }>;
+  className?: string;
 }) => {
   return (
-    <div className="flex gap-5">
+    <div className={cn('flex gap-5', className)}>
       {[...products]
         .sort(
           (left, right) =>
@@ -32,13 +34,13 @@ export const PriceTable = ({
           <div
             key={`PriceTableItem-${product.id}`}
             className={cn(
-              'relative flex-1 flex flex-col gap-4 bg-white scale-90 z-1',
+              'relative flex-1 flex flex-col gap-4 bg-white scale-95 z-1',
               'border-4 border-black rounded-xl p-5 sm:p-10',
 
               // @ts-ignore
               product?.metadata?.feature === 'true' &&
                 !subscription?.valid() &&
-                'scale-110 -mx-7 z-10 bg-yellow-50',
+                'scale-105 -mx-7 z-10 bg-yellow-50',
               subscription?.priceId === product?.prices?.[0]?.id &&
                 'z-10 bg-green-100 border-4 border-green-500'
             )}
