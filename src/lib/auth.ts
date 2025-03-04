@@ -2,6 +2,7 @@ import { SubscriptionStatus } from '@prisma/client';
 
 import type {
   Price,
+  Prisma,
   Product,
   Site,
   Subscription as SubscriptionPrisma
@@ -23,10 +24,12 @@ const isPast = (date: Date | string) =>
   (typeof date === 'string' ? new Date(date) : date).getTime() <
   new Date().getTime();
 
-type Sub = SubscriptionPrisma & { price: Price & { product: Product } };
+type SubscriptionBase = Prisma.SubscriptionGetPayload<{
+  include: { price: { include: { product: true } } };
+}>;
 
 export class Subscription {
-  constructor(subscription: Sub | null) {
+  constructor(subscription: SubscriptionBase | null) {
     if (subscription === null) return;
 
     for (const [key, value] of Object.entries(subscription)) {

@@ -44,8 +44,10 @@ export default async function SettingsPage() {
             </p>
           </div>
 
-          {/* @ts-ignore */}
-          <PriceTable products={products} subscription={subscription} />
+          <div className="w-full overflow-scroll">
+            {/* @ts-ignore */}
+            <PriceTable products={products} subscription={subscription} />
+          </div>
 
           {subscription.valid() && (
             <div className="flex flex-col items-center justify-center space-y-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 sm:flex-row sm:justify-between sm:space-y-0 sm:px-10">

@@ -1,5 +1,6 @@
 import type {
   Price,
+  Prisma,
   Product,
   Subscription as SubscriptionPrisma
 } from '@prisma/client';
@@ -14,7 +15,10 @@ export const PriceTable = ({
   subscription
 }: {
   products: (Product & { prices: Price[] })[];
-  subscription?: Subscription & SubscriptionPrisma;
+  subscription?: Subscription &
+    Prisma.SubscriptionGetPayload<{
+      include: { price: { include: { product: true } } };
+    }>;
 }) => {
   return (
     <div className="flex gap-5">
