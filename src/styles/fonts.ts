@@ -1,5 +1,5 @@
 import localFont from 'next/font/local';
-import { Inter, Lora, Work_Sans } from 'next/font/google';
+import { Inter, Lora, Work_Sans, Roboto } from 'next/font/google';
 
 export const inter = Inter({
   variable: '--font-inter',
@@ -34,8 +34,18 @@ export const work = Work_Sans({
   display: 'swap'
 });
 
+export const roboto = Roboto({
+  variable: '--font-roboto',
+  subsets: ['latin'],
+  weight: '700',
+  display: 'swap'
+});
+
 export const fontMapper = {
-  'font-cal': calTitle.variable,
+  'font-inter': inter.variable,
+  'font-cal': cal.variable,
+  'font-cal-title': calTitle.variable,
   'font-lora': lora.variable,
-  'font-work': work.variable
+  'font-work': work.variable,
+  'font-roboto': roboto.variable
 } as Record<string, string>;
