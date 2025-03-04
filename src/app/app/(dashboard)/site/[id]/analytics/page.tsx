@@ -11,20 +11,16 @@ import 'array-grouping-polyfill';
 
 const getCachedClicks = unstable_cache(
   async (siteId: string) => {
-    // const thirtyDaysAgo = new Date();
-    // thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
     return db.click.findMany({
       where: {
         OR: [{ siteId }, { link: { siteId } }]
-        // createdAt: { gte: thirtyDaysAgo }
       },
       orderBy: { createdAt: 'asc' },
       select: { createdAt: true, siteId: true, linkId: true }
     });
   },
-  ['site-clicks'], // clé de cache
-  { revalidate: 3600 } // revalider toutes les heures
+  ['site-clicks'],
+  { revalidate: 3600 }
 );
 
 export default async function SiteAnalytics({
@@ -51,20 +47,19 @@ export default async function SiteAnalytics({
 
   const clicks = await getCachedClicks(site.id);
 
-  const splitByDate = clicks.groupBy(({ createdAt }) =>
-    [
-      new Date(createdAt).toDateString(),
-      `${new Date(createdAt).getHours()}h`
-    ].join(' ')
-  );
+  const splitByDate = clicks.groupBy(({ createdAt }) => {
+    const when = new Date(createdAt);
+    when.setHours(when.getHours(), 0, 0, 0);
+    return when.toISOString();
+  });
 
   const start = clicks.at(0)?.createdAt ?? 0;
   const end = clicks.at(-1)?.createdAt ?? 0;
 
   const chartdata = eachHourOfInterval({ start, end }).map(date => {
     const when = new Date(date);
-
-    const key = `${when.toDateString()} ${when.getHours()}h`;
+    when.setHours(when.getHours(), 0, 0, 0);
+    const key = when.toISOString();
 
     const dateClicks = splitByDate?.[key] || [];
 

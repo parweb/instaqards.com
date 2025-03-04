@@ -1,4 +1,4 @@
-import { eachMinuteOfInterval } from 'date-fns';
+import { eachHourOfInterval } from 'date-fns';
 import { redirect } from 'next/navigation';
 
 import Analytics from 'components/analytics';
@@ -20,15 +20,19 @@ export default async function AllAffiliation() {
     }
   });
 
-  const splitByDate = affiliates.groupBy(({ createdAt }) =>
-    [createdAt.toDateString(), `${createdAt.getHours()}h`].join(' ')
-  );
+  const splitByDate = affiliates.groupBy(({ createdAt }) => {
+    const when = new Date(createdAt);
+    when.setHours(when.getHours(), 0, 0, 0);
+    return when.toISOString();
+  });
 
   const start = affiliates.at(0)?.createdAt ?? 0;
   const end = affiliates.at(-1)?.createdAt ?? 0;
 
-  const chartdata = eachMinuteOfInterval({ start, end }).map(date => {
-    const key = [date.toDateString(), `${date.getHours()}h`].join(' ');
+  const chartdata = eachHourOfInterval({ start, end }).map(date => {
+    const when = new Date(date);
+    when.setHours(when.getHours(), 0, 0, 0);
+    const key = when.toISOString();
 
     return {
       date: key,

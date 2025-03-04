@@ -1,16 +1,14 @@
 TODO
 
+     -> T’avais pas mis en prod pour l’affiliation les stats ?
+
 DONE -> lien social list de logo
 DONE -> prix trial a mettre en avant
-
-
-
-
 DONE -> Mettre le logo officiel
 DONE -> Admin -> creer et transférer les Qards / voir toute les Qards
 DONE -> bouton -> Créer votre QARDS (call to action)
      -> Overview - > Petit carré avec les news et update a coté du truc de statistique
-     -> Stats -> Range de date modifiable
+DONE -> Stats -> Range de date modifiable
 
         Page «All Sites & Qards»
 DONE -> Stats a coté des Qards a rendre dispo (masqué si donnée fake)
