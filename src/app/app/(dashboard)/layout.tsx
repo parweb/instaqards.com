@@ -29,7 +29,7 @@ export default async function DashboardLayout({
   return (
     <div>
       <Nav>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={null}>
           <Profile />
         </Suspense>
       </Nav>

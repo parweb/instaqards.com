@@ -15,7 +15,8 @@ import {
   LayoutDashboard,
   Menu,
   Newspaper,
-  Settings
+  Settings,
+  X
 } from 'lucide-react';
 
 import { LanguageChooser } from 'components/LanguageChooser';
@@ -103,56 +104,67 @@ export default function Nav({ children }: { children: ReactNode }) {
     <>
       <button
         type="button"
-        className="fixed z-20 right-5 top-7 sm:hidden"
-        onClick={() => setShowSidebar(!showSidebar)}
+        className="fixed z-40 right-5 top-7 sm:hidden"
+        onClick={() => setShowSidebar(state => !state)}
       >
-        <Menu width={20} />
+        {showSidebar ? <X width={20} /> : <Menu width={20} />}
       </button>
 
       <div
+        onClick={() => setShowSidebar(false)}
+        onKeyUp={e => e.key === 'Enter' && setShowSidebar(false)}
         className={`transform ${
-          showSidebar ? 'w-full translate-x-0' : '-translate-x-full'
-        } fixed z-20 flex h-full flex-col justify-between border-r border-stone-200 bg-stone-100 p-4 transition-all dark:border-stone-700 dark:bg-stone-900 sm:w-60 sm:translate-x-0`}
+          showSidebar
+            ? 'w-full pr-[100px] sm:pr-0 translate-x-0 bg-gray-500/50'
+            : '-translate-x-full'
+        } fixed z-20 flex h-full flex-col justify-between transition-all sm:w-60 sm:translate-x-0`}
       >
-        <div className="grid gap-2">
-          <div className="flex items-center space-x-2 rounded-lg px-2 py-1.5">
-            <Link
-              href="/"
-              className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center gap-3 uppercase"
-            >
-              <Image
-                src="/rsz_black-transparent_nolink.png"
-                alt="Logo qards.link"
-                width={800 * ratio}
-                height={400 * ratio}
-              />
-            </Link>
-          </div>
-
-          <div className="grid gap-1">
-            {tabs.map(({ name, href, isActive, icon }) => (
+        <div
+          onClick={e => e.stopPropagation()}
+          onKeyUp={e => e.stopPropagation()}
+          className="pointer-events-auto w-full border-r border-stone-200 bg-stone-100 p-4 dark:border-stone-700 dark:bg-stone-900 h-full"
+        >
+          <div className="grid gap-2">
+            <div className="flex items-center space-x-2 rounded-lg px-2 py-1.5">
               <Link
-                key={name}
-                href={href}
-                className={`flex items-center space-x-3 ${
-                  isActive ? 'bg-stone-200 text-black dark:bg-stone-700' : ''
-                } rounded-lg px-2 py-1.5 transition-all duration-150 ease-in-out hover:bg-stone-200 active:bg-stone-300 dark:text-white dark:hover:bg-stone-700 dark:active:bg-stone-800`}
+                href="/"
+                className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center gap-3 uppercase"
               >
-                {icon}
-                <span className="text-sm font-medium">{name}</span>
+                <Image
+                  src="/rsz_black-transparent_nolink.png"
+                  alt="Logo qards.link"
+                  width={800 * ratio}
+                  height={400 * ratio}
+                />
               </Link>
-            ))}
+            </div>
 
-            <div>
-              <LanguageChooser />
+            <div className="grid gap-1">
+              {tabs.map(({ name, href, isActive, icon }) => (
+                <Link
+                  key={name}
+                  href={href}
+                  className={`flex items-center space-x-3 ${
+                    isActive ? 'bg-stone-200 text-black dark:bg-stone-700' : ''
+                  } rounded-lg px-2 py-1.5 transition-all duration-150 ease-in-out hover:bg-stone-200 active:bg-stone-300 dark:text-white dark:hover:bg-stone-700 dark:active:bg-stone-800`}
+                >
+                  {icon}
+                  <span className="text-sm font-medium">{name}</span>
+                </Link>
+              ))}
+
+              <div>
+                <LanguageChooser />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div>
-          <div className="grid gap-1" />
-          <div className="my-2 border-t border-stone-200 dark:border-stone-700" />
-          {children}
+          <div>
+            <div className="grid gap-1" />
+            <div className="my-2 border-t border-stone-200 dark:border-stone-700" />
+
+            {children}
+          </div>
         </div>
       </div>
     </>
