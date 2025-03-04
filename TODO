@@ -1,7 +1,11 @@
 TODO
 
-     -> T’avais pas mis en prod pour l’affiliation les stats ?
+     -> sortable link main & social
+     -> style sur les liens (apply on all)
+     -> email transactional 
+     -> tableaux des prix (one price for all)
 
+DONE -> T’avais pas mis en prod pour l’affiliation les stats ?
 DONE -> lien social list de logo
 DONE -> prix trial a mettre en avant
 DONE -> Mettre le logo officiel
@@ -16,22 +20,22 @@ DONE -> Stats a coté des Qards a rendre dispo (masqué si donnée fake)
 DONE -> Suppression -> ajouter croix + modal de confirmation
 
         Page «Qards.link»
-     -> Ajout d’un logo ou une bulle perso au dessus des link (margin top set par défaut et editable)
+DONE -> Ajout d’un logo ou une bulle perso au dessus des link (margin top set par défaut et editable)
 DONE -> Lien Notorious -> suppression
      -> Modifier les couleurs ?
-     -> Label footer -> Menu déroulant avec logo présélectionné ou -> customize
+DONE -> Label footer -> Menu déroulant avec logo présélectionné ou -> customize
 
         Settings
 DONE -> Paiement -> rendre dispo les paiement
 DONE -> Mot de passe -> modifier ?
 DONE -> rediriger apres: login confirm
 
-     -> checks pk lien bio insta marche pas
+DONE -> checks pk lien bio insta marche pas
 DONE -> qards unavailable meme apres paiement (cache)
 DONE -> lien public marche pas -> https://app.qards.link/site/cltps29wl0000e0g01sw1fiyu
-     -> logo par default des site mettre logo qards au lieu de vercel
+DONE -> logo par default des site mettre logo qards au lieu de vercel
      -> image OG par default des site changer l'image par default
-     -> multi-langue
+DONE -> multi-langue
      -> compte email contact@qards.link
 
 compte email
@@ -41,8 +45,10 @@ password: 3O)[E]O=L(8xbeU
 
 resend
 
-email: osmia.000002@gmail.com
-password: 3O)[E]O=L(8xbeU
+email: rahem.ilias@gmail.com
+password: 81R7sgE2KtUM
+api key: re_4KqWTNRP_Nc2wsuJ9btgCHMzogx89tMzh
+
 
 pop.hostinger.com     995
 smtp.hostinger.com    465
