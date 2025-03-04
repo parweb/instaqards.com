@@ -159,7 +159,7 @@ TimeInput.displayName = 'TimeInput';
 const triggerStyles = tv({
   base: [
     // base
-    'peer flex w-full cursor-pointer appearance-none items-center gap-x-2 truncate rounded-md border px-3 py-2 shadow-sm outline-none transition-all sm:text-sm',
+    'peer flex cursor-pointer appearance-none items-center gap-x-2 truncate rounded-md border px-3 py-2 shadow-sm outline-none transition-all sm:text-sm',
     // background color
     'bg-white dark:bg-gray-950',
     // border color
@@ -205,7 +205,7 @@ const Trigger = React.forwardRef<HTMLButtonElement, TriggerProps>(
           {...props}
         >
           <RiCalendar2Fill className="size-5 shrink-0 text-gray-400 dark:text-gray-600" />
-          <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-left text-gray-900 dark:text-gray-50">
+          <span className="flex-1 min-w-1/3 overflow-hidden text-ellipsis whitespace-nowrap text-left text-gray-900 dark:text-gray-50 hidden sm:block">
             {children ? (
               children
             ) : placeholder ? (
@@ -919,7 +919,7 @@ const RangeDatePicker = ({
       <Trigger
         placeholder={placeholder}
         disabled={disabled}
-        className={className}
+        className={cn(className)}
         hasError={hasError}
         aria-required={props.required || props['aria-required']}
         aria-invalid={props['aria-invalid']}
@@ -928,6 +928,7 @@ const RangeDatePicker = ({
       >
         {displayRange}
       </Trigger>
+
       <CalendarPopover align={align}>
         <div className="flex">
           <div className="flex flex-col overflow-x-auto sm:flex-row sm:items-start">
