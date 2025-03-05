@@ -201,12 +201,17 @@ model Click {
 }
 
 model Link {
-  id       String  @id @default(cuid())
-  type     String  @db.Text
-  position Int     @default(0)
-  label    String  @db.Text
-  href     String  @db.Text
-  logo     String? @db.Text
+  id              String  @id @default(cuid())
+  type            String  @db.Text
+  position        Int     @default(0)
+  label           String  @db.Text
+  href            String  @db.Text
+  logo            String? @db.Text
+  style           Json?   @default("{\"hover\": {\"color\": \"#000000\",\"backgroundColor\": \"#ffffff\",\"fontSize\": \"16\",\"fontFamily\": \"Open Sans\"},\"normal\": {\"color\": \"#ffffffe6\",\"backgroundColor\": \"#00000000\",\"fontSize\": \"16\",\"fontFamily\": \"Open Sans\"}}")
+  color           String? @db.Text
+  backgroundColor String? @db.Text
+  fontFamily      String? @db.Text
+  fontSize        String? @db.Text
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -215,7 +220,6 @@ model Link {
   site   Site?   @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   siteId String?
 
-  @@unique([type, href, siteId])
   @@index([siteId])
   @@index([type])
 }

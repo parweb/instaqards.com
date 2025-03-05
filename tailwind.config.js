@@ -163,6 +163,7 @@ module.exports = {
         30: '7.5rem'
       },
       fontFamily: {
+        sans: ['var(--font-open-sans)', ...fontFamily.sans],
         default: ['var(--font-inter)', ...fontFamily.sans],
         cal: ['var(--font-cal)', ...fontFamily.sans],
         title: ['var(--font-title)', ...fontFamily.sans],

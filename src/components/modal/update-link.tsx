@@ -8,13 +8,23 @@ import { useFormStatus } from 'react-dom';
 import { SocialIcon, getKeys } from 'react-social-icons';
 import { toast } from 'sonner';
 
+import type { Font } from 'actions/google-fonts';
+import { FontPicker } from 'components/font-picker';
 import LoadingDots from 'components/icons/loading-dots';
+import { ColorPicker } from 'components/ui/color-picker';
 import { Input } from 'components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import { updateLink } from 'lib/actions';
-import { cn } from 'lib/utils';
+import { cn, type LinkStyle } from 'lib/utils';
 import { useModal } from './provider';
 
-export default function UpdateLinkModal(link: Link) {
+export default function UpdateLinkModal({
+  link,
+  fonts
+}: {
+  link: Link;
+  fonts: Font[];
+}) {
   const router = useRouter();
   const params = useParams();
   const modal = useModal();
@@ -27,6 +37,8 @@ export default function UpdateLinkModal(link: Link) {
     filter === null
       ? getKeys()
       : getKeys().filter(key => key.includes(filter ?? ''));
+
+  const css = data.style as unknown as LinkStyle;
 
   return (
     <form
@@ -47,6 +59,143 @@ export default function UpdateLinkModal(link: Link) {
     >
       <div className="relative flex flex-col space-y-4 p-5 md:p-10">
         <h2 className="font-cal text-2xl dark:text-white">Update the link</h2>
+
+        {link.type === 'main' && (
+          <div>
+            <input
+              type="hidden"
+              name="style"
+              value={JSON.stringify(data.style)}
+            />
+
+            <Tabs defaultValue="normal" className="">
+              <TabsList className="flex justify-between">
+                {['normal', 'hover'].map(key => (
+                  <TabsTrigger
+                    key={`TabsTrigger-${key}`}
+                    value={key}
+                    className="flex-1"
+                  >
+                    {key}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {(['normal', 'hover'] as const).map(key => (
+                <TabsContent key={`TabsContent-${key}`} value={key}>
+                  <fieldset className="flex flex-col gap-4 border border-dashed rounded-md border-stone-200 p-4">
+                    <legend className="px-2 text-sm font-medium text-stone-500 dark:text-stone-400">
+                      {key}
+                    </legend>
+
+                    <div className="flex flex-col space-y-2">
+                      <label
+                        htmlFor={`${key}-color`}
+                        className="text-sm font-medium text-stone-500 dark:text-stone-400"
+                      >
+                        Font
+                      </label>
+
+                      <div className="flex items-center gap-2">
+                        <div>
+                          <ColorPicker
+                            key={`${key}-color`}
+                            name={`${key}-color`}
+                            value={css?.[key]?.color ?? '#000000ff'}
+                            onChange={color =>
+                              setData(state => ({
+                                ...state,
+                                style: {
+                                  ...(css ?? {}),
+                                  [key]: {
+                                    ...(css?.[key] ?? {}),
+                                    color
+                                  }
+                                }
+                              }))
+                            }
+                          />
+                        </div>
+
+                        <div className="w-[80px] relative">
+                          <Input
+                            name={`${key}-fontSize`}
+                            type="number"
+                            className="pr-[27px]"
+                            value={css?.[key]?.fontSize ?? '20'}
+                            onChange={e =>
+                              setData(state => ({
+                                ...state,
+                                style: {
+                                  ...(css ?? {}),
+                                  [key]: {
+                                    ...(css?.[key] ?? {}),
+                                    fontSize: e.target.value
+                                  }
+                                }
+                              }))
+                            }
+                          />
+
+                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-stone-500">
+                            px
+                          </span>
+                        </div>
+
+                        <div className="flex-1">
+                          <FontPicker
+                            name={`${key}-fontFamily`}
+                            fonts={fonts.map(font => font.family)}
+                            onChange={fontFamily =>
+                              setData(state => ({
+                                ...state,
+                                style: {
+                                  ...(css ?? {}),
+                                  [key]: {
+                                    ...(css?.[key] ?? {}),
+                                    fontFamily
+                                  }
+                                }
+                              }))
+                            }
+                            value={css?.[key]?.fontFamily ?? ''}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col space-y-2">
+                      <label
+                        htmlFor={`${key}-backgroundColor`}
+                        className="text-sm font-medium text-stone-500 dark:text-stone-400"
+                      >
+                        Background color
+                      </label>
+
+                      <ColorPicker
+                        key={`${key}-backgroundColor`}
+                        name={`${key}-backgroundColor`}
+                        value={css?.[key]?.backgroundColor ?? '#000000ff'}
+                        onChange={backgroundColor =>
+                          setData(state => ({
+                            ...state,
+                            style: {
+                              ...(css ?? {}),
+                              [key]: {
+                                ...(css?.[key] ?? {}),
+                                backgroundColor
+                              }
+                            }
+                          }))
+                        }
+                      />
+                    </div>
+                  </fieldset>
+                </TabsContent>
+              ))}
+            </Tabs>
+          </div>
+        )}
 
         <div className="flex flex-col space-y-2">
           <label
@@ -123,7 +272,7 @@ export default function UpdateLinkModal(link: Link) {
               {socials.map(key => (
                 <SocialIcon
                   title={key}
-                  key={key}
+                  key={`SocialIcon-${key}`}
                   network={key}
                   style={{
                     width: 34,

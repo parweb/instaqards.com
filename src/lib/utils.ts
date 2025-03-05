@@ -82,3 +82,32 @@ export const focusRing = [
   // outline color
   'outline-blue-500 dark:outline-blue-500'
 ];
+
+
+export const clamp = (value: number, min: number, max: number) => {
+  return Math.min(Math.max(value, min), max);
+};
+
+export type StyleProperties = {
+  fontFamily?: string;
+  fontSize?: string;
+  color?: string;
+  backgroundColor?: string;
+};
+
+export type LinkStyle = Partial<
+  Record<'normal' | 'hover', StyleProperties>
+>;
+
+export const generateCssProperties = (styleObj?: StyleProperties) => {
+  if (!styleObj) return '';
+
+  return [
+    styleObj.fontFamily && `font-family: ${styleObj.fontFamily};`,
+    styleObj.fontSize && `font-size: ${styleObj.fontSize}px;`,
+    styleObj.color && `color: ${styleObj.color};`,
+    styleObj.backgroundColor && `background-color: ${styleObj.backgroundColor};`
+  ]
+    .filter(Boolean)
+    .join('\n');
+};

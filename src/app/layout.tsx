@@ -4,10 +4,11 @@ import type { Metadata } from 'next';
 
 import { cn } from 'lib/utils';
 import { cookies } from 'next/headers';
-import { cal, inter } from 'styles/fonts';
-import 'styles/globals.css';
+import { cal, inter, open } from 'styles/fonts';
 import { DEFAULT_LANG } from '../../translations';
 import { Providers } from './providers';
+
+import 'styles/globals.css';
 
 const title = 'Reveal your self right now with qards.link';
 const description = 'unforgettable in an instant';
@@ -43,7 +44,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={cn(cal.variable, inter.variable, 'flex flex-col h-[100vh]')}
+        className={cn(
+          cal.variable,
+          inter.variable,
+          open.variable,
+          'font-sans flex flex-col h-[100vh]'
+        )}
       >
         <Providers>
           {children}

@@ -72,6 +72,7 @@ export const updateLink = withSiteAuth<Link>(async (formData, _, linkId) => {
   const label = formData.get('label') as Link['label'];
   const href = formData.get('href') as Link['href'];
   const logo = formData.get('logo') as Link['logo'];
+  const style = JSON.parse(String(formData.get('style') ?? '{}'));
 
   try {
     const response = await db.link.update({
@@ -80,7 +81,8 @@ export const updateLink = withSiteAuth<Link>(async (formData, _, linkId) => {
       data: {
         label,
         href,
-        logo: logo || null
+        logo: logo || null,
+        style
       }
     });
 
@@ -107,6 +109,7 @@ export const createLink = async (
   const label = formData.get('label') as Link['label'];
   const href = formData.get('href') as Link['href'];
   const logo = formData.get('logo') as Link['logo'];
+  const style = JSON.parse(String(formData.get('style') ?? '{}'));
 
   try {
     const response = await db.link.create({
@@ -116,7 +119,8 @@ export const createLink = async (
         label,
         href,
         logo: logo || null,
-        site: { connect: { id: site } }
+        site: { connect: { id: site } },
+        style
       }
     });
 

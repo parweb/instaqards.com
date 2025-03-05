@@ -2,65 +2,14 @@ import type { Link as PrismaLink } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { SocialIcon } from 'react-social-icons';
 
 import { db } from 'helpers';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
 import { getSiteData } from 'lib/fetchers';
-import { cn } from 'lib/utils';
+import { LinkList } from './client';
 
 import 'array-grouping-polyfill';
-
-const LinkItem = (link: PrismaLink) => {
-  if (link.type === 'main') {
-    return (
-      <Link
-        href={`/click/${link.id}`}
-        target="_blank"
-        className={cn(
-          'transition-all',
-          'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
-          'hover:bg-white hover:text-black'
-        )}
-      >
-        {link.label}
-      </Link>
-    );
-  }
-
-  if (link.type === 'social') {
-    return (
-      <Link href={`/click/${link.id}`} target="_blank" rel="noreferrer">
-        <div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          {link.logo?.includes('http') ? (
-            <img
-              className={cn(
-                link.label === 'facebook' && 'h-[65px]',
-                link.label !== 'facebook' && 'h-[50px]',
-                'object-contain transition-all hover:scale-125'
-              )}
-              src={link.logo ?? ''}
-              alt={link.label}
-            />
-          ) : (
-            <SocialIcon
-              className={cn(
-                link.label === 'facebook' && 'h-[65px]',
-                link.label !== 'facebook' && 'h-[50px]',
-                'object-contain transition-all hover:scale-125'
-              )}
-              url={link.href ?? ''}
-            />
-          )}
-        </div>
-      </Link>
-    );
-  }
-
-  return <></>;
-};
 
 export default async function SiteHomePage({
   params
@@ -145,6 +94,7 @@ export default async function SiteHomePage({
           <header className="flex flex-col justify-center items-center gap-6  pt-4">
             <div className="bg-white rounded-full overflow-hidden w-24 h-24 flex items-center justify-center">
               <Image
+                priority
                 className="object-cover"
                 src={site.logo ?? ''}
                 alt={site.name ?? ''}
@@ -158,17 +108,13 @@ export default async function SiteHomePage({
 
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1">
-              {data.links.map(props => (
-                <LinkItem key={`LinkItem-${props.id}`} {...props} />
-              ))}
+              <LinkList links={data.links} />
             </div>
           </div>
 
           <footer className="flex flex-col gap-3">
             <div className="flex gap-3 items-center justify-center">
-              {data.socials.map(props => (
-                <LinkItem key={`LinkItem-${props.id}`} {...props} />
-              ))}
+              <LinkList links={data.socials} />
             </div>
 
             <div className="text-center">

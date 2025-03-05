@@ -106,7 +106,6 @@ export default function Analytics({
 
   // Update filtered data when date range changes
   const handleDateRangeChange = (dateRange: DateRange | undefined) => {
-    console.log({ dateRange });
     const range = {
       from: dateRange?.from
         ? new Date(dateRange.from.setHours(0, 0, 0, 0))

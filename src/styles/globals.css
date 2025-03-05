@@ -135,3 +135,15 @@ ul[data-type='taskList'] li[data-checked='true'] > div > p {
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  input[type='text'],
+  input[type='email'],
+  input[type='number'],
+  input[type='tel'],
+  input[type='url'],
+  textarea,
+  select {
+    @apply text-base;
+  }
+}

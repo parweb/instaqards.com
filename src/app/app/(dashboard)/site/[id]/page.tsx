@@ -1,8 +1,9 @@
-import type { Link, Site } from '@prisma/client';
+import type { Link, Prisma } from '@prisma/client';
 import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { getGoogleFonts, type Font } from 'actions/google-fonts';
 import { LinkList } from 'components/LinkItem';
 import CreateLinkButton from 'components/create-link-button';
 import CreateLinkModal from 'components/modal/create-link';
@@ -18,15 +19,21 @@ import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
 
-const LinkCreate = ({ type }: { type: Link['type'] }) => {
+const LinkCreate = ({ type, fonts }: { type: Link['type']; fonts: Font[] }) => {
   return (
     <CreateLinkButton type={type}>
-      <CreateLinkModal type={type} />
+      <CreateLinkModal type={type} fonts={fonts} />
     </CreateLinkButton>
   );
 };
 
-const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
+const Landing = async ({
+  site,
+  fonts
+}: {
+  site: Prisma.SiteGetPayload<{ include: { links: true } }>;
+  fonts: Font[];
+}) => {
   const { main, social }: Record<Link['type'], Link[]> = {
     main: [],
     social: [],
@@ -82,6 +89,7 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
 
             <div className="group relative bg-white rounded-full overflow-hidden w-24 h-24 cursor-pointer flex items-center justify-center">
               <Image
+                priority
                 className="object-cover"
                 src={site.logo ?? ''}
                 alt={site.name ?? ''}
@@ -99,17 +107,27 @@ const Landing = async ({ site }: { site: Site & { links: Link[] } }) => {
 
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
-              <LinkList links={data.links} site={site} type="main" />
+              <LinkList
+                links={data.links}
+                site={site}
+                type="main"
+                fonts={fonts}
+              />
 
-              <LinkCreate type="main" />
+              <LinkCreate type="main" fonts={fonts} />
             </div>
           </div>
 
           <footer className="flex flex-col gap-3">
             <div className="flex gap-3 items-center justify-center pointer-events-auto">
-              <LinkList links={data.socials} site={site} type="social" />
+              <LinkList
+                links={data.socials}
+                site={site}
+                type="social"
+                fonts={fonts}
+              />
 
-              <LinkCreate type="social" />
+              <LinkCreate type="social" fonts={fonts} />
             </div>
           </footer>
         </div>
@@ -147,6 +165,8 @@ export default async function SitePosts({
     notFound();
   }
 
+  const fonts = await getGoogleFonts();
+
   const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
   return (
@@ -181,7 +201,7 @@ export default async function SitePosts({
 
       <div className="flex flex-col h-[100vh]">
         <Suspense fallback={null}>
-          <Landing site={site} />
+          <Landing site={site} fonts={fonts} />
         </Suspense>
       </div>
     </>

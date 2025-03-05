@@ -94,7 +94,6 @@ export default function OverviewStats({
   );
 
   const handleDateRangeChange = (dateRange: DateRange | undefined) => {
-    console.log({ dateRange });
     const range = {
       from: dateRange?.from
         ? new Date(dateRange.from.setHours(0, 0, 0, 0))

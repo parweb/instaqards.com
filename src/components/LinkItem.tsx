@@ -30,17 +30,18 @@ import {
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
 
+import type { Font } from 'actions/google-fonts';
 import DeleteLinkButton from 'components/delete-link-button';
 import UpdateLinkModal from 'components/modal/update-link';
 import UpdateLinkButton from 'components/update-link-button';
-import { cn } from 'lib/utils';
+import { cn, generateCssProperties, type LinkStyle } from 'lib/utils';
 import { LuMove } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
-const LinkUpdate = (link: Link) => {
+const LinkUpdate = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
   return (
     <UpdateLinkButton>
-      <UpdateLinkModal {...link} />
+      <UpdateLinkModal link={link} fonts={fonts} />
     </UpdateLinkButton>
   );
 };
@@ -49,7 +50,7 @@ const LinkDelete = (link: Link) => {
   return <DeleteLinkButton {...link} />;
 };
 
-const LinkItem = (link: Link) => {
+const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: link.id });
 
@@ -57,6 +58,8 @@ const LinkItem = (link: Link) => {
     transform: CSS.Transform.toString(transform),
     transition
   };
+
+  const css = link.style as unknown as LinkStyle;
 
   if (link.type === 'main') {
     return (
@@ -85,10 +88,28 @@ const LinkItem = (link: Link) => {
           )}
         >
           {link.label}
+
+          <style jsx>{`
+            div {
+              transition: all 0.3s ease;
+
+              ${generateCssProperties(css.normal)}
+
+              ${Object.keys(css || {})
+                .filter(key => key !== 'normal')
+                .map(
+                  key => `
+                    &:${key} {
+                      ${generateCssProperties(css[key as keyof LinkStyle])}
+                    }
+                  `
+                )}
+            }
+          `}</style>
         </div>
 
         <div className="absolute right-10 flex gap-2 items-center p-2 transition-all opacity-0 group-hover:opacity-100 group-hover:right-0">
-          <LinkUpdate {...link} />
+          <LinkUpdate link={link} fonts={fonts} />
           <LinkDelete {...link} />
         </div>
       </motion.div>
@@ -108,7 +129,7 @@ const LinkItem = (link: Link) => {
             'transition-all duration-300 opacity-0 group-hover:opacity-100 '
           )}
         >
-          <LinkUpdate {...link} />
+          <LinkUpdate link={link} fonts={fonts} />
           <LinkDelete {...link} />
         </div>
 
@@ -128,17 +149,19 @@ const LinkItem = (link: Link) => {
         </div>
 
         <div className="cursor-pointer">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           {link.logo?.includes('http') ? (
-            <img
-              className={cn(
-                link.label === 'facebook' && 'h-[65px]',
-                link.label !== 'facebook' && 'h-[50px]',
-                'object-contain transition-all hover:scale-125'
-              )}
-              src={link.logo ?? ''}
-              alt={link.label}
-            />
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={link.logo ?? ''}
+                alt={link.label}
+                className={cn(
+                  link.label === 'facebook' && 'h-[65px]',
+                  link.label !== 'facebook' && 'h-[50px]',
+                  'object-contain transition-all hover:scale-125'
+                )}
+              />
+            </>
           ) : (
             <SocialIcon
               as="div"
@@ -161,11 +184,13 @@ const LinkItem = (link: Link) => {
 export const LinkList = ({
   links,
   site,
-  type
+  type,
+  fonts
 }: {
   links: Link[];
   site: Site;
   type: 'main' | 'social';
+  fonts: Font[];
 }) => {
   const [items, setItems] = useState(links);
 
@@ -200,29 +225,45 @@ export const LinkList = ({
     }
   };
 
+  const fontsNeeded = items
+    .flatMap(({ style }) =>
+      Object.values(style as Record<string, { fontFamily: string }>).flatMap(
+        css => css.fontFamily
+      )
+    )
+    .filter(Boolean) as string[];
+
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-      modifiers={[
-        type === 'main' ? restrictToVerticalAxis : restrictToHorizontalAxis,
-        restrictToWindowEdges
-      ]}
-    >
-      <SortableContext
-        items={items}
-        strategy={
-          type === 'main'
-            ? verticalListSortingStrategy
-            : horizontalListSortingStrategy
-        }
+    <>
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?${fontsNeeded
+          .map(font => `family=${font.replaceAll(' ', '+')}&display=swap`)
+          .join('&')}&display=swap');
+      `}</style>
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[
+          type === 'main' ? restrictToVerticalAxis : restrictToHorizontalAxis,
+          restrictToWindowEdges
+        ]}
       >
-        {items.map(props => (
-          <LinkItem key={`LinkItem-${props.id}`} {...props} />
-        ))}
-      </SortableContext>
-    </DndContext>
+        <SortableContext
+          items={items}
+          strategy={
+            type === 'main'
+              ? verticalListSortingStrategy
+              : horizontalListSortingStrategy
+          }
+        >
+          {items.map(props => (
+            <LinkItem key={`LinkItem-${props.id}`} link={props} fonts={fonts} />
+          ))}
+        </SortableContext>
+      </DndContext>
+    </>
   );
 };
 

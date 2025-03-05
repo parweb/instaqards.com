@@ -56,7 +56,6 @@ export default function UpdateSiteBackgroundModal({
 
         if (acceptedFiles[0]) {
           setPending(true);
-          console.log({ acceptedFiles: acceptedFiles[0] });
 
           try {
             const { url } = await fetch('/api/upload', {

@@ -1,5 +1,5 @@
+import { Inter, Open_Sans } from 'next/font/google';
 import localFont from 'next/font/local';
-import { Inter, Lora, Work_Sans, Roboto } from 'next/font/google';
 
 export const inter = Inter({
   variable: '--font-inter',
@@ -13,39 +13,7 @@ export const cal = localFont({
   display: 'swap'
 });
 
-export const calTitle = localFont({
-  src: './CalSans-SemiBold.otf',
-  variable: '--font-title',
-  weight: '600',
-  display: 'swap'
+export const open = Open_Sans({
+  variable: '--font-open-sans',
+  subsets: ['latin']
 });
-
-export const lora = Lora({
-  variable: '--font-title',
-  subsets: ['latin'],
-  weight: '600',
-  display: 'swap'
-});
-
-export const work = Work_Sans({
-  variable: '--font-title',
-  subsets: ['latin'],
-  weight: '600',
-  display: 'swap'
-});
-
-export const roboto = Roboto({
-  variable: '--font-roboto',
-  subsets: ['latin'],
-  weight: '700',
-  display: 'swap'
-});
-
-export const fontMapper = {
-  'font-inter': inter.variable,
-  'font-cal': cal.variable,
-  'font-cal-title': calTitle.variable,
-  'font-lora': lora.variable,
-  'font-work': work.variable,
-  'font-roboto': roboto.variable
-} as Record<string, string>;
