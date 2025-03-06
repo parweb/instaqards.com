@@ -6,8 +6,10 @@ import type {
 
 export const addDomainToVercel = async (domain: string) => {
   return await fetch(
-    `https://api.vercel.com/v10/projects/${process.env.PROJECT_ID_VERCEL
-    }/domains${process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
+    `https://api.vercel.com/v10/projects/${
+      process.env.PROJECT_ID_VERCEL
+    }/domains${
+      process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
     }`,
     {
       method: 'POST',
@@ -24,8 +26,10 @@ export const addDomainToVercel = async (domain: string) => {
 
 export const removeDomainFromVercelProject = async (domain: string) => {
   return await fetch(
-    `https://api.vercel.com/v9/projects/${process.env.PROJECT_ID_VERCEL
-    }/domains/${domain}${process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
+    `https://api.vercel.com/v9/projects/${
+      process.env.PROJECT_ID_VERCEL
+    }/domains/${domain}${
+      process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
     }`,
     {
       headers: {
@@ -38,7 +42,8 @@ export const removeDomainFromVercelProject = async (domain: string) => {
 
 export const removeDomainFromVercelTeam = async (domain: string) => {
   return await fetch(
-    `https://api.vercel.com/v6/domains/${domain}${process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
+    `https://api.vercel.com/v6/domains/${domain}${
+      process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
     }`,
     {
       headers: {
@@ -53,8 +58,10 @@ export const getDomainResponse = async (
   domain: string
 ): Promise<DomainResponse & { error: { code: string; message: string } }> => {
   return await fetch(
-    `https://api.vercel.com/v9/projects/${process.env.PROJECT_ID_VERCEL
-    }/domains/${domain}${process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
+    `https://api.vercel.com/v9/projects/${
+      process.env.PROJECT_ID_VERCEL
+    }/domains/${domain}${
+      process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
     }`,
     {
       method: 'GET',
@@ -72,7 +79,8 @@ export const getConfigResponse = async (
   domain: string
 ): Promise<DomainConfigResponse> => {
   return await fetch(
-    `https://api.vercel.com/v6/domains/${domain}/config${process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
+    `https://api.vercel.com/v6/domains/${domain}/config${
+      process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
     }`,
     {
       method: 'GET',
@@ -88,8 +96,10 @@ export const verifyDomain = async (
   domain: string
 ): Promise<DomainVerificationResponse> => {
   return await fetch(
-    `https://api.vercel.com/v9/projects/${process.env.PROJECT_ID_VERCEL
-    }/domains/${domain}/verify${process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
+    `https://api.vercel.com/v9/projects/${
+      process.env.PROJECT_ID_VERCEL
+    }/domains/${domain}/verify${
+      process.env.TEAM_ID_VERCEL ? `?teamId=${process.env.TEAM_ID_VERCEL}` : ''
     }`,
     {
       method: 'POST',

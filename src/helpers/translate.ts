@@ -40,7 +40,6 @@ export const translate = (
 ): string => {
   const lang = getLang();
 
-
   return Object.entries(options).reduce(
     (carry, [key, value]) => carry.replaceAll(`{${key}}`, value),
     (translations?.[key]?.[lang] ?? key) as string

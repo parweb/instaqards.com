@@ -83,7 +83,6 @@ export const focusRing = [
   'outline-blue-500 dark:outline-blue-500'
 ];
 
-
 export const clamp = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
 };
@@ -95,9 +94,7 @@ export type StyleProperties = {
   backgroundColor?: string;
 };
 
-export type LinkStyle = Partial<
-  Record<'normal' | 'hover', StyleProperties>
->;
+export type LinkStyle = Partial<Record<'normal' | 'hover', StyleProperties>>;
 
 export const generateCssProperties = (styleObj?: StyleProperties) => {
   if (!styleObj) return '';

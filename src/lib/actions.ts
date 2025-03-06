@@ -32,7 +32,8 @@ export const createSite = async (
 
   const name = formData.get('name') as string;
   const description = formData.get('description') as string;
-  const subdomain = String(formData.get('subdomain')).toLowerCase()
+  const subdomain = String(formData.get('subdomain'))
+    .toLowerCase()
     .trim()
     .replace(/[\W_]+/g, '-');
 

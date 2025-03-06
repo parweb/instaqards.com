@@ -9,7 +9,7 @@ export const SettingsSchema = z
     password: z.optional(z.string().min(6)),
     newPassword: z.optional(z.string().min(6))
   })
-  .refine(data => (!(data.password && !data.newPassword)), {
+  .refine(data => !(data.password && !data.newPassword), {
     message: 'schemas.new-password.required',
     path: ['newPassword']
   })
