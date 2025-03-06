@@ -247,12 +247,17 @@ model Site {
   @@index([userId])
 }
 
-model Example {
-  id            Int     @id @default(autoincrement())
-  name          String?
-  description   String? @db.Text
-  domainCount   Int?
-  url           String?
-  image         String? @db.Text
-  imageBlurhash String? @db.Text
+model Queue {
+  id String @id @default(cuid())
+
+  payload   Json     @default("{}")
+  status    String   @default("pending") @db.VarChar(20)
+  attempts  Int      @default(0)
+  lastError String?  @db.Text
+  runAt     DateTime @default(now()) @db.Timestamptz
+
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@index([status, runAt])
 }
