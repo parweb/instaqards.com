@@ -10,7 +10,11 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "pnpm i && now --prod",
-    "emails": "email dev"
+    "emails": "email dev",
+    "backup-data": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'pg_dump --data-only \"$POSTGRES_PRISMA_URL\" | gzip > backup/instaqards_com_data_$(date +%Y-%m-%d_%H-%M-%S).sql.gz'",
+    "backup-schema": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'pg_dump --clean --schema-only \"$POSTGRES_PRISMA_URL\" | gzip > backup/instaqards_com_schema_$(date +%Y-%m-%d_%H-%M-%S).sql.gz'",
+    "backup": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'pg_dump --clean \"$POSTGRES_PRISMA_URL\" | gzip > backup/instaqards_com_$(date +%Y-%m-%d_%H-%M-%S).sql.gz'",
+    "restore": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'gunzip -c \"$1\" | psql \"$POSTGRES_PRISMA_URL\"' --"
   },
   "dependencies": {
     "@auth/prisma-adapter": "1.2.1",
