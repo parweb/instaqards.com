@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const click = await db.click.create({
     include: { block: true },
-    data: { blockId: blockId }
+    data: { blockId }
   });
 
   return NextResponse.redirect(click.block?.href ?? '');
