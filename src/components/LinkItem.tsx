@@ -32,7 +32,7 @@ import {
 
 import type { Font } from 'actions/google-fonts';
 import DeleteLinkButton from 'components/delete-link-button';
-import UpdateLinkModal from 'components/modal/update-link';
+import UpdateBlockModal from 'components/modal/update-link';
 import UpdateLinkButton from 'components/update-link-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 import { LuMove } from 'react-icons/lu';
@@ -41,7 +41,7 @@ import { SocialIcon } from 'react-social-icons';
 const LinkUpdate = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
   return (
     <UpdateLinkButton>
-      <UpdateLinkModal link={link} fonts={fonts} />
+      <UpdateBlockModal block={link} fonts={fonts} />
     </UpdateLinkButton>
   );
 };

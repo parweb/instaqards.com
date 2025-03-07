@@ -18,18 +18,18 @@ import { updateBlock } from 'lib/actions';
 import { cn, type BlockStyle } from 'lib/utils';
 import { useModal } from './provider';
 
-export default function UpdateLinkModal({
-  link,
+export default function UpdateBlockModal({
+  block,
   fonts
 }: {
-  link: Block;
+  block: Block;
   fonts: Font[];
 }) {
   const router = useRouter();
   const params = useParams();
   const modal = useModal();
 
-  const [data, setData] = useState(link);
+  const [data, setData] = useState(block);
   const [filter, setFilter] = useState<string | null>(null);
   const [logo, setLogo] = useState<string>('');
 
@@ -43,24 +43,24 @@ export default function UpdateLinkModal({
   return (
     <form
       action={async (data: FormData) =>
-        updateBlock(data, params.id as Site['id'], link.id).then(res => {
+        updateBlock(data, params.id as Site['id'], block.id).then(res => {
           if ('error' in res) {
             toast.error(res.error);
           } else {
-            va.track('Update link', { id: link.id });
+            va.track('Update block', { id: block.id });
 
             router.refresh();
             modal?.hide();
-            toast.success('Link updated!');
+            toast.success('Block updated!');
           }
         })
       }
       className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow dark:md:border-stone-700"
     >
       <div className="relative flex flex-col space-y-4 p-5 md:p-10">
-        <h2 className="font-cal text-2xl dark:text-white">Update the link</h2>
+        <h2 className="font-cal text-2xl dark:text-white">Update the block</h2>
 
-        {link.type === 'main' && (
+        {block.type === 'main' && (
           <div>
             <input
               type="hidden"
@@ -226,7 +226,7 @@ export default function UpdateLinkModal({
           </label>
 
           <div className="flex items-center gap-2">
-            {link.type === 'social' && (
+            {block.type === 'social' && (
               <div>
                 <SocialIcon
                   href={data.href}
@@ -250,7 +250,7 @@ export default function UpdateLinkModal({
           </div>
         </div>
 
-        {link.type === 'social' && (
+        {block.type === 'social' && (
           <div className="flex flex-col space-y-2">
             <label
               htmlFor="logo"
@@ -291,13 +291,13 @@ export default function UpdateLinkModal({
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
-        <UpdateLinkFormButton />
+        <UpdateBlockFormButton />
       </div>
     </form>
   );
 }
 
-function UpdateLinkFormButton() {
+function UpdateBlockFormButton() {
   const { pending } = useFormStatus();
   return (
     <button
