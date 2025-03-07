@@ -5,7 +5,7 @@ import { LuPencil } from 'react-icons/lu';
 
 import { useModal } from 'components/modal/provider';
 
-export default function UpdateLinkButton({
+export default function UpdateBlockButton({
   children
 }: {
   children: ReactNode;

@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Link, Site } from '@prisma/client';
+import type { Block, Site } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
@@ -31,37 +31,37 @@ import {
 } from '@dnd-kit/sortable';
 
 import type { Font } from 'actions/google-fonts';
-import DeleteLinkButton from 'components/delete-link-button';
-import UpdateBlockModal from 'components/modal/update-link';
-import UpdateLinkButton from 'components/update-link-button';
+import DeleteBlockButton from 'components/delete-block-button';
+import UpdateBlockModal from 'components/modal/update-block';
+import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 import { LuMove } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
-const LinkUpdate = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
+const BlockUpdate = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
   return (
-    <UpdateLinkButton>
-      <UpdateBlockModal block={link} fonts={fonts} />
-    </UpdateLinkButton>
+    <UpdateBlockButton>
+      <UpdateBlockModal block={block} fonts={fonts} />
+    </UpdateBlockButton>
   );
 };
 
-const LinkDelete = (link: Link) => {
-  return <DeleteLinkButton {...link} />;
+const BlockDelete = (block: Block) => {
+  return <DeleteBlockButton {...block} />;
 };
 
-const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
+const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: link.id });
+    useSortable({ id: block.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition
   };
 
-  const css = link.style as unknown as BlockStyle;
+  const css = block.style as unknown as BlockStyle;
 
-  if (link.type === 'main') {
+  if (block.type === 'main') {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -87,7 +87,7 @@ const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
             'hover:bg-white hover:text-black'
           )}
         >
-          {link.label}
+          {block.label}
 
           <style jsx>{`
             div {
@@ -109,14 +109,14 @@ const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
         </div>
 
         <div className="absolute right-10 flex gap-2 items-center p-2 transition-all opacity-0 group-hover:opacity-100 group-hover:right-0">
-          <LinkUpdate link={link} fonts={fonts} />
-          <LinkDelete {...link} />
+          <BlockUpdate block={block} fonts={fonts} />
+          <BlockDelete {...block} />
         </div>
       </motion.div>
     );
   }
 
-  if (link.type === 'social') {
+  if (block.type === 'social') {
     return (
       <div
         className="group flex flex-col flex-1 items-center gap-2 relative"
@@ -129,8 +129,8 @@ const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
             'transition-all duration-300 opacity-0 group-hover:opacity-100 '
           )}
         >
-          <LinkUpdate link={link} fonts={fonts} />
-          <LinkDelete {...link} />
+          <BlockUpdate block={block} fonts={fonts} />
+          <BlockDelete {...block} />
         </div>
 
         <div
@@ -149,15 +149,15 @@ const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
         </div>
 
         <div className="cursor-pointer">
-          {link.logo?.includes('http') ? (
+          {block.logo?.includes('http') ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={link.logo ?? ''}
-                alt={link.label}
+                src={block.logo ?? ''}
+                alt={block.label}
                 className={cn(
-                  link.label === 'facebook' && 'h-[65px]',
-                  link.label !== 'facebook' && 'h-[50px]',
+                  block.label === 'facebook' && 'h-[65px]',
+                  block.label !== 'facebook' && 'h-[50px]',
                   'object-contain transition-all hover:scale-125'
                 )}
               />
@@ -166,11 +166,11 @@ const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
             <SocialIcon
               as="div"
               className={cn(
-                link.label === 'facebook' && 'h-[65px]',
-                link.label !== 'facebook' && 'h-[50px]',
+                block.label === 'facebook' && 'h-[65px]',
+                block.label !== 'facebook' && 'h-[50px]',
                 'object-contain transition-all hover:scale-125'
               )}
-              url={link.href ?? ''}
+              url={block.href ?? ''}
             />
           )}
         </div>
@@ -181,22 +181,22 @@ const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
   return <></>;
 };
 
-export const LinkList = ({
-  links,
+export const BlockList = ({
+  blocks,
   site,
   type,
   fonts
 }: {
-  links: Link[];
+  blocks: Block[];
   site: Site;
   type: 'main' | 'social';
   fonts: Font[];
 }) => {
-  const [items, setItems] = useState(links);
+  const [items, setItems] = useState(blocks);
 
   useEffect(() => {
-    setItems(links);
-  }, [links]);
+    setItems(blocks);
+  }, [blocks]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -215,7 +215,7 @@ export const LinkList = ({
 
         const result = arrayMove(items, oldIndex, newIndex);
 
-        fetch('/api/link/update/positions', {
+        fetch('/api/block/update/positions', {
           method: 'POST',
           body: JSON.stringify({ result, site })
         });
@@ -259,7 +259,11 @@ export const LinkList = ({
           }
         >
           {items.map(props => (
-            <LinkItem key={`LinkItem-${props.id}`} link={props} fonts={fonts} />
+            <BlockItem
+              key={`BlockItem-${props.id}`}
+              block={props}
+              fonts={fonts}
+            />
           ))}
         </SortableContext>
       </DndContext>
@@ -267,4 +271,4 @@ export const LinkList = ({
   );
 };
 
-export default LinkItem;
+export default BlockItem;

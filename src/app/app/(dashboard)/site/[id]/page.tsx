@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { getGoogleFonts, type Font } from 'actions/google-fonts';
-import { LinkList } from 'components/LinkItem';
+import { BlockList } from 'components/LinkItem';
 import CreateLinkButton from 'components/create-link-button';
 import CreateLinkModal from 'components/modal/create-link';
 import UpdateSiteDisplayNameModal from 'components/modal/update-display-name';
@@ -107,8 +107,8 @@ const Landing = async ({
 
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
-              <LinkList
-                links={data.links}
+              <BlockList
+                blocks={data.links}
                 site={site}
                 type="main"
                 fonts={fonts}
@@ -120,8 +120,8 @@ const Landing = async ({
 
           <footer className="flex flex-col gap-3">
             <div className="flex gap-3 items-center justify-center pointer-events-auto">
-              <LinkList
-                links={data.socials}
+              <BlockList
+                blocks={data.socials}
                 site={site}
                 type="social"
                 fonts={fonts}
