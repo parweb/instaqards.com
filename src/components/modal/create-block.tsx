@@ -1,6 +1,6 @@
 'use client';
 
-import type { Link, Site } from '@prisma/client';
+import type { Block, Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -18,11 +18,11 @@ import { createBlock } from 'lib/actions';
 import { cn, type BlockStyle } from 'lib/utils';
 import { useModal } from './provider';
 
-export default function CreateLinkModal({
+export default function CreateBlockModal({
   type,
   fonts
 }: {
-  type: Link['type'];
+  type: Block['type'];
   fonts: Font[];
 }) {
   const router = useRouter();
@@ -70,18 +70,18 @@ export default function CreateLinkModal({
           if ('error' in res) {
             toast.error(res.error);
           } else {
-            va.track('Create link', { id: res.id });
+            va.track('Create block', { id: res.id });
 
             router.refresh();
             modal?.hide();
-            toast.success('Link created!');
+            toast.success('Block created!');
           }
         })
       }
       className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow dark:md:border-stone-700"
     >
       <div className="relative flex flex-col space-y-4 p-5 md:p-10">
-        <h2 className="font-cal text-2xl dark:text-white">Create a link</h2>
+        <h2 className="font-cal text-2xl dark:text-white">Create a block</h2>
 
         {type === 'main' && (
           <div>
@@ -325,13 +325,13 @@ export default function CreateLinkModal({
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
-        <CreateLinkFormButton />
+        <CreateBlockFormButton />
       </div>
     </form>
   );
 }
 
-function CreateLinkFormButton() {
+function CreateBlockFormButton() {
   const { pending } = useFormStatus();
 
   return (

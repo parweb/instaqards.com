@@ -1,12 +1,12 @@
-import type { Link, Prisma } from '@prisma/client';
+import type { Block, Prisma } from '@prisma/client';
 import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { getGoogleFonts, type Font } from 'actions/google-fonts';
-import { BlockList } from 'components/LinkItem';
-import CreateLinkButton from 'components/create-link-button';
-import CreateLinkModal from 'components/modal/create-link';
+import { BlockList } from 'components/BlockItem';
+import CreateBlockButton from 'components/create-block-button';
+import CreateBlockModal from 'components/modal/create-block';
 import UpdateSiteDisplayNameModal from 'components/modal/update-display-name';
 import UpdateSiteProfilePictureModal from 'components/modal/update-profile-picture';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
@@ -19,11 +19,17 @@ import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
 
-const LinkCreate = ({ type, fonts }: { type: Link['type']; fonts: Font[] }) => {
+const BlockCreate = ({
+  type,
+  fonts
+}: {
+  type: Block['type'];
+  fonts: Font[];
+}) => {
   return (
-    <CreateLinkButton type={type}>
-      <CreateLinkModal type={type} fonts={fonts} />
-    </CreateLinkButton>
+    <CreateBlockButton type={type}>
+      <CreateBlockModal type={type} fonts={fonts} />
+    </CreateBlockButton>
   );
 };
 
@@ -31,17 +37,17 @@ const Landing = async ({
   site,
   fonts
 }: {
-  site: Prisma.SiteGetPayload<{ include: { links: true } }>;
+  site: Prisma.SiteGetPayload<{ include: { blocks: true } }>;
   fonts: Font[];
 }) => {
-  const { main, social }: Record<Link['type'], Link[]> = {
+  const { main, social }: Record<Block['type'], Block[]> = {
     main: [],
     social: [],
 
-    ...site.links.groupBy(({ type }: { type: Link['type'] }) => type)
+    ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
   };
 
-  const data = { links: main, socials: social };
+  const data = { blocks: main, socials: social };
 
   return (
     <main className="relative flex-1 self-stretch items-center pointer-events-auto">
@@ -108,13 +114,13 @@ const Landing = async ({
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
               <BlockList
-                blocks={data.links}
+                blocks={data.blocks}
                 site={site}
                 type="main"
                 fonts={fonts}
               />
 
-              <LinkCreate type="main" fonts={fonts} />
+              <BlockCreate type="main" fonts={fonts} />
             </div>
           </div>
 
@@ -127,7 +133,7 @@ const Landing = async ({
                 fonts={fonts}
               />
 
-              <LinkCreate type="social" fonts={fonts} />
+              <BlockCreate type="social" fonts={fonts} />
             </div>
           </footer>
         </div>
@@ -155,7 +161,7 @@ export default async function SitePosts({
 
   const site = await db.site.findUnique({
     where: { id: decodeURIComponent(params.id) },
-    include: { links: { orderBy: { position: 'asc' } } }
+    include: { blocks: { orderBy: { position: 'asc' } } }
   });
 
   if (

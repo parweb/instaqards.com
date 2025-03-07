@@ -107,17 +107,17 @@ const translations = {
     it: 'acquista',
     es: 'comprar'
   },
-  'components.create.link.button': {
-    fr: 'Ajoutez un lien',
-    en: 'Add a link',
-    it: 'Aggiungi un link',
-    es: 'Agregar un enlace'
+  'components.create.block.button': {
+    fr: 'Ajoutez un bloc',
+    en: 'Add a block',
+    it: 'Aggiungi un blocco',
+    es: 'Agregar un bloque'
   },
-  'components.analytics.link.title': {
-    fr: 'Liens Principaux',
-    en: 'Top Links',
-    it: 'Link principali',
-    es: 'Enlaces principales'
+  'components.analytics.block.title': {
+    fr: 'Blocs Principaux',
+    en: 'Top Blocks',
+    it: 'Blocchi principali',
+    es: 'Bloques principales'
   },
   'components.analytics.clicks': {
     fr: 'Cliques',
@@ -125,11 +125,11 @@ const translations = {
     it: 'Clic',
     es: 'Clics'
   },
-  'components.analytics.link.subtitle': {
-    fr: 'Lien',
-    en: 'Link',
-    it: 'Link',
-    es: 'Enlace'
+  'components.analytics.block.subtitle': {
+    fr: 'Block',
+    en: 'Block',
+    it: 'Blocco',
+    es: 'Bloque'
   },
   'components.analytics.source.title': {
     fr: 'Principaux Référents',

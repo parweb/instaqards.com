@@ -1,17 +1,17 @@
 'use client';
 
-import type { Link } from '@prisma/client';
+import type { Block } from '@prisma/client';
 import type { ReactNode } from 'react';
 
 import { useModal } from 'components/modal/provider';
 import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
 
-export default function CreateLinkButton({
+export default function CreateBlockButton({
   type,
   children
 }: {
-  type: Link['type'];
+  type: Block['type'];
   children: ReactNode;
 }) {
   const modal = useModal();
@@ -28,7 +28,7 @@ export default function CreateLinkButton({
           'hover:bg-transparent hover:text-white/90'
         )}
       >
-        {`+ ${translate('components.create.link.button')}`}
+        {`+ ${translate('components.create.block.button')}`}
       </button>
     );
   }
