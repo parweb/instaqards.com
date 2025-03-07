@@ -104,6 +104,12 @@ export default async function SiteHomePage({
             </div>
 
             <h1 className="text-white text-4xl font-bold">{site.name}</h1>
+
+            <div className="">
+              <p className="text-center whitespace-pre-wrap">
+                {site.description}
+              </p>
+            </div>
           </header>
 
           <div className="flex flex-1 self-stretch items-center justify-center">

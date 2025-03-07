@@ -19,7 +19,8 @@ module.exports = {
       { hostname: 'avatars.githubusercontent.com' },
       { hostname: 'www.google.com' },
       { hostname: 'flag.vercel.app' },
-      { hostname: 'illustrations.popsy.co' }
+      { hostname: 'illustrations.popsy.co' },
+      { hostname: 'i.ytimg.com' }
     ]
   }
 };

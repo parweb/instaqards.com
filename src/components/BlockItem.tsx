@@ -116,6 +116,40 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
     );
   }
 
+  if (block.type === 'spotify') {
+    return (
+      <div>
+        <iframe
+          title="Spotify"
+          style={{ borderRadius: '12px' }}
+          src="https://open.spotify.com/embed/album/3OxfaVgvTxUTy7276t7SPU"
+          width="100%"
+          height="352"
+          frameBorder="0"
+          allowFullScreen
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
+  if (block.type === 'tiktok') {
+    return (
+      <>
+        <blockquote
+          className="tiktok-embed"
+          cite={`https://www.tiktok.com/@lemecencostard/video/${'7401431134904569120'}`}
+          data-video-id={'7401431134904569120'}
+          style={{ maxWidth: '605px', minWidth: '325px' }}
+        >
+          <section />
+        </blockquote>
+        <script async src="https://www.tiktok.com/embed.js" />
+      </>
+    );
+  }
+
   if (block.type === 'social') {
     return (
       <div

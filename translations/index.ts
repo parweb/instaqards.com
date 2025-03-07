@@ -173,6 +173,12 @@ const translations = {
     it: 'Cambia il nome',
     es: 'Cambiar el nombre'
   },
+  'components.site.updateDescription.button': {
+    fr: 'Modifier la description',
+    en: 'Change Description',
+    it: 'Cambia la descrizione',
+    es: 'Cambiar la descripción'
+  },
   'components.site.updateDisplayName.title': {
     fr: 'Modifier le nom',
     en: 'Change Display Name',
@@ -191,11 +197,23 @@ const translations = {
     it: 'Cambia la foto di profilo',
     es: 'Cambiar la foto de perfil'
   },
+  'components.site.update.description': {
+    fr: 'Modifier la description',
+    en: 'Change Description',
+    it: 'Cambia la descrizione',
+    es: 'Cambiar la descripción'
+  },
   'components.site.updateProfilePicture.title': {
     fr: 'Modifier la photo de profil',
     en: 'Change Profile Picture',
     it: 'Cambia la foto di profilo',
     es: 'Cambiar la foto de perfil'
+  },
+  'components.site.updateDescription.title': {
+    fr: 'Modifier la description',
+    en: 'Change Description',
+    it: 'Cambia la descrizione',
+    es: 'Cambiar la descripción'
   },
   'components.site.updateProfilePicture.button': {
     fr: 'Modifier la photo de profil',

@@ -1,11 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import type * as z from 'zod';
 
 import { login } from 'actions';
 import { CardWrapper } from 'components/auth/card-wrapper';
@@ -31,6 +32,7 @@ export const LoginForm = () => {
       ? 'Email already in use with different provider!'
       : '';
 
+  const [showPassword, setShowPassword] = useState(false);
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
@@ -130,12 +132,28 @@ export const LoginForm = () => {
                       <FormLabel>Password</FormLabel>
 
                       <FormControl>
-                        <Input
-                          {...field}
-                          disabled={isPending}
-                          placeholder="******"
-                          type="password"
-                        />
+                        <div className="flex items-center gap-2 relative">
+                          <Input
+                            {...field}
+                            disabled={isPending}
+                            placeholder="******"
+                            className="flex-1"
+                            type={showPassword ? 'text' : 'password'}
+                          />
+                          <Button
+                            size="icon"
+                            type="button"
+                            variant="ghost"
+                            className="absolute right-0 top-0 h-full px-3"
+                            onClick={() => setShowPassword(prev => !prev)}
+                          >
+                            {showPassword ? (
+                              <EyeOffIcon className="h-4 w-4" />
+                            ) : (
+                              <EyeIcon className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
                       </FormControl>
 
                       <Button

@@ -92,6 +92,18 @@ export type StyleProperties = {
   fontSize?: string;
   color?: string;
   backgroundColor?: string;
+  borderRadius?: string;
+  paddingTop?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
+  paddingRight?: string;
+  marginTop?: string;
+  marginBottom?: string;
+  marginLeft?: string;
+  marginRight?: string;
+  borderWidth?: string;
+  borderColor?: string;
+  borderStyle?: string;
 };
 
 export type BlockStyle = Partial<Record<'normal' | 'hover', StyleProperties>>;

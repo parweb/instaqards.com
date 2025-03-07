@@ -7,10 +7,12 @@ import { getGoogleFonts, type Font } from 'actions/google-fonts';
 import { BlockList } from 'components/BlockItem';
 import CreateBlockButton from 'components/create-block-button';
 import CreateBlockModal from 'components/modal/create-block';
+import UpdateSiteDescriptionModal from 'components/modal/update-description';
 import UpdateSiteDisplayNameModal from 'components/modal/update-display-name';
 import UpdateSiteProfilePictureModal from 'components/modal/update-profile-picture';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
+import UpdateSiteDescriptionButton from 'components/update-site-description-button';
 import UpdateSiteDisplayNameButton from 'components/update-site-displayName-button';
 import UpdateSiteProfilePictureButton from 'components/update-site-profile-picture-button';
 import { db } from 'helpers';
@@ -80,19 +82,6 @@ const Landing = async ({
       <section className="absolute inset-0 flex flex-col p-10 pointer-events-auto">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
           <header className="flex flex-col justify-center items-center gap-3 mt-4">
-            <h1 className="text-white text-4xl font-bold relative group">
-              {site.display_name}
-
-              <div className="absolute -right-12 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <UpdateSiteDisplayNameButton>
-                  <UpdateSiteDisplayNameModal
-                    siteId={site.id}
-                    displayName={site.display_name}
-                  />
-                </UpdateSiteDisplayNameButton>
-              </div>
-            </h1>
-
             <div className="group relative bg-white rounded-full overflow-hidden w-24 h-24 cursor-pointer flex items-center justify-center">
               <Image
                 priority
@@ -107,6 +96,34 @@ const Landing = async ({
                 <UpdateSiteProfilePictureButton>
                   <UpdateSiteProfilePictureModal siteId={site.id} />
                 </UpdateSiteProfilePictureButton>
+              </div>
+            </div>
+
+            <h1 className="text-white text-4xl font-bold relative group">
+              {site.display_name}
+
+              <div className="absolute -right-12 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <UpdateSiteDisplayNameButton>
+                  <UpdateSiteDisplayNameModal
+                    siteId={site.id}
+                    displayName={site.display_name}
+                  />
+                </UpdateSiteDisplayNameButton>
+              </div>
+            </h1>
+
+            <div className="relative group">
+              <p className="text-center whitespace-pre-wrap">
+                {site.description}
+              </p>
+
+              <div className="absolute -right-12 top-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <UpdateSiteDescriptionButton>
+                  <UpdateSiteDescriptionModal
+                    siteId={site.id}
+                    description={site.description}
+                  />
+                </UpdateSiteDescriptionButton>
               </div>
             </div>
           </header>

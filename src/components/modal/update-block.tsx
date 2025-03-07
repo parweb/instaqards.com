@@ -5,7 +5,7 @@ import va from '@vercel/analytics';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { SocialIcon, getKeys } from 'react-social-icons';
+import { SocialIcon } from 'react-social-icons';
 import { toast } from 'sonner';
 
 import type { Font } from 'actions/google-fonts';
@@ -13,6 +13,7 @@ import { FontPicker } from 'components/font-picker';
 import LoadingDots from 'components/icons/loading-dots';
 import { ColorPicker } from 'components/ui/color-picker';
 import { Input } from 'components/ui/input';
+import { SocialPicker } from 'components/ui/social-picker';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import { updateBlock } from 'lib/actions';
 import { cn, type BlockStyle } from 'lib/utils';
@@ -30,13 +31,7 @@ export default function UpdateBlockModal({
   const modal = useModal();
 
   const [data, setData] = useState(block);
-  const [filter, setFilter] = useState<string | null>(null);
   const [logo, setLogo] = useState<string>('');
-
-  const socials =
-    filter === null
-      ? getKeys()
-      : getKeys().filter(key => key.includes(filter ?? ''));
 
   const css = data.style as unknown as BlockStyle;
 
@@ -250,44 +245,7 @@ export default function UpdateBlockModal({
           </div>
         </div>
 
-        {block.type === 'social' && (
-          <div className="flex flex-col space-y-2">
-            <label
-              htmlFor="logo"
-              className="text-sm font-medium text-stone-500 dark:text-stone-400"
-            >
-              Logo
-            </label>
-
-            <Input
-              id="filter"
-              name="filter"
-              type="text"
-              placeholder="facebook, twitter, ..."
-              value={filter ?? ''}
-              onChange={e => setFilter(e.target.value)}
-            />
-
-            <div className="grid grid-cols-8 gap-2">
-              {socials.map(key => (
-                <SocialIcon
-                  title={key}
-                  key={`SocialIcon-${key}`}
-                  network={key}
-                  style={{
-                    width: 34,
-                    height: 34,
-                    boxShadow: `0 0 0 2px ${logo === key ? 'black' : 'white'}`
-                  }}
-                  className={cn(
-                    'rounded-full transition-all duration-300 border-2 border-white'
-                  )}
-                  onClick={() => setLogo(logo === key ? '' : key)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        {block.type === 'social' && <SocialPicker />}
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
