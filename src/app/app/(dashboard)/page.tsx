@@ -26,7 +26,7 @@ export default async function Overview() {
           where: {
             OR: [
               { site: { user: { id: session.user.id } } },
-              { link: { site: { user: { id: session.user.id } } } }
+              { block: { site: { user: { id: session.user.id } } } }
             ]
           },
           orderBy: { createdAt: 'asc' }
@@ -48,8 +48,8 @@ export default async function Overview() {
         splitByDate?.[key]?.filter?.(({ siteId }) => siteId === null)?.length ??
         0,
       Visitors:
-        splitByDate?.[key]?.filter?.(({ linkId }) => linkId === null)?.length ??
-        0
+        splitByDate?.[key]?.filter?.(({ blockId }) => blockId === null)
+          ?.length ?? 0
     };
   });
 

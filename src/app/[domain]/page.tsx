@@ -1,4 +1,4 @@
-import type { Link as PrismaLink } from '@prisma/client';
+import type { Block } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -7,7 +7,7 @@ import { db } from 'helpers';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
 import { getSiteData } from 'lib/fetchers';
-import { LinkList } from './client';
+import { BlockList } from './client';
 
 import 'array-grouping-polyfill';
 
@@ -42,7 +42,7 @@ export default async function SiteHomePage({
               className="bg-black rounded-md px-3 py-2 text-white"
               href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`}
             >
-              {translate('page.public.site.link')}
+              {translate('page.public.site.create')}
             </Link>
           </div>
         </div>
@@ -52,14 +52,14 @@ export default async function SiteHomePage({
 
   await db.click.create({ data: { siteId: site.id } });
 
-  const { main, social }: Record<PrismaLink['type'], PrismaLink[]> = {
+  const { main, social }: Record<Block['type'], Block[]> = {
     main: [],
     social: [],
 
-    ...site.links.groupBy(({ type }: { type: PrismaLink['type'] }) => type)
+    ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
   };
 
-  const data = { links: main, socials: social };
+  const data = { blocks: main, socials: social };
 
   return (
     <main className="relative flex-1 self-stretch items-center">
@@ -108,13 +108,13 @@ export default async function SiteHomePage({
 
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1">
-              <LinkList links={data.links} />
+              <BlockList blocks={data.blocks} />
             </div>
           </div>
 
           <footer className="flex flex-col gap-3">
             <div className="flex gap-3 items-center justify-center">
-              <LinkList links={data.socials} />
+              <BlockList blocks={data.socials} />
             </div>
 
             <div className="text-center">

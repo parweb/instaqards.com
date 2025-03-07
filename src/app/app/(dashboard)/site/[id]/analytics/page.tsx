@@ -13,10 +13,10 @@ const getCachedClicks = unstable_cache(
   async (siteId: string) => {
     return db.click.findMany({
       where: {
-        OR: [{ siteId }, { link: { siteId } }]
+        OR: [{ siteId }, { block: { siteId } }]
       },
       orderBy: { createdAt: 'asc' },
-      select: { createdAt: true, siteId: true, linkId: true }
+      select: { createdAt: true, siteId: true, blockId: true }
     });
   },
   ['site-clicks'],
@@ -68,7 +68,7 @@ export default async function SiteAnalytics({
     ).length;
 
     const visitorsCount = dateClicks.filter(
-      ({ linkId }) => linkId === null
+      ({ blockId }) => blockId === null
     ).length;
 
     return {

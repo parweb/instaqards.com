@@ -365,7 +365,7 @@ const translations = {
     it: "Ci scusiamo per l'inconveniente, ma questa pagina è attualmente non disponibile. Stiamo lavorando per ripristinare l'accesso il prima possibile.",
     es: 'Lamentamos los inconvenientes, pero esta página no está disponible actualmente. Estamos trabajando para restaurar el acceso lo antes posible.'
   },
-  'page.public.site.link': {
+  'page.public.site.create': {
     fr: 'Créez votre propre page',
     en: 'Create your own page',
     it: 'Crea la tua pagina',

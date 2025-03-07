@@ -1,29 +1,29 @@
 'use client';
 
-import type { Link as PrismaLink } from '@prisma/client';
+import type { Block } from '@prisma/client';
 import Link from 'next/link';
 import { SocialIcon } from 'react-social-icons';
 
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
-export const LinkItem = (link: PrismaLink) => {
-  const css = link.style as unknown as BlockStyle;
+export const BlockItem = (block: Block) => {
+  const css = block.style as unknown as BlockStyle;
 
-  if (link.type === 'main') {
+  if (block.type === 'main') {
     return (
-      <Link href={`/click/${link.id}`} target="_blank" legacyBehavior>
+      <Link href={`/click/${block.id}`} target="_blank" legacyBehavior>
         {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
         <a
-          id={link.id}
+          id={block.id}
           className={cn(
             'transition-all',
             'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
             'hover:bg-white hover:text-black'
           )}
         >
-          {link.label}
+          {block.label}
           <style jsx>{`
-            #${link.id} {
+            #${block.id} {
               transition: all 0.3s ease;
 
               ${generateCssProperties(css.normal)}
@@ -44,31 +44,31 @@ export const LinkItem = (link: PrismaLink) => {
     );
   }
 
-  if (link.type === 'social') {
+  if (block.type === 'social') {
     return (
-      <Link href={`/click/${link.id}`} target="_blank" rel="noreferrer">
+      <Link href={`/click/${block.id}`} target="_blank" rel="noreferrer">
         <div>
-          {link.logo?.includes('http') ? (
+          {block.logo?.includes('http') ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className={cn(
-                  link.label === 'facebook' && 'h-[65px]',
-                  link.label !== 'facebook' && 'h-[50px]',
+                  block.label === 'facebook' && 'h-[65px]',
+                  block.label !== 'facebook' && 'h-[50px]',
                   'object-contain transition-all hover:scale-125'
                 )}
-                src={link.logo ?? ''}
-                alt={link.label}
+                src={block.logo ?? ''}
+                alt={block.label}
               />
             </>
           ) : (
             <SocialIcon
               className={cn(
-                link.label === 'facebook' && 'h-[65px]',
-                link.label !== 'facebook' && 'h-[50px]',
+                block.label === 'facebook' && 'h-[65px]',
+                block.label !== 'facebook' && 'h-[50px]',
                 'object-contain transition-all hover:scale-125'
               )}
-              url={link.href ?? ''}
+              url={block.href ?? ''}
             />
           )}
         </div>
@@ -79,8 +79,8 @@ export const LinkItem = (link: PrismaLink) => {
   return <></>;
 };
 
-export const LinkList = ({ links }: { links: PrismaLink[] }) => {
-  const fontsNeeded = links
+export const BlockList = ({ blocks }: { blocks: Block[] }) => {
+  const fontsNeeded = blocks
     .flatMap(({ style }) =>
       Object.values(style as Record<string, { fontFamily: string }>).flatMap(
         css => css.fontFamily
@@ -96,8 +96,8 @@ export const LinkList = ({ links }: { links: PrismaLink[] }) => {
           .join('&')}&display=swap');
       `}</style>
 
-      {links.map(props => (
-        <LinkItem key={`LinkItem-${props.id}`} {...props} />
+      {blocks.map(props => (
+        <BlockItem key={`BlockItem-${props.id}`} {...props} />
       ))}
     </>
   );
