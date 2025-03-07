@@ -192,13 +192,13 @@ model Click {
 
   createdAt DateTime @default(now())
 
-  link   Link?   @relation(fields: [linkId], references: [id])
-  linkId String?
-  site   Site?   @relation(fields: [siteId], references: [id])
-  siteId String?
+  block   Block?  @relation(fields: [blockId], references: [id])
+  blockId String?
+  site    Site?   @relation(fields: [siteId], references: [id])
+  siteId  String?
 }
 
-model Link {
+model Block {
   id              String  @id @default(cuid())
   type            String  @db.Text
   position        Int     @default(0)
@@ -241,7 +241,7 @@ model Site {
 
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String?
-  links  Link[]
+  blocks Block[]
   clicks Click[]
 
   @@index([userId])
