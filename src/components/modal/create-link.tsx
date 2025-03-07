@@ -14,8 +14,8 @@ import LoadingDots from 'components/icons/loading-dots';
 import { ColorPicker } from 'components/ui/color-picker';
 import { Input } from 'components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
-import { createLink } from 'lib/actions';
-import { cn, type LinkStyle } from 'lib/utils';
+import { createBlock } from 'lib/actions';
+import { cn, type BlockStyle } from 'lib/utils';
 import { useModal } from './provider';
 
 export default function CreateLinkModal({
@@ -34,7 +34,7 @@ export default function CreateLinkModal({
     href: string;
     logo: string;
     filter: string | null;
-    style: LinkStyle;
+    style: BlockStyle;
   }>({
     label: '',
     href: '',
@@ -66,7 +66,7 @@ export default function CreateLinkModal({
   return (
     <form
       action={async (data: FormData) =>
-        createLink(data, params.id as Site['id'], type).then(res => {
+        createBlock(data, params.id as Site['id'], type).then(res => {
           if ('error' in res) {
             toast.error(res.error);
           } else {

@@ -4,10 +4,10 @@ import type { Link as PrismaLink } from '@prisma/client';
 import Link from 'next/link';
 import { SocialIcon } from 'react-social-icons';
 
-import { cn, generateCssProperties, type LinkStyle } from 'lib/utils';
+import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
 export const LinkItem = (link: PrismaLink) => {
-  const css = link.style as unknown as LinkStyle;
+  const css = link.style as unknown as BlockStyle;
 
   if (link.type === 'main') {
     return (
@@ -33,7 +33,7 @@ export const LinkItem = (link: PrismaLink) => {
                 .map(
                   key => `
                     &:${key} {
-                      ${generateCssProperties(css[key as keyof LinkStyle])}
+                      ${generateCssProperties(css[key as keyof BlockStyle])}
                     }
                   `
                 )}

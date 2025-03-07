@@ -8,7 +8,7 @@ import { LuTrash2 } from 'react-icons/lu';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
-import { deleteLink } from 'lib/actions';
+import { deleteBlock } from 'lib/actions';
 
 export default function DeleteLinkButton(link: Link) {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function DeleteLinkButton(link: Link) {
   return (
     <form
       action={async () =>
-        deleteLink(link.id).then((res: any) => {
+        deleteBlock(link.id).then((res: any) => {
           if (res.error) {
             toast.error(res.error);
           } else {

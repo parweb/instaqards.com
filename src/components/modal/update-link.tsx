@@ -1,6 +1,6 @@
 'use client';
 
-import type { Link, Site } from '@prisma/client';
+import type { Block, Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -14,15 +14,15 @@ import LoadingDots from 'components/icons/loading-dots';
 import { ColorPicker } from 'components/ui/color-picker';
 import { Input } from 'components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
-import { updateLink } from 'lib/actions';
-import { cn, type LinkStyle } from 'lib/utils';
+import { updateBlock } from 'lib/actions';
+import { cn, type BlockStyle } from 'lib/utils';
 import { useModal } from './provider';
 
 export default function UpdateLinkModal({
   link,
   fonts
 }: {
-  link: Link;
+  link: Block;
   fonts: Font[];
 }) {
   const router = useRouter();
@@ -38,12 +38,12 @@ export default function UpdateLinkModal({
       ? getKeys()
       : getKeys().filter(key => key.includes(filter ?? ''));
 
-  const css = data.style as unknown as LinkStyle;
+  const css = data.style as unknown as BlockStyle;
 
   return (
     <form
       action={async (data: FormData) =>
-        updateLink(data, params.id as Site['id'], link.id).then(res => {
+        updateBlock(data, params.id as Site['id'], link.id).then(res => {
           if ('error' in res) {
             toast.error(res.error);
           } else {

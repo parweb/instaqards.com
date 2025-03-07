@@ -1,6 +1,6 @@
 'use server';
 
-import type { Link, Site } from '@prisma/client';
+import type { Block, Site } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 
@@ -65,20 +65,20 @@ export const createSite = async (
   }
 };
 
-export const updateLink = withSiteAuth<Link>(async (formData, _, linkId) => {
-  if (!linkId) {
-    return { error: 'Link ID is required' };
+export const updateBlock = withSiteAuth<Block>(async (formData, _, blockId) => {
+  if (!blockId) {
+    return { error: 'Block ID is required' };
   }
 
-  const label = formData.get('label') as Link['label'];
-  const href = formData.get('href') as Link['href'];
-  const logo = formData.get('logo') as Link['logo'];
+  const label = formData.get('label') as Block['label'];
+  const href = formData.get('href') as Block['href'];
+  const logo = formData.get('logo') as Block['logo'];
   const style = JSON.parse(String(formData.get('style') ?? '{}'));
 
   try {
-    const response = await db.link.update({
+    const response = await db.block.update({
       include: { site: true },
-      where: { id: linkId },
+      where: { id: blockId },
       data: {
         label,
         href,
@@ -102,18 +102,18 @@ export const updateLink = withSiteAuth<Link>(async (formData, _, linkId) => {
   }
 });
 
-export const createLink = async (
+export const createBlock = async (
   formData: FormData,
   site: Site['id'],
-  type: Link['type']
-): Promise<{ error: string } | Link> => {
-  const label = formData.get('label') as Link['label'];
-  const href = formData.get('href') as Link['href'];
-  const logo = formData.get('logo') as Link['logo'];
+  type: Block['type']
+): Promise<{ error: string } | Block> => {
+  const label = formData.get('label') as Block['label'];
+  const href = formData.get('href') as Block['href'];
+  const logo = formData.get('logo') as Block['logo'];
   const style = JSON.parse(String(formData.get('style') ?? '{}'));
 
   try {
-    const response = await db.link.create({
+    const response = await db.block.create({
       include: { site: true },
       data: {
         type,
@@ -140,11 +140,11 @@ export const createLink = async (
   }
 };
 
-export const deleteLink = async (linkId: Link['id']) => {
+export const deleteBlock = async (blockId: Block['id']) => {
   try {
-    const response = await db.link.delete({
+    const response = await db.block.delete({
       include: { site: true },
-      where: { id: linkId }
+      where: { id: blockId }
     });
 
     revalidateTag(

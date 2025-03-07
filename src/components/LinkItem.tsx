@@ -34,7 +34,7 @@ import type { Font } from 'actions/google-fonts';
 import DeleteLinkButton from 'components/delete-link-button';
 import UpdateLinkModal from 'components/modal/update-link';
 import UpdateLinkButton from 'components/update-link-button';
-import { cn, generateCssProperties, type LinkStyle } from 'lib/utils';
+import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 import { LuMove } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
@@ -59,7 +59,7 @@ const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
     transition
   };
 
-  const css = link.style as unknown as LinkStyle;
+  const css = link.style as unknown as BlockStyle;
 
   if (link.type === 'main') {
     return (
@@ -100,7 +100,7 @@ const LinkItem = ({ link, fonts }: { link: Link; fonts: Font[] }) => {
                 .map(
                   key => `
                     &:${key} {
-                      ${generateCssProperties(css[key as keyof LinkStyle])}
+                      ${generateCssProperties(css[key as keyof BlockStyle])}
                     }
                   `
                 )}

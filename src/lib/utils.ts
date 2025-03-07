@@ -94,7 +94,7 @@ export type StyleProperties = {
   backgroundColor?: string;
 };
 
-export type LinkStyle = Partial<Record<'normal' | 'hover', StyleProperties>>;
+export type BlockStyle = Partial<Record<'normal' | 'hover', StyleProperties>>;
 
 export const generateCssProperties = (styleObj?: StyleProperties) => {
   if (!styleObj) return '';
