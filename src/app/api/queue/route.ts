@@ -1,5 +1,5 @@
-import { type NextFetchEvent, type NextRequest, NextResponse } from 'next/server';
 import type { Queue } from '@prisma/client';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import { db } from 'helpers/db';
 
@@ -9,7 +9,7 @@ async function processJob(job: Queue) {
   // throw new Error('test');
 }
 
-export async function GET(request: NextRequest, event: NextFetchEvent) {
+export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
 
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -77,7 +77,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
 
     const job = await db.queue.create({
       data: {
