@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { SocialIcon } from 'react-social-icons';
 import { toast } from 'sonner';
-import { LuArrowLeft, LuArrowRight } from 'react-icons/lu';
 
 import type { Font } from 'actions/google-fonts';
 import { FontPicker } from 'components/font-picker';
@@ -17,21 +16,45 @@ import { Input } from 'components/ui/input';
 import { SocialPicker } from 'components/ui/social-picker';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import { createBlock } from 'lib/actions';
-import { clamp, cn, type BlockStyle } from 'lib/utils';
-import { useModal } from './provider';
-import { Button } from 'components/ui/button';
+import { cn, type BlockStyle } from 'lib/utils';
 import { BlockTypesItemVariants } from './BlockTypesItemVariants';
+import { useModal } from './provider';
 
-const BlockTypesItem = ({ label }: { label: string }) => {
+const BlockTypesItem = ({
+  label,
+  type
+}: {
+  label: string;
+  type: 'button' | 'picture' | 'text' | 'external';
+}) => {
   const [selected, setSelected] = useState(0);
 
-  const variants: { id: string; label: string; type: 'button' }[] = [
-    { id: 'glow-up', label: 'Glow up', type: 'button' },
+  const variants: {
+    id: string;
+    label: string;
+    type: 'button' | 'picture' | 'text' | 'external';
+  }[] = [
+    { id: 'glow-up-001', label: 'Glow up 1', type: 'button' },
+    { id: 'glow-up-002', label: 'Glow up 2', type: 'button' },
     { id: 'slide-from-left-001', label: 'Slide from left', type: 'button' },
     { id: 'dont-press-me-001', label: 'Dont press me', type: 'button' },
     { id: 'dont-press-me-002', label: 'Dont press me 2', type: 'button' },
     { id: 'dont-press-me-003', label: 'Dont press me 3', type: 'button' },
-    { id: 'gold', label: 'Gold', type: 'button' }
+    { id: 'dont-press-me-004', label: 'Dont press me 4', type: 'button' },
+    { id: 'dont-press-me-005', label: 'Dont press me 5', type: 'button' },
+    { id: 'gold', label: 'Gold', type: 'button' },
+    { id: 'shiny', label: 'Shiny', type: 'button' },
+
+    { id: 'logo-circle', label: 'Logo circle', type: 'picture' },
+    { id: 'logo-square', label: 'Logo square', type: 'picture' },
+    { id: 'picture-16-9', label: 'Picture 16:9', type: 'picture' },
+
+    { id: 'normal', label: 'Normal', type: 'text' },
+
+    { id: 'spotify', label: 'Spotify', type: 'external' },
+    { id: 'youtube', label: 'Youtube', type: 'external' },
+    { id: 'tiktok', label: 'Tiktok', type: 'external' },
+    { id: 'instagram', label: 'Instagram', type: 'external' }
   ];
 
   return (
@@ -62,7 +85,10 @@ const BlockTypesItem = ({ label }: { label: string }) => {
         </div> */}
       </hgroup>
 
-      <BlockTypesItemVariants selected={selected} variants={variants} />
+      <BlockTypesItemVariants
+        selected={selected}
+        variants={variants.filter(v => v.type === type)}
+      />
     </div>
   );
 };
@@ -70,13 +96,10 @@ const BlockTypesItem = ({ label }: { label: string }) => {
 const BlockTypes = () => {
   return (
     <div className="flex flex-col gap-4">
-      <BlockTypesItem label="Boutons" />
-      <BlockTypesItem label="Boutons" />
-      <BlockTypesItem label="Boutons" />
-      <BlockTypesItem label="Boutons" />
-      <BlockTypesItem label="Boutons" />
-      <BlockTypesItem label="Boutons" />
-      <BlockTypesItem label="Boutons" />
+      <BlockTypesItem type="button" label="Boutons" />
+      <BlockTypesItem type="picture" label="Images" />
+      <BlockTypesItem type="text" label="Textes" />
+      <BlockTypesItem type="external" label="Externes" />
     </div>
   );
 };

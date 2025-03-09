@@ -13,7 +13,7 @@ export const BlockTypesItemVariants = ({
   variants
 }: {
   selected: number;
-  variants: { id: string; label: string; type: 'button' }[];
+  variants: { id: string; label: string; type: 'button' | 'picture' }[];
 }) => {
   return (
     <Carousel opts={{ dragFree: true }}>

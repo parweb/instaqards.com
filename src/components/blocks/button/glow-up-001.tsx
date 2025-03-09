@@ -1,4 +1,4 @@
-export default function GlowUp({ label = 'Glow up' }: { label?: string }) {
+export default function GlowUp001({ label = 'Glow up' }: { label?: string }) {
   return (
     <button className="glow-on-hover" type="button">
       {label}

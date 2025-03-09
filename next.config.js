@@ -20,7 +20,8 @@ module.exports = {
       { hostname: 'www.google.com' },
       { hostname: 'flag.vercel.app' },
       { hostname: 'illustrations.popsy.co' },
-      { hostname: 'i.ytimg.com' }
+      { hostname: 'i.ytimg.com' },
+      { hostname: 'placehold.co' }
     ]
   }
 };

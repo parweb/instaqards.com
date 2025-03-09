@@ -1,10 +1,8 @@
-'use client';
-
-export const TiktokWidget = ({
+export default function Tiktok({
   postId = '7401431134904569120'
 }: {
   postId: string;
-}) => {
+}) {
   return (
     <>
       <blockquote
@@ -15,8 +13,7 @@ export const TiktokWidget = ({
       >
         <section />
       </blockquote>
-
       <script async src="https://www.tiktok.com/embed.js" />
     </>
   );
-};
+}
