@@ -39,7 +39,7 @@ const BlockTypesItem = ({ label }: { label: string }) => {
       <hgroup className="flex gap-2 items-center justify-between">
         <h3>{label}</h3>
 
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <Button
             disabled={selected === 0}
             type="button"
@@ -59,7 +59,7 @@ const BlockTypesItem = ({ label }: { label: string }) => {
           >
             <LuArrowRight />
           </Button>
-        </div>
+        </div> */}
       </hgroup>
 
       <BlockTypesItemVariants selected={selected} variants={variants} />

@@ -34,7 +34,7 @@ export const BlockTypesItemVariantsItem = ({
   return (
     <div
       className={cn(
-        'flex flex-col justify-between gap-1 aspect-video w-[200px] border border-stone-200 rounded-md p-2'
+        'touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[200px] border border-stone-200 rounded-md p-2'
       )}
     >
       <div className="flex-1 flex items-center justify-center">

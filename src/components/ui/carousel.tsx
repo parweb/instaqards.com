@@ -1,11 +1,10 @@
 'use client';
 
-import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
-import * as React from 'react';
-
 import useEmblaCarousel, {
   type UseEmblaCarouselType
 } from 'embla-carousel-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import * as React from 'react';
 
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
@@ -139,6 +138,7 @@ const Carousel = React.forwardRef<
           ref={ref}
           onKeyDownCapture={handleKeyDown}
           className={cn('relative', className)}
+          aria-roledescription="carousel"
           {...props}
         >
           {children}
@@ -183,7 +183,7 @@ const CarouselItem = React.forwardRef<
       role="group"
       aria-roledescription="slide"
       className={cn(
-        'min-w-0 shrink-0 grow-0 basis-full',
+        'min-w-0 shrink-0 grow-0',
         orientation === 'horizontal' ? 'pl-4' : 'pt-4',
         className
       )}
@@ -215,7 +215,7 @@ const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeftIcon className="h-4 w-4" />
+      <ArrowLeft className="h-4 w-4" />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -244,7 +244,7 @@ const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRightIcon className="h-4 w-4" />
+      <ArrowRight className="h-4 w-4" />
       <span className="sr-only">Next slide</span>
     </Button>
   );
@@ -252,10 +252,10 @@ const CarouselNext = React.forwardRef<
 CarouselNext.displayName = 'CarouselNext';
 
 export {
-  type CarouselApi,
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
   CarouselPrevious,
-  CarouselNext
+  type CarouselApi
 };
