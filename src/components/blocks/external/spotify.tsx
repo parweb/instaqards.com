@@ -1,7 +1,9 @@
+'use client';
+
 export default function Spotify({
   albumId = '3OxfaVgvTxUTy7276t7SPU'
 }: {
-  albumId: string;
+  albumId?: string;
 }) {
   return (
     <iframe

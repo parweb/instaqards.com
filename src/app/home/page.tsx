@@ -1,6 +1,8 @@
+import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { LuArrowBigDown, LuCheck } from 'react-icons/lu';
 
 import { FlagPicker } from 'components/flag-picker';
 import { PriceTable } from 'components/price-table';
@@ -17,8 +19,6 @@ import {
   CarouselNext,
   CarouselPrevious
 } from 'components/ui/carousel';
-import { cookies } from 'next/headers';
-import { LuArrowBigDown, LuCheck } from 'react-icons/lu';
 
 const Iphone = ({ url, scale = 100 }: { url: string; scale: number }) => {
   const ratio = 2283 / 1109;

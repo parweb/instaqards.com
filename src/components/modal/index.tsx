@@ -34,11 +34,25 @@ export default function Modal({
   }, [onKeyDown]);
 
   const { isMobile, isDesktop } = useWindowSize();
+
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showModal]);
+
   return (
     <AnimatePresence>
       {showModal && (
         <>
           {isMobile && <Leaflet setShow={setShowModal}>{children}</Leaflet>}
+
           {isDesktop && (
             <>
               <FocusTrap focusTrapOptions={{ initialFocus: false }}>
@@ -58,6 +72,7 @@ export default function Modal({
                   {children}
                 </motion.div>
               </FocusTrap>
+
               <motion.div
                 key="desktop-backdrop"
                 className="fixed inset-0 z-30 bg-gray-100 bg-opacity-10 backdrop-blur"

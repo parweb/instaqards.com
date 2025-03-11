@@ -2,7 +2,7 @@
 
 import { type ReactNode, createContext, useContext, useState } from 'react';
 
-import Modal from '.';
+import Modal from './index';
 
 interface ModalContextProps {
   show: (content: ReactNode) => void;
@@ -22,14 +22,16 @@ export function ModalProvider({ children }: { children: ReactNode }) {
 
   const hide = () => {
     setShowModal(false);
+
     setTimeout(() => {
       setModalContent(null);
-    }, 300); // Adjust this timeout as per your transition duration
+    }, 300);
   };
 
   return (
     <ModalContext.Provider value={{ show, hide }}>
       {children}
+
       {showModal && (
         <Modal showModal={showModal} setShowModal={setShowModal}>
           {modalContent}

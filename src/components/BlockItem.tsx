@@ -74,9 +74,11 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
         <div
           {...attributes}
           {...listeners}
-          className="cursor-move p-2 bg-white rounded-full"
+          className="absolute right-full pr-2"
         >
-          <LuMove />
+          <div className="cursor-move p-2 bg-white rounded-full">
+            <LuMove />
+          </div>
         </div>
 
         <div

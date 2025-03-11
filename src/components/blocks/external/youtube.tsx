@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 export default function Youtube({
   videoId = 'VCyuZhnm71I'
 }: {
-  videoId: string;
+  videoId?: string;
 }) {
   const [playing, setPlaying] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
