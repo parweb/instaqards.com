@@ -341,11 +341,13 @@ const Preview = ({ block }: { block: { type: string; id: string } }) => {
             {property.description}
           </label>
 
-          <Input
-            id={key}
-            {...register(key)}
-            placeholder={property.description}
-          />
+          {property.type === 'string' && (
+            <Input
+              id={key}
+              {...register(key)}
+              placeholder={property.description}
+            />
+          )}
 
           {errors[key] && (
             <p style={{ color: 'red' }}>{errors[key]?.message?.toString()}</p>
