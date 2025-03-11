@@ -1,10 +1,14 @@
-'use client';
+import * as z from 'zod';
+
+const input = z.object({
+  url: z.string().url().optional().describe('Album URL')
+});
 
 export default function Spotify({
-  albumId = '3OxfaVgvTxUTy7276t7SPU'
-}: {
-  albumId?: string;
-}) {
+  url = 'https://open.spotify.com/intl-fr/album/2cWBwpqMsDJC1ZUwz813lo'
+}: z.infer<typeof input>) {
+  const albumId = url.split('/').pop();
+
   return (
     <iframe
       title="Spotify"

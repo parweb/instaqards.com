@@ -1,13 +1,18 @@
 'use client';
 
+import * as z from 'zod';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
+export const input = z.object({
+  url: z.string().url().optional().describe('Video URL')
+});
+
 export default function Youtube({
-  videoId = 'VCyuZhnm71I'
-}: {
-  videoId?: string;
-}) {
+  url = 'https://www.youtube.com/watch?v=VCyuZhnm71I'
+}: z.infer<typeof input>) {
+  const videoId = url.split('v=')[1];
+
   const [playing, setPlaying] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
