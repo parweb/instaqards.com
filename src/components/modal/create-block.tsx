@@ -280,7 +280,7 @@ const Content = ({
 const Preview = ({ block }: { block: { type: string; id: string } }) => {
   const [Component, setComponent] =
     useState<React.ComponentType<unknown> | null>(null);
-  const [input, setInput] = useState<z.ZodSchema>(z.object({}));
+  const [input, setInput] = useState(z.object({}));
 
   useEffect(() => {
     let mounted = true;
@@ -310,45 +310,48 @@ const Preview = ({ block }: { block: { type: string; id: string } }) => {
     resolver: zodResolver(input)
   });
 
-  const currentValues = useWatch({ control });
+  const data = useWatch({ control });
 
   if (!Component || !input) return null;
 
-  console.log({ json: zodToJsonSchema(input)?.properties });
-
   return (
     <form
-      className="flex-1 flex flex-col gap-4"
+      className="flex-1 flex flex-col gap-4 p-1"
       onSubmit={handleSubmit(data => {
         console.log('Submitted data:', data);
       })}
     >
-      <Suspense fallback={null}>
-        <Component {...currentValues} />
-      </Suspense>
+      <div className="px-10 py-5 overflow-hidden">
+        <Suspense fallback={null}>
+          <Component {...data} />
+        </Suspense>
+      </div>
 
-      {Object.entries(zodToJsonSchema(input)?.properties ?? {}).map(
-        ([key, property]) => (
-          <div key={key} className="flex flex-col space-y-2">
-            <label
-              htmlFor={key}
-              className="text-sm font-medium text-stone-500 dark:text-stone-400"
-            >
-              {property.description}
-            </label>
+      {(
+        Object.entries(zodToJsonSchema(input)?.properties ?? {}) as [
+          string,
+          { description: string; type: string }
+        ][]
+      ).map(([key, property]) => (
+        <div key={key} className="flex flex-col space-y-2">
+          <label
+            htmlFor={key}
+            className="text-sm font-medium text-stone-500 dark:text-stone-400"
+          >
+            {property.description}
+          </label>
 
-            <Input
-              id={key}
-              {...register(key)}
-              placeholder={property.description}
-            />
+          <Input
+            id={key}
+            {...register(key)}
+            placeholder={property.description}
+          />
 
-            {errors[key] && (
-              <p style={{ color: 'red' }}>{errors[key]?.message?.toString()}</p>
-            )}
-          </div>
-        )
-      )}
+          {errors[key] && (
+            <p style={{ color: 'red' }}>{errors[key]?.message?.toString()}</p>
+          )}
+        </div>
+      ))}
     </form>
   );
 };

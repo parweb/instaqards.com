@@ -2,11 +2,11 @@
 
 import { LuPlus } from 'react-icons/lu';
 
-import DontPressMe001 from 'components/blocks/button/dont-pressme-001';
-import DontPressMe002 from 'components/blocks/button/dont-pressme-002';
-import DontPressMe003 from 'components/blocks/button/dont-pressme-003';
-import DontPressMe004 from 'components/blocks/button/dont-pressme-004';
-import DontPressMe005 from 'components/blocks/button/dont-pressme-005';
+import DontPressMe001 from 'components/blocks/button/dont-press-me-001';
+import DontPressMe002 from 'components/blocks/button/dont-press-me-002';
+import DontPressMe003 from 'components/blocks/button/dont-press-me-003';
+import DontPressMe004 from 'components/blocks/button/dont-press-me-004';
+import DontPressMe005 from 'components/blocks/button/dont-press-me-005';
 import GlowUp001 from 'components/blocks/button/glow-up-001';
 import GlowUp002 from 'components/blocks/button/glow-up-002';
 import Gold from 'components/blocks/button/gold';

@@ -1,10 +1,18 @@
-export default function SlideFromLeft001({
-  label = 'Hello'
-}: {
-  label?: string;
-}) {
+import * as z from 'zod';
+import Link from 'next/link';
+import { cn } from 'lib/utils';
+
+const $label = z.string().optional().describe('Label');
+const $link = z.string().optional().describe('Link');
+
+const BaseButtonProps = z.object({ label: $label });
+export const input = z.object({ label: $label, link: $link });
+
+const BaseButton: React.FC<
+  z.infer<typeof BaseButtonProps> & { className?: string }
+> = ({ label, className }) => {
   return (
-    <button className="slide-from-left" type="button">
+    <button className={cn('slide-from-left', className)} type="button">
       {label}
 
       <style jsx>{`
@@ -53,4 +61,24 @@ export default function SlideFromLeft001({
       `}</style>
     </button>
   );
+};
+
+export default function SlideFromLeft001({
+  label = 'Hello',
+  link
+}: z.infer<typeof input>) {
+  if (link) {
+    return (
+      <Link
+        className="w-full"
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <BaseButton className="w-full" label={label} />
+      </Link>
+    );
+  }
+
+  return <BaseButton className="w-full" label={label} />;
 }

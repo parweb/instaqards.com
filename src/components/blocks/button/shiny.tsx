@@ -1,12 +1,23 @@
-export default function Shiny({ label = 'Press me' }: { label?: string }) {
+import * as z from 'zod';
+import Link from 'next/link';
+import { cn } from 'lib/utils';
+
+const $label = z.string().optional().describe('Label');
+const $link = z.string().optional().describe('Link');
+
+const BaseButtonProps = z.object({ label: $label });
+export const input = z.object({ label: $label, link: $link });
+
+const BaseButton: React.FC<
+  z.infer<typeof BaseButtonProps> & { className?: string }
+> = ({ label, className }) => {
   return (
-    <button className="button-19" type="button">
-      <span className="text">{label}</span>
+    <button className={cn('button-19', className)} type="button">
+      {label}
 
       <style jsx>{`
         .button-19 {
-          background:
-            linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.13)),
+          background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.13)),
             radial-gradient(
               90% 7% at 50% 8%,
               rgba(255, 255, 255, 0.47) 25%,
@@ -65,4 +76,24 @@ export default function Shiny({ label = 'Press me' }: { label?: string }) {
       `}</style>
     </button>
   );
+};
+
+export default function Shiny({
+  label = 'Press me',
+  link
+}: z.infer<typeof input>) {
+  if (link) {
+    return (
+      <Link
+        className="w-full"
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <BaseButton className="w-full" label={label} />
+      </Link>
+    );
+  }
+
+  return <BaseButton className="w-full" label={label} />;
 }

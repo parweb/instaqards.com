@@ -1,10 +1,18 @@
-export default function DontPressMe004({
-  label = 'Press Me'
-}: {
-  label?: string;
-}) {
+import * as z from 'zod';
+import Link from 'next/link';
+import { cn } from 'lib/utils';
+
+const $label = z.string().optional().describe('Label');
+const $link = z.string().optional().describe('Link');
+
+const BaseButtonProps = z.object({ label: $label });
+export const input = z.object({ label: $label, link: $link });
+
+const BaseButton: React.FC<
+  z.infer<typeof BaseButtonProps> & { className?: string }
+> = ({ label, className }) => {
   return (
-    <button className="button-55" type="button">
+    <button className={cn('button-55', className)} type="button">
       <span className="text">{label}</span>
 
       <style jsx>{`
@@ -63,4 +71,24 @@ export default function DontPressMe004({
       `}</style>
     </button>
   );
+};
+
+export default function DontPressMe004({
+  label = 'Press Me',
+  link
+}: z.infer<typeof input>) {
+  if (link) {
+    return (
+      <Link
+        className="w-full"
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <BaseButton className="w-full" label={label} />
+      </Link>
+    );
+  }
+
+  return <BaseButton className="w-full" label={label} />;
 }

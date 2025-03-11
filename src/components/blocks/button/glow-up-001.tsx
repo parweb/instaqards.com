@@ -108,10 +108,10 @@ export default function GlowUp001({
         target="_blank"
         rel="noopener noreferrer"
       >
-        <BaseButton label={label} />
+        <BaseButton className="w-full" label={label} />
       </Link>
     );
   }
 
-  return <BaseButton label={label} />;
+  return <BaseButton className="w-full" label={label} />;
 }
