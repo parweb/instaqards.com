@@ -79,19 +79,30 @@ export const BlockTypesItemVariantsItem = ({
         {/* @ts-ignore */}
         <Component label="Press Me" />
 
-        <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-20">
-          <Button
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          {/* <Button
             type="button"
             size="icon"
             className={cn('scale-300')}
             onClick={() => onClick({ type, id })}
           >
             <LuPlus />
-          </Button>
+          </Button> */}
         </div>
       </div>
 
-      <h4>{label}</h4>
+      <hgroup className="flex items-center justify-between gap-2">
+        <h4>{label}</h4>
+
+        <Button
+          type="button"
+          size="icon"
+          className={cn('scale-300')}
+          onClick={() => onClick({ type, id })}
+        >
+          <LuPlus />
+        </Button>
+      </hgroup>
     </div>
   );
 };

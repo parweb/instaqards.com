@@ -3,21 +3,31 @@
 import type { Block, Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useParams, useRouter } from 'next/navigation';
-import { useState, type Dispatch, type SetStateAction } from 'react';
 import { useFormStatus } from 'react-dom';
+import { LuChevronLeft } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 import { toast } from 'sonner';
+import * as z from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 
+import {
+  Suspense,
+  useEffect,
+  useState,
+  type Dispatch,
+  type SetStateAction
+} from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
 import type { Font } from 'actions/google-fonts';
-import { FontPicker } from 'components/font-picker';
 import LoadingDots from 'components/icons/loading-dots';
-import { ColorPicker } from 'components/ui/color-picker';
+import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { SocialPicker } from 'components/ui/social-picker';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import { useCurrentRole } from 'hooks/use-current-role';
 import { createBlock } from 'lib/actions';
 import { cn, type BlockStyle } from 'lib/utils';
+import { useForm, useWatch } from 'react-hook-form';
 import { BlockTypes } from './BlockTypes';
 import { useModal } from './provider';
 
@@ -26,7 +36,8 @@ const Content = ({
   data,
   setData,
   css,
-  fonts
+  fonts,
+  onClick
 }: {
   type: Block['type'];
   data: {
@@ -47,6 +58,7 @@ const Content = ({
   >;
   css: BlockStyle;
   fonts: Font[];
+  onClick: (data: { type: string; id: string }) => void;
 }) => {
   const role = useCurrentRole();
 
@@ -55,7 +67,7 @@ const Content = ({
       <div className="flex flex-col gap-4">
         {type === 'main' && (
           <div>
-            <input
+            {/* <input
               type="hidden"
               name="style"
               value={JSON.stringify(data.style)}
@@ -186,82 +198,158 @@ const Content = ({
                   </fieldset>
                 </TabsContent>
               ))}
-            </Tabs>
+            </Tabs> */}
+
+            <input type="hidden" name="type" value={type} />
+            <BlockTypes onClick={onClick} />
           </div>
         )}
 
-        <div className="flex flex-col space-y-2">
-          <label
-            htmlFor="label"
-            className="text-sm font-medium text-stone-500 dark:text-stone-400"
-          >
-            Label
-          </label>
+        {type === 'social' && (
+          <>
+            <div className="flex flex-col space-y-2">
+              <label
+                htmlFor="label"
+                className="text-sm font-medium text-stone-500 dark:text-stone-400"
+              >
+                Title
+              </label>
 
-          <Input
-            id="label"
-            name="label"
-            type="text"
-            placeholder="Label"
-            value={data.label}
-            onChange={e => setData({ ...data, label: e.target.value })}
-            required
-          />
-        </div>
+              <Input
+                id="label"
+                name="label"
+                type="text"
+                placeholder="Title"
+                value={data.label}
+                onChange={e => setData({ ...data, label: e.target.value })}
+                required
+              />
+            </div>
 
-        <div className="flex flex-col space-y-2">
-          <label
-            htmlFor="href"
-            className="text-sm font-medium text-stone-500 dark:text-stone-400"
-          >
-            Link
-          </label>
+            <div className="flex flex-col space-y-2">
+              <label
+                htmlFor="href"
+                className="text-sm font-medium text-stone-500 dark:text-stone-400"
+              >
+                Link
+              </label>
 
-          <div className="flex items-center gap-2">
-            {type === 'social' && (
-              <div>
-                <SocialIcon
-                  network={data.logo}
-                  fallback={{ color: '#000000', path: 'M0' }}
-                  style={{ width: 28, height: 28 }}
+              <div className="flex items-center gap-2">
+                {type === 'social' && (
+                  <div>
+                    <SocialIcon
+                      network={data.logo}
+                      fallback={{ color: '#000000', path: 'M0' }}
+                      style={{ width: 28, height: 28 }}
+                    />
+                  </div>
+                )}
+
+                <Input
+                  id="href"
+                  name="href"
+                  type="text"
+                  placeholder="https://instagram.com/..."
+                  value={data.href}
+                  onChange={e => {
+                    setData(state => ({ ...state, href: e.target.value }));
+
+                    try {
+                      const url = new URL(e.target.value);
+                      const domain = url.hostname.replace('www.', '');
+                      const logo = String(domain.split('.').at(0));
+
+                      setData(state => ({ ...state, logo }));
+                    } catch (error) {
+                      console.error(error);
+                    }
+                  }}
+                  required
                 />
               </div>
-            )}
+            </div>
+
+            <SocialPicker />
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const Preview = ({ block }: { block: { type: string; id: string } }) => {
+  const [Component, setComponent] =
+    useState<React.ComponentType<unknown> | null>(null);
+  const [input, setInput] = useState<z.ZodSchema>(z.object({}));
+
+  useEffect(() => {
+    let mounted = true;
+
+    import(`components/blocks/${block.type}/${block.id}.tsx`)
+      .then(module => {
+        if (mounted) {
+          setComponent(() => module.default);
+          setInput(module.input || null);
+        }
+      })
+      .catch(error => {
+        console.error('Failed to load component:', error);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [block.type, block.id]);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm({
+    resolver: zodResolver(input)
+  });
+
+  const currentValues = useWatch({ control });
+
+  if (!Component || !input) return null;
+
+  console.log({ json: zodToJsonSchema(input)?.properties });
+
+  return (
+    <form
+      className="flex-1 flex flex-col gap-4"
+      onSubmit={handleSubmit(data => {
+        console.log('Submitted data:', data);
+      })}
+    >
+      <Suspense fallback={null}>
+        <Component {...currentValues} />
+      </Suspense>
+
+      {Object.entries(zodToJsonSchema(input)?.properties ?? {}).map(
+        ([key, property]) => (
+          <div key={key} className="flex flex-col space-y-2">
+            <label
+              htmlFor={key}
+              className="text-sm font-medium text-stone-500 dark:text-stone-400"
+            >
+              {property.description}
+            </label>
 
             <Input
-              id="href"
-              name="href"
-              type="text"
-              placeholder="https://instagram.com/..."
-              value={data.href}
-              onChange={e => {
-                setData(state => ({ ...state, href: e.target.value }));
-
-                try {
-                  const url = new URL(e.target.value);
-                  const domain = url.hostname.replace('www.', '');
-                  const logo = String(domain.split('.').at(0));
-
-                  setData(state => ({ ...state, logo }));
-                } catch (error) {
-                  console.error(error);
-                }
-              }}
-              required
+              id={key}
+              {...register(key)}
+              placeholder={property.description}
             />
+
+            {errors[key] && (
+              <p style={{ color: 'red' }}>{errors[key]?.message?.toString()}</p>
+            )}
           </div>
-        </div>
-
-        {type === 'social' && <SocialPicker />}
-      </div>
-
-      {role === 'ADMIN' && (
-        <>
-          <input type="hidden" name="type" value={type} />
-          <BlockTypes onClick={({ type, id }) => console.log({ type, id })} />
-        </>
+        )
       )}
-    </div>
+    </form>
   );
 };
 
@@ -272,6 +360,11 @@ export default function CreateBlockModal({
   type: Block['type'];
   fonts: Font[];
 }) {
+  const [selectedBlock, setSelectedBlock] = useState<{
+    type: string;
+    id: string;
+  } | null>(null);
+
   const router = useRouter();
   const params = useParams();
   const modal = useModal();
@@ -309,6 +402,7 @@ export default function CreateBlockModal({
 
   return (
     <form
+      className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow"
       action={async (data: FormData) =>
         createBlock(data, params.id as Site['id'], type).then(res => {
           if ('error' in res) {
@@ -322,18 +416,41 @@ export default function CreateBlockModal({
           }
         })
       }
-      className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow"
     >
-      <div className="flex flex-col space-y-4 p-5 md:p-10">
+      <div className="flex flex-col space-y-4 p-4">
         <h2 className="font-cal text-2xl">Create a block</h2>
 
-        <Content
-          type={type}
-          data={data}
-          setData={setData}
-          css={css}
-          fonts={fonts}
-        />
+        <div className="relative overflow-hidden p-0">
+          {selectedBlock !== null && (
+            <div className="absolute inset-0 flex flex-col gap-4">
+              <Button type="button" onClick={() => setSelectedBlock(null)}>
+                <LuChevronLeft />
+              </Button>
+
+              <div className="flex items-center justify-center">
+                <Suspense fallback={null}>
+                  <Preview block={selectedBlock} />
+                </Suspense>
+              </div>
+            </div>
+          )}
+
+          <div
+            className={cn('transition-all duration-300 bg-white', {
+              '-translate-x-full': selectedBlock !== null,
+              'pointer-events-none': selectedBlock !== null
+            })}
+          >
+            <Content
+              type={type}
+              data={data}
+              setData={setData}
+              css={css}
+              fonts={fonts}
+              onClick={({ type, id }) => setSelectedBlock({ type, id })}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
