@@ -321,12 +321,6 @@ const Preview = ({ block }: { block: { type: string; id: string } }) => {
         console.log('Submitted data:', data);
       })}
     >
-      <div className="px-10 py-5 overflow-hidden">
-        <Suspense fallback={null}>
-          <Component {...data} />
-        </Suspense>
-      </div>
-
       {(
         Object.entries(zodToJsonSchema(input)?.properties ?? {}) as [
           string,
@@ -354,6 +348,12 @@ const Preview = ({ block }: { block: { type: string; id: string } }) => {
           )}
         </div>
       ))}
+
+      <div className="px-10 py-5 overflow-hidden">
+        <Suspense fallback={null}>
+          <Component {...data} />
+        </Suspense>
+      </div>
     </form>
   );
 };
