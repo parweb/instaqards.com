@@ -111,6 +111,7 @@ export const createBlock = async (
   const href = formData.get('href') as Block['href'];
   const logo = formData.get('logo') as Block['logo'];
   const style = JSON.parse(String(formData.get('style') ?? '{}'));
+  const widget = JSON.parse(String(formData.get('widget') ?? '{}'));
 
   try {
     const response = await db.block.create({
@@ -120,6 +121,7 @@ export const createBlock = async (
         label,
         href,
         logo: logo || null,
+        widget,
         site: { connect: { id: site } },
         style
       }

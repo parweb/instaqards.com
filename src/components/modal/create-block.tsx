@@ -1,33 +1,34 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import type { Block, Site } from '@prisma/client';
 import va from '@vercel/analytics';
+import { motion } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
+import { useForm, useWatch } from 'react-hook-form';
 import { LuChevronLeft } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
 
 import {
   Suspense,
+  useActionState,
   useEffect,
   useState,
   type Dispatch,
   type SetStateAction
 } from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import type { Font } from 'actions/google-fonts';
 import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { SocialPicker } from 'components/ui/social-picker';
-import { useCurrentRole } from 'hooks/use-current-role';
 import { createBlock } from 'lib/actions';
 import { cn, type BlockStyle } from 'lib/utils';
-import { useForm, useWatch } from 'react-hook-form';
 import { BlockTypes } from './BlockTypes';
 import { useModal } from './provider';
 
@@ -60,146 +61,11 @@ const Content = ({
   fonts: Font[];
   onClick: (data: { type: string; id: string }) => void;
 }) => {
-  const role = useCurrentRole();
-
   return (
     <div className="h-[300px] overflow-y-scroll flex flex-col gap-4">
       <div className="flex flex-col gap-4">
         {type === 'main' && (
           <div>
-            {/* <input
-              type="hidden"
-              name="style"
-              value={JSON.stringify(data.style)}
-            />
-
-            <Tabs defaultValue="normal" className="">
-              <TabsList className="flex justify-between">
-                {['normal', 'hover'].map(key => (
-                  <TabsTrigger
-                    key={`TabsTrigger-${key}`}
-                    value={key}
-                    className="flex-1"
-                  >
-                    {key}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-
-              {(['normal', 'hover'] as const).map(key => (
-                <TabsContent key={`TabsContent-${key}`} value={key}>
-                  <fieldset className="flex flex-col gap-4 border border-dashed rounded-md border-stone-200 p-4">
-                    <legend className="px-2 text-sm font-medium text-stone-500 dark:text-stone-400">
-                      {key}
-                    </legend>
-
-                    <div className="flex flex-col space-y-2">
-                      <label
-                        htmlFor={`${key}-color`}
-                        className="text-sm font-medium text-stone-500 dark:text-stone-400"
-                      >
-                        Font
-                      </label>
-
-                      <div className="flex items-center gap-2">
-                        <div>
-                          <ColorPicker
-                            key={`${key}-color`}
-                            name={`${key}-color`}
-                            value={css?.[key]?.color ?? '#000000ff'}
-                            onChange={color =>
-                              setData(state => ({
-                                ...state,
-                                style: {
-                                  ...(css ?? {}),
-                                  [key]: {
-                                    ...(css?.[key] ?? {}),
-                                    color
-                                  }
-                                }
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="w-[80px] relative">
-                          <Input
-                            name={`${key}-fontSize`}
-                            type="number"
-                            className="pr-[27px]"
-                            value={css?.[key]?.fontSize ?? '20'}
-                            onChange={e =>
-                              setData(state => ({
-                                ...state,
-                                style: {
-                                  ...(css ?? {}),
-                                  [key]: {
-                                    ...(css?.[key] ?? {}),
-                                    fontSize: e.target.value
-                                  }
-                                }
-                              }))
-                            }
-                          />
-
-                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-stone-500">
-                            px
-                          </span>
-                        </div>
-
-                        <div className="flex-1">
-                          <FontPicker
-                            name={`${key}-fontFamily`}
-                            fonts={fonts.map(font => font.family)}
-                            onChange={fontFamily =>
-                              setData(state => ({
-                                ...state,
-                                style: {
-                                  ...(css ?? {}),
-                                  [key]: {
-                                    ...(css?.[key] ?? {}),
-                                    fontFamily
-                                  }
-                                }
-                              }))
-                            }
-                            value={css?.[key]?.fontFamily ?? ''}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col space-y-2">
-                      <label
-                        htmlFor={`${key}-backgroundColor`}
-                        className="text-sm font-medium text-stone-500 dark:text-stone-400"
-                      >
-                        Background color
-                      </label>
-
-                      <ColorPicker
-                        key={`${key}-backgroundColor`}
-                        name={`${key}-backgroundColor`}
-                        value={css?.[key]?.backgroundColor ?? '#000000ff'}
-                        onChange={backgroundColor =>
-                          setData(state => ({
-                            ...state,
-                            style: {
-                              ...(css ?? {}),
-                              [key]: {
-                                ...(css?.[key] ?? {}),
-                                backgroundColor
-                              }
-                            }
-                          }))
-                        }
-                      />
-                    </div>
-                  </fieldset>
-                </TabsContent>
-              ))}
-            </Tabs> */}
-
             <input type="hidden" name="type" value={type} />
             <BlockTypes onClick={onClick} />
           </div>
@@ -210,7 +76,7 @@ const Content = ({
             <div className="flex flex-col space-y-2">
               <label
                 htmlFor="label"
-                className="text-sm font-medium text-stone-500 dark:text-stone-400"
+                className="text-sm font-medium text-stone-500"
               >
                 Title
               </label>
@@ -235,15 +101,13 @@ const Content = ({
               </label>
 
               <div className="flex items-center gap-2">
-                {type === 'social' && (
-                  <div>
-                    <SocialIcon
-                      network={data.logo}
-                      fallback={{ color: '#000000', path: 'M0' }}
-                      style={{ width: 28, height: 28 }}
-                    />
-                  </div>
-                )}
+                <div>
+                  <SocialIcon
+                    network={data.logo}
+                    fallback={{ color: '#000000', path: 'M0' }}
+                    style={{ width: 28, height: 28 }}
+                  />
+                </div>
 
                 <Input
                   id="href"
@@ -277,7 +141,23 @@ const Content = ({
   );
 };
 
-const Preview = ({ block }: { block: { type: string; id: string } }) => {
+const Preview = ({
+  block,
+  setSelectedBlock,
+  siteId,
+  type
+}: {
+  block: { type: string; id: string };
+  setSelectedBlock: Dispatch<
+    SetStateAction<{ type: string; id: string } | null>
+  >;
+  siteId: Site['id'];
+  type: Block['type'];
+}) => {
+  const router = useRouter();
+  const params = useParams();
+  const modal = useModal();
+
   const [Component, setComponent] =
     useState<React.ComponentType<unknown> | null>(null);
   const [input, setInput] = useState(z.object({}));
@@ -310,49 +190,96 @@ const Preview = ({ block }: { block: { type: string; id: string } }) => {
     resolver: zodResolver(input)
   });
 
+  console.log({ errors });
+
   const data = useWatch({ control });
 
   if (!Component || !input) return null;
 
   return (
     <form
-      className="flex-1 flex flex-col gap-4 p-1"
+      className="flex-1 flex flex-col gap-4 h-full"
       onSubmit={handleSubmit(data => {
         console.log('Submitted data:', data);
+
+        const formData = new FormData();
+
+        for (const [key, value] of Object.entries(data)) {
+          console.log({ key, value });
+          formData.append(key, String(value));
+        }
+
+        createBlock(formData, siteId, type).then(res => {
+          if ('error' in res) {
+            toast.error(res.error);
+          } else {
+            va.track('Create block', { id: res.id });
+
+            router.refresh();
+            modal?.hide();
+            toast.success('Block created!');
+          }
+        });
       })}
     >
-      {(
-        Object.entries(zodToJsonSchema(input)?.properties ?? {}) as [
-          string,
-          { description: string; type: string }
-        ][]
-      ).map(([key, property]) => (
-        <div key={key} className="flex flex-col space-y-2">
-          <label
-            htmlFor={key}
-            className="text-sm font-medium text-stone-500 dark:text-stone-400"
-          >
-            {property.description}
-          </label>
-
-          {property.type === 'string' && (
-            <Input
-              id={key}
-              {...register(key)}
-              placeholder={property.description}
-            />
-          )}
-
-          {errors[key] && (
-            <p style={{ color: 'red' }}>{errors[key]?.message?.toString()}</p>
-          )}
+      <div className="flex-1 self-stretch overflow-y-scroll">
+        <div className="px-10 py-5 overflow-hidden">
+          <Suspense fallback={null}>
+            <Component {...data} />
+          </Suspense>
         </div>
-      ))}
 
-      <div className="px-10 py-5 overflow-hidden">
-        <Suspense fallback={null}>
-          <Component {...data} />
-        </Suspense>
+        <input
+          type="hidden"
+          name="widget"
+          value={JSON.stringify({ ...block, data })}
+        />
+
+        <div className="px-4 flex flex-col gap-4">
+          {/* @ts-ignore */}
+          {(
+            Object.entries(
+              (zodToJsonSchema(input) as JsonSchema7Type['default'])
+                ?.properties ?? {}
+            ) as [string, { description: string; type: string }][]
+          ).map(([key, property]) => (
+            <div key={key} className="flex flex-col space-y-2">
+              <label
+                htmlFor={key}
+                className="text-sm font-medium text-stone-500"
+              >
+                {property.description}
+              </label>
+
+              {property.type === 'string' && (
+                <Input
+                  id={key}
+                  // @ts-ignore
+                  {...register(key)}
+                  placeholder={property.description}
+                />
+              )}
+
+              {/* @ts-ignore */}
+              {errors[key] && (
+                <p style={{ color: 'red' }}>
+                  {/* @ts-ignore */}
+                  {errors[key]?.message?.toString()}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex gap-2 items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10">
+        <Button type="button" onClick={() => setSelectedBlock(null)}>
+          <LuChevronLeft />
+        </Button>
+
+        <div className="flex-1">
+          <CreateBlockFormButton />
+        </div>
       </div>
     </form>
   );
@@ -406,44 +333,47 @@ export default function CreateBlockModal({
   const css = data.style;
 
   return (
-    <form
-      className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow"
-      action={async (data: FormData) =>
-        createBlock(data, params.id as Site['id'], type).then(res => {
-          if ('error' in res) {
-            toast.error(res.error);
-          } else {
-            va.track('Create block', { id: res.id });
+    <div
+      className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow overflow-hidden"
+      // action={async (data: FormData) =>
+      //   createBlock(data, params.id as Site['id'], type).then(res => {
+      //     if ('error' in res) {
+      //       toast.error(res.error);
+      //     } else {
+      //       va.track('Create block', { id: res.id });
 
-            router.refresh();
-            modal?.hide();
-            toast.success('Block created!');
-          }
-        })
-      }
+      //       router.refresh();
+      //       modal?.hide();
+      //       toast.success('Block created!');
+      //     }
+      //   })
+      // }
     >
-      <div className="flex flex-col space-y-4 p-4">
-        <h2 className="font-cal text-2xl">Create a block</h2>
+      <div className="flex flex-col gap-4">
+        <h2 className="font-cal text-2xl px-4 pt-4">Create a block</h2>
 
-        <div className="relative overflow-hidden p-0">
+        <div className="relative">
           {selectedBlock !== null && (
-            <div className="absolute inset-0 flex flex-col gap-4">
-              <Button type="button" onClick={() => setSelectedBlock(null)}>
-                <LuChevronLeft />
-              </Button>
-
-              <div className="flex items-center justify-center">
-                <Suspense fallback={null}>
-                  <Preview block={selectedBlock} />
-                </Suspense>
-              </div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0"
+            >
+              <Suspense fallback={null}>
+                <Preview
+                  block={selectedBlock}
+                  setSelectedBlock={setSelectedBlock}
+                  siteId={params.id as Site['id']}
+                  type={type}
+                />
+              </Suspense>
+            </motion.div>
           )}
 
           <div
-            className={cn('transition-all duration-300 bg-white', {
-              '-translate-x-full': selectedBlock !== null,
-              'pointer-events-none': selectedBlock !== null
+            className={cn('transition-all duration-300 bg-white px-4 pb-4', {
+              '-translate-x-full pointer-events-none': selectedBlock !== null
             })}
           >
             <Content
@@ -458,10 +388,12 @@ export default function CreateBlockModal({
         </div>
       </div>
 
-      <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
-        <CreateBlockFormButton />
-      </div>
-    </form>
+      {type === 'social' && (
+        <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10">
+          <CreateBlockFormButton />
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -469,17 +401,17 @@ function CreateBlockFormButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
+    <Button
       type="submit"
       className={cn(
-        'flex h-10 w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-none',
+        'w-full',
         pending
-          ? 'cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300'
-          : 'border-black bg-black text-white hover:bg-white hover:text-black dark:border-stone-700 dark:hover:border-stone-200 dark:hover:bg-black dark:hover:text-white dark:active:bg-stone-800'
+          ? 'cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400'
+          : 'border-black bg-black text-white hover:bg-white hover:text-black'
       )}
       disabled={pending}
     >
       {pending ? <LoadingDots color="#808080" /> : <p>Save</p>}
-    </button>
+    </Button>
   );
 }

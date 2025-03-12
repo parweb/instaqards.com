@@ -109,7 +109,8 @@ enum SubscriptionStatus {
 }
 
 model Subscription {
-  id                   String             @id
+  id String @id
+
   status               SubscriptionStatus
   metadata             Json               @default("{}")
   quantity             Int
@@ -130,7 +131,8 @@ model Subscription {
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id String @id @default(cuid())
+
   type              String
   provider          String
   providerAccountId String
@@ -150,7 +152,8 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id String @id @default(cuid())
+
   sessionToken String   @unique
   expires      DateTime
 
@@ -161,7 +164,8 @@ model Session {
 }
 
 model VerificationToken {
-  id      String   @id @default(cuid())
+  id String @id @default(cuid())
+
   email   String
   token   String   @unique
   expires DateTime
@@ -170,7 +174,8 @@ model VerificationToken {
 }
 
 model PasswordResetToken {
-  id      String   @id @default(cuid())
+  id String @id @default(cuid())
+
   email   String
   token   String   @unique
   expires DateTime
@@ -179,7 +184,8 @@ model PasswordResetToken {
 }
 
 model TwoFactorToken {
-  id      String   @id @default(cuid())
+  id String @id @default(cuid())
+
   email   String
   token   String   @unique
   expires DateTime
@@ -199,17 +205,15 @@ model Click {
 }
 
 model Block {
-  id              String  @id @default(cuid())
-  type            String  @db.Text
-  position        Int     @default(0)
-  label           String  @db.Text
-  href            String  @db.Text
-  logo            String? @db.Text
-  style           Json?   @default("{\"hover\": {\"color\": \"#000000\",\"backgroundColor\": \"#ffffff\",\"fontSize\": \"16\",\"fontFamily\": \"Open Sans\"},\"normal\": {\"color\": \"#ffffffe6\",\"backgroundColor\": \"#00000000\",\"fontSize\": \"16\",\"fontFamily\": \"Open Sans\"}}")
-  color           String? @db.Text
-  backgroundColor String? @db.Text
-  fontFamily      String? @db.Text
-  fontSize        String? @db.Text
+  id String @id @default(cuid())
+
+  type     String  @db.Text
+  position Int     @default(0)
+  label    String? @db.Text
+  href     String? @db.Text
+  logo     String? @db.Text
+  style    Json?   @default("{\"hover\": {\"color\": \"#000000\",\"backgroundColor\": \"#ffffff\",\"fontSize\": \"16\",\"fontFamily\": \"Open Sans\"},\"normal\": {\"color\": \"#ffffffe6\",\"backgroundColor\": \"#00000000\",\"fontSize\": \"16\",\"fontFamily\": \"Open Sans\"}}")
+  widget   Json?   @default("{}")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -223,7 +227,8 @@ model Block {
 }
 
 model Site {
-  id            String  @id @default(cuid())
+  id String @id @default(cuid())
+
   name          String?
   display_name  String?
   description   String? @db.Text

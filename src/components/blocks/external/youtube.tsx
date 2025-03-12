@@ -5,12 +5,12 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 export const input = z.object({
-  url: z.string().url().optional().describe('Video URL')
+  url: z.string().url().describe('Video URL')
 });
 
 export default function Youtube({
   url = 'https://www.youtube.com/watch?v=VCyuZhnm71I'
-}: z.infer<typeof input>) {
+}: Partial<z.infer<typeof input>>) {
   const videoId = url.split('v=')[1];
 
   const [playing, setPlaying] = useState(false);

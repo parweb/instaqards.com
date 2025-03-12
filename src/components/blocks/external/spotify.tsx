@@ -1,12 +1,12 @@
 import * as z from 'zod';
 
 const input = z.object({
-  url: z.string().url().optional().describe('Album URL')
+  url: z.string().url().describe('Album URL')
 });
 
 export default function Spotify({
   url = 'https://open.spotify.com/intl-fr/album/2cWBwpqMsDJC1ZUwz813lo'
-}: z.infer<typeof input>) {
+}: Partial<z.infer<typeof input>>) {
   const albumId = url.split('/').pop();
 
   return (

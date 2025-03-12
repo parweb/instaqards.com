@@ -2,14 +2,14 @@ import * as z from 'zod';
 import Link from 'next/link';
 import { cn } from 'lib/utils';
 
-const $label = z.string().optional().describe('Label');
-const $link = z.string().optional().describe('Link');
+const $label = z.string().min(1, 'Label is required').describe('Label');
+const $href = z.string().min(1, 'Link is required').describe('Link');
 
 const BaseButtonProps = z.object({ label: $label });
-export const input = z.object({ label: $label, link: $link });
+export const input = z.object({ label: $label, href: $href });
 
 const BaseButton: React.FC<
-  z.infer<typeof BaseButtonProps> & { className?: string }
+  Partial<z.infer<typeof BaseButtonProps>> & { className?: string }
 > = ({ label, className }) => {
   return (
     <button className={cn('button-40', className)} type="button">
@@ -73,13 +73,13 @@ const BaseButton: React.FC<
 
 export default function GlowUp002({
   label = 'Glow up',
-  link
-}: z.infer<typeof input>) {
-  if (link) {
+  href
+}: Partial<z.infer<typeof input>>) {
+  if (href) {
     return (
       <Link
         className="w-full"
-        href={link}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
       >

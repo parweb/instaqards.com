@@ -48,7 +48,7 @@ export default function RootLayout({
           cal.variable,
           inter.variable,
           open.variable,
-          'font-sans flex flex-col h-[100vh]'
+          'font-sans flex flex-col h-[100vh] relative'
         )}
       >
         <Providers>

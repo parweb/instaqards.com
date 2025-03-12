@@ -1,6 +1,8 @@
 'use client';
 
-import { LuPlus } from 'react-icons/lu';
+import { memo, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { LuExpand, LuPlus } from 'react-icons/lu';
 
 import DontPressMe001 from 'components/blocks/button/dont-press-me-001';
 import DontPressMe002 from 'components/blocks/button/dont-press-me-002';
@@ -67,42 +69,72 @@ export const BlockTypesItemVariantsItem = ({
   type: 'button' | 'picture' | 'text' | 'external';
   onClick: (data: { type: string; id: string }) => void;
 }) => {
+  const [expanded, setExpanded] = useState(false);
+
   const Component = blocks[type][id];
 
-  return (
-    <div
-      className={cn(
-        'touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px] border border-stone-200 rounded-md p-2'
-      )}
-    >
-      <div className="relative flex-1 flex items-center justify-center overflow-hidden">
-        {/* @ts-ignore */}
-        <Component label="Press Me" />
+  const Main = memo(() => {
+    return (
+      <>
+        <div className="relative flex-1 flex items-center justify-center overflow-hidden">
+          <div className={cn('px-1 w-full', { 'px-4': expanded })}>
+            {/* @ts-ignore */}
+            <Component label="Press Me" />
+          </div>
 
-        <div className="absolute inset-0 flex items-center justify-center z-20">
-          {/* <Button
-            type="button"
-            size="icon"
-            className={cn('scale-300')}
-            onClick={() => onClick({ type, id })}
-          >
-            <LuPlus />
-          </Button> */}
+          <div className="absolute inset-0 flex items-start justify-end z-60">
+            <Button
+              type="button"
+              onClick={() => {
+                setExpanded(state => !state);
+              }}
+              size="icon"
+              variant="ghost"
+              className="cursor-pointer"
+            >
+              <LuExpand />
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <hgroup className="flex items-center justify-between gap-2">
-        <h4>{label}</h4>
+        {expanded === false && (
+          <hgroup className="flex items-center justify-between gap-2">
+            <h4>{label}</h4>
 
-        <Button
-          type="button"
-          size="icon"
-          className={cn('scale-300')}
-          onClick={() => onClick({ type, id })}
-        >
-          <LuPlus />
-        </Button>
-      </hgroup>
+            <Button
+              type="button"
+              size="icon"
+              className={cn('scale-300')}
+              onClick={() => onClick({ type, id })}
+            >
+              <LuPlus />
+            </Button>
+          </hgroup>
+        )}
+      </>
+    );
+  });
+
+  if (expanded === true) {
+    return createPortal(
+      <div
+        className={cn(
+          'touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px] border border-stone-200 rounded-md p-2',
+          {
+            'fixed inset-0 z-50 bg-white w-auto h-auto aspect-auto rounded-none':
+              expanded
+          }
+        )}
+      >
+        <Main />
+      </div>,
+      document.body
+    );
+  }
+
+  return (
+    <div className="touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px] border border-stone-200 rounded-md p-2">
+      <Main />
     </div>
   );
 };

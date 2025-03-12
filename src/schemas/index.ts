@@ -19,35 +19,21 @@ export const SettingsSchema = z
   });
 
 export const NewPasswordSchema = z.object({
-  password: z.string().min(6, {
-    message: 'schemas.string.min'
-  })
+  password: z.string().min(6, 'schemas.string.min')
 });
 
 export const ResetSchema = z.object({
-  email: z.string().email({
-    message: 'schemas.email.required'
-  })
+  email: z.string().email('schemas.email.required')
 });
 
 export const LoginSchema = z.object({
-  email: z.string().email({
-    message: 'schemas.email.required'
-  }),
-  password: z.string().min(1, {
-    message: 'schemas.password.required'
-  }),
+  email: z.string().email('schemas.email.required'),
+  password: z.string().min(1, 'schemas.password.required'),
   code: z.optional(z.string())
 });
 
 export const RegisterSchema = z.object({
-  email: z.string().email({
-    message: 'schemas.email.required'
-  }),
-  password: z.string().min(6, {
-    message: 'schemas.string.min'
-  }),
-  name: z.string().min(1, {
-    message: 'schemas.name.required'
-  })
+  email: z.string().email('schemas.email.required'),
+  password: z.string().min(6, 'schemas.string.min'),
+  name: z.string().min(1, 'schemas.name.required')
 });
