@@ -72,6 +72,7 @@ export const BlockTypesItemVariantsItem = ({
   const [expanded, setExpanded] = useState(false);
 
   const Component = blocks[type][id];
+  Component.displayName = `Block${type}${id}`;
 
   const Main = memo(() => {
     return (
@@ -114,6 +115,8 @@ export const BlockTypesItemVariantsItem = ({
       </>
     );
   });
+
+  Main.displayName = `Block${type}${id}`;
 
   if (expanded === true) {
     return createPortal(

@@ -102,6 +102,15 @@ export const updateBlock = withSiteAuth<Block>(async (formData, _, blockId) => {
   }
 });
 
+// generic function to try catch any function
+const trySafe = <T>(fn: () => T, defaultValue: T): [boolean, T, unknown] => {
+  try {
+    return [true, fn(), null];
+  } catch (error: unknown) {
+    return [false, defaultValue, error];
+  }
+};
+
 export const createBlock = async (
   formData: FormData,
   site: Site['id'],
@@ -110,8 +119,8 @@ export const createBlock = async (
   const label = formData.get('label') as Block['label'];
   const href = formData.get('href') as Block['href'];
   const logo = formData.get('logo') as Block['logo'];
-  const style = JSON.parse(String(formData.get('style') ?? '{}'));
-  const widget = JSON.parse(String(formData.get('widget') ?? '{}'));
+  const [, style] = trySafe<string | undefined>(() => JSON.parse(String(formData.get('style'))), undefined);
+  const [, widget] = trySafe<string | undefined>(() => JSON.parse(String(formData.get('widget'))), undefined);
 
   try {
     const response = await db.block.create({
@@ -121,9 +130,9 @@ export const createBlock = async (
         label,
         href,
         logo: logo || null,
-        widget,
         site: { connect: { id: site } },
-        style
+        ...(widget && { widget }),
+        ...(style && { style })
       }
     });
 

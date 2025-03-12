@@ -190,7 +190,7 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={block.logo ?? ''}
-                alt={block.label}
+                alt={block.label ?? ''}
                 className={cn(
                   block.label === 'facebook' && 'h-[65px]',
                   block.label !== 'facebook' && 'h-[50px]',

@@ -205,7 +205,7 @@ export default function UpdateBlockModal({
             name="label"
             type="text"
             placeholder="Label"
-            value={data.label}
+            value={data.label ?? ''}
             onChange={e => setData({ ...data, label: e.target.value })}
             required
             className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
@@ -224,7 +224,7 @@ export default function UpdateBlockModal({
             {block.type === 'social' && (
               <div>
                 <SocialIcon
-                  href={data.href}
+                  href={data.href ?? ''}
                   network={logo}
                   fallback={{ color: '#000000', path: 'M0' }}
                   style={{ width: 28, height: 28 }}
@@ -237,7 +237,7 @@ export default function UpdateBlockModal({
               name="href"
               type="text"
               placeholder="https://instagram.com/..."
-              value={data.href}
+              value={data.href ?? ''}
               onChange={e => setData({ ...data, href: e.target.value })}
               required
               className="w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"

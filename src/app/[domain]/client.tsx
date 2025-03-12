@@ -58,7 +58,7 @@ export const BlockItem = (block: Block) => {
                   'object-contain transition-all hover:scale-125'
                 )}
                 src={block.logo ?? ''}
-                alt={block.label}
+                alt={block.label ?? ''}
               />
             </>
           ) : (

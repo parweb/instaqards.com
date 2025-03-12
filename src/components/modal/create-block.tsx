@@ -6,7 +6,7 @@ import va from '@vercel/analytics';
 import { motion } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
-import { useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { LuChevronLeft } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 import { toast } from 'sonner';
@@ -185,14 +185,22 @@ const Preview = ({
     register,
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors },
+    setValue
   } = useForm({
-    resolver: zodResolver(input)
+    resolver: zodResolver(
+      z.intersection(z.object({ widget: z.string() }), input)
+    )
   });
 
   console.log({ errors });
 
-  const data = useWatch({ control });
+  const { widget, ...data } = useWatch({ control });
+  const widgetString = JSON.stringify({ ...block, data });
+
+  useEffect(() => {
+    setValue('widget', widgetString);
+  }, [widgetString, setValue]);
 
   if (!Component || !input) return null;
 
@@ -229,10 +237,21 @@ const Preview = ({
           </Suspense>
         </div>
 
-        <input
+        {/* <input
           type="hidden"
+          {...register('widget', { value: JSON.stringify({ ...block, data }) })}
+        /> */}
+
+        <Controller
+          control={control}
           name="widget"
-          value={JSON.stringify({ ...block, data })}
+          render={({ field }) => (
+            <input
+              type="hidden"
+              {...field}
+              value={JSON.stringify({ ...block, data })}
+            />
+          )}
         />
 
         <div className="px-4 flex flex-col gap-4">
