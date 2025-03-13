@@ -4,16 +4,19 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Block, Site } from '@prisma/client';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { Suspense, useEffect, useState } from 'react';
+import { LuMove } from 'react-icons/lu';
+import { SocialIcon } from 'react-social-icons';
 
 import {
   closestCenter,
   DndContext,
-  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
-  useSensors
+  useSensors,
+  type DragEndEvent
 } from '@dnd-kit/core';
 
 import {
@@ -35,8 +38,6 @@ import DeleteBlockButton from 'components/delete-block-button';
 import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
-import { LuMove } from 'react-icons/lu';
-import { SocialIcon } from 'react-social-icons';
 
 const BlockUpdate = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
   return (
@@ -48,6 +49,20 @@ const BlockUpdate = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
 
 const BlockDelete = (block: Block) => {
   return <DeleteBlockButton {...block} />;
+};
+
+const BlockWidget = ({ block }: { block: Block }) => {
+  const widget = block.widget as unknown as {
+    type: string;
+    id: string;
+    data: unknown;
+  };
+
+  const Component = dynamic(
+    () => import(`components/blocks/${widget.type}/${widget.id}.tsx`)
+  );
+
+  return <Component {...(widget?.data ?? {})} />;
 };
 
 const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
@@ -62,6 +77,11 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
   const css = block.style as unknown as BlockStyle;
 
   if (block.type === 'main') {
+    const hasWidget = !(
+      Boolean(block?.widget) === false ||
+      Object.keys(block?.widget ?? {}).length === 0
+    );
+
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -81,34 +101,42 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
           </div>
         </div>
 
-        <div
-          className={cn(
-            'cursor-pointer',
-            'transition-all',
-            'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
-            'hover:bg-white hover:text-black'
-          )}
-        >
-          {block.label}
+        {hasWidget === false && (
+          <div
+            className={cn(
+              'cursor-pointer',
+              'transition-all',
+              'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
+              'hover:bg-white hover:text-black'
+            )}
+          >
+            {block.label}
 
-          <style jsx>{`
-            div {
-              transition: all 0.3s ease;
+            <style jsx>{`
+              div {
+                transition: all 0.3s ease;
 
-              ${generateCssProperties(css.normal)}
+                ${generateCssProperties(css.normal)}
 
-              ${Object.keys(css || {})
-                .filter(key => key !== 'normal')
-                .map(
-                  key => `
+                ${Object.keys(css || {})
+                  .filter(key => key !== 'normal')
+                  .map(
+                    key => `
                     &:${key} {
                       ${generateCssProperties(css[key as keyof BlockStyle])}
                     }
                   `
-                )}
-            }
-          `}</style>
-        </div>
+                  )}
+              }
+            `}</style>
+          </div>
+        )}
+
+        {hasWidget === true && (
+          <Suspense fallback={null}>
+            <BlockWidget block={block} />
+          </Suspense>
+        )}
 
         <div className="absolute right-10 flex gap-2 items-center p-2 transition-all opacity-0 group-hover:opacity-100 group-hover:right-0">
           <BlockUpdate block={block} fonts={fonts} />

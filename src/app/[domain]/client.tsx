@@ -1,46 +1,75 @@
 'use client';
 
 import type { Block } from '@prisma/client';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { SocialIcon } from 'react-social-icons';
 
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
+
+const BlockWidget = ({ block }: { block: Block }) => {
+  const widget = block.widget as unknown as {
+    type: string;
+    id: string;
+    data: unknown;
+  };
+
+  const Component = dynamic(
+    () => import(`components/blocks/${widget.type}/${widget.id}.tsx`)
+  );
+
+  return <Component {...(widget?.data ?? {})} />;
+};
 
 export const BlockItem = (block: Block) => {
   const css = block.style as unknown as BlockStyle;
 
   if (block.type === 'main') {
-    return (
-      <Link href={`/click/${block.id}`} target="_blank" legacyBehavior>
-        {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
-        <a
-          id={block.id}
-          className={cn(
-            'transition-all',
-            'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
-            'hover:bg-white hover:text-black'
-          )}
-        >
-          {block.label}
-          <style jsx>{`
-            #${block.id} {
-              transition: all 0.3s ease;
+    const hasWidget = !(
+      Boolean(block?.widget) === false ||
+      Object.keys(block?.widget ?? {}).length === 0
+    );
 
-              ${generateCssProperties(css.normal)}
+    if (hasWidget === false) {
+      return (
+        <Link href={`/click/${block.id}`} target="_blank" legacyBehavior>
+          {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+          <a
+            id={block.id}
+            className={cn(
+              'transition-all',
+              'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
+              'hover:bg-white hover:text-black'
+            )}
+          >
+            {block.label}
+            <style jsx>{`
+              #${block.id} {
+                transition: all 0.3s ease;
 
-              ${Object.keys(css || {})
-                .filter(key => key !== 'normal')
-                .map(
-                  key => `
+                ${generateCssProperties(css.normal)}
+
+                ${Object.keys(css || {})
+                  .filter(key => key !== 'normal')
+                  .map(
+                    key => `
                     &:${key} {
                       ${generateCssProperties(css[key as keyof BlockStyle])}
                     }
                   `
-                )}
-            }
-          `}</style>
-        </a>
-      </Link>
+                  )}
+              }
+            `}</style>
+          </a>
+        </Link>
+      );
+    }
+
+    return (
+      <Suspense fallback={null}>
+        <BlockWidget block={block} />
+      </Suspense>
     );
   }
 

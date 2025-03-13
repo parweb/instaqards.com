@@ -237,11 +237,6 @@ const Preview = ({
           </Suspense>
         </div>
 
-        {/* <input
-          type="hidden"
-          {...register('widget', { value: JSON.stringify({ ...block, data }) })}
-        /> */}
-
         <Controller
           control={control}
           name="widget"
@@ -255,7 +250,6 @@ const Preview = ({
         />
 
         <div className="px-4 flex flex-col gap-4">
-          {/* @ts-ignore */}
           {(
             Object.entries(
               (zodToJsonSchema(input) as JsonSchema7Type['default'])
@@ -352,22 +346,7 @@ export default function CreateBlockModal({
   const css = data.style;
 
   return (
-    <div
-      className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow overflow-hidden"
-      // action={async (data: FormData) =>
-      //   createBlock(data, params.id as Site['id'], type).then(res => {
-      //     if ('error' in res) {
-      //       toast.error(res.error);
-      //     } else {
-      //       va.track('Create block', { id: res.id });
-
-      //       router.refresh();
-      //       modal?.hide();
-      //       toast.success('Block created!');
-      //     }
-      //   })
-      // }
-    >
+    <div className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow overflow-hidden">
       <div className="flex flex-col gap-4">
         <h2 className="font-cal text-2xl px-4 pt-4">Create a block</h2>
 
