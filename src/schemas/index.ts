@@ -37,3 +37,8 @@ export const RegisterSchema = z.object({
   password: z.string().min(6, 'schemas.string.min'),
   name: z.string().min(1, 'schemas.name.required')
 });
+
+export const OnboardSchema = z.object({
+  subdomain: z.string().min(1, 'schemas.subdomain.required'),
+  email: z.string().email('schemas.email.required')
+});

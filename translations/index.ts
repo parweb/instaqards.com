@@ -53,6 +53,18 @@ const translations = {
     it: 'Qualcosa è andato storto!',
     es: '¡Algo salió mal!'
   },
+  'actions.onboard.subdomain.error': {
+    fr: 'Le sous-domaine est déjà utilisé !',
+    en: 'The subdomain is already in use!',
+    it: 'Il sottodominio è già in uso!',
+    es: '¡El subdominio ya está en uso!'
+  },
+  'actions.onboard.email.error': {
+    fr: "L'email est déjà utilisé !",
+    en: 'The email is already in use!',
+    it: "L'email è già in uso!",
+    es: '¡El correo electrónico ya está en uso!'
+  },
   'dashboard.site.detail.title': {
     fr: 'Configurer le design de {name}',
     en: 'Configure {name} design',
@@ -461,6 +473,12 @@ const translations = {
     it: 'È richiesto un minimo di {char} caratteri',
     es: 'Se requiere un mínimo de {char} caracteres'
   },
+  'schemas.subdomain.required': {
+    fr: 'Un sous-domaine est requis !',
+    en: 'Subdomain is required!',
+    it: 'È richiesto un sottodominio!',
+    es: '¡Se requiere un subdominio!'
+  },
   'menu.help': {
     fr: 'Aide',
     en: 'Help',
@@ -640,6 +658,102 @@ const translations = {
     en: 'Start now, be unforgettable',
     it: 'Inizia ora, sii indimenticabile',
     es: 'Empieza ahora, sé inolvidable'
+  },
+  'page.home.pricing.header.badge': {
+    fr: 'Tarification simplifiée',
+    en: 'Simplified Pricing',
+    it: 'Tariffa semplificata',
+    es: 'Tarifa simplificada'
+  },
+  'page.home.pricing.header.title': {
+    fr: 'Une seule offre. Tout inclus.',
+    en: 'One offer. All included.',
+    it: 'Una sola offerta. Tutto incluso.',
+    es: 'Una oferta. Todo incluido.'
+  },
+  'page.home.pricing.header.description.one': {
+    fr: 'Profitez de toutes les fonctionnalités avec notre forfait unique,',
+    en: 'Enjoy all features with our unique offer,',
+    it: 'Godi di tutte le funzionalità con il nostro forfait unico,',
+    es: 'Disfruta de todas las funciones con nuestro único plan,',
+  },
+  'page.home.pricing.header.description.two': {
+    fr: 'disponible en paiement mensuel ou annuel.',
+    en: 'available in monthly or annual payment.',
+    it: 'disponibile in pagamento mensile o annuale.',
+    es: 'disponible en pago mensual o anual.'
+  },
+  'page.home.pricing.monthly': {
+    fr: 'Mensuel',
+    en: 'Monthly',
+    it: 'Mensile',
+    es: 'Mensual'
+  },
+  'page.home.pricing.annual': {
+    fr: 'Annuel',
+    en: 'Annual',
+    it: 'Annuale',
+    es: 'Anual'
+  },
+  'page.home.pricing.trial': {
+    fr: "30 jours d'essai gratuit",
+    en: "30 days free trial",
+    it: "30 giorni di prova gratuito",
+    es: "30 días de prueba gratis"
+  },
+  'page.home.pricing.trial.description': {
+    fr: "Aucune carte de crédit nécessaire",
+    en: "No credit card required",
+    it: "Nessuna carta di credito richiesta",
+    es: "No se requiere tarjeta de crédito"
+  },
+  'page.home.pricing.premium': {
+    fr: 'Premium',
+    en: 'Premium',
+    it: 'Premium',
+    es: 'Premium'
+  },
+  'page.home.pricing.annual.total': {
+    fr: 'Facturation annuelle : {number}€',
+    en: 'Annual total: {number}€',
+    it: 'Totale annuale: {number}€',
+    es: 'Total anual: {number}€'
+  },
+  'page.home.pricing.annual.discount': {
+    fr: 'Économisez {number}€ par an',
+    en: 'Save {number}€ per year',
+    it: "Risparmia {number}€ all'anno",
+    es: 'Ahorra {number}€ al año'
+  },
+  'page.home.pricing.start': {
+    fr: 'Réserver ma qards',
+    en: 'Claim my qards',
+    it: 'Riserva la mia qards',
+    es: 'Reserva mi qards'
+  },
+  'page.home.pricing.start.placeholder': {
+    fr: 'mon-business',
+    en: 'my-business-name',
+    it: 'il-mio-negozio',
+    es: 'mi-negocio'
+  },
+  'page.home.pricing.start.email.placeholder': {
+    fr: 'Email',
+    en: 'Email',
+    it: 'Email',
+    es: 'Email'
+  },
+  'page.home.pricing.start.password.placeholder': {
+    fr: 'Mot de passe',
+    en: 'Password',
+    it: 'Password',
+    es: 'Contraseña'
+  },
+  'page.home.pricing.included': {
+    fr: 'Inclus dans le prix',
+    en: 'Included in the price',
+    it: 'Incluso nel prezzo',
+    es: 'Incluido en el precio'
   },
   'api.stripe.user.error': {
     fr: 'Impossible de créer un paiement si non connecté',

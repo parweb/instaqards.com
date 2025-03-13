@@ -19,7 +19,9 @@ export default async function middleware(req: NextRequest) {
   const isApiAuthRoute = url.pathname.startsWith(apiAuthPrefix);
   const isAuthRoute = authRoutes.includes(url.pathname);
   const isPublicRoute =
-    publicRoutes.includes(url.pathname) || isAuthRoute || isApiAuthRoute;
+    publicRoutes.some(route => url.pathname.includes(route)) ||
+    isAuthRoute ||
+    isApiAuthRoute;
 
   let hostname = req.headers
     .get('host')
@@ -65,9 +67,16 @@ export default async function middleware(req: NextRequest) {
     hostname === `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
     hostname?.includes('bore.pub:')
   ) {
+    if (url.pathname === '/home') {
+      return NextResponse.rewrite(
+        new URL(url.pathname, req.url.replace(url.pathname, '/'))
+      );
+    }
+
     const session = await auth();
 
-    if (!session && !isPublicRoute) {
+    if (!!session === false && isPublicRoute === false) {
+      console.log('redirecting to login');
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
@@ -84,6 +93,7 @@ export default async function middleware(req: NextRequest) {
     hostname?.includes(':11000') ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
+    console.log(`/home${path === '/' ? '' : path}`, req.url);
     return NextResponse.rewrite(
       new URL(`/home${path === '/' ? '' : path}`, req.url)
     );

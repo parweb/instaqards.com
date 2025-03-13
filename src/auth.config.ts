@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+// import Resend from 'next-auth/providers/resend';
 // import Github from 'next-auth/providers/github';
 // import Google from 'next-auth/providers/google';
 // import Tiktok from '@auth/core/providers/tiktok';
@@ -11,7 +12,7 @@ import { getVerificationTokenByEmail } from 'data/verificiation-token';
 
 export const apiAuthPrefix = '/api/auth';
 
-export const publicRoutes = ['/new-verification'];
+export const publicRoutes = ['/new-verification', '/onboard', '/test'];
 
 export const authRoutes = [
   '/login',
@@ -59,5 +60,6 @@ export default {
         return null;
       }
     })
+    // ,Resend
   ]
 } satisfies NextAuthConfig;

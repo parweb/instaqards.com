@@ -131,6 +131,7 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       fontSize: {
+        xs: ['0.75rem', { lineHeight: '1rem' }],
         base: ['1rem', { lineHeight: '1.25rem' }],
         sm: ['1rem', { lineHeight: '1.25rem' }],
         'tremor-label': ['0.75rem'],

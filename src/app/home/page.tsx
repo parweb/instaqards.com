@@ -1,7 +1,6 @@
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Suspense } from 'react';
 import { LuArrowBigDown, LuCheck } from 'react-icons/lu';
 
 import { FlagPicker } from 'components/flag-picker';
@@ -11,6 +10,7 @@ import { db } from 'helpers/db';
 import { getLang, translate } from 'helpers/translate';
 import { cn } from 'lib/utils';
 import { DEFAULT_LANG, type Lang } from '../../../translations';
+import PricingSection from './section/price';
 
 import {
   Carousel,
@@ -501,6 +501,8 @@ export default async function HomePage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const lang = getLang();
+
   return (
     <div className="">
       <Header />
@@ -511,9 +513,11 @@ export default async function HomePage({
 
       {/*<Features />*/}
 
-      <Suspense fallback={null}>
+      {/* <Suspense fallback={null}>
         <Prices />
-      </Suspense>
+      </Suspense> */}
+
+      <PricingSection lang={lang} />
 
       <Testimonial />
     </div>
