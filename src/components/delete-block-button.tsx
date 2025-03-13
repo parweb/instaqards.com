@@ -38,7 +38,7 @@ function DeleteBlockFormButton() {
 
   return (
     <button
-      type="button"
+      type="submit"
       className="bg-white/80 p-2 rounded-md"
       disabled={pending}
     >

@@ -9,12 +9,12 @@ export default function Picture169({
   media = 'https://placehold.co/480x270.png?text=16:9'
 }: Partial<z.infer<typeof input>>) {
   return (
-    <div className="bg-white rounded-md overflow-hidden aspect-video h-full flex items-center justify-center">
+    <div className="bg-white rounded-md overflow-hidden aspect-video h-full flex items-center justify-center mx-auto">
       <Image
         priority
         className="object-cover"
         src={media ?? ''}
-        alt={'Image'}
+        alt="Image"
         fill
       />
     </div>
