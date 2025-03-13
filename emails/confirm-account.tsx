@@ -35,59 +35,64 @@ const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const ConfirmAccount = ({ confirmLink, lang }: ConfirmAccountProps) => (
-  <Html>
-    <Head />
+export const ConfirmAccount = ({
+  confirmLink,
+  lang = 'en'
+}: ConfirmAccountProps) => {
+  return (
+    <Html>
+      <Head />
 
-    <Preview>{translations[lang].title}</Preview>
+      <Preview>{translations[lang].title}</Preview>
 
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={h1}>{translations[lang].title}</Heading>
+      <Body style={main}>
+        <Container style={container}>
+          <Heading style={h1}>{translations[lang].title}</Heading>
 
-        <Link
-          href={confirmLink}
-          target="_blank"
-          style={{
-            ...link,
-            display: 'block',
-            marginBottom: '16px'
-          }}
-        >
-          {translations[lang].confirm_text}
-        </Link>
-
-        <Text
-          style={{
-            ...text,
-            color: '#ababab',
-            marginTop: '14px',
-            marginBottom: '16px'
-          }}
-        >
-          {translations[lang].message_not_my_action}
-        </Text>
-
-        <Img
-          src={`${baseUrl}/logo.png`}
-          width="32"
-          height="32"
-          alt="Instaqards's Logo"
-        />
-
-        <Text style={footer}>
           <Link
-            href={baseUrl}
+            href={confirmLink}
             target="_blank"
-            style={{ ...link, color: '#898989' }}
+            style={{
+              ...link,
+              display: 'block',
+              marginBottom: '16px'
+            }}
           >
-            {baseUrl.replace('https://', '').replace('http://', '')}
+            {translations[lang].confirm_text}
           </Link>
-        </Text>
-      </Container>
-    </Body>
-  </Html>
-);
+
+          <Text
+            style={{
+              ...text,
+              color: '#ababab',
+              marginTop: '14px',
+              marginBottom: '16px'
+            }}
+          >
+            {translations[lang].message_not_my_action}
+          </Text>
+
+          <Img
+            src={`${baseUrl}/logo.png`}
+            width="32"
+            height="32"
+            alt="Instaqards's Logo"
+          />
+
+          <Text style={footer}>
+            <Link
+              href={baseUrl}
+              target="_blank"
+              style={{ ...link, color: '#898989' }}
+            >
+              {baseUrl.replace('https://', '').replace('http://', '')}
+            </Link>
+          </Text>
+        </Container>
+      </Body>
+    </Html>
+  );
+};
 
 ConfirmAccount.PreviewProps = {
   confirmLink: 'sparo-ndigo-amurt-secan'

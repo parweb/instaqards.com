@@ -35,7 +35,10 @@ const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const ResetPassword = ({ resetLink, lang }: ResetPasswordProps) => (
+export const ResetPassword = ({
+  resetLink,
+  lang = 'en'
+}: ResetPasswordProps) => (
   <Html>
     <Head />
 
@@ -139,14 +142,4 @@ const footer = {
   lineHeight: '22px',
   marginTop: '12px',
   marginBottom: '24px'
-};
-
-const code = {
-  display: 'inline-block',
-  padding: '16px 4.5%',
-  width: '90.5%',
-  backgroundColor: '#f4f4f4',
-  borderRadius: '5px',
-  border: '1px solid #eee',
-  color: '#333'
 };
