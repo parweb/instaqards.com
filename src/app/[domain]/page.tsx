@@ -10,6 +10,7 @@ import { getSiteData } from 'lib/fetchers';
 import { BlockList } from './client';
 
 import 'array-grouping-polyfill';
+import { contentType } from 'mime-types';
 
 export default async function SiteHomePage({
   params
@@ -61,10 +62,13 @@ export default async function SiteHomePage({
 
   const data = { blocks: main, socials: social };
 
+  const media_type =
+    contentType(site?.background?.split('/').pop() ?? '') || '';
+
   return (
-    <main className="relative flex-1 self-stretch items-center">
+    <main className="relative flex-1 self-stretch items-center flex flex-col">
       <div className="absolute inset-0">
-        {site?.background?.endsWith('.mp4') && (
+        {media_type?.startsWith('video/') && (
           <video
             className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
             preload="auto"
@@ -77,20 +81,20 @@ export default async function SiteHomePage({
           </video>
         )}
 
-        {!site?.background?.endsWith('.mp4') && !!site?.background && (
+        {!media_type?.startsWith('video/') && !!site?.background && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
             src={site.background}
-            alt="background"
+            alt=""
           />
         )}
 
         <div className="absolute inset-0  bg-black/30" />
       </div>
 
-      <section className="absolute inset-0 flex flex-col p-10">
-        <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
+      <section className="flex flex-col p-10 flex-1 self-stretch">
+        <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
           <header className="flex flex-col justify-center items-center gap-6  pt-4">
             <div className="bg-white rounded-full overflow-hidden w-24 h-24 flex items-center justify-center">
               <Image

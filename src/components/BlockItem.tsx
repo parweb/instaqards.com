@@ -145,7 +145,7 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
           </Suspense>
         )}
 
-        <div className="absolute right-10 flex gap-2 items-center p-2 transition-all opacity-0 group-hover:opacity-100 group-hover:right-0">
+        <div className="absolute left-3/4 z-[100] flex items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100">
           <BlockUpdate block={block} fonts={fonts} />
           <BlockDelete {...block} />
         </div>

@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 
 import { db } from 'helpers/db';
 import { storage } from 'helpers/storage';
+import { contentType } from 'mime-types';
 
 const extension = (name: string) => name.split('.').at(-1)?.toLowerCase();
 
@@ -16,14 +17,15 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     const filename = `${nanoid()}.${extension(body.filename)}`;
 
-    console.log({ filename });
+    const type = contentType(filename);
 
     const url = await getSignedUrl(
       // @ts-ignore
       storage,
       new PutObjectCommand({
         Bucket: 'instaqards.com',
-        Key: filename
+        Key: filename,
+        ContentType: type || undefined
       }),
       {
         expiresIn: 3600

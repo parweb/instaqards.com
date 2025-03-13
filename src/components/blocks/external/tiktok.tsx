@@ -14,6 +14,9 @@ export default function Tiktok({
   const username = url.split('/')[3];
 
   return (
-    <TikTokEmbed url={`https://www.tiktok.com/${username}/video/${postId}`} />
+    <TikTokEmbed
+      url={`https://www.tiktok.com/${username}/video/${postId}`}
+      width="100%"
+    />
   );
 }

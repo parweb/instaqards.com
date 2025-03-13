@@ -37,7 +37,7 @@ export default function Youtube({
   };
 
   return (
-    <div className="relative rounded-md overflow-hidden">
+    <div className="relative rounded-md overflow-hidden w-full">
       <iframe
         ref={iframeRef}
         title="YouTube video player"

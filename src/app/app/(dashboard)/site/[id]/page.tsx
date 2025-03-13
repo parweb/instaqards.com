@@ -20,6 +20,7 @@ import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
+import { contentType } from 'mime-types';
 
 const BlockCreate = ({ type }: { type: Block['type'] }) => {
   return (
@@ -45,10 +46,13 @@ const Landing = async ({
 
   const data = { blocks: main, socials: social };
 
+  const media_type =
+    contentType(site?.background?.split('/').pop() ?? '') || '';
+
   return (
-    <main className="relative flex-1 self-stretch items-center pointer-events-auto">
+    <main className="relative flex-1 self-stretch items-center flex flex-col pointer-events-auto">
       <div className="absolute inset-0 group pointer-events-auto">
-        {site?.background?.endsWith('.mp4') && (
+        {media_type?.startsWith('video/') && (
           <video
             className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
             preload="auto"
@@ -61,20 +65,20 @@ const Landing = async ({
           </video>
         )}
 
-        {!site?.background?.endsWith('.mp4') && !!site?.background && (
+        {!media_type?.startsWith('video/') && !!site?.background && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
             src={site.background}
-            alt="background"
+            alt=""
           />
         )}
 
         <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
       </div>
 
-      <section className="absolute inset-0 flex flex-col p-10 pointer-events-auto">
-        <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-3 justify-between flex-1">
+      <section className="flex flex-col p-10 flex-1 self-stretch pointer-events-auto">
+        <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
           <header className="flex flex-col justify-center items-center gap-3 mt-4">
             <div className="group relative bg-white rounded-full overflow-hidden w-24 h-24 cursor-pointer flex items-center justify-center">
               <Image
@@ -172,7 +176,9 @@ export default async function SitePosts({
 
   const site = await db.site.findUnique({
     where: { id: decodeURIComponent(params.id) },
-    include: { blocks: { orderBy: { position: 'asc' } } }
+    include: {
+      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'desc' }] }
+    }
   });
 
   if (

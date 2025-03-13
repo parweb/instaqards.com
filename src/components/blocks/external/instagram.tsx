@@ -17,6 +17,7 @@ const Instagram = ({
       <InstagramEmbed
         url={`https://www.instagram.com/p/${postId}/`}
         captioned={false}
+        width="100%"
       />
     </>
   );

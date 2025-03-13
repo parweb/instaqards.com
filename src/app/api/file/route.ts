@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { get } from 'helpers/storage';
 
 export async function GET(req: Request) {
-  // @ts-ignore
   const Range = req?.headers?.get('range') ?? 'bytes=0-';
   const id = String(new URL(req?.url).searchParams.get('id'));
 

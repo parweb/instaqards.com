@@ -15,6 +15,7 @@ export default function Facebook({
   return (
     <FacebookEmbed
       url={`https://www.facebook.com/andrewismusic/posts/${postId}`}
+      width="100%"
     />
   );
 }

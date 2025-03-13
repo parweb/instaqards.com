@@ -13,5 +13,13 @@ export default function Twitter({
   const tweetId = url.split('/').pop();
   const username = url.split('/')[3];
 
-  return <XEmbed url={`https://x.com/${username}/status/${tweetId}`} />;
+  return (
+    <div className="w-full flex flex-col justify-center items-center">
+      <XEmbed
+        url={`https://x.com/${username}/status/${tweetId}`}
+        width="100%"
+        // className="flex-1 self-stretch flex flex-col justify-center [& *]:max-w-none [& iframe]:w-full [&>div]:flex [&>div]:justify-center [&>div]:items-center [&>div]:w-full [&>div]:h-full [&>div]:max-h-[500px] [&>div]:rounded-lg [&>div]:overflow-hidden [&>div]:bg-gray-100 [&>div]:border [&>div]:border-gray-200 [&>div]:shadow-md [&>div]:shadow-gray-200"
+      />
+    </div>
+  );
 }

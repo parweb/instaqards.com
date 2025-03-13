@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-const input = z.object({
+export const input = z.object({
   url: z.string().url().describe('Album URL')
 });
 
