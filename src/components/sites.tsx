@@ -2,7 +2,7 @@ import type { User } from '@prisma/client';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 import SiteCard from 'components/site-card';
 import { translate } from 'helpers/translate';

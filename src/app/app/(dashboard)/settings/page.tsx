@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import Form from 'components/form';
 import { PortalButton } from 'components/portal-button';
 import { PriceTable } from 'components/price-table';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { editUser } from 'lib/actions';
 import { getSession, getSubscription } from 'lib/auth';
 

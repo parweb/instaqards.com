@@ -6,7 +6,7 @@ import {
   motion,
   type PanInfo,
   useAnimation
-} from 'framer-motion';
+} from 'motion/react';
 
 export default function Leaflet({
   setShow,

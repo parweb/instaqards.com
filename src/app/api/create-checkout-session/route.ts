@@ -1,6 +1,7 @@
 import { auth } from 'auth';
 import { createOrRetrieveCustomer } from 'data/customer';
-import { getURL, stripe } from 'helpers';
+import { getURL } from 'helpers/getURL';
+import { stripe } from 'helpers/stripe';
 import { translate } from 'helpers/translate';
 import type Stripe from 'stripe';
 

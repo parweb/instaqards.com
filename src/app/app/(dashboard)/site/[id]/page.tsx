@@ -15,7 +15,7 @@ import UpdateSiteBackgroundButton from 'components/update-site-background-button
 import UpdateSiteDescriptionButton from 'components/update-site-description-button';
 import UpdateSiteDisplayNameButton from 'components/update-site-displayName-button';
 import UpdateSiteProfilePictureButton from 'components/update-site-profile-picture-button';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 

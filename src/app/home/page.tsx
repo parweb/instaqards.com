@@ -7,7 +7,7 @@ import { LuArrowBigDown, LuCheck } from 'react-icons/lu';
 import { FlagPicker } from 'components/flag-picker';
 import { PriceTable } from 'components/price-table';
 import { Button } from 'components/ui/button';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getLang, translate } from 'helpers/translate';
 import { cn } from 'lib/utils';
 import { DEFAULT_LANG, type Lang } from '../../../translations';

@@ -1,7 +1,7 @@
 'use client';
 
 import FocusTrap from 'focus-trap-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
 

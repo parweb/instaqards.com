@@ -1,5 +1,5 @@
 import Form from 'components/form';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { updateSite } from 'lib/actions';
 
 export default async function SiteSettingsDomains({

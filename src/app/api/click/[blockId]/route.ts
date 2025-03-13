@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 
 export async function GET(
   _: Request,

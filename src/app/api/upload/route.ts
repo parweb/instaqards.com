@@ -3,7 +3,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { storage } from 'helpers/storage';
 
 const extension = (name: string) => name.split('.').at(-1)?.toLowerCase();
@@ -19,6 +19,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     console.log({ filename });
 
     const url = await getSignedUrl(
+      // @ts-ignore
       storage,
       new PutObjectCommand({
         Bucket: 'instaqards.com',

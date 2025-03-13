@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { Block, Site } from '@prisma/client';
 import va from '@vercel/analytics';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { Controller, useForm, useWatch } from 'react-hook-form';

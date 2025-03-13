@@ -1,5 +1,3 @@
-const { fontFamily } = require('tailwindcss/defaultTheme');
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
@@ -165,11 +163,11 @@ module.exports = {
         30: '7.5rem'
       },
       fontFamily: {
-        sans: ['var(--font-open-sans)', ...fontFamily.sans],
-        default: ['var(--font-inter)', ...fontFamily.sans],
-        cal: ['var(--font-cal)', ...fontFamily.sans],
-        title: ['var(--font-title)', ...fontFamily.sans],
-        mono: ['Consolas', ...fontFamily.mono]
+        sans: ['var(--font-open-sans)'],
+        default: ['var(--font-inter)'],
+        cal: ['var(--font-cal)'],
+        title: ['var(--font-title)'],
+        mono: ['Consolas']
       },
       typography: {
         DEFAULT: {

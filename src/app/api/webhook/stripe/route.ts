@@ -1,11 +1,12 @@
 import type Stripe from 'stripe';
 
+import { stripe } from 'helpers/stripe';
+
 import {
   manageSubscriptionStatusChange,
   upsertPriceRecord,
   upsertProductRecord
 } from 'data/customer';
-import { stripe } from 'helpers';
 
 const relevantEvents = new Set([
   'product.created',

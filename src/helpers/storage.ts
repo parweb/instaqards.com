@@ -1,9 +1,9 @@
-import * as AWS from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import type { StreamingBlobPayloadInputTypes } from '@smithy/types';
 import { contentType } from 'mime-types';
 
-export const storage = new AWS.S3({
+export const storage = new S3Client({
   region: String(process.env.S3_REGION),
   endpoint: String(process.env.S3_ENDPOINT),
   credentials: {
@@ -34,7 +34,7 @@ export const put = async (
 
       await parallelUploads3.done();
     } else {
-      await storage.putObject(params);
+      await storage.send(new PutObjectCommand(params));
     }
 
     return { url: `/api/file?id=${key}` };
@@ -51,5 +51,5 @@ export const get = (key: string, { ...options } = {}) => {
     ...options
   };
 
-  return storage.getObject(params);
+  return storage.send(new GetObjectCommand(params));
 };

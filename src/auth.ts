@@ -6,7 +6,7 @@ import authConfig from 'auth.config';
 import { getAccountByUserId } from 'data/account';
 import { getTwoFactorConfirmationByUserId } from 'data/two-factor-confirmation';
 import { getUserById } from 'data/user';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 
 export const {
   handlers: { GET, POST },

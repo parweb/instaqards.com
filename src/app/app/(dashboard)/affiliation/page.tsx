@@ -2,7 +2,7 @@ import { eachHourOfInterval } from 'date-fns';
 import { redirect } from 'next/navigation';
 
 import Analytics from 'components/analytics';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';

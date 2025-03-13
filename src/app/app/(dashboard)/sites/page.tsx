@@ -6,7 +6,7 @@ import CreateSiteModal from 'components/modal/create-site';
 import PlaceholderCard from 'components/placeholder-card';
 import Sites from 'components/sites';
 import { getSession } from 'lib/auth';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 
 export default async function AllSites() {

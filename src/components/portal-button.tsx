@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { LuLoader } from 'react-icons/lu';
 
-import { postData } from 'helpers';
+import { postData } from 'helpers/api';
 import { cn } from 'lib/utils';
 
 export const PortalButton = ({ children }: PropsWithChildren) => {

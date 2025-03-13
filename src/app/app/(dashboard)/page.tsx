@@ -6,7 +6,7 @@ import OverviewSitesCTA from 'components/overview-sites-cta';
 import OverviewStats from 'components/overview-stats';
 import PlaceholderCard from 'components/placeholder-card';
 import Sites from 'components/sites';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 

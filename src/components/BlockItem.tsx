@@ -3,7 +3,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Block, Site } from '@prisma/client';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { Suspense, useEffect, useState } from 'react';
 import { LuMove } from 'react-icons/lu';

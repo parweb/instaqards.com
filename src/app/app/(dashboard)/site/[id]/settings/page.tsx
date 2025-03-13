@@ -1,6 +1,6 @@
 import Form from 'components/form';
 import DeleteSiteForm from 'components/form/delete-site-form';
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { updateSite } from 'lib/actions';
 import { getSession } from 'lib/auth';
 

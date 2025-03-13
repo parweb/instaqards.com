@@ -4,7 +4,7 @@ import type { Block, Site } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { put } from 'helpers/storage';
 import { translate } from 'helpers/translate';
 import { getSession, withSiteAuth } from 'lib/auth';

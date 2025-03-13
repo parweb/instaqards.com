@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { db } from 'helpers';
+import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 import CreateSiteButton from './create-site-button';
 import CreateSiteModal from './modal/create-site';
