@@ -119,8 +119,16 @@ export const createBlock = async (
   const label = formData.get('label') as Block['label'];
   const href = formData.get('href') as Block['href'];
   const logo = formData.get('logo') as Block['logo'];
-  const [, style] = trySafe<string | undefined>(() => JSON.parse(String(formData.get('style'))), undefined);
-  const [, widget] = trySafe<string | undefined>(() => JSON.parse(String(formData.get('widget'))), undefined);
+
+  const [, style] = trySafe<string | undefined>(
+    () => JSON.parse(String(formData.get('style'))),
+    undefined
+  );
+
+  const [, widget] = trySafe<string | undefined>(
+    () => JSON.parse(String(formData.get('widget'))),
+    undefined
+  );
 
   try {
     const response = await db.block.create({

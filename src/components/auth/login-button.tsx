@@ -34,7 +34,13 @@ export const LoginButton = ({
   }
 
   return (
-    <span onClick={onClick} className="cursor-pointer">
+    <span
+      onClick={onClick}
+      className="cursor-pointer"
+      onKeyDown={e => {
+        if (e.key === 'Enter') onClick();
+      }}
+    >
       {children}
     </span>
   );

@@ -21,7 +21,7 @@ const FontItem = ({
   selectedFont: string | null;
   focusedFont: string | null;
   handleSelectFont: (font: string) => void;
-  root: RefObject<HTMLDivElement>;
+  root: RefObject<HTMLDivElement | null>;
 }) => {
   const [ref, isVisible] = useOnScreen<HTMLDivElement>({
     root: root.current ?? null,
@@ -221,7 +221,7 @@ export const FontPicker = memo(
 
     const [open, setOpen] = useState(false);
 
-    useOnClickOutside(ref, () => setOpen(false));
+    useOnClickOutside(ref as RefObject<HTMLElement>, () => setOpen(false));
 
     return (
       <div

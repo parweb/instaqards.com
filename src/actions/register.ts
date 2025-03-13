@@ -1,16 +1,16 @@
 'use server';
 
+import type { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
-import * as z from 'zod';
-import { User } from '@prisma/client';
+import type * as z from 'zod';
 
 import { getUserByEmail } from 'data/user';
 import { db } from 'helpers/db';
 import { sendVerificationEmail } from 'helpers/mail';
 import { generateVerificationToken } from 'helpers/tokens';
-import { RegisterSchema } from 'schemas';
 import { translate } from 'helpers/translate';
+import { RegisterSchema } from 'schemas';
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   console.log({ values });

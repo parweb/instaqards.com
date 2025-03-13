@@ -1,8 +1,8 @@
 'use server';
 
-import { UserRole } from '@prisma/client';
+import type { UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import * as z from 'zod';
+import type * as z from 'zod';
 
 import { update } from 'auth';
 import { getUserByEmail, getUserById } from 'data/user';
@@ -10,8 +10,8 @@ import { currentUser } from 'helpers/auth';
 import { db } from 'helpers/db';
 import { sendVerificationEmail } from 'helpers/mail';
 import { generateVerificationToken } from 'helpers/tokens';
-import { SettingsSchema } from 'schemas';
 import { translate } from 'helpers/translate';
+import type { SettingsSchema } from 'schemas';
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();

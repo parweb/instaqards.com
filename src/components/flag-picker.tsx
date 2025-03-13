@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentType } from 'react';
+import type { ComponentType, RefObject } from 'react';
 import { useRef, useState } from 'react';
 import { useFormState } from 'react-dom';
 import Flag from 'react-world-flags';
@@ -38,11 +38,11 @@ export const FlagPicker = ({
   options?: string[];
   value: string;
 }) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  useOnClickOutside(ref, () => {
+  useOnClickOutside(ref as RefObject<HTMLElement>, () => {
     setIsOpen(false);
   });
 

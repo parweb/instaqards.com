@@ -17,7 +17,8 @@ const BaseButton: React.FC<
 
       <style jsx>{`
         .button-19 {
-          background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.13)),
+          background:
+            linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.13)),
             radial-gradient(
               90% 7% at 50% 8%,
               rgba(255, 255, 255, 0.47) 25%,

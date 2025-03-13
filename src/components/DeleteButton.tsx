@@ -17,21 +17,21 @@ const DeleteButton = ({ siteId }: { siteId: Site['id'] }) => {
   return (
     <form
       className="cursor-pointer"
-      action={async (data: FormData) =>
+      action={async (data: FormData) => {
         window.confirm('Are you sure you want to delete your site?') &&
-        deleteSite(data, siteId, 'delete')
-          .then(async res => {
-            if ('error' in res) {
-              toast.error(res.error);
-            } else {
-              va.track('Deleted Site');
-              router.refresh();
-              router.push('/sites');
-              toast.success('Successfully deleted site!');
-            }
-          })
-          .catch((err: Error) => toast.error(err.message))
-      }
+          deleteSite(data, siteId, 'delete')
+            .then(async res => {
+              if ('error' in res) {
+                toast.error(res.error);
+              } else {
+                va.track('Deleted Site');
+                router.refresh();
+                router.push('/sites');
+                toast.success('Successfully deleted site!');
+              }
+            })
+            .catch((err: Error) => toast.error(err.message));
+      }}
     >
       <FormButton />
     </form>

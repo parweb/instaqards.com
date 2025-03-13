@@ -369,7 +369,7 @@ const PresetContainer = <TPreset extends Preset, TValue>({
 
   return (
     <ul className="flex items-start gap-x-2 sm:flex-col">
-      {presets.map((preset, index) => {
+      {presets.map(preset => {
         return (
           <li key={preset.label} className="sm:w-full sm:py-px">
             <button

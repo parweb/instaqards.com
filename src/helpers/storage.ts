@@ -1,7 +1,12 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import type { StreamingBlobPayloadInputTypes } from '@smithy/types';
 import { contentType } from 'mime-types';
+
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client
+} from '@aws-sdk/client-s3';
 
 export const storage = new S3Client({
   region: String(process.env.S3_REGION),

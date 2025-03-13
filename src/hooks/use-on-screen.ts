@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, type RefObject } from 'react';
 
 export default function useOnScreen<T extends HTMLElement>(
   options?: IntersectionObserverInit & { preloadMargin?: number }
-): [RefObject<T>, boolean] {
+): [RefObject<T | null>, boolean] {
   const ref = useRef<T>(null);
   const [isVisible, setIsVisible] = useState(false);
 

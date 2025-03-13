@@ -1,6 +1,7 @@
 'use client';
 
 import { addYears, format, isSameMonth } from 'date-fns';
+import type { RefObject } from 'react';
 import * as React from 'react';
 
 import {
@@ -257,7 +258,11 @@ const Calendar = ({
         Day: ({ date, displayMonth }: DayProps) => {
           const buttonRef = React.useRef<HTMLButtonElement>(null);
           const { activeModifiers, buttonProps, divProps, isButton, isHidden } =
-            useDayRender(date, displayMonth, buttonRef);
+            useDayRender(
+              date,
+              displayMonth,
+              buttonRef as RefObject<HTMLButtonElement>
+            );
 
           const { selected, today, disabled, range_middle } = activeModifiers;
 
