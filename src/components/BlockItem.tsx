@@ -5,7 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import type { Block, Site } from '@prisma/client';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { Suspense, useEffect, useState } from 'react';
+import { memo, Suspense, useEffect, useState } from 'react';
 import { LuMove } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
@@ -51,7 +51,7 @@ const BlockDelete = (block: Block) => {
   return <DeleteBlockButton {...block} />;
 };
 
-const BlockWidget = ({ block }: { block: Block }) => {
+const BlockWidget = memo(({ block }: { block: Block }) => {
   const widget = block.widget as unknown as {
     type: string;
     id: string;
@@ -63,11 +63,18 @@ const BlockWidget = ({ block }: { block: Block }) => {
   );
 
   return <Component {...(widget?.data ?? {})} />;
-};
+});
+
+BlockWidget.displayName = 'BlockWidget';
 
 const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: block.id });
+
+  if (transform) {
+    transform.scaleX = 1;
+    transform.scaleY = 1;
+  }
 
   const style = {
     transform: CSS.Transform.toString(transform),

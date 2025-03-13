@@ -21,16 +21,10 @@ import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
 
-const BlockCreate = ({
-  type,
-  fonts
-}: {
-  type: Block['type'];
-  fonts: Font[];
-}) => {
+const BlockCreate = ({ type }: { type: Block['type'] }) => {
   return (
     <CreateBlockButton type={type}>
-      <CreateBlockModal type={type} fonts={fonts} />
+      <CreateBlockModal type={type} />
     </CreateBlockButton>
   );
 };
@@ -137,7 +131,7 @@ const Landing = async ({
                 fonts={fonts}
               />
 
-              <BlockCreate type="main" fonts={fonts} />
+              <BlockCreate type="main" />
             </div>
           </div>
 
@@ -150,7 +144,7 @@ const Landing = async ({
                 fonts={fonts}
               />
 
-              <BlockCreate type="social" fonts={fonts} />
+              <BlockCreate type="social" />
             </div>
           </footer>
         </div>
