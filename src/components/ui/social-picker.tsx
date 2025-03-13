@@ -8,9 +8,15 @@ import { cn } from 'lib/utils';
 import { Button } from 'components/ui/button';
 import { LuPlus } from 'react-icons/lu';
 
-export function SocialPicker() {
+export function SocialPicker({
+  onChange,
+  value
+}: {
+  onChange: (logo: string) => void;
+  value: string;
+}) {
   const [filter, setFilter] = useState<string>('');
-  const [logo, setLogo] = useState<string>('');
+  const [logo, setLogo] = [value, onChange];
   const [all, setAll] = useState<boolean>(false);
 
   useEffect(() => {

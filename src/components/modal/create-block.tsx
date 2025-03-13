@@ -15,7 +15,6 @@ import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
 
 import {
   Suspense,
-  useActionState,
   useEffect,
   useState,
   type Dispatch,
@@ -36,8 +35,6 @@ const Content = ({
   type,
   data,
   setData,
-  css,
-  fonts,
   onClick
 }: {
   type: Block['type'];
@@ -57,8 +54,6 @@ const Content = ({
       style: BlockStyle;
     }>
   >;
-  css: BlockStyle;
-  fonts: Font[];
   onClick: (data: { type: string; id: string }) => void;
 }) => {
   return (
@@ -133,7 +128,10 @@ const Content = ({
               </div>
             </div>
 
-            <SocialPicker />
+            <SocialPicker
+              onChange={logo => setData({ ...data, logo })}
+              value={data.logo}
+            />
           </>
         )}
       </div>
@@ -378,8 +376,6 @@ export default function CreateBlockModal({
               type={type}
               data={data}
               setData={setData}
-              css={css}
-              fonts={fonts}
               onClick={({ type, id }) => setSelectedBlock({ type, id })}
             />
           </div>

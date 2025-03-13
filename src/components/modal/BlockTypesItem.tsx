@@ -73,7 +73,6 @@ export const BlockTypesItem = ({
 
       <BlockTypesItemVariants
         onClick={onClick}
-        selected={selected}
         variants={variants.filter(v => v.type === type)}
       />
     </div>

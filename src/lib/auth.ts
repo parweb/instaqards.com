@@ -1,12 +1,5 @@
+import type { Prisma, Site } from '@prisma/client';
 import { SubscriptionStatus } from '@prisma/client';
-
-import type {
-  Price,
-  Prisma,
-  Product,
-  Site,
-  Subscription as SubscriptionPrisma
-} from '@prisma/client';
 
 import { auth } from 'auth';
 import { db } from 'helpers/db';

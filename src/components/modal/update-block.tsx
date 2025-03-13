@@ -245,7 +245,9 @@ export default function UpdateBlockModal({
           </div>
         </div>
 
-        {block.type === 'social' && <SocialPicker />}
+        {block.type === 'social' && (
+          <SocialPicker onChange={logo => setLogo(logo)} value={logo} />
+        )}
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">

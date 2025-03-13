@@ -11,11 +11,9 @@ import {
 } from 'components/ui/carousel';
 
 export const BlockTypesItemVariants = ({
-  selected,
   variants,
   onClick
 }: {
-  selected: number;
   variants: {
     id: string;
     label: string;

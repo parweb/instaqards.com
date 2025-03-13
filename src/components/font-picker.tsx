@@ -185,7 +185,7 @@ const FontPickerList = ({
         )}
         {filteredFonts.length > 0 && (
           <ul className="list-none p-0 m-0">
-            {filteredFonts.map((font, index) => (
+            {filteredFonts.map(font => (
               <li key={font}>
                 <FontItem
                   font={font}
