@@ -22,6 +22,7 @@ export const Gallery = () => {
         <h2 className="text-4xl sm:text-5xl font-[900]">
           {translate('page.home.gallery.title')}
         </h2>
+
         <p className="text-gray-600 text-2xl">
           {translate('page.home.gallery.description')}
         </p>

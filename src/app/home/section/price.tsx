@@ -1,18 +1,26 @@
 'use client';
 
+import type { Price as PriceType } from '@prisma/client';
 import { Check } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState, useTransition } from 'react';
 
-import { onboard } from 'actions/onboard';
-import LoadingDots from 'components/icons/loading-dots';
 import { Badge } from 'components/ui/badge';
-import { Button } from 'components/ui/button';
-import { Input } from 'components/ui/input';
 import useTranslation from 'hooks/use-translation';
+import { cn } from 'lib/utils';
 import type { Lang } from 'translations';
+import { Begin } from './begin';
 
 const features = [
+  {
+    id: 2,
+    label: {
+      fr: 'Nom de Domaine personnalisé',
+      en: 'Custom Domain Name',
+      it: 'Nome Dominio Personalizzato',
+      es: 'Nombre de Dominio Personalizado'
+    }
+  },
   {
     id: 1,
     label: {
@@ -31,15 +39,7 @@ const features = [
       es: 'Integración Instagram, Spotify, TikTok, etc.'
     }
   },
-  {
-    id: 2,
-    label: {
-      fr: 'Nom de Domaine personnalisé',
-      en: 'Custom Domain Name',
-      it: 'Nome Dominio Personalizzato',
-      es: 'Nombre de Dominio Personalizado'
-    }
-  },
+
   {
     id: 3,
     label: {
@@ -78,15 +78,22 @@ const features = [
   }
 ];
 
-export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
+export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
+  lang,
+  prices
+}) => {
   const translate = useTranslation();
 
   const [isPending, startTransition] = useTransition();
 
   const [subdomain, setSubdomain] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>(
-    'annual'
+  const [billingCycle, setBillingCycle] = useState<'year' | 'month'>('year');
+
+  const offer: Partial<Record<typeof billingCycle, PriceType>> = prices.reduce(
+    // biome-ignore lint/performance/noAccumulatingSpread: shut up
+    (carry, price) => ({ ...carry, [String(price.interval)]: price }),
+    {}
   );
 
   return (
@@ -104,6 +111,7 @@ export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
         <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight mt-2 mb-4">
           {translate('page.home.pricing.header.title')}
         </h2>
+
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
           {translate('page.home.pricing.header.description.one')}
           {translate('page.home.pricing.header.description.two')}
@@ -114,21 +122,32 @@ export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
         <div className="relative flex gap-2 p-1 rounded-full bg-black/5 ">
           <button
             type="button"
-            className={`w-40 flex-1 relative z-10 px-4 py-2 rounded-full font-medium transition-colors duration-300 ease-in-out ${billingCycle === 'monthly' ? 'text-black' : 'text-gray-500'}`}
-            onClick={() => setBillingCycle('monthly')}
+            className={cn(
+              'w-40 flex-1 relative z-10 px-4 py-2 rounded-full font-medium transition-colors duration-300 ease-in-out',
+              billingCycle === 'month' ? 'text-black' : 'text-gray-500'
+            )}
+            onClick={() => setBillingCycle('month')}
           >
             {translate('page.home.pricing.monthly')}
           </button>
 
           <button
             type="button"
-            className={`flex items-center gap-2 justify-center w-40 flex-1 relative z-10 px-4 py-2 rounded-full font-medium transition-colors duration-300 ease-in-out ${billingCycle === 'annual' ? 'text-black' : 'text-gray-500'}`}
-            onClick={() => setBillingCycle('annual')}
+            className={cn(
+              'flex items-center gap-2 justify-center',
+              'w-40 flex-1 relative z-10 px-4 py-2 rounded-full font-medium transition-colors duration-300 ease-in-out',
+              billingCycle === 'year' ? 'text-black' : 'text-gray-500'
+            )}
+            onClick={() => setBillingCycle('year')}
           >
             <span>{translate('page.home.pricing.annual')}</span>
 
             <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
-              {((9 * 12) / (12 * 12) - 1) * 100}%
+              {(((offer.year?.unit_amount ?? 0) * 12) /
+                ((offer.month?.unit_amount ?? 0) * 12) -
+                1) *
+                100}
+              %
             </Badge>
           </button>
 
@@ -136,7 +155,7 @@ export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
             className="absolute top-1 left-1 h-[calc(100%-8px)] w-40 rounded-full bg-white shadow-sm transition-transform duration-400 ease-&lsqb;cubic-bezier(0.16,1,0.3,1)&rsqb;"
             style={{
               transform:
-                billingCycle === 'monthly'
+                billingCycle === 'month'
                   ? 'translateX(0)'
                   : 'translateX(calc(100% + 8px))'
             }}
@@ -150,7 +169,7 @@ export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <div className="transition duration-400 ease-in-out -translate-y-1 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_10px_10px_-5px_rgba(0,0,0,0.02)] bg-white rounded-2xl border border-gray-100">
+        <div className="max-w-sm mx-auto transition duration-400 ease-in-out -translate-y-1 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_10px_10px_-5px_rgba(0,0,0,0.02)] bg-white rounded-2xl border border-gray-100">
           <div className="absolute -top-3 right-0 left-0 flex justify-center">
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-1 rounded-full font-medium text-sm shadow-md">
               {translate('page.home.pricing.trial')}
@@ -161,105 +180,50 @@ export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
             {translate('page.home.pricing.trial.description')}
           </div>
 
-          <div className="px-8 pt-8 pb-10 text-center border-b mt-4">
+          <div className="p-4 flex flex-col gap-4 text-center border-b">
             <div className="uppercase text-sm font-medium tracking-wider text-gray-500 mb-2">
               {translate('page.home.pricing.premium')}
             </div>
 
             <div className="flex items-center justify-center">
               <span className="text-5xl font-semibold">
-                {billingCycle === 'monthly' ? '12' : '9'}
+                {(offer[billingCycle]?.unit_amount ?? 0) / 100}
               </span>
 
               <span className="text-xl ml-1 font-medium">€</span>
+
               <span className="text-gray-500 ml-1">
                 /{translate('page.home.pricing.monthly')}
               </span>
             </div>
 
-            {billingCycle === 'annual' && (
-              <>
+            {billingCycle === 'year' && (
+              <div className="flex flex-col">
                 <div className="mt-2 text-sm text-gray-500">
                   {translate('page.home.pricing.annual.total').replace(
                     '{number}',
-                    '108'
+                    String(((offer.year?.unit_amount ?? 0) * 12) / 100)
                   )}
                 </div>
+
                 <div className="mt-1 text-sm font-medium text-green-600">
                   {translate('page.home.pricing.annual.discount').replace(
                     '{number}',
-                    '36'
+                    String(
+                      ((offer.month?.unit_amount ?? 0) * 12 -
+                        (offer.year?.unit_amount ?? 0) * 12) /
+                        100
+                    )
                   )}
                 </div>
-              </>
-            )}
-            <form
-              onSubmit={async e => {
-                e.preventDefault();
-
-                const form = new FormData(e.currentTarget);
-
-                startTransition(() => {
-                  onboard({
-                    subdomain: String(form.get('subdomain')),
-                    email: String(form.get('email'))
-                  }).then(data => {
-                    console.log({ data });
-
-                    setError(data.error || null);
-                  });
-                });
-              }}
-              className="mt-6 flex flex-col gap-4"
-            >
-              <div className="flex w-full max-w-md">
-                <input
-                  name="subdomain"
-                  type="text"
-                  placeholder={translate('page.home.pricing.start.placeholder')}
-                  autoCapitalize="off"
-                  autoComplete="off"
-                  pattern="[a-zA-Z0-9\-]+"
-                  maxLength={32}
-                  required
-                  className="w-full rounded-l-lg border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-none focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
-                  onChange={e => setSubdomain(e.target.value)}
-                  value={subdomain}
-                />
-                <div className="flex items-center rounded-r-lg border border-l-0 border-stone-200 bg-stone-100 px-3 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-stone-400">
-                  .{process.env.NEXT_PUBLIC_ROOT_DOMAIN}
-                </div>
               </div>
+            )}
 
-              {subdomain !== '' && (
-                <motion.div
-                  className="flex flex-col gap-2"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.3 }}
-                >
-                  <Input
-                    type="email"
-                    name="email"
-                    required
-                    placeholder={translate(
-                      'page.home.pricing.start.email.placeholder'
-                    )}
-                  />
-                </motion.div>
-              )}
-
-              {error && <div className="text-red-500 text-sm">{error}</div>}
-
-              <Button type="submit" disabled={isPending}>
-                {isPending ? (
-                  <LoadingDots color="#808080" />
-                ) : (
-                  translate('page.home.pricing.start')
-                )}
-              </Button>
-            </form>
+            <div className="p-3 rounded-md shadow-md border border-gray-100">
+              <Begin />
+            </div>
           </div>
+
           <div className="px-8 py-8">
             <div className="text-sm font-medium mb-4">
               {translate('page.home.pricing.included')}
@@ -277,6 +241,7 @@ export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
                   <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-green-300/20 to-green-500/20 mr-2 mt-0.5">
                     <Check size={12} className="text-green-600" />
                   </div>
+
                   <span className="text-sm text-gray-700">
                     {feature.label[lang]}
                   </span>

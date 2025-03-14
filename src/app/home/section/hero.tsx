@@ -4,13 +4,14 @@ import { LuCheck } from 'react-icons/lu';
 import { Button } from 'components/ui/button';
 import { translate } from 'helpers/translate';
 import { cn } from 'lib/utils';
+import { Begin } from './begin';
 import { Iphone } from './iphone';
 
 export const Hero = ({ bg = '06' }) => {
   return (
     <div
       id="Hero"
-      className="relative flex flex-col bg-[#ddd] p-10 sm:p-20 items-center justify-center overflow-hidden"
+      className="relative flex flex-col bg-[#ddd] p-5 sm:p-20 items-center justify-center overflow-hidden"
     >
       <video
         className="absolute top-0 right-0 left-0 object-cover w-full h-full"
@@ -58,10 +59,8 @@ export const Hero = ({ bg = '06' }) => {
                 </li>
               </ul>
 
-              <div>
-                <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
-                  <Button>{translate('page.home.hero.call-to-action')}</Button>
-                </Link>
+              <div className="bg-white rounded-md p-4 text-black max-w-sm shadow-md">
+                <Begin />
               </div>
             </div>
           </div>

@@ -1,9 +1,9 @@
+import { db } from 'helpers/db';
 import { getLang } from 'helpers/translate';
 import { Gallery } from './section/gallery';
 import { Header } from './section/header';
 import { Hero } from './section/hero';
 import { Price } from './section/price';
-import { Testimonial } from './section/testimonial';
 
 export default async function HomePage({
   searchParams
@@ -12,14 +12,22 @@ export default async function HomePage({
 }) {
   const lang = getLang();
 
+  const prices = await db.price.findMany({
+    where: {
+      product: {
+        active: true
+      }
+    }
+  });
+
   return (
     <div className="">
       <Header />
       <Hero bg={searchParams?.bg as string} />
       <Gallery />
       {/*<Features />*/}
-      <Price lang={lang} />
-      <Testimonial />
+      <Price lang={lang} prices={prices} />
+      {/* <Testimonial /> */}
     </div>
   );
 }
