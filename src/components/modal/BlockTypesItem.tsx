@@ -37,8 +37,9 @@ export const BlockTypesItem = ({
     { id: 'youtube', label: 'Youtube', type: 'external' },
     { id: 'tiktok', label: 'Tiktok', type: 'external' },
     { id: 'instagram', label: 'Instagram', type: 'external' },
-    { id: 'twitter', label: 'X', type: 'external' },
-    { id: 'facebook', label: 'Facebook', type: 'external' }
+    { id: 'facebook', label: 'Facebook', type: 'external' },
+    { id: 'soundcloud', label: 'Soundcloud', type: 'external' },
+    { id: 'twitter', label: 'X', type: 'external' }
   ];
 
   return (

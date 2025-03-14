@@ -16,6 +16,7 @@ import Shiny from 'components/blocks/button/shiny';
 import SlideFromLeft001 from 'components/blocks/button/slide-from-left-001';
 import Facebook from 'components/blocks/external/facebook';
 import Instagram from 'components/blocks/external/instagram';
+import Soundcloud from 'components/blocks/external/soundcloud';
 import Spotify from 'components/blocks/external/spotify';
 import Tiktok from 'components/blocks/external/tiktok';
 import Twitter from 'components/blocks/external/twitter';
@@ -53,8 +54,9 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     youtube: Youtube,
     tiktok: Tiktok,
     instagram: Instagram,
-    twitter: Twitter,
-    facebook: Facebook
+    facebook: Facebook,
+    soundcloud: Soundcloud,
+    twitter: Twitter
   }
 };
 
