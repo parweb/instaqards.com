@@ -41,10 +41,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     }
 
     const verificationToken = await generateVerificationToken(values.email);
-    await sendVerificationEmail(
-      values.email,
-      verificationToken.token
-    );
+    await sendVerificationEmail(values.email, verificationToken.token);
 
     return { success: translate('actions.settings.email.success') };
   }

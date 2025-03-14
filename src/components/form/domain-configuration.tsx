@@ -3,7 +3,7 @@
 import { AlertCircle, XCircle } from 'lucide-react';
 import { useState } from 'react';
 
-import { getSubdomain } from 'lib/domains';
+import { getSubdomain } from 'lib/utils';
 import { cn } from 'lib/utils';
 import { useDomainStatus } from './use-domain-status';
 

@@ -113,27 +113,6 @@ export const verifyDomain = async (
   ).then(res => res.json());
 };
 
-export const getSubdomain = (name: string, apexName: string) => {
-  if (name === apexName) return null;
-  return name.slice(0, name.length - apexName.length - 1);
-};
-
-export const getApexDomain = (url: string) => {
-  let domain: string;
-
-  try {
-    domain = new URL(url).hostname;
-  } catch (e) {
-    return '';
-  }
-  const parts = domain.split('.');
-  if (parts.length > 2) {
-    return parts.slice(-2).join('.');
-  }
-
-  return domain;
-};
-
 export const validDomainRegex = new RegExp(
   /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/
 );
