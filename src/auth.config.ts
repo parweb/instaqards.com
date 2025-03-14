@@ -1,3 +1,5 @@
+import 'server-only';
+
 import bcrypt from 'bcryptjs';
 import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
@@ -20,12 +22,16 @@ export const authRoutes = [
   '/register',
   '/error',
   '/reset',
-  '/new-password'
+  '/new-password',
+  '/email-in'
 ];
 
 export const DEFAULT_LOGIN_REDIRECT = '/';
 
 export default {
+  pages: {
+    verifyRequest: '/email-in'
+  },
   experimental: { enableWebAuthn: true },
   providers: [
     // Google({

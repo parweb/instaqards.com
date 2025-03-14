@@ -1,5 +1,7 @@
 'use server';
 
+import 'server-only';
+
 import { unstable_cache } from 'next/cache';
 
 export type Font = {

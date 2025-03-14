@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import { cn } from 'lib/utils';
 import { cookies } from 'next/headers';
 import { cal, inter, open } from 'styles/fonts';
-import { DEFAULT_LANG } from '../../translations';
+import { DEFAULT_LANG } from 'translations';
 import { Providers } from './providers';
 
 import 'styles/globals.css';

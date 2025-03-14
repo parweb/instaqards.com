@@ -10,7 +10,7 @@ import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import useTranslation from 'hooks/use-translation';
-import type { Lang } from '../../../../translations';
+import type { Lang } from 'translations';
 
 const features = [
   {
@@ -78,7 +78,7 @@ const features = [
   }
 ];
 
-const PricingSection: React.FC<{ lang: Lang }> = ({ lang }) => {
+export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
   const translate = useTranslation();
 
   const [isPending, startTransition] = useTransition();
@@ -246,14 +246,6 @@ const PricingSection: React.FC<{ lang: Lang }> = ({ lang }) => {
                       'page.home.pricing.start.email.placeholder'
                     )}
                   />
-                  {/* <Input
-                    type="password"
-                    name="password"
-                    required
-                    placeholder={translate(
-                      'page.home.pricing.start.password.placeholder'
-                    )}
-                  /> */}
                 </motion.div>
               )}
 
@@ -298,4 +290,57 @@ const PricingSection: React.FC<{ lang: Lang }> = ({ lang }) => {
   );
 };
 
-export default PricingSection;
+// const Prices = async () => {
+//   const products = await db.product.findMany({
+//     where: { active: { equals: true } },
+//     include: {
+//       prices: {
+//         where: { active: { equals: true }, interval_count: { equals: 1 } }
+//       }
+//     }
+//   });
+
+//   return (
+//     <div
+//       id="Prices"
+//       className="flex flex-col p-10 gap-20 overflow-hidden max-w-[1200px] justify-center items-center justify-self-center"
+//     >
+//       <hgroup className="text-center flex flex-col gap-4">
+//         <h2 className="text-4xl sm:text-5xl font-[900]">
+//           {translate('page.home.price.title')}
+//         </h2>
+//         <p className="text-gray-600 text-2xl">
+//           {translate('page.home.price.description')}
+//         </p>
+//       </hgroup>
+
+//       <section className="text-center p-4 border-2 border-green-500 bg-green-50 rounded-lg max-w-[1200px] text-green-900">
+//         <div className="flex flex-col gap-2">
+//           <div className="font-bold text-2xl">
+//             {translate('page.home.price.trial.primary')}
+//           </div>
+
+//           <div className="text-xl flex items-center gap-6">
+//             <div className="flex items-center">
+//               <LuArrowBigDown />
+//               <LuArrowBigDown />
+//               <LuArrowBigDown />
+//             </div>
+
+//             {translate('page.home.price.trial.secondary')}
+
+//             <div className="flex items-center">
+//               <LuArrowBigDown />
+//               <LuArrowBigDown />
+//               <LuArrowBigDown />
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       <div className="flex items-center justify-center">
+//         <PriceTable products={products} className="flex-col sm:flex-row" />
+//       </div>
+//     </div>
+//   );
+// };

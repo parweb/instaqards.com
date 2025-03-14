@@ -1,0 +1,76 @@
+import Link from 'next/link';
+import { LuCheck } from 'react-icons/lu';
+
+import { Button } from 'components/ui/button';
+import { translate } from 'helpers/translate';
+import { cn } from 'lib/utils';
+import { Iphone } from './iphone';
+
+export const Hero = ({ bg = '06' }) => {
+  return (
+    <div
+      id="Hero"
+      className="relative flex flex-col bg-[#ddd] p-10 sm:p-20 items-center justify-center overflow-hidden"
+    >
+      <video
+        className="absolute top-0 right-0 left-0 object-cover w-full h-full"
+        preload="auto"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source
+          src={`/api/file?id=landing-background-video-${bg}.mp4`}
+          type="video/mp4"
+        />
+      </video>
+
+      <div className="z-10">
+        <div className="flex gap-10 max-w-[900px] items-center flex-col md:flex-row">
+          <div className="flex items-center justify-center">
+            <div className="flex flex-col gap-5 text-white p-4 rounded-md">
+              <div className={cn('text-4xl sm:text-7xl font-[900] b')}>
+                {translate('page.home.hero.title')}
+              </div>
+
+              <div className="text-2xl">
+                {translate('page.home.hero.description')}
+              </div>
+
+              <ul className="">
+                <li className="flex gap-2">
+                  <LuCheck />
+
+                  <span>{translate('page.home.hero.bullet.one')}</span>
+                </li>
+
+                <li className="flex gap-2">
+                  <LuCheck />
+
+                  <span>{translate('page.home.hero.bullet.two')}</span>
+                </li>
+
+                <li className="flex gap-2">
+                  <LuCheck />
+
+                  <span>{translate('page.home.hero.bullet.three')}</span>
+                </li>
+              </ul>
+
+              <div>
+                <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
+                  <Button>{translate('page.home.hero.call-to-action')}</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden md:block">
+            <Iphone url="https://gellyx.qards.link/" scale={20} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

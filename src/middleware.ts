@@ -94,7 +94,6 @@ export default async function middleware(req: NextRequest) {
     hostname?.includes(':11000') ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
-    console.log(`/home${path === '/' ? '' : path}`, req.url);
     return NextResponse.rewrite(
       new URL(`/home${path === '/' ? '' : path}`, req.url)
     );

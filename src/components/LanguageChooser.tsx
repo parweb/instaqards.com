@@ -1,7 +1,7 @@
 'use client';
 
 import useTranslation from 'hooks/use-translation';
-import type { Lang } from '../../translations';
+import type { Lang } from 'translations';
 
 import {
   Select,

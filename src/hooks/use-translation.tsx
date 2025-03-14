@@ -1,11 +1,7 @@
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 
-import translations, {
-  DEFAULT_LANG,
-  type Lang,
-  type Part
-} from '../../translations';
+import translations, { DEFAULT_LANG, type Lang, type Part } from 'translations';
 
 const useTranslation = () => {
   const [lang, setLang] = useState(

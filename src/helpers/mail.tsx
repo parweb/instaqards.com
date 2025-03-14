@@ -7,7 +7,7 @@ import ConfirmAccountEmail from '../../emails/confirm-account';
 import MagicLinkEmail from '../../emails/magic-link';
 import ResetPasswordEmail from '../../emails/reset-password';
 import TwoFactorTokenEmail from '../../emails/two-factor-token';
-import { DEFAULT_LANG, type Lang } from '../../translations';
+import { DEFAULT_LANG, type Lang } from 'translations';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

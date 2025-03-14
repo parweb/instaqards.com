@@ -1,10 +1,6 @@
 import { cookies } from 'next/headers';
 
-import translations, {
-  DEFAULT_LANG,
-  type Lang,
-  type Part
-} from '../../translations';
+import translations, { DEFAULT_LANG, type Lang, type Part } from 'translations';
 
 export const getLang = (): Lang => {
   let lang = (cookies().get('lang')?.value || DEFAULT_LANG) as Lang;

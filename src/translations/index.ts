@@ -1,4 +1,10 @@
 const translations = {
+  'auth.return.home': {
+    fr: "Retour à la page d'accueil",
+    en: 'Back to home',
+    it: 'Ritorna alla pagina iniziale',
+    es: 'Volver a la página de inicio'
+  },
   'actions.admin.success': {
     fr: 'Action serveur authorisez!',
     en: 'Allowed Server Action!',
@@ -675,7 +681,7 @@ const translations = {
     fr: 'Profitez de toutes les fonctionnalités avec notre forfait unique,',
     en: 'Enjoy all features with our unique offer,',
     it: 'Godi di tutte le funzionalità con il nostro forfait unico,',
-    es: 'Disfruta de todas las funciones con nuestro único plan,',
+    es: 'Disfruta de todas las funciones con nuestro único plan,'
   },
   'page.home.pricing.header.description.two': {
     fr: 'disponible en paiement mensuel ou annuel.',
@@ -697,15 +703,15 @@ const translations = {
   },
   'page.home.pricing.trial': {
     fr: "30 jours d'essai gratuit",
-    en: "30 days free trial",
-    it: "30 giorni di prova gratuito",
-    es: "30 días de prueba gratis"
+    en: '30 days free trial',
+    it: '30 giorni di prova gratuito',
+    es: '30 días de prueba gratis'
   },
   'page.home.pricing.trial.description': {
-    fr: "Aucune carte de crédit nécessaire",
-    en: "No credit card required",
-    it: "Nessuna carta di credito richiesta",
-    es: "No se requiere tarjeta de crédito"
+    fr: 'Aucune carte de crédit nécessaire',
+    en: 'No credit card required',
+    it: 'Nessuna carta di credito richiesta',
+    es: 'No se requiere tarjeta de crédito'
   },
   'page.home.pricing.premium': {
     fr: 'Premium',
@@ -784,6 +790,30 @@ const translations = {
     en: 'Method Not Allowed',
     it: 'Metodo non consentito',
     es: 'Método no permitido'
+  },
+  'page.auth.email-in.title': {
+    fr: 'Vérifiez votre boîte mail',
+    en: 'Check your inbox',
+    it: 'Verifica la tua email',
+    es: 'Verifica tu correo electrónico'
+  },
+  'page.auth.email-in.description': {
+    fr: 'Nous avons envoyé un lien de vérification à votre adresse email.',
+    en: 'We have sent a verification link to your email address.',
+    it: 'Abbiamo inviato un link di verifica al tuo indirizzo email.',
+    es: 'Hemos enviado un enlace de verificación a tu dirección de correo electrónico.'
+  },
+  'page.auth.email-in.alert': {
+    fr: "Veuillez cliquer sur le lien dans l'email pour compléter la vérification de votre compte. Si vous ne voyez pas l'email, vérifiez votre dossier spam.",
+    en: "Please click on the link in the email to complete your account verification. If you don't see the email, check your spam folder.",
+    it: "Per favore clicca sul link nell'email per completare la verifica del tuo account. Se non vedi l'email, controlla la cartella spam.",
+    es: 'Por favor, haga clic en el enlace en el correo electrónico para completar la verificación de su cuenta. Si no ve el correo electrónico, compruebe su carpeta de spam.'
+  },
+  'page.auth.email-in.resend': {
+    fr: 'Renvoyer le lien de vérification',
+    en: 'Resend verification email',
+    it: 'Renviare il link di verifica',
+    es: 'Reenviar el enlace de verificación'
   }
 } as const;
 

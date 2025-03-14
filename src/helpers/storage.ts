@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { Upload } from '@aws-sdk/lib-storage';
 import type { StreamingBlobPayloadInputTypes } from '@smithy/types';
 import { contentType } from 'mime-types';
