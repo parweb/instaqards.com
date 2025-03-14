@@ -27,6 +27,7 @@ import Picture169 from 'components/blocks/picture/picture-16-9';
 import NormalText from 'components/blocks/text/normal';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
+import AppleMusic from 'components/blocks/external/apple-music';
 
 const blocks: Record<string, Record<string, React.ComponentType>> = {
   button: {
@@ -56,7 +57,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     instagram: Instagram,
     facebook: Facebook,
     soundcloud: Soundcloud,
-    twitter: Twitter
+    twitter: Twitter,
+    'apple-music': AppleMusic
   }
 };
 

@@ -1,19 +1,19 @@
 import * as z from 'zod';
 
 export const input = z.object({
-  url: z.string().url().describe('Album URL')
+  url: z.string().url().describe('Track/Album URL')
 });
 
 export default function Spotify({
   url = 'https://open.spotify.com/intl-fr/album/2cWBwpqMsDJC1ZUwz813lo'
 }: Partial<z.infer<typeof input>>) {
-  const albumId = url.split('/').pop();
+  const uri = url.split('/').slice(-2).join('/');
 
   return (
     <iframe
       title="Spotify"
       style={{ borderRadius: '12px' }}
-      src={`https://open.spotify.com/embed/album/${albumId}`}
+      src={`https://open.spotify.com/embed/${uri}`}
       width="100%"
       height="352"
       frameBorder="0"
