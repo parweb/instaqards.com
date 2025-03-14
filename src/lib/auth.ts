@@ -25,10 +25,7 @@ export class Subscription {
   private user: User | null = null;
 
   constructor(subscription: SubscriptionBase | null, user: User | null) {
-    console.log('constructor', { subscription, user });
-
     for (const [key, value] of Object.entries(subscription || {})) {
-      console.log({ key });
       // @ts-ignore
       this[key] = value;
     }
@@ -114,8 +111,6 @@ type Option = {
 };
 
 export async function getSubscription(option?: Option) {
-  console.log({ option });
-
   if (option?.site) {
     const subscription = await db.subscription.findFirst({
       include: { price: { include: { product: true } } },
@@ -127,10 +122,10 @@ export async function getSubscription(option?: Option) {
 
     const user = option.site.userId
       ? await db.user.findUnique({
-        where: {
-          id: option.site.userId
-        }
-      })
+          where: {
+            id: option.site.userId
+          }
+        })
       : null;
 
     return new Subscription(subscription, user);
@@ -142,16 +137,6 @@ export async function getSubscription(option?: Option) {
     throw new Error('Your are not logged in');
   }
 
-  console.log({
-    user: session.user.id
-      ? await db.user.findUnique({
-        where: {
-          id: session.user.id
-        }
-      })
-      : null
-  });
-
   return new Subscription(
     await db.subscription.findFirst({
       include: { price: { include: { product: true } } },
@@ -162,10 +147,10 @@ export async function getSubscription(option?: Option) {
     }),
     session.user.id
       ? await db.user.findUnique({
-        where: {
-          id: session.user.id
-        }
-      })
+          where: {
+            id: session.user.id
+          }
+        })
       : null
   );
 }
