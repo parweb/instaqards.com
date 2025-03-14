@@ -23,6 +23,18 @@ const translations = {
     reset_text: 'Clickez ici pour changez votre email',
     message_not_my_action:
       "Si vous n'avez pas tenté de réinitialiser votre mot de passe, vous pouvez ignorer cet e-mail en toute sécurité."
+  },
+  it: {
+    title: 'Cambia la tua password',
+    reset_text: 'Clicca qui per cambiare la tua password',
+    message_not_my_action:
+      'Se non hai provato a fare il login, puoi ignorare questo e-mail in modo sicuro.'
+  },
+  es: {
+    title: 'Cambia tu contraseña',
+    reset_text: 'Haz clic aquí para cambiar tu contraseña',
+    message_not_my_action:
+      'Si no has intentado hacer el inicio de sesión, puedes ignorar este correo electrónico en modo seguro.'
   }
 };
 

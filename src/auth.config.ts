@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-// import Resend from 'next-auth/providers/resend';
+import Resend from 'next-auth/providers/resend';
 // import Github from 'next-auth/providers/github';
 // import Google from 'next-auth/providers/google';
 // import Tiktok from '@auth/core/providers/tiktok';
@@ -9,6 +9,7 @@ import Credentials from 'next-auth/providers/credentials';
 import { getUserByEmail } from 'data/user';
 import { LoginSchema } from 'schemas';
 import { getVerificationTokenByEmail } from 'data/verificiation-token';
+import { sendMagicLinkEmail } from 'helpers/mail';
 
 export const apiAuthPrefix = '/api/auth';
 
@@ -25,6 +26,7 @@ export const authRoutes = [
 export const DEFAULT_LOGIN_REDIRECT = '/';
 
 export default {
+  experimental: { enableWebAuthn: true },
   providers: [
     // Google({
     //   clientId: process.env.GOOGLE_CLIENT_ID,
@@ -59,7 +61,18 @@ export default {
 
         return null;
       }
+    }),
+    Resend({
+      apiKey: process.env.RESEND_API_KEY,
+      from: 'contact@qards.link',
+      async sendVerificationRequest({ identifier, url }) {
+        try {
+          await sendMagicLinkEmail(identifier, url);
+        } catch (error) {
+          console.error('Resend::sendVerificationRequest', { error });
+          throw error;
+        }
+      }
     })
-    // ,Resend
   ]
 } satisfies NextAuthConfig;

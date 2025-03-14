@@ -13,33 +13,33 @@ import * as React from 'react';
 
 const translations = {
   en: {
-    title: 'Confirm your email',
-    confirm_text: 'Click here to confirm your email',
+    title: 'Activate your account',
+    magic_link_text: 'Click here to activate your account',
     message_not_my_action:
       "If you didn't try to create an account, you can safely ignore this email."
   },
   fr: {
-    title: 'Confirmez votre email',
-    confirm_text: 'Clickez ici pour confirmer votre email',
+    title: 'Activez votre compte',
+    magic_link_text: 'Clickez ici pour activer votre compte',
     message_not_my_action:
       "Si vous n'avez pas tenté de créer un compte, vous pouvez ignorer cet email en toute sécurité."
   },
   it: {
-    title: 'Conferma il tuo indirizzo email',
-    confirm_text: 'Clicca qui per confermare il tuo indirizzo email',
+    title: 'Attiva il tuo account',
+    magic_link_text: 'Clicca qui per attivare il tuo account',
     message_not_my_action:
       'Se non hai provato a fare il login, puoi ignorare questo e-mail in modo sicuro.'
   },
   es: {
-    title: 'Confirma tu correo electrónico',
-    confirm_text: 'Haz clic aquí para confirmar tu correo electrónico',
+    title: 'Activa tu cuenta',
+    magic_link_text: 'Haz clic aquí para activar tu cuenta',
     message_not_my_action:
       'Si no has intentado hacer el inicio de sesión, puedes ignorar este correo electrónico en modo seguro.'
   }
 };
 
-interface ConfirmAccountProps {
-  confirmLink?: string;
+interface MagicLinkProps {
+  magicLink?: string;
   lang: keyof typeof translations;
 }
 
@@ -47,10 +47,7 @@ const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const ConfirmAccount = ({
-  confirmLink,
-  lang = 'en'
-}: ConfirmAccountProps) => {
+export const MagicLink = ({ magicLink, lang = 'en' }: MagicLinkProps) => {
   return (
     <Html>
       <Head />
@@ -62,7 +59,7 @@ export const ConfirmAccount = ({
           <Heading style={h1}>{translations[lang].title}</Heading>
 
           <Link
-            href={confirmLink}
+            href={magicLink}
             target="_blank"
             style={{
               ...link,
@@ -70,7 +67,7 @@ export const ConfirmAccount = ({
               marginBottom: '16px'
             }}
           >
-            {translations[lang].confirm_text}
+            {translations[lang].magic_link_text}
           </Link>
 
           <Text
@@ -106,11 +103,11 @@ export const ConfirmAccount = ({
   );
 };
 
-ConfirmAccount.PreviewProps = {
-  confirmLink: 'sparo-ndigo-amurt-secan'
-} as ConfirmAccountProps;
+MagicLink.PreviewProps = {
+  magicLink: 'sparo-ndigo-amurt-secan'
+} as MagicLinkProps;
 
-export default ConfirmAccount;
+export default MagicLink;
 
 const main = {
   backgroundColor: '#ffffff'

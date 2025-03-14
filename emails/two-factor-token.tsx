@@ -25,6 +25,20 @@ const translations = {
     activation_text: "Voici votre code d'activation:",
     message_not_my_action:
       "Si vous n'avez pas tenté de vous connecter, vous pouvez ignorer cet e-mail en toute sécurité."
+  },
+  it: {
+    preview_text: '2FA Code',
+    title: 'Login',
+    activation_text: 'Ecco il tuo codice di attivazione:',
+    message_not_my_action:
+      'Se non hai provato a fare il login, puoi ignorare questo e-mail in modo sicuro.'
+  },
+  es: {
+    preview_text: '2FA Code',
+    title: 'Login',
+    activation_text: 'Aquí está tu código de activación:',
+    message_not_my_action:
+      'Si no has intentado hacer el inicio de sesión, puedes ignorar este correo electrónico en modo seguro.'
   }
 };
 

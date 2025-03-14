@@ -11,7 +11,10 @@ export const config = {
   matcher: ['/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)']
 };
 
-const { auth } = NextAuth(authConfig);
+const { auth } = NextAuth({
+  ...authConfig,
+  providers: authConfig.providers.filter(provider => provider.id !== 'resend')
+});
 
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -31,15 +34,11 @@ export default async function middleware(req: NextRequest) {
     hostname?.includes('---') &&
     hostname?.endsWith(`.${process.env.NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX}`)
   ) {
-    hostname = `${hostname.split('---')[0]}.${
-      process.env.NEXT_PUBLIC_ROOT_DOMAIN
-    }`;
+    hostname = `${hostname.split('---')[0]}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
   }
 
   const searchParams = req.nextUrl.searchParams.toString();
-  const path = `${url.pathname}${
-    searchParams.length > 0 ? `?${searchParams}` : ''
-  }`;
+  const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
 
   if (url.searchParams.has('r')) {
     const referer = url.searchParams.get('r');
@@ -75,8 +74,10 @@ export default async function middleware(req: NextRequest) {
 
     const session = await auth();
 
-    if (!!session === false && isPublicRoute === false) {
-      console.log('redirecting to login');
+    if (
+      (!!session === false || !session || !session?.user) &&
+      isPublicRoute === false
+    ) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 

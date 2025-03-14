@@ -34,9 +34,7 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   }
 
   try {
-    await signIn('resend', {
-      email
-    });
+    await signIn('resend', { email });
 
     return { success: true };
   } catch (error) {

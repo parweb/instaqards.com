@@ -246,14 +246,14 @@ const PricingSection: React.FC<{ lang: Lang }> = ({ lang }) => {
                       'page.home.pricing.start.email.placeholder'
                     )}
                   />
-                  <Input
+                  {/* <Input
                     type="password"
                     name="password"
                     required
                     placeholder={translate(
                       'page.home.pricing.start.password.placeholder'
                     )}
-                  />
+                  /> */}
                 </motion.div>
               )}
 

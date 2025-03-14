@@ -1,9 +1,12 @@
-import { Resend } from 'resend';
-import { cookies } from 'next/headers';
+import 'server-only';
 
-import TwoFactorTokenEmail from '../../emails/two-factor-token';
-import ResetPasswordEmail from '../../emails/reset-password';
+import { cookies } from 'next/headers';
+import { Resend } from 'resend';
+
 import ConfirmAccountEmail from '../../emails/confirm-account';
+import MagicLinkEmail from '../../emails/magic-link';
+import ResetPasswordEmail from '../../emails/reset-password';
+import TwoFactorTokenEmail from '../../emails/two-factor-token';
 import { DEFAULT_LANG, type Lang } from '../../translations';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -21,7 +24,14 @@ const getLang = () => {
       lang = 'en';
       break;
     case lang.toLowerCase().includes('us'):
+    case lang.toLowerCase().includes('gb'):
       lang = 'en';
+      break;
+    case lang.toLowerCase().includes('it'):
+      lang = 'it';
+      break;
+    case lang.toLowerCase().includes('es'):
+      lang = 'es';
       break;
     default:
       lang = 'en';
@@ -59,5 +69,14 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     to: email,
     subject: 'Confirm your email',
     react: <ConfirmAccountEmail lang={getLang()} confirmLink={confirmLink} />
+  });
+};
+
+export const sendMagicLinkEmail = async (email: string, magicLink: string) => {
+  await resend.emails.send({
+    from: 'contact@qards.link',
+    to: email,
+    subject: 'Activate your account',
+    react: <MagicLinkEmail lang={getLang()} magicLink={magicLink} />
   });
 };
