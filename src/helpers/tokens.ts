@@ -70,7 +70,7 @@ export const generateVerificationToken = async (email: string) => {
 
   const verficationToken = await db.verificationToken.create({
     data: {
-      email,
+      identifier: email,
       token,
       expires
     }

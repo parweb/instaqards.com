@@ -1,7 +1,7 @@
 'use server';
 
 import { signIn } from 'auth';
-import { DEFAULT_LOGIN_REDIRECT } from 'auth.config';
+import { DEFAULT_LOGIN_REDIRECT } from 'settings';
 import { getUserByEmail } from 'data/user';
 import { getVerificationTokenByToken } from 'data/verificiation-token';
 import { db } from 'helpers/db';
@@ -20,7 +20,11 @@ export const newVerification = async (token: string) => {
     return { error: translate('actions.new-verification.token.expire') };
   }
 
-  const existingUser = await getUserByEmail(existingToken.email);
+  if (existingToken.identifier === null) {
+    return { error: translate('actions.new-verification.email.error') };
+  }
+
+  const existingUser = await getUserByEmail(existingToken.identifier);
 
   if (!existingUser) {
     return { error: translate('actions.new-verification.email.error') };
@@ -30,12 +34,12 @@ export const newVerification = async (token: string) => {
     where: { id: existingUser.id },
     data: {
       emailVerified: new Date(),
-      email: existingToken.email
+      email: existingToken.identifier
     }
   });
 
   await signIn('credentials', {
-    email: existingToken.email,
+    email: existingToken.identifier,
     password: existingToken.id,
     redirectTo: DEFAULT_LOGIN_REDIRECT
   });

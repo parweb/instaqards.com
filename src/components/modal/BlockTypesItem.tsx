@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+
 import { BlockTypesItemVariants } from './BlockTypesItemVariants';
 
 export const BlockTypesItem = ({
@@ -11,8 +11,6 @@ export const BlockTypesItem = ({
   type: 'button' | 'picture' | 'text' | 'external';
   onClick: (data: { type: string; id: string }) => void;
 }) => {
-  const [selected, setSelected] = useState(0);
-
   const variants: {
     id: string;
     label: string;

@@ -42,7 +42,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
     const verificationToken = await generateVerificationToken(values.email);
     await sendVerificationEmail(
-      verificationToken.email,
+      values.email,
       verificationToken.token
     );
 

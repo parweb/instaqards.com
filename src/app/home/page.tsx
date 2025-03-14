@@ -15,15 +15,10 @@ export default async function HomePage({
   return (
     <div className="">
       <Header />
-
       <Hero bg={searchParams?.bg as string} />
-
       <Gallery />
-
       {/*<Features />*/}
-
       <Price lang={lang} />
-
       <Testimonial />
     </div>
   );

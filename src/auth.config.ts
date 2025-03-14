@@ -13,24 +13,11 @@ import { LoginSchema } from 'schemas';
 import { getVerificationTokenByEmail } from 'data/verificiation-token';
 import { sendMagicLinkEmail } from 'helpers/mail';
 
-export const apiAuthPrefix = '/api/auth';
-
-export const publicRoutes = ['/new-verification', '/onboard', '/test'];
-
-export const authRoutes = [
-  '/login',
-  '/register',
-  '/error',
-  '/reset',
-  '/new-password',
-  '/email-in'
-];
-
-export const DEFAULT_LOGIN_REDIRECT = '/';
-
 export default {
   pages: {
-    verifyRequest: '/email-in'
+    verifyRequest: '/email-in',
+    signIn: '/login',
+    error: '/error'
   },
   experimental: { enableWebAuthn: true },
   providers: [

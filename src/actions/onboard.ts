@@ -2,13 +2,12 @@
 
 import type * as z from 'zod';
 
-import { db } from 'helpers/db';
-import { OnboardSchema } from 'schemas';
-import { translate } from 'helpers/translate';
-import { getUserByEmail } from 'data/user';
-import { generateVerificationToken } from 'helpers/tokens';
 import { signIn } from 'auth';
+import { getUserByEmail } from 'data/user';
+import { db } from 'helpers/db';
+import { translate } from 'helpers/translate';
 import { AuthError } from 'next-auth';
+import { OnboardSchema } from 'schemas';
 
 export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   const validatedFields = OnboardSchema.safeParse(values);

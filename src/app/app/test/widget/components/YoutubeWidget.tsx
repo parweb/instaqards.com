@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useState } from 'react';
 
 export const YoutubeWidget = ({ videoId }: { videoId: string }) => {
   const [playing, setPlaying] = useState(false);

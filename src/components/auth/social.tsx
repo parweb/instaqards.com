@@ -6,7 +6,7 @@ import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 
 import { Button } from 'components/ui/button';
-import { DEFAULT_LOGIN_REDIRECT } from 'auth.config';
+import { DEFAULT_LOGIN_REDIRECT } from 'settings';
 
 export const Social = () => {
   const searchParams = useSearchParams();

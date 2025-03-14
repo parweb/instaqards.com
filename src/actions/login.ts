@@ -9,13 +9,14 @@ import { getTwoFactorTokenByEmail } from 'data/two-factor-token';
 import { getUserByEmail } from 'data/user';
 import { db } from 'helpers/db';
 import { sendTwoFactorTokenEmail, sendVerificationEmail } from 'helpers/mail';
+import { translate } from 'helpers/translate';
+import { LoginSchema } from 'schemas';
+import { DEFAULT_LOGIN_REDIRECT } from 'settings';
+
 import {
   generateTwoFactorToken,
   generateVerificationToken
 } from 'helpers/tokens';
-import { LoginSchema } from 'schemas';
-import { DEFAULT_LOGIN_REDIRECT } from 'auth.config';
-import { translate } from 'helpers/translate';
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
@@ -40,10 +41,7 @@ export const login = async (
       existingUser.email
     );
 
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token
-    );
+    await sendVerificationEmail(existingUser.email, verificationToken.token);
 
     return { success: translate('actions.login.validation.form.success') };
   }

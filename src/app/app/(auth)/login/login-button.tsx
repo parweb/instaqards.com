@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
-import { DEFAULT_LOGIN_REDIRECT } from 'auth.config';
+import { DEFAULT_LOGIN_REDIRECT } from 'settings';
 
 export default function LoginButton({
   provider

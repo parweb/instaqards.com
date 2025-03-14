@@ -57,7 +57,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   console.log({ verificationToken });
 
   await sendVerificationEmail(
-    verificationToken.email,
+    email,
     verificationToken.token
   ).catch(console.error);
 

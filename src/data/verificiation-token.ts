@@ -23,7 +23,7 @@ export const getVerificationTokenByEmail = async (email: string) => {
     });
 
     const verificationToken = await db.verificationToken.findFirst({
-      where: { email }
+      where: { identifier: email }
     });
 
     return verificationToken;

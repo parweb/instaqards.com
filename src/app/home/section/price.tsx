@@ -133,7 +133,7 @@ export const Price: React.FC<{ lang: Lang }> = ({ lang }) => {
           </button>
 
           <div
-            className="absolute top-1 left-1 h-[calc(100%-8px)] w-40 rounded-full bg-white shadow-sm transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            className="absolute top-1 left-1 h-[calc(100%-8px)] w-40 rounded-full bg-white shadow-sm transition-transform duration-400 ease-&lsqb;cubic-bezier(0.16,1,0.3,1)&rsqb;"
             style={{
               transform:
                 billingCycle === 'monthly'

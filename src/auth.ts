@@ -15,10 +15,6 @@ export const {
   signOut,
   unstable_update: update
 } = NextAuth({
-  pages: {
-    signIn: '/login',
-    error: '/error'
-  },
   events: {
     async linkAccount(data) {
       // @ts-ignore

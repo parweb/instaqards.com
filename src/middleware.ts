@@ -1,11 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 
-import authConfig, {
-  apiAuthPrefix,
-  authRoutes,
-  publicRoutes
-} from 'auth.config';
+import authConfig from 'auth.config';
+import { apiAuthPrefix, authRoutes, publicRoutes } from 'settings';
 
 export const config = {
   matcher: ['/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)']
