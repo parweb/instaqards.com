@@ -5,7 +5,7 @@ import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
 
-import { register } from 'actions';
+import { register } from 'actions/register';
 import { CardWrapper } from 'components/auth/card-wrapper';
 import { FormError } from 'components/form-error';
 import { FormSuccess } from 'components/form-success';
