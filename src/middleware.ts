@@ -5,7 +5,7 @@ import authConfig from 'auth.config';
 import { apiAuthPrefix, authRoutes, publicRoutes } from 'settings';
 
 export const config = {
-  matcher: ['/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)']
+  matcher: ['/((?!api/|_next/|assets|_static/|_vercel|[\\w-]+\\.\\w+).*)']
 };
 
 const { auth } = NextAuth({

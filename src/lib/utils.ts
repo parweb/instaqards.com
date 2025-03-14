@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import countries from 'world-countries';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -124,4 +125,12 @@ export const generateCssProperties = (styleObj?: StyleProperties) => {
 export const getSubdomain = (name: string, apexName: string) => {
   if (name === apexName) return null;
   return name.slice(0, name.length - apexName.length - 1);
+};
+
+export const getAlphaTwoCode = (code: string) => {
+  const uc = String(code).toUpperCase();
+  const country = countries.find(
+    c => c.cca2 === uc || c.ccn3 === uc || c.cca3 === uc
+  );
+  return country?.cca2 || code;
 };

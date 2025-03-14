@@ -1,12 +1,12 @@
 'use client';
 
-import type { ComponentType, RefObject } from 'react';
-import { useRef, useState } from 'react';
+import type { RefObject } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import { useFormState } from 'react-dom';
-import Flag from 'react-world-flags';
 import { useOnClickOutside } from 'usehooks-ts';
 
 import { setLang } from 'actions/lang-chooser';
+import { getAlphaTwoCode } from 'lib/utils';
 import { LuLoader } from 'react-icons/lu';
 
 interface FlagProps {
@@ -16,7 +16,31 @@ interface FlagProps {
   className?: string;
 }
 
-const FlagComponent = Flag as ComponentType<FlagProps>;
+const Flag = ({ code, ...rest }: FlagProps) => {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      alt={getAlphaTwoCode(code)}
+      src={`/assets/flags/${getAlphaTwoCode(code)}.svg`}
+      height={rest.height}
+      width={rest.width}
+      className={rest.className}
+    />
+  );
+};
+
+const FlagComponent = (props: FlagProps) => {
+  return (
+    <Suspense fallback={null}>
+      <Flag
+        code={props.code}
+        height={props.height}
+        width={props.width}
+        className={props.className}
+      />
+    </Suspense>
+  );
+};
 
 const lang2flag = (lang: string) => {
   const mapping: Record<string, string> = {
