@@ -1,4 +1,4 @@
-import type { Prisma, Site } from '@prisma/client';
+import type { Prisma, Site, User } from '@prisma/client';
 import { SubscriptionStatus } from '@prisma/client';
 
 import { auth } from 'auth';
@@ -22,13 +22,18 @@ type SubscriptionBase = Prisma.SubscriptionGetPayload<{
 }>;
 
 export class Subscription {
-  constructor(subscription: SubscriptionBase | null) {
-    if (subscription === null) return;
+  private user: User | null = null;
 
-    for (const [key, value] of Object.entries(subscription)) {
+  constructor(subscription: SubscriptionBase | null, user: User | null) {
+    console.log('constructor', { subscription, user });
+
+    for (const [key, value] of Object.entries(subscription || {})) {
+      console.log({ key });
       // @ts-ignore
       this[key] = value;
     }
+
+    this.user = user;
   }
 
   valid(): boolean {
@@ -60,14 +65,26 @@ export class Subscription {
     );
   }
 
+  customerSinceDays(): number {
+    const createdAt = this.user?.createdAt
+      ? new Date(this.user.createdAt)
+      : new Date(Date.now() + 31 * 24 * 60 * 60 * 1000);
+    const now = new Date();
+    const diffTime = now.getTime() - createdAt.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
   hasTrial(): boolean {
     // @ts-ignore
-    return !(this.trial_end === this.trial_start);
+    return !(this.trial_end === this.trial_start) || this.customerSinceDays() < 30;
   }
 
   onTrial(): boolean {
-    // @ts-ignore
-    return this.hasTrial() && this.trial_end && isFuture(this.trial_end);
+    return (
+      // @ts-ignore
+      (this.hasTrial() && this.trial_end && isFuture(this.trial_end)) ||
+      this.customerSinceDays() < 30
+    );
   }
 
   hasExpiredTrial(): boolean {
@@ -95,16 +112,26 @@ type Option = {
 };
 
 export async function getSubscription(option?: Option) {
+  console.log({ option });
+
   if (option?.site) {
-    return new Subscription(
-      await db.subscription.findFirst({
-        include: { price: { include: { product: true } } },
+    const subscription = await db.subscription.findFirst({
+      include: { price: { include: { product: true } } },
+      where: {
+        user: { sites: { some: { id: option?.site?.id } } },
+        status: { in: ['trialing', 'active'] }
+      }
+    });
+
+    const user = option.site.userId
+      ? await db.user.findUnique({
         where: {
-          user: { sites: { some: { id: option?.site?.id } } },
-          status: { in: ['trialing', 'active'] }
+          id: option.site.userId
         }
       })
-    );
+      : null;
+
+    return new Subscription(subscription, user);
   }
 
   const session = await getSession();
@@ -113,6 +140,16 @@ export async function getSubscription(option?: Option) {
     throw new Error('Your are not logged in');
   }
 
+  console.log({
+    user: session.user.id
+      ? await db.user.findUnique({
+        where: {
+          id: session.user.id
+        }
+      })
+      : null
+  });
+
   return new Subscription(
     await db.subscription.findFirst({
       include: { price: { include: { product: true } } },
@@ -120,7 +157,14 @@ export async function getSubscription(option?: Option) {
         user: { id: session.user.id },
         status: { in: ['trialing', 'active'] }
       }
-    })
+    }),
+    session.user.id
+      ? await db.user.findUnique({
+        where: {
+          id: session.user.id
+        }
+      })
+      : null
   );
 }
 

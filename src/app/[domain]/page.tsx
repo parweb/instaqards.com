@@ -1,4 +1,5 @@
 import type { Block } from '@prisma/client';
+import { contentType } from 'mime-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -10,7 +11,6 @@ import { getSiteData } from 'lib/fetchers';
 import { BlockList } from './client';
 
 import 'array-grouping-polyfill';
-import { contentType } from 'mime-types';
 
 export default async function SiteHomePage({
   params

@@ -33,11 +33,7 @@ export async function POST(req: Request) {
         mode: 'subscription',
         allow_promotion_codes: true,
         payment_method_collection: 'if_required',
-        subscription_data: {
-          trial_period_days: 30,
-          trial_settings: { end_behavior: { missing_payment_method: 'pause' } },
-          metadata
-        },
+        subscription_data: { metadata },
         success_url: `${getURL()}/`,
         cancel_url: `${getURL()}/`
       });

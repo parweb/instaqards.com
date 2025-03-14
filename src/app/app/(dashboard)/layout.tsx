@@ -42,6 +42,12 @@ export default async function DashboardLayout({
           </div>
         )}
 
+        {subscription.hasTrial() && subscription.customerSinceDays() && (
+          <div className="p-6 bg-lime-700 text-white sticky top-0">
+            {30 - subscription.customerSinceDays()} days left in your trial
+          </div>
+        )}
+
         <div className="">{children}</div>
       </div>
     </div>

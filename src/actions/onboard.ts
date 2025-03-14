@@ -1,13 +1,14 @@
 'use server';
 
+import { AuthError } from 'next-auth';
 import type * as z from 'zod';
 
 import { signIn } from 'auth';
 import { getUserByEmail } from 'data/user';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
-import { AuthError } from 'next-auth';
 import { OnboardSchema } from 'schemas';
+import { DEFAULT_LOGIN_REDIRECT } from 'settings';
 
 export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   const validatedFields = OnboardSchema.safeParse(values);
@@ -33,10 +34,14 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   }
 
   try {
-    await signIn('resend', { email });
+    await signIn('resend', {
+      email,
+      redirectTo: `${DEFAULT_LOGIN_REDIRECT}/api/site/create?subdomain=${subdomain}`
+    });
 
-    return { success: true };
+    return { success: true /*, site*/ };
   } catch (error) {
+    console.log({ error });
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
