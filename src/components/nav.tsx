@@ -104,31 +104,31 @@ export default function Nav({ children }: { children: ReactNode }) {
     <>
       <button
         type="button"
-        className="fixed z-40 right-5 top-7 sm:hidden"
+        className="fixed z-40 right-5 top-5 sm:hidden"
         onClick={() => setShowSidebar(state => !state)}
       >
         {showSidebar ? <X width={20} /> : <Menu width={20} />}
       </button>
 
-      <div
+      <nav
         onClick={() => setShowSidebar(false)}
         onKeyUp={e => e.key === 'Enter' && setShowSidebar(false)}
         className={`transform ${
           showSidebar
             ? 'w-full pr-[100px] sm:pr-0 translate-x-0 bg-gray-500/50'
             : '-translate-x-full'
-        } fixed z-20 flex h-full flex-col justify-between transition-all sm:w-60 sm:translate-x-0`}
+        } fixed z-20 flex h-full flex-col gap-4 justify-between transition-all sm:w-60 sm:translate-x-0`}
       >
         <div
           onClick={e => e.stopPropagation()}
           onKeyUp={e => e.stopPropagation()}
-          className="pointer-events-auto w-full border-r border-stone-200 bg-stone-100 p-4 dark:border-stone-700 dark:bg-stone-900 h-full"
+          className="pointer-events-auto flex flex-col justify-between gap-4 w-full border-r border-stone-200 bg-stone-100 p-4 h-full"
         >
-          <div className="grid gap-2">
-            <div className="flex items-center space-x-2 rounded-lg px-2 py-1.5">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-center rounded-lg p-2">
               <Link
                 href="/"
-                className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center gap-3 uppercase"
+                className="rounded-lg p-2 hover:bg-stone-200 flex items-center gap-3 uppercase"
               >
                 <Image
                   src="/rsz_black-transparent_nolink.png"
@@ -139,14 +139,14 @@ export default function Nav({ children }: { children: ReactNode }) {
               </Link>
             </div>
 
-            <div className="grid gap-1">
+            <div className="flex flex-col gap-2">
               {tabs.map(({ name, href, isActive, icon }) => (
                 <Link
                   key={name}
                   href={href}
-                  className={`flex items-center space-x-3 ${
-                    isActive ? 'bg-stone-200 text-black dark:bg-stone-700' : ''
-                  } rounded-lg px-2 py-1.5 transition-all duration-150 ease-in-out hover:bg-stone-200 active:bg-stone-300 dark:text-white dark:hover:bg-stone-700 dark:active:bg-stone-800`}
+                  className={`flex items-center gap-2 ${
+                    isActive ? 'bg-stone-200 text-black' : ''
+                  } rounded-lg px-2 py-1.5 transition-all duration-150 ease-in-out hover:bg-stone-200 active:bg-stone-300`}
                 >
                   {icon}
                   <span className="text-sm font-medium">{name}</span>
@@ -159,14 +159,13 @@ export default function Nav({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          <div>
-            <div className="grid gap-1" />
-            <div className="my-2 border-t border-stone-200 dark:border-stone-700" />
+          <div className="flex flex-col gap-4">
+            <div className="border-t border-stone-200" />
 
             {children}
           </div>
         </div>
-      </div>
+      </nav>
     </>
   );
 }
