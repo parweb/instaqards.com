@@ -75,8 +75,8 @@ export class Subscription {
   }
 
   hasTrial(): boolean {
-    // @ts-ignore
     return (
+      // @ts-ignore
       !(this.trial_end === this.trial_start) || this.customerSinceDays() < 30
     );
   }
@@ -127,10 +127,10 @@ export async function getSubscription(option?: Option) {
 
     const user = option.site.userId
       ? await db.user.findUnique({
-          where: {
-            id: option.site.userId
-          }
-        })
+        where: {
+          id: option.site.userId
+        }
+      })
       : null;
 
     return new Subscription(subscription, user);
@@ -145,10 +145,10 @@ export async function getSubscription(option?: Option) {
   console.log({
     user: session.user.id
       ? await db.user.findUnique({
-          where: {
-            id: session.user.id
-          }
-        })
+        where: {
+          id: session.user.id
+        }
+      })
       : null
   });
 
@@ -162,10 +162,10 @@ export async function getSubscription(option?: Option) {
     }),
     session.user.id
       ? await db.user.findUnique({
-          where: {
-            id: session.user.id
-          }
-        })
+        where: {
+          id: session.user.id
+        }
+      })
       : null
   );
 }

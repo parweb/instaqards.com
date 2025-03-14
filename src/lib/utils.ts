@@ -132,5 +132,5 @@ export const getAlphaTwoCode = (code: string) => {
   const country = countries.find(
     c => c.cca2 === uc || c.ccn3 === uc || c.cca3 === uc
   );
-  return country?.cca2 || code;
+  return (country?.cca2 || code).toLowerCase();
 };
