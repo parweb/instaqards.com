@@ -32,9 +32,9 @@ export default async function SiteAnalyticsLayout({
   const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
   return (
-    <>
-      <div className="flex flex-col items-center space-x-4 space-y-2 sm:flex-row sm:space-y-0 flex-1 justify-between">
-        <h1 className="font-cal text-xl font-bold dark:text-white sm:text-3xl">
+    <div className="p-8 flex flex-col gap-6">
+      <div className="flex flex-col items-center sm:flex-row flex-1 justify-between">
+        <h1 className="font-cal text-xl font-bold sm:text-3xl">
           Settings for {site.name}
         </h1>
 
@@ -46,7 +46,7 @@ export default async function SiteAnalyticsLayout({
           }
           target="_blank"
           rel="noreferrer"
-          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700"
+          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200"
         >
           {process.env.NEXT_PUBLIC_VERCEL_ENV
             ? url
@@ -58,6 +58,6 @@ export default async function SiteAnalyticsLayout({
       <SiteSettingsNav />
 
       {children}
-    </>
+    </div>
   );
 }

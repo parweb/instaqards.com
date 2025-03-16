@@ -93,7 +93,7 @@ export default async function SiteHomePage({
         <div className="absolute inset-0  bg-black/30" />
       </div>
 
-      <section className="flex flex-col p-10 flex-1 self-stretch">
+      <section className="flex flex-col px-5 py-10 flex-1 self-stretch">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
           <header className="flex flex-col justify-center items-center gap-6  pt-4">
             <div className="bg-white rounded-full overflow-hidden w-24 h-24 flex items-center justify-center">

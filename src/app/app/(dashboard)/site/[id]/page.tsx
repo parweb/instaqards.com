@@ -1,4 +1,5 @@
 import type { Block, Prisma } from '@prisma/client';
+import { contentType } from 'mime-types';
 import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -20,7 +21,6 @@ import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
-import { contentType } from 'mime-types';
 
 const BlockCreate = ({ type }: { type: Block['type'] }) => {
   return (
@@ -77,7 +77,7 @@ const Landing = async ({
         <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
       </div>
 
-      <section className="flex flex-col p-10 flex-1 self-stretch pointer-events-auto">
+      <section className="flex flex-col px-5 py-10 flex-1 self-stretch pointer-events-auto">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
           <header className="flex flex-col justify-center items-center gap-3 mt-4">
             <div className="group relative bg-white rounded-full overflow-hidden w-24 h-24 cursor-pointer flex items-center justify-center">
@@ -194,9 +194,9 @@ export default async function SitePosts({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
-        <div className="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 flex-1 justify-between">
-          <h1 className="w-60 truncate font-cal text-xl font-bold dark:text-white sm:w-auto sm:text-3xl">
+      <div className="p-8 flex flex-col gap-6">
+        <div className="flex flex-col items-center sm:flex-row flex-1 justify-between">
+          <h1 className="font-cal text-xl font-bold sm:text-3xl">
             {translate('dashboard.site.detail.title', {
               name: site.name ?? ''
             })}
