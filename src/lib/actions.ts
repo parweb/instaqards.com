@@ -65,24 +65,37 @@ export const createSite = async (
   }
 };
 
-export const updateBlock = withSiteAuth<Block>(async (formData, _, blockId) => {
+export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
   if (!blockId) {
     return { error: 'Block ID is required' };
   }
 
-  const label = formData.get('label') as Block['label'];
-  const href = formData.get('href') as Block['href'];
-  const logo = formData.get('logo') as Block['logo'];
+  const uploadables: [string, File][] = [...form.entries()].filter(
+    ([, value]) => value instanceof File
+  ) as [string, File][];
 
-  const [, style] = trySafe<string | undefined>(
-    () => JSON.parse(String(formData.get('style'))),
+  const label = form.get('label') as Block['label'];
+  const href = form.get('href') as Block['href'];
+  const logo = form.get('logo') as Block['logo'];
+
+  const [, style] = await trySafe<string | undefined>(
+    () => JSON.parse(String(form.get('style'))),
     undefined
   );
 
-  const [, widget] = trySafe<string | undefined>(
-    () => JSON.parse(String(formData.get('widget'))),
-    undefined
-  );
+  const [, widget] = await trySafe<string | undefined>(async () => {
+    const parsed = JSON.parse(String(form.get('widget')));
+
+    const urls = await Promise.all(
+      uploadables.map(async ([key, file]) => {
+        const filename = `${nanoid()}.${file.type.split('/')[1]}`;
+        const { url } = await put(filename, file);
+        return [key, url];
+      })
+    );
+
+    return { ...parsed, data: { ...parsed.data, ...Object.fromEntries(urls) } };
+  }, undefined);
 
   try {
     const response = await db.block.update({
@@ -113,32 +126,48 @@ export const updateBlock = withSiteAuth<Block>(async (formData, _, blockId) => {
 });
 
 // generic function to try catch any function
-const trySafe = <T>(fn: () => T, defaultValue: T): [boolean, T, unknown] => {
+const trySafe = async <T>(
+  fn: () => Promise<T>,
+  defaultValue: T
+): Promise<[boolean, T, unknown]> => {
   try {
-    return [true, fn(), null];
+    return [true, await fn(), null];
   } catch (error: unknown) {
     return [false, defaultValue, error];
   }
 };
 
 export const createBlock = async (
-  formData: FormData,
+  form: FormData,
   site: Site['id'],
   type: Block['type']
 ): Promise<{ error: string } | Block> => {
-  const label = formData.get('label') as Block['label'];
-  const href = formData.get('href') as Block['href'];
-  const logo = formData.get('logo') as Block['logo'];
+  const uploadables: [string, File][] = [...form.entries()].filter(
+    ([, value]) => value instanceof File
+  ) as [string, File][];
 
-  const [, style] = trySafe<string | undefined>(
-    () => JSON.parse(String(formData.get('style'))),
+  const label = form.get('label') as Block['label'];
+  const href = form.get('href') as Block['href'];
+  const logo = form.get('logo') as Block['logo'];
+
+  const [, style] = await trySafe<string | undefined>(
+    () => JSON.parse(String(form.get('style'))),
     undefined
   );
 
-  const [, widget] = trySafe<string | undefined>(
-    () => JSON.parse(String(formData.get('widget'))),
-    undefined
-  );
+  const [, widget] = await trySafe<string | undefined>(async () => {
+    const parsed = JSON.parse(String(form.get('widget')));
+
+    const urls = await Promise.all(
+      uploadables.map(async ([key, file]) => {
+        const filename = `${nanoid()}.${file.type.split('/')[1]}`;
+        const { url } = await put(filename, file);
+        return [key, url];
+      })
+    );
+
+    return { ...parsed, data: { ...parsed.data, ...Object.fromEntries(urls) } };
+  }, undefined);
 
   try {
     const response = await db.block.create({

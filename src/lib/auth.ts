@@ -9,6 +9,11 @@ export function getSession() {
   return auth();
 }
 
+export async function getRole() {
+  const session = await getSession();
+  return session?.user?.role ?? null;
+}
+
 const isFuture = (date: Date | string) =>
   (typeof date === 'string' ? new Date(date) : date).getTime() >
   new Date().getTime();

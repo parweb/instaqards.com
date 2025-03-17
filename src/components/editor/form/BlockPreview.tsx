@@ -5,6 +5,7 @@ import type { Block, Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useSetAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
+import { useDropzone } from 'react-dropzone';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { LuChevronLeft } from 'react-icons/lu';
 import { toast } from 'sonner';
@@ -25,11 +26,95 @@ import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { createBlock, updateBlock } from 'lib/actions';
-import { text, type Block as BlockType } from 'lib/utils';
+import { cn, text, type Block as BlockType } from 'lib/utils';
 
 const mutator = {
   create: createBlock,
   update: updateBlock
+};
+
+const Uploader = ({
+  setValue,
+  shape,
+  ...props
+}: {
+  name: string;
+  // eslint-disable-next-line no-unused-vars
+  setValue: (name: string, file: File) => void;
+  shape: Extract<BlockType, { kind: 'upload' }>;
+}) => {
+  console.log('Uploader', { props });
+
+  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+  const [mediaType, setMediaType] = useState<'video' | 'image' | null>(null);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: ([file]) => {
+      if (!file) return;
+
+      setValue(props.name, file);
+
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setMediaType((file.type.split('/').at(0) as 'video' | 'image') ?? null);
+
+        setPreview(reader.result);
+      };
+
+      reader.readAsDataURL(file);
+    },
+    multiple: false,
+    accept: shape.accept
+  });
+
+  return (
+    <div className="relative flex flex-col gap-5">
+      <div
+        className={cn(
+          'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
+          'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
+          isDragActive && 'border-slate-900 text-slate-900'
+        )}
+      >
+        <div {...getRootProps()} className="text-center">
+          <input {...getInputProps(props)} />
+
+          {isDragActive ? (
+            <>
+              <p>Drop the files here</p>
+              <p>Image or Video</p>
+            </>
+          ) : (
+            <>
+              <p>{"Drag 'n' drop some files here,"}</p>
+              <p>or click to select files</p>
+            </>
+          )}
+        </div>
+      </div>
+
+      {preview && false && (
+        <>
+          {mediaType === 'image' && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className="aspect-video object-contain"
+              src={preview as string}
+              alt="Upload preview"
+            />
+          )}
+
+          {mediaType === 'video' && (
+            <video className="aspect-video object-contain" controls>
+              <source src={preview as string} />
+              <track kind="captions" src="" label="no captions" />
+            </video>
+          )}
+        </>
+      )}
+    </div>
+  );
 };
 
 export function BlockPreview({
@@ -124,7 +209,7 @@ export function BlockPreview({
         const form = new FormData();
 
         for (const [key, value] of Object.entries(data)) {
-          form.append(key, String(value));
+          form.append(key, value);
         }
 
         // @ts-ignore
@@ -189,32 +274,48 @@ export function BlockPreview({
             .map(([key, property]) => {
               return (
                 <div key={key} className="flex flex-col gap-2">
-                  <label
-                    htmlFor={key}
-                    className="text-sm font-medium text-stone-500"
-                  >
-                    {property.shape.label}
-                  </label>
-
                   {property.shape.kind === 'upload' && (
-                    <div>
-                      <input type="file" id={key} {...register(key)} />
-                    </div>
+                    <>
+                      {errors[key] && (
+                        <p className="text-red-500 text-sm text-center">
+                          {/* @ts-ignore */}
+                          {errors[key]?.message?.toString()}
+                        </p>
+                      )}
+
+                      <Uploader
+                        {...register(key)}
+                        setValue={
+                          // eslint-disable-next-line no-unused-vars
+                          setValue as (name: string, file: File) => void
+                        }
+                        shape={property.shape}
+                      />
+                    </>
                   )}
 
                   {(property.type || property.shape.kind) === 'string' && (
-                    <Input
-                      id={key}
-                      {...register(key)}
-                      placeholder={property.shape.label}
-                    />
-                  )}
+                    <>
+                      <label
+                        htmlFor={key}
+                        className="text-sm font-medium text-stone-500"
+                      >
+                        {property.shape.label}
+                      </label>
 
-                  {errors[key] && (
-                    <p style={{ color: 'red' }}>
-                      {/* @ts-ignore */}
-                      {errors[key]?.message?.toString()}
-                    </p>
+                      <Input
+                        id={key}
+                        {...register(key)}
+                        placeholder={property.shape.label}
+                      />
+
+                      {errors[key] && (
+                        <p style={{ color: 'red' }}>
+                          {/* @ts-ignore */}
+                          {errors[key]?.message?.toString()}
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
               );
