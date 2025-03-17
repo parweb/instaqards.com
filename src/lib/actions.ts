@@ -73,7 +73,16 @@ export const updateBlock = withSiteAuth<Block>(async (formData, _, blockId) => {
   const label = formData.get('label') as Block['label'];
   const href = formData.get('href') as Block['href'];
   const logo = formData.get('logo') as Block['logo'];
-  const style = JSON.parse(String(formData.get('style') ?? '{}'));
+
+  const [, style] = trySafe<string | undefined>(
+    () => JSON.parse(String(formData.get('style'))),
+    undefined
+  );
+
+  const [, widget] = trySafe<string | undefined>(
+    () => JSON.parse(String(formData.get('widget'))),
+    undefined
+  );
 
   try {
     const response = await db.block.update({
@@ -83,7 +92,8 @@ export const updateBlock = withSiteAuth<Block>(async (formData, _, blockId) => {
         label,
         href,
         logo: logo || null,
-        style
+        ...(widget && { widget }),
+        ...(style && { style })
       }
     });
 

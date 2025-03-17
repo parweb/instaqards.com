@@ -7,7 +7,6 @@ import { SocialIcon } from 'react-social-icons';
 import { BlockTypes } from 'components/editor/form/BlockTypes';
 import { Input } from 'components/ui/input';
 import { SocialPicker } from 'components/ui/social-picker';
-import type { BlockStyle } from 'lib/utils';
 
 export function BlockPicker({
   type,
@@ -20,16 +19,12 @@ export function BlockPicker({
     label: string;
     href: string;
     logo: string;
-    filter: string | null;
-    style: BlockStyle;
   };
   setData: Dispatch<
     SetStateAction<{
       label: string;
       href: string;
       logo: string;
-      filter: string | null;
-      style: BlockStyle;
     }>
   >;
   onClick: (data: { type: string; id: string }) => void;

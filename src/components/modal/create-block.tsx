@@ -8,43 +8,21 @@ import { Suspense, useState } from 'react';
 import { BlockFormButton } from 'components/editor/form/BlockFormButton';
 import { BlockPicker } from 'components/editor/form/BlockPicker';
 import { BlockPreview } from 'components/editor/form/BlockPreview';
-import { cn, type BlockStyle } from 'lib/utils';
+import { cn } from 'lib/utils';
 
 export default function CreateBlockModal({ type }: { type: Block['type'] }) {
   const params = useParams();
 
-  const [selectedBlock, setSelectedBlock] = useState<{
-    type: string;
-    id: string;
-  } | null>(null);
+  const [selectedBlock, setSelectedBlock] = useState<Block['widget']>(null);
 
   const [data, setData] = useState<{
     label: string;
     href: string;
     logo: string;
-    filter: string | null;
-    style: BlockStyle;
   }>({
     label: '',
     href: '',
-    logo: '',
-    filter: null,
-    style: {
-      hover: {
-        color: '#000000',
-        backgroundColor: '#ffffff',
-        fontSize: '16',
-        fontFamily: 'Open Sans',
-        borderRadius: '10px'
-      },
-      normal: {
-        color: '#ffffffe6',
-        backgroundColor: '#00000000',
-        fontSize: '16',
-        fontFamily: 'Open Sans',
-        borderRadius: '10px'
-      }
-    }
+    logo: ''
   });
 
   return (
@@ -62,6 +40,7 @@ export default function CreateBlockModal({ type }: { type: Block['type'] }) {
             >
               <Suspense fallback={null}>
                 <BlockPreview
+                  mode="create"
                   block={selectedBlock}
                   setSelectedBlock={setSelectedBlock}
                   siteId={params.id as Site['id']}

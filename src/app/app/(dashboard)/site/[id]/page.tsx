@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { getGoogleFonts, type Font } from 'actions/google-fonts';
 import { BlockList } from 'components/BlockItem';
 import CreateBlockButton from 'components/create-block-button';
 import CreateBlockModal from 'components/modal/create-block';
@@ -31,11 +30,9 @@ const BlockCreate = ({ type }: { type: Block['type'] }) => {
 };
 
 const Landing = async ({
-  site,
-  fonts
+  site
 }: {
   site: Prisma.SiteGetPayload<{ include: { blocks: true } }>;
-  fonts: Font[];
 }) => {
   const { main, social }: Record<Block['type'], Block[]> = {
     main: [],
@@ -128,12 +125,7 @@ const Landing = async ({
 
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
-              <BlockList
-                blocks={data.blocks}
-                site={site}
-                type="main"
-                fonts={fonts}
-              />
+              <BlockList blocks={data.blocks} site={site} type="main" />
 
               <BlockCreate type="main" />
             </div>
@@ -141,12 +133,7 @@ const Landing = async ({
 
           <footer className="flex flex-col gap-3">
             <div className="flex gap-3 items-center justify-center pointer-events-auto">
-              <BlockList
-                blocks={data.socials}
-                site={site}
-                type="social"
-                fonts={fonts}
-              />
+              <BlockList blocks={data.socials} site={site} type="social" />
 
               <BlockCreate type="social" />
             </div>
@@ -188,8 +175,6 @@ export default async function SitePosts({
     notFound();
   }
 
-  const fonts = await getGoogleFonts();
-
   const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
   return (
@@ -224,7 +209,7 @@ export default async function SitePosts({
 
       <div className="flex flex-col h-[100vh]">
         <Suspense fallback={null}>
-          <Landing site={site} fonts={fonts} />
+          <Landing site={site} />
         </Suspense>
       </div>
     </>

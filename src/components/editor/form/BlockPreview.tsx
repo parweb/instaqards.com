@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { LuChevronLeft } from 'react-icons/lu';
 import { toast } from 'sonner';
-import { ErrorBoundary } from 'react-error-boundary';
 import * as z from 'zod';
 import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
 
@@ -23,22 +22,27 @@ import { BlockFormButton } from 'components/editor/form/BlockFormButton';
 import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
-import { createBlock } from 'lib/actions';
+import { createBlock, updateBlock } from 'lib/actions';
 import { text, type Block as BlockType } from 'lib/utils';
 
+const mutator = {
+  create: createBlock,
+  update: updateBlock
+};
+
 export function BlockPreview({
+  mode,
   block,
   setSelectedBlock,
   siteId,
-  type
+  type,
+  ...props
 }: {
-  block: { type: string; id: string };
-  setSelectedBlock: Dispatch<
-    SetStateAction<{ type: string; id: string } | null>
-  >;
+  block: Block['widget'];
+  setSelectedBlock: Dispatch<SetStateAction<Block['widget']>>;
   siteId: Site['id'];
   type: Block['type'];
-}) {
+} & ({ mode: 'create' } | { mode: 'update'; id: Block['id'] })) {
   const router = useRouter();
   const modal = useModal();
 
@@ -52,10 +56,16 @@ export function BlockPreview({
     () => () => null
   );
 
+  const block_widget = block as unknown as { type: string; id: string };
+  const block_data = (block as unknown as { data: z.infer<typeof input> })
+    ?.data;
+
   useEffect(() => {
     let mounted = true;
 
-    import(`components/editor/blocks/${block.type}/${block.id}.tsx`)
+    import(
+      `components/editor/blocks/${block_widget.type}/${block_widget.id}.tsx`
+    )
       .then(module => {
         if (mounted) {
           module.default && setComponent(() => module.default);
@@ -70,7 +80,7 @@ export function BlockPreview({
     return () => {
       mounted = false;
     };
-  }, [block.type, block.id]);
+  }, [block_widget.type, block_widget.id]);
 
   const {
     register,
@@ -79,15 +89,16 @@ export function BlockPreview({
     formState: { errors },
     setValue
   } = useForm({
+    defaultValues: { ...block_data, widget: JSON.stringify(block_widget) },
     resolver: zodResolver(
       z.intersection(z.object({ widget: z.string() }), input)
     )
   });
 
   const { widget, ...data } = useWatch({ control });
-  console.log({ widget });
+  console.info({ widget });
 
-  const widgetString = JSON.stringify({ ...block, data });
+  const widgetString = JSON.stringify({ ...block_widget, data });
 
   useEffect(() => {
     setValue('widget', widgetString);
@@ -97,25 +108,28 @@ export function BlockPreview({
     <form
       className="flex-1 flex flex-col gap-4 h-full"
       onSubmit={handleSubmit(data => {
-        console.log('Submitted data:', data);
-
         const form = new FormData();
 
         for (const [key, value] of Object.entries(data)) {
           form.append(key, String(value));
         }
 
-        createBlock(form, siteId, type).then(res => {
-          if ('error' in res) {
-            toast.error(res.error);
-          } else {
-            va.track('Create block', { id: res.id });
+        // @ts-ignore
+        mutator[mode](form, siteId, mode === 'update' ? props.id : type).then(
+          res => {
+            if ('error' in res) {
+              toast.error(res.error);
+            } else {
+              va.track(mode === 'create' ? 'Create block' : 'Update block', {
+                id: res.id
+              });
 
-            router.refresh();
-            modal?.hide();
-            toast.success('Block created!');
+              router.refresh();
+              modal?.hide();
+              toast.success('Block saved!');
+            }
           }
-        });
+        );
       })}
     >
       <div className="flex-1 self-stretch overflow-y-scroll">
@@ -132,7 +146,7 @@ export function BlockPreview({
             <input
               type="hidden"
               {...field}
-              value={JSON.stringify({ ...block, data })}
+              value={JSON.stringify({ ...block_widget, data })}
             />
           )}
         />

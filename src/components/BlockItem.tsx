@@ -33,16 +33,15 @@ import {
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
 
-import type { Font } from 'actions/google-fonts';
 import DeleteBlockButton from 'components/delete-block-button';
 import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
-const BlockUpdate = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
+const BlockUpdate = ({ block }: { block: Block }) => {
   return (
     <UpdateBlockButton>
-      <UpdateBlockModal block={block} fonts={fonts} />
+      <UpdateBlockModal block={block} />
     </UpdateBlockButton>
   );
 };
@@ -67,7 +66,7 @@ const BlockWidget = memo(({ block }: { block: Block }) => {
 
 BlockWidget.displayName = 'BlockWidget';
 
-const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
+const BlockItem = ({ block }: { block: Block }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: block.id });
 
@@ -146,7 +145,7 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
         )}
 
         <div className="absolute left-3/4 z-[100] flex items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100">
-          <BlockUpdate block={block} fonts={fonts} />
+          <BlockUpdate block={block} />
           <BlockDelete {...block} />
         </div>
       </motion.div>
@@ -166,7 +165,7 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
             'transition-all duration-300 opacity-0 group-hover:opacity-100 '
           )}
         >
-          <BlockUpdate block={block} fonts={fonts} />
+          <BlockUpdate block={block} />
           <BlockDelete {...block} />
         </div>
 
@@ -221,13 +220,11 @@ const BlockItem = ({ block, fonts }: { block: Block; fonts: Font[] }) => {
 export const BlockList = ({
   blocks,
   site,
-  type,
-  fonts
+  type
 }: {
   blocks: Block[];
   site: Site;
   type: 'main' | 'social';
-  fonts: Font[];
 }) => {
   const [items, setItems] = useState(blocks);
 
@@ -296,11 +293,7 @@ export const BlockList = ({
           }
         >
           {items.map(props => (
-            <BlockItem
-              key={`BlockItem-${props.id}`}
-              block={props}
-              fonts={fonts}
-            />
+            <BlockItem key={`BlockItem-${props.id}`} block={props} />
           ))}
         </SortableContext>
       </DndContext>
