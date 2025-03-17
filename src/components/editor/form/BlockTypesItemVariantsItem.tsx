@@ -82,7 +82,11 @@ export const BlockTypesItemVariantsItem = ({
   const Main = memo(() => {
     return (
       <>
-        <div className="relative flex-1 flex items-center justify-center overflow-hidden">
+        <div
+          className="relative flex-1 flex items-center justify-center overflow-hidden"
+          onClick={() => onClick({ type, id })}
+          onKeyDown={() => onClick({ type, id })}
+        >
           <div className={cn('px-1 w-full', { 'px-4': expanded })}>
             {/* @ts-ignore */}
             <Component label="Press Me" />
@@ -105,7 +109,12 @@ export const BlockTypesItemVariantsItem = ({
 
         {expanded === false && (
           <hgroup className="flex items-center justify-between gap-2">
-            <h4>{label}</h4>
+            <h4
+              onClick={() => onClick({ type, id })}
+              onKeyDown={() => onClick({ type, id })}
+            >
+              {label}
+            </h4>
 
             <Button
               type="button"
