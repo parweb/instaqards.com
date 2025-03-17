@@ -4,6 +4,7 @@ import type { Block } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { LuLink } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
@@ -76,7 +77,7 @@ export const BlockItem = (block: Block) => {
   if (block.type === 'social') {
     return (
       <Link href={`/click/${block.id}`} target="_blank" rel="noreferrer">
-        <div>
+        <div className="transition-all hover:scale-125">
           {block.logo?.includes('http') ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -84,21 +85,27 @@ export const BlockItem = (block: Block) => {
                 className={cn(
                   block.label === 'facebook' && 'h-[65px]',
                   block.label !== 'facebook' && 'h-[50px]',
-                  'object-contain transition-all hover:scale-125'
+                  'object-contain'
                 )}
                 src={block.logo ?? ''}
                 alt={block.label ?? ''}
               />
             </>
-          ) : (
+          ) : Boolean(block.logo) === true ? (
             <SocialIcon
+              as="div"
+              network={block.logo ?? undefined}
               className={cn(
                 block.label === 'facebook' && 'h-[65px]',
                 block.label !== 'facebook' && 'h-[50px]',
-                'object-contain transition-all hover:scale-125'
+                'object-contain'
               )}
               url={block.href ?? ''}
             />
+          ) : (
+            <div className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200 rounded-full">
+              <LuLink />
+            </div>
           )}
         </div>
       </Link>

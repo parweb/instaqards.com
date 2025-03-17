@@ -2,7 +2,7 @@ TODO
 
 DONE -> biography block under profil picture
      -> univers music, girly
-     -> social ling prepend with http://
+     -> social link prepend with http://
      -> apply normal style on hover style if not set
 DONE -> offre 9€ si annuel 12 € si mensuel
      -> pas claire qu'il faut payer pour que la qards soit public
@@ -11,7 +11,7 @@ DONE -> sortable link main & social
 DONE -> style sur les liens (apply on all)
      -> email transactional 
 DONE -> tableaux des prix (one price for all)
-     -> bug on social link (logo) 
+DONE -> bug on social link (logo) 
 DONE -> menu responsive
 DONE -> date range picker responsive
 DONE -> La landing fonctionne pas bien sur mon iPhone (camille)

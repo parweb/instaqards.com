@@ -3,6 +3,7 @@
 import type { Block } from '@prisma/client';
 import type { Dispatch, SetStateAction } from 'react';
 import { SocialIcon } from 'react-social-icons';
+import { LuLink } from 'react-icons/lu';
 
 import { BlockTypes } from 'components/editor/form/BlockTypes';
 import { Input } from 'components/ui/input';
@@ -31,7 +32,7 @@ export function BlockPicker({
   onClick: (data: { type: string; id: string }) => void;
 }) {
   return (
-    <div className="h-[300px] overflow-y-scroll flex flex-col gap-4">
+    <div className="max-h-[340px] overflow-y-scroll flex flex-col gap-4">
       <div className="flex flex-col gap-4">
         {type === 'main' && (
           <div>
@@ -41,27 +42,8 @@ export function BlockPicker({
         )}
 
         {type === 'social' && (
-          <>
-            <div className="flex flex-col space-y-2">
-              <label
-                htmlFor="label"
-                className="text-sm font-medium text-stone-500"
-              >
-                Title
-              </label>
-
-              <Input
-                id="label"
-                name="label"
-                type="text"
-                placeholder="Title"
-                value={data.label}
-                onChange={e => setData({ ...data, label: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="flex flex-col space-y-2">
+          <div className="p-1 flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <label
                 htmlFor="href"
                 className="text-sm font-medium text-stone-500 dark:text-stone-400"
@@ -71,11 +53,19 @@ export function BlockPicker({
 
               <div className="flex items-center gap-2">
                 <div>
-                  <SocialIcon
-                    network={data.logo}
-                    fallback={{ color: '#000000', path: 'M0' }}
-                    style={{ width: 28, height: 28 }}
-                  />
+                  <input type="hidden" name="logo" value={data.logo} />
+
+                  {Boolean(data.logo) === true ? (
+                    <SocialIcon
+                      network={data.logo}
+                      fallback={{ color: '#000000', path: 'M0' }}
+                      style={{ width: 28, height: 28 }}
+                    />
+                  ) : (
+                    <div className="p-1 w-[28px] h-[28px] flex items-center justify-center bg-stone-200 rounded-full">
+                      <LuLink />
+                    </div>
+                  )}
                 </div>
 
                 <Input
@@ -106,7 +96,7 @@ export function BlockPicker({
               onChange={logo => setData({ ...data, logo })}
               value={data.logo}
             />
-          </>
+          </div>
         )}
       </div>
     </div>

@@ -1,16 +1,10 @@
 'use client';
 
-import type { Block, Site } from '@prisma/client';
-import { useAtomValue } from 'jotai';
+import type { Block } from '@prisma/client';
 import { atomWithStorage } from 'jotai/utils';
-import { motion } from 'motion/react';
-import { useParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
 
-import { BlockFormButton } from 'components/editor/form/BlockFormButton';
-import { BlockPicker } from 'components/editor/form/BlockPicker';
-import { BlockPreview } from 'components/editor/form/BlockPreview';
-import { cn } from 'lib/utils';
+import { BlockFormMain } from 'components/editor/form/BlockFormMain';
+import { BlockFormSocial } from 'components/editor/form/BlockFormSocial';
 
 export const $lastSelected = atomWithStorage<Block['widget'] | null>(
   'lastSelected',
@@ -35,77 +29,17 @@ export function BlockForm({
   };
   initialWidget: Block['widget'];
 }) {
-  const params = useParams();
-
-  const [data, setData] = useState(initialData);
-
-  const lastSelected = useAtomValue($lastSelected);
-
-  const [selectedBlock, setSelectedBlock] = useState<Block['widget']>(
-    () => initialWidget
-  );
-
-  useEffect(() => {
-    if (mode.mode === 'create') {
-      setSelectedBlock(lastSelected);
-    }
-  }, [mode.mode, lastSelected]);
-
-  const isSelectedBlock =
-    selectedBlock !== null &&
-    (selectedBlock as { type: string | null }).type !== null &&
-    (selectedBlock as { id: string | null }).id !== null;
-
   return (
     <div className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow overflow-hidden">
-      <div className="flex flex-col gap-4">
-        <h2 className="font-cal text-2xl px-4 pt-4">{mode.title}</h2>
-
-        <div className="relative">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={cn('absolute inset-0 transition-all duration-300', {
-              invisible: isSelectedBlock === false
-            })}
-          >
-            <Suspense fallback={null}>
-              <BlockPreview
-                {...mode}
-                block={selectedBlock}
-                setSelectedBlock={setSelectedBlock}
-                siteId={params.id as Site['id']}
-              />
-            </Suspense>
-          </motion.div>
-
-          <div
-            className={cn('transition-all duration-300 bg-white px-4 pb-4', {
-              '-translate-x-full pointer-events-none': isSelectedBlock
-            })}
-          >
-            <BlockPicker
-              type={mode.type}
-              data={data}
-              setData={setData}
-              onClick={({ type, id }) =>
-                setSelectedBlock(state => ({
-                  // @ts-ignore
-                  ...state,
-                  type,
-                  id
-                }))
-              }
-            />
-          </div>
-        </div>
-      </div>
-
+      {mode.type === 'main' && (
+        <BlockFormMain
+          mode={mode}
+          initialData={initialData}
+          initialWidget={initialWidget}
+        />
+      )}
       {mode.type === 'social' && (
-        <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10">
-          <BlockFormButton />
-        </div>
+        <BlockFormSocial mode={mode} initialData={initialData} />
       )}
     </div>
   );

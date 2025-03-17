@@ -60,7 +60,7 @@ export function SocialPicker({
         );
 
   return (
-    <div className="flex flex-col space-y-2">
+    <div className="flex flex-col gap-2">
       <label
         htmlFor="logo"
         className="text-sm font-medium text-stone-500 dark:text-stone-400"
@@ -70,9 +70,8 @@ export function SocialPicker({
 
       <Input
         id="filter"
-        name="filter"
         type="text"
-        placeholder="facebook, twitter, ..."
+        placeholder="search for facebook, twitter, ..."
         value={filter ?? ''}
         onChange={e => setFilter(e.target.value)}
       />
@@ -110,6 +109,7 @@ export function SocialPicker({
             className="flex flex-col items-center justify-center gap-1"
           >
             <Button
+              type="button"
               variant="ghost"
               onClick={() => setAll(true)}
               className="flex flex-col items-center justify-center w-[46px] h-[46px] rounded-full bg-stone-200"

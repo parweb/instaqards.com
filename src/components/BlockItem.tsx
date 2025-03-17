@@ -6,7 +6,7 @@ import type { Block, Site } from '@prisma/client';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { memo, Suspense, useEffect, useState } from 'react';
-import { LuMove } from 'react-icons/lu';
+import { LuLink, LuMove } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
 import {
@@ -184,7 +184,7 @@ const BlockItem = ({ block }: { block: Block }) => {
           </div>
         </div>
 
-        <div className="cursor-pointer">
+        <div className="cursor-pointer transition-all hover:scale-125">
           {block.logo?.includes('http') ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -194,20 +194,25 @@ const BlockItem = ({ block }: { block: Block }) => {
                 className={cn(
                   block.label === 'facebook' && 'h-[65px]',
                   block.label !== 'facebook' && 'h-[50px]',
-                  'object-contain transition-all hover:scale-125'
+                  'object-contain'
                 )}
               />
             </>
-          ) : (
+          ) : Boolean(block.logo) === true ? (
             <SocialIcon
               as="div"
+              network={block.logo ?? undefined}
               className={cn(
                 block.label === 'facebook' && 'h-[65px]',
                 block.label !== 'facebook' && 'h-[50px]',
-                'object-contain transition-all hover:scale-125'
+                'object-contain'
               )}
               url={block.href ?? ''}
             />
+          ) : (
+            <div className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200 rounded-full">
+              <LuLink />
+            </div>
           )}
         </div>
       </div>
