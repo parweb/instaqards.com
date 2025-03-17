@@ -122,10 +122,10 @@ export async function getSubscription(option?: Option) {
 
     const user = option.site.userId
       ? await db.user.findUnique({
-          where: {
-            id: option.site.userId
-          }
-        })
+        where: {
+          id: option.site.userId
+        }
+      })
       : null;
 
     return new Subscription(subscription, user);
@@ -147,10 +147,10 @@ export async function getSubscription(option?: Option) {
     }),
     session.user.id
       ? await db.user.findUnique({
-          where: {
-            id: session.user.id
-          }
-        })
+        where: {
+          id: session.user.id
+        }
+      })
       : null
   );
 }
@@ -163,9 +163,9 @@ export async function isPaid() {
 
 export function withSiteAuth<T>(
   action: (
-    form: FormData,
-    site: Site,
-    key: string | null
+    form: FormData, // eslint-disable-line no-unused-vars
+    site: Site, // eslint-disable-line no-unused-vars
+    key: string | null // eslint-disable-line no-unused-vars
   ) => Promise<{ error: string } | T>
 ) {
   return async (

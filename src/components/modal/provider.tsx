@@ -5,6 +5,7 @@ import { type ReactNode, createContext, useContext, useState } from 'react';
 import Modal from './index';
 
 interface ModalContextProps {
+  // eslint-disable-next-line no-unused-vars
   show: (content: ReactNode) => void;
   hide: () => void;
 }

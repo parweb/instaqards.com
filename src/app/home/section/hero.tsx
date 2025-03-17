@@ -1,7 +1,5 @@
-import Link from 'next/link';
 import { LuCheck } from 'react-icons/lu';
 
-import { Button } from 'components/ui/button';
 import { translate } from 'helpers/translate';
 import { cn } from 'lib/utils';
 import { Begin } from './begin';

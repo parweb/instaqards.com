@@ -27,6 +27,7 @@ export function BlockPicker({
       logo: string;
     }>
   >;
+  // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
 }) {
   return (

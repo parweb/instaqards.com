@@ -38,9 +38,9 @@ export default async function SiteSettingsAppearance({
         }}
         handleSubmit={
           updateSite as <T>(
-            data: FormData,
-            id: string,
-            name: string
+            data: FormData, // eslint-disable-line no-unused-vars
+            id: string, // eslint-disable-line no-unused-vars
+            name: string // eslint-disable-line no-unused-vars
           ) => Promise<T | { error?: string }>
         }
       />
@@ -56,9 +56,9 @@ export default async function SiteSettingsAppearance({
         }}
         handleSubmit={
           updateSite as <T>(
-            data: FormData,
-            id: string,
-            name: string
+            data: FormData, // eslint-disable-line no-unused-vars
+            id: string, // eslint-disable-line no-unused-vars
+            name: string // eslint-disable-line no-unused-vars
           ) => Promise<T | { error?: string }>
         }
       />
@@ -76,9 +76,9 @@ export default async function SiteSettingsAppearance({
         }}
         handleSubmit={
           updateSite as <T>(
-            data: FormData,
-            id: string,
-            name: string
+            data: FormData, // eslint-disable-line no-unused-vars
+            id: string, // eslint-disable-line no-unused-vars
+            name: string // eslint-disable-line no-unused-vars
           ) => Promise<T | { error?: string }>
         }
       />

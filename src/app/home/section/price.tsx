@@ -3,7 +3,7 @@
 import type { Price as PriceType } from '@prisma/client';
 import { Check } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 
 import { Badge } from 'components/ui/badge';
 import useTranslation from 'hooks/use-translation';
@@ -84,10 +84,6 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
 }) => {
   const translate = useTranslation();
 
-  const [isPending, startTransition] = useTransition();
-
-  const [subdomain, setSubdomain] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [billingCycle, setBillingCycle] = useState<'year' | 'month'>('year');
 
   const offer: Partial<Record<typeof billingCycle, PriceType>> = prices.reduce(

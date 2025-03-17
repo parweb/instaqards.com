@@ -28,6 +28,7 @@ export function Combobox({
   options: { id: string; name: string }[];
   placeholder?: string;
   searchPlaceholder?: string;
+  // eslint-disable-next-line no-unused-vars
   onChange?: (value: string) => void;
   defaultValue?: string;
 }) {

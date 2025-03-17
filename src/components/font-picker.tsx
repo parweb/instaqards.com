@@ -20,6 +20,7 @@ const FontItem = ({
   font: string;
   selectedFont: string | null;
   focusedFont: string | null;
+  // eslint-disable-next-line no-unused-vars
   handleSelectFont: (font: string) => void;
   root: RefObject<HTMLDivElement | null>;
 }) => {
@@ -67,6 +68,7 @@ const FontPickerList = ({
   open: boolean;
   fonts: string[];
   setOpen: Dispatch<SetStateAction<boolean>>;
+  // eslint-disable-next-line no-unused-vars
   onChange: (font: string | null) => void;
   value: string | null;
   id?: string;
@@ -214,6 +216,7 @@ export const FontPicker = memo(
     id?: string;
     name: string;
     fonts: string[];
+    // eslint-disable-next-line no-unused-vars
     onChange: (font: string | null) => void;
     value: string | null;
   }) => {

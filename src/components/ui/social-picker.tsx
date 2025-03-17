@@ -12,6 +12,7 @@ export function SocialPicker({
   onChange,
   value
 }: {
+  // eslint-disable-next-line no-unused-vars
   onChange: (logo: string) => void;
   value: string;
 }) {

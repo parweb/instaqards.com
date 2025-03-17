@@ -13,6 +13,7 @@ export const ColorPicker = ({
 }: {
   name: string;
   value: string;
+  // eslint-disable-next-line no-unused-vars
   onChange: (color: string) => void;
   className?: string;
 }) => {

@@ -5,6 +5,7 @@ import { BlockTypesItem } from './BlockTypesItem';
 export const BlockTypes = ({
   onClick
 }: {
+  // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
 }) => {
   return (
