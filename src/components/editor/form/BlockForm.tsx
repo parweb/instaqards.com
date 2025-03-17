@@ -1,14 +1,21 @@
 'use client';
 
 import type { Block, Site } from '@prisma/client';
+import { useAtomValue } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import { motion } from 'motion/react';
 import { useParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 import { BlockFormButton } from 'components/editor/form/BlockFormButton';
 import { BlockPicker } from 'components/editor/form/BlockPicker';
 import { BlockPreview } from 'components/editor/form/BlockPreview';
 import { cn } from 'lib/utils';
+
+export const $lastSelected = atomWithStorage<Block['widget'] | null>(
+  'lastSelected',
+  null
+);
 
 export function BlockForm({
   mode,
@@ -32,8 +39,17 @@ export function BlockForm({
 
   const [data, setData] = useState(initialData);
 
-  const [selectedBlock, setSelectedBlock] =
-    useState<Block['widget']>(initialWidget);
+  const lastSelected = useAtomValue($lastSelected);
+
+  const [selectedBlock, setSelectedBlock] = useState<Block['widget']>(
+    () => initialWidget
+  );
+
+  useEffect(() => {
+    if (mode.mode === 'create') {
+      setSelectedBlock(lastSelected);
+    }
+  }, [mode.mode, lastSelected]);
 
   const isSelectedBlock =
     selectedBlock !== null &&
@@ -46,23 +62,23 @@ export function BlockForm({
         <h2 className="font-cal text-2xl px-4 pt-4">{mode.title}</h2>
 
         <div className="relative">
-          {isSelectedBlock && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0"
-            >
-              <Suspense fallback={null}>
-                <BlockPreview
-                  {...mode}
-                  block={selectedBlock}
-                  setSelectedBlock={setSelectedBlock}
-                  siteId={params.id as Site['id']}
-                />
-              </Suspense>
-            </motion.div>
-          )}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={cn('absolute inset-0 transition-all duration-300', {
+              invisible: isSelectedBlock === false
+            })}
+          >
+            <Suspense fallback={null}>
+              <BlockPreview
+                {...mode}
+                block={selectedBlock}
+                setSelectedBlock={setSelectedBlock}
+                siteId={params.id as Site['id']}
+              />
+            </Suspense>
+          </motion.div>
 
           <div
             className={cn('transition-all duration-300 bg-white px-4 pb-4', {

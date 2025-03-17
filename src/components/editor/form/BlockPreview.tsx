@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { Block, Site } from '@prisma/client';
 import va from '@vercel/analytics';
+import { useSetAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { LuChevronLeft } from 'react-icons/lu';
@@ -18,6 +19,7 @@ import {
   type SetStateAction
 } from 'react';
 
+import { $lastSelected } from 'components/editor/form/BlockForm';
 import { BlockFormButton } from 'components/editor/form/BlockFormButton';
 import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
@@ -48,6 +50,8 @@ export function BlockPreview({
   const router = useRouter();
   const modal = useModal();
 
+  const setLastSelected = useSetAtom($lastSelected);
+
   const [input, setInput] = useState(z.object({}));
 
   const [Component, setComponent] = useState<React.ComponentType<unknown>>(
@@ -58,15 +62,18 @@ export function BlockPreview({
     () => () => null
   );
 
-  const block_widget = block as unknown as { type: string; id: string };
+  const block_widget = block as unknown as { type: string; id: string } | null;
   const block_data = (block as unknown as { data: z.infer<typeof input> })
     ?.data;
+
+  const block_widget_type = block_widget?.type ?? null;
+  const block_widget_id = block_widget?.id ?? null;
 
   useEffect(() => {
     let mounted = true;
 
     import(
-      `components/editor/blocks/${block_widget.type}/${block_widget.id}.tsx`
+      `components/editor/blocks/${block_widget_type}/${block_widget_id}.tsx`
     )
       .then(module => {
         if (mounted) {
@@ -82,7 +89,7 @@ export function BlockPreview({
     return () => {
       mounted = false;
     };
-  }, [block_widget.type, block_widget.id]);
+  }, [block_widget_type, block_widget_id]);
 
   const {
     register,
@@ -91,14 +98,18 @@ export function BlockPreview({
     formState: { errors },
     setValue
   } = useForm({
-    defaultValues: { ...block_data, widget: JSON.stringify(block_widget) },
+    defaultValues: {
+      ...block_data,
+
+      widget: JSON.stringify(block_widget)
+    },
     resolver: zodResolver(
       z.intersection(z.object({ widget: z.string() }), input)
     )
   });
 
   const { widget, ...data } = useWatch({ control });
-  console.info({ widget });
+  console.info({ widget, data });
 
   const widgetString = JSON.stringify({ ...block_widget, data });
 
@@ -132,6 +143,8 @@ export function BlockPreview({
             }
           }
         );
+
+        setLastSelected({ type: block_widget_type, id: block_widget_id });
       })}
     >
       <div className="flex-1 self-stretch overflow-y-scroll">
