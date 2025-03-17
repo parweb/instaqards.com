@@ -1,6 +1,6 @@
 'use client';
 
-import { BlockTypes } from 'components/modal/BlockTypes';
+import { BlockTypes } from 'components/editor/form/BlockTypes';
 import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
 

@@ -16,7 +16,7 @@ const BlockWidget = ({ block }: { block: Block }) => {
   };
 
   const Component = dynamic(
-    () => import(`components/blocks/${widget.type}/${widget.id}.tsx`)
+    () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`)
   );
 
   return <Component {...(widget?.data ?? {})} />;
