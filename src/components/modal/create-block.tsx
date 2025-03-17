@@ -15,6 +15,13 @@ export default function CreateBlockModal({ type }: { type: Block['type'] }) {
 
   const [selectedBlock, setSelectedBlock] = useState<Block['widget']>(null);
 
+  const isSelectedBlock =
+    selectedBlock !== null &&
+    (selectedBlock as { type: string | null }).type !== null &&
+    (selectedBlock as { id: string | null }).id !== null;
+
+  console.log({ isSelectedBlock });
+
   const [data, setData] = useState<{
     label: string;
     href: string;
@@ -31,7 +38,7 @@ export default function CreateBlockModal({ type }: { type: Block['type'] }) {
         <h2 className="font-cal text-2xl px-4 pt-4">Create a block</h2>
 
         <div className="relative">
-          {selectedBlock !== null && (
+          {isSelectedBlock && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -52,14 +59,21 @@ export default function CreateBlockModal({ type }: { type: Block['type'] }) {
 
           <div
             className={cn('transition-all duration-300 bg-white px-4 pb-4', {
-              '-translate-x-full pointer-events-none': selectedBlock !== null
+              '-translate-x-full pointer-events-none': isSelectedBlock
             })}
           >
             <BlockPicker
               type={type}
               data={data}
               setData={setData}
-              onClick={({ type, id }) => setSelectedBlock({ type, id })}
+              onClick={({ type, id }) =>
+                setSelectedBlock(state => ({
+                  // @ts-ignore
+                  ...state,
+                  type,
+                  id
+                }))
+              }
             />
           </div>
         </div>

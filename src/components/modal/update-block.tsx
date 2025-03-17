@@ -23,13 +23,20 @@ export default function UpdateBlockModal({ block }: { block: Block }) {
     block.widget
   );
 
+  const isSelectedBlock =
+    selectedBlock !== null &&
+    (selectedBlock as { type: string | null }).type !== null &&
+    (selectedBlock as { id: string | null }).id !== null;
+
+  console.log({ isSelectedBlock });
+
   return (
     <div className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow overflow-hidden">
       <div className="flex flex-col gap-4">
-        <h2 className="font-cal text-2xl px-4 pt-4">Create a block</h2>
+        <h2 className="font-cal text-2xl px-4 pt-4">Update a block</h2>
 
         <div className="relative">
-          {selectedBlock !== null && (
+          {isSelectedBlock && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -51,14 +58,21 @@ export default function UpdateBlockModal({ block }: { block: Block }) {
 
           <div
             className={cn('transition-all duration-300 bg-white px-4 pb-4', {
-              '-translate-x-full pointer-events-none': selectedBlock !== null
+              '-translate-x-full pointer-events-none': isSelectedBlock
             })}
           >
             <BlockPicker
               type={block.type}
               data={data}
               setData={setData}
-              onClick={({ type, id }) => setSelectedBlock({ type, id })}
+              onClick={({ type, id }) =>
+                setSelectedBlock(state => ({
+                  // @ts-ignore
+                  ...state,
+                  type,
+                  id
+                }))
+              }
             />
           </div>
         </div>

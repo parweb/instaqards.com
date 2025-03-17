@@ -208,7 +208,13 @@ export function BlockPreview({
       </div>
 
       <div className="flex gap-2 items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10">
-        <Button type="button" onClick={() => setSelectedBlock(null)}>
+        <Button
+          type="button"
+          onClick={() =>
+            // @ts-ignore
+            setSelectedBlock(state => ({ ...state, type: null, id: null }))
+          }
+        >
           <LuChevronLeft />
         </Button>
 
