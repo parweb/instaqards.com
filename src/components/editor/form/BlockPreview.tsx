@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { LuChevronLeft } from 'react-icons/lu';
 import { toast } from 'sonner';
+import { ErrorBoundary } from 'react-error-boundary';
 import * as z from 'zod';
 import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
 
@@ -42,7 +43,12 @@ export function BlockPreview({
   const modal = useModal();
 
   const [input, setInput] = useState(z.object({}));
+
   const [Component, setComponent] = useState<React.ComponentType<unknown>>(
+    () => () => null
+  );
+
+  const [Editor, setEditor] = useState<React.ComponentType<unknown>>(
     () => () => null
   );
 
@@ -52,10 +58,9 @@ export function BlockPreview({
     import(`components/editor/blocks/${block.type}/${block.id}.tsx`)
       .then(module => {
         if (mounted) {
-          console.log('module.input', module.input);
-
           module.default && setComponent(() => module.default);
           module.input && setInput(module.input);
+          module.Editor && setEditor(() => module.Editor);
         }
       })
       .catch(error => {
@@ -132,6 +137,12 @@ export function BlockPreview({
           )}
         />
 
+        <div id="editor">
+          <Suspense fallback={null}>
+            <Editor />
+          </Suspense>
+        </div>
+
         <div className="px-4 flex flex-col gap-4">
           {(
             Object.entries(
@@ -146,37 +157,39 @@ export function BlockPreview({
                   { description: string; type: string; shape: BlockType }
                 ]
             )
-            .map(([key, property]) => (
-              <div key={key} className="flex flex-col space-y-2">
-                <label
-                  htmlFor={key}
-                  className="text-sm font-medium text-stone-500"
-                >
-                  {property.shape.label}
-                </label>
+            .map(([key, property]) => {
+              return (
+                <div key={key} className="flex flex-col gap-2">
+                  <label
+                    htmlFor={key}
+                    className="text-sm font-medium text-stone-500"
+                  >
+                    {property.shape.label}
+                  </label>
 
-                {property.shape.kind === 'upload' && (
-                  <div>
-                    <input type="file" id={key} {...register(key)} />
-                  </div>
-                )}
+                  {property.shape.kind === 'upload' && (
+                    <div>
+                      <input type="file" id={key} {...register(key)} />
+                    </div>
+                  )}
 
-                {(property.type || property.shape.kind) === 'string' && (
-                  <Input
-                    id={key}
-                    {...register(key)}
-                    placeholder={property.shape.label}
-                  />
-                )}
+                  {(property.type || property.shape.kind) === 'string' && (
+                    <Input
+                      id={key}
+                      {...register(key)}
+                      placeholder={property.shape.label}
+                    />
+                  )}
 
-                {errors[key] && (
-                  <p style={{ color: 'red' }}>
-                    {/* @ts-ignore */}
-                    {errors[key]?.message?.toString()}
-                  </p>
-                )}
-              </div>
-            ))}
+                  {errors[key] && (
+                    <p style={{ color: 'red' }}>
+                      {/* @ts-ignore */}
+                      {errors[key]?.message?.toString()}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
         </div>
       </div>
 

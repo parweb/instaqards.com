@@ -120,3 +120,7 @@ export default function DontPressMe001({
 
   return <BaseButton className="w-full" label={label} />;
 }
+
+export const Editor = () => {
+  return null;
+};

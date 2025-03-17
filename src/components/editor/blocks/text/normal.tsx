@@ -14,3 +14,7 @@ export default function NormalText({
 }: Partial<z.infer<typeof input>>) {
   return <div className="text-center">{text}</div>;
 }
+
+export function Editor() {
+  return null;
+}
