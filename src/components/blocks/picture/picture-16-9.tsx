@@ -1,8 +1,19 @@
 import Image from 'next/image';
 import * as z from 'zod';
 
+import { json } from 'lib/utils';
+
 export const input = z.object({
-  media: z.string().url().describe('Image')
+  media: z
+    .string()
+    .url()
+    .describe(
+      json({
+        label: 'Image',
+        kind: 'upload',
+        accept: 'image/*'
+      })
+    )
 });
 
 export default function Picture169({

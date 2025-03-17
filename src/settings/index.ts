@@ -12,3 +12,8 @@ export const authRoutes = [
 ];
 
 export const DEFAULT_LOGIN_REDIRECT = '/';
+
+export const prices = {
+  monthly: { id: 'price_1R2YT7IExtBoSSWLIOzTKfV2', price: 12 },
+  yearly: { id: 'price_1R2YR7IExtBoSSWLTa7swlyG', price: 9 }
+};

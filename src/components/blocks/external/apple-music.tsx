@@ -1,7 +1,12 @@
 import * as z from 'zod';
 
+import { json } from 'lib/utils';
+
 export const input = z.object({
-  url: z.string().url().describe('Track URL')
+  url: z
+    .string()
+    .url()
+    .describe(json({ label: 'Track URL', kind: 'string' }))
 });
 
 export default function AppleMusic({

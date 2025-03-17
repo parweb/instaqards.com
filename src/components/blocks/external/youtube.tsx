@@ -4,8 +4,13 @@ import * as z from 'zod';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
+import { json } from 'lib/utils';
+
 export const input = z.object({
-  url: z.string().url().describe('Video URL')
+  url: z
+    .string()
+    .url()
+    .describe(json({ label: 'Video URL', kind: 'string' }))
 });
 
 export default function Youtube({

@@ -1,9 +1,27 @@
 import * as z from 'zod';
 import Link from 'next/link';
-import { cn } from 'lib/utils';
 
-const $label = z.string().min(1, 'Label is required').describe('Label');
-const $href = z.string().min(1, 'Link is required').describe('Link');
+import { cn, json } from 'lib/utils';
+
+const $label = z
+  .string()
+  .min(1, 'Label is required')
+  .describe(
+    json({
+      label: 'Label',
+      kind: 'string'
+    })
+  );
+
+const $href = z
+  .string()
+  .min(1, 'Link is required')
+  .describe(
+    json({
+      label: 'Link',
+      kind: 'string'
+    })
+  );
 
 const BaseButtonProps = z.object({ label: $label });
 export const input = z.object({ label: $label, href: $href });

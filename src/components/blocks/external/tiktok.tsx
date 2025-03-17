@@ -3,8 +3,13 @@
 import * as z from 'zod';
 import { TikTokEmbed } from 'react-social-media-embed';
 
+import { json } from 'lib/utils';
+
 export const input = z.object({
-  url: z.string().url().describe('Post URL')
+  url: z
+    .string()
+    .url()
+    .describe(json({ label: 'Post URL', kind: 'string' }))
 });
 
 export default function Tiktok({

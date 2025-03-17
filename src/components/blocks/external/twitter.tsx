@@ -3,8 +3,13 @@
 import * as z from 'zod';
 import { XEmbed } from 'react-social-media-embed';
 
+import { json } from 'lib/utils';
+
 export const input = z.object({
-  url: z.string().url().describe('Tweet URL')
+  url: z
+    .string()
+    .url()
+    .describe(json({ label: 'Tweet URL', kind: 'string' }))
 });
 
 export default function Twitter({

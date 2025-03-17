@@ -26,7 +26,7 @@ import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { SocialPicker } from 'components/ui/social-picker';
 import { createBlock } from 'lib/actions';
-import { cn, type BlockStyle } from 'lib/utils';
+import { cn, text, type BlockStyle, type Block as BlockType } from 'lib/utils';
 import { BlockTypes } from './BlockTypes';
 import { useModal } from './provider';
 
@@ -207,14 +207,13 @@ const Preview = ({
       onSubmit={handleSubmit(data => {
         console.log('Submitted data:', data);
 
-        const formData = new FormData();
+        const form = new FormData();
 
         for (const [key, value] of Object.entries(data)) {
-          console.log({ key, value });
-          formData.append(key, String(value));
+          form.append(key, String(value));
         }
 
-        createBlock(formData, siteId, type).then(res => {
+        createBlock(form, siteId, type).then(res => {
           if ('error' in res) {
             toast.error(res.error);
           } else {
@@ -252,33 +251,45 @@ const Preview = ({
               (zodToJsonSchema(input) as JsonSchema7Type['default'])
                 ?.properties ?? {}
             ) as [string, { description: string; type: string }][]
-          ).map(([key, property]) => (
-            <div key={key} className="flex flex-col space-y-2">
-              <label
-                htmlFor={key}
-                className="text-sm font-medium text-stone-500"
-              >
-                {property.description}
-              </label>
+          )
+            .map(
+              ([key, property]) =>
+                [key, { ...property, shape: text(property.description) }] as [
+                  never,
+                  { description: string; type: string; shape: BlockType }
+                ]
+            )
+            .map(([key, property]) => (
+              <div key={key} className="flex flex-col space-y-2">
+                <label
+                  htmlFor={key}
+                  className="text-sm font-medium text-stone-500"
+                >
+                  {property.shape.label}
+                </label>
 
-              {property.type === 'string' && (
-                <Input
-                  id={key}
-                  // @ts-ignore
-                  {...register(key)}
-                  placeholder={property.description}
-                />
-              )}
+                {property.shape.kind === 'upload' && (
+                  <div>
+                    <input type="file" id={key} {...register(key)} />
+                  </div>
+                )}
 
-              {/* @ts-ignore */}
-              {errors[key] && (
-                <p style={{ color: 'red' }}>
-                  {/* @ts-ignore */}
-                  {errors[key]?.message?.toString()}
-                </p>
-              )}
-            </div>
-          ))}
+                {(property.type || property.shape.kind) === 'string' && (
+                  <Input
+                    id={key}
+                    {...register(key)}
+                    placeholder={property.shape.label}
+                  />
+                )}
+
+                {errors[key] && (
+                  <p style={{ color: 'red' }}>
+                    {/* @ts-ignore */}
+                    {errors[key]?.message?.toString()}
+                  </p>
+                )}
+              </div>
+            ))}
         </div>
       </div>
 

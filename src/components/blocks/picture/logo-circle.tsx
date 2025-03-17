@@ -1,8 +1,19 @@
 import Image from 'next/image';
 import * as z from 'zod';
 
+import { json } from 'lib/utils';
+
 export const input = z.object({
-  media: z.string().url().describe('Logo')
+  media: z
+    .string()
+    .url()
+    .describe(
+      json({
+        label: 'Logo',
+        kind: 'upload',
+        accept: 'image/*'
+      })
+    )
 });
 
 export default function LogoCircle({

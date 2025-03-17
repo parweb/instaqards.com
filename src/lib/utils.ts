@@ -134,3 +134,17 @@ export const getAlphaTwoCode = (code: string) => {
   );
   return (country?.cca2 || code).toLowerCase();
 };
+
+type Share = {
+  label: string;
+};
+
+export type Block = Share &
+  (
+    | { kind: 'upload'; accept: string }
+    | { kind: 'string' }
+    | { kind: 'number'; plop: string }
+  );
+
+export const json = (data: Block) => JSON.stringify(data, null, 2);
+export const text = (data: string) => JSON.parse(data) as Block;
