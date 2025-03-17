@@ -122,10 +122,10 @@ export async function getSubscription(option?: Option) {
 
     const user = option.site.userId
       ? await db.user.findUnique({
-        where: {
-          id: option.site.userId
-        }
-      })
+          where: {
+            id: option.site.userId
+          }
+        })
       : null;
 
     return new Subscription(subscription, user);
@@ -147,10 +147,10 @@ export async function getSubscription(option?: Option) {
     }),
     session.user.id
       ? await db.user.findUnique({
-        where: {
-          id: session.user.id
-        }
-      })
+          where: {
+            id: session.user.id
+          }
+        })
       : null
   );
 }

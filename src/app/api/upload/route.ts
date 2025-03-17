@@ -1,6 +1,7 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { nanoid } from 'nanoid';
+import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { db } from 'helpers/db';
@@ -32,12 +33,18 @@ export async function POST(request: Request): Promise<NextResponse> {
       }
     );
 
-    await db.site.update({
+    const site = await db.site.update({
       where: { id: body.siteId },
       data: {
         [body.attr]: `/api/file?id=${filename}`
       }
     });
+
+    site?.customDomain && revalidateTag(`${site?.customDomain}-metadata`);
+
+    revalidateTag(
+      `${site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
+    );
 
     return NextResponse.json({ url, filename });
   } catch (error) {
