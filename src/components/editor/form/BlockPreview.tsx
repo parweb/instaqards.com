@@ -38,11 +38,13 @@ export function BlockPreview({
   type,
   ...props
 }: {
+  id: Block['id'] | null;
+  mode: 'create' | 'update';
   block: Block['widget'];
   setSelectedBlock: Dispatch<SetStateAction<Block['widget']>>;
   siteId: Site['id'];
   type: Block['type'];
-} & ({ mode: 'create' } | { mode: 'update'; id: Block['id'] })) {
+}) {
   const router = useRouter();
   const modal = useModal();
 
