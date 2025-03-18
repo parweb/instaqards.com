@@ -30,15 +30,16 @@ const BaseButton: React.FC<
   Partial<z.infer<typeof BaseButtonProps>> & { className?: string }
 > = ({ label, className }) => {
   return (
-    <button className={cn('button-40', className)} type="button">
+    <button type="button" className={className}>
       <span className="text">{label}</span>
 
       <style jsx>{`
-        .button-40 {
+        button {
           --glow-color: rgb(217, 176, 255);
           --glow-spread-color: rgba(191, 123, 255, 0.781);
           --enhanced-glow-color: rgb(231, 206, 255);
           --btn-color: rgb(100, 61, 136);
+
           border: 0.25em solid var(--glow-color);
           padding: 10px 20px;
           color: var(--glow-color);
@@ -55,21 +56,21 @@ const BaseButton: React.FC<
           transition: all 0.3s;
         }
 
-        .button-40::after {
-          pointer-events: none;
-          content: '';
-          position: absolute;
-          top: 120%;
-          left: 0;
-          height: 100%;
-          width: 100%;
-          background-color: var(--glow-spread-color);
-          filter: blur(2em);
-          opacity: 0.7;
-          transform: perspective(1.5em) rotateX(35deg) scale(1, 0.6);
-        }
+        // button::after {
+        //   pointer-events: none;
+        //   content: '';
+        //   position: absolute;
+        //   top: 120%;
+        //   left: 0;
+        //   height: 100%;
+        //   width: 100%;
+        //   background-color: var(--glow-spread-color);
+        //   filter: blur(2em);
+        //   opacity: 0.7;
+        //   transform: perspective(1.5em) rotateX(35deg) scale(1, 0.6);
+        // }
 
-        .button-40:hover {
+        button:hover {
           color: var(--btn-color);
           background-color: var(--glow-color);
           box-shadow:
@@ -78,7 +79,7 @@ const BaseButton: React.FC<
             inset 0 0 0.75em 0.25em var(--glow-color);
         }
 
-        .button-40:active {
+        button:active {
           box-shadow:
             0 0 0.6em 0.25em var(--glow-color),
             0 0 2.5em 2em var(--glow-spread-color),

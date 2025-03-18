@@ -25,6 +25,7 @@ export * from './MicrobialMat';
 export * from './PolkaDot';
 export * from './Pyramid';
 export * from './RainbowBokeh';
+export * from './Roof';
 export * from './Seigaiha';
 export * from './Shippo';
 export * from './Stairs';
