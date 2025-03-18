@@ -74,7 +74,7 @@ export default async function SiteHomePage({
           <>
             {media_type?.startsWith('video/') && (
               <video
-                className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
+                className="top-0 left-0 object-cover fixed w-full h-full"
                 preload="auto"
                 autoPlay
                 loop
