@@ -1,0 +1,29 @@
+export function Shippo() {
+  return (
+    <div>
+      <style jsx>{`
+        div {
+          position: absolute;
+          inset: 0;
+
+          background-color: #def;
+          background-image:
+            radial-gradient(
+              closest-side,
+              transparent 98%,
+              rgba(0, 0, 0, 0.3) 99%
+            ),
+            radial-gradient(
+              closest-side,
+              transparent 98%,
+              rgba(0, 0, 0, 0.3) 99%
+            );
+          background-size: 80px 80px;
+          background-position:
+            0 0,
+            40px 40px;
+        }
+      `}</style>
+    </div>
+  );
+}

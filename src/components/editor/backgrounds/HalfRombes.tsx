@@ -1,0 +1,41 @@
+export function HalfRombes() {
+  return (
+    <div>
+      <style jsx>{`
+        div {
+          position: absolute;
+          inset: 0;
+
+          background: #36c;
+          background:
+            linear-gradient(
+                115deg,
+                transparent 75%,
+                rgba(255, 255, 255, 0.8) 75%
+              )
+              0 0,
+            linear-gradient(
+                245deg,
+                transparent 75%,
+                rgba(255, 255, 255, 0.8) 75%
+              )
+              0 0,
+            linear-gradient(
+                115deg,
+                transparent 75%,
+                rgba(255, 255, 255, 0.8) 75%
+              )
+              7px -15px,
+            linear-gradient(
+                245deg,
+                transparent 75%,
+                rgba(255, 255, 255, 0.8) 75%
+              )
+              7px -15px,
+            #36c;
+          background-size: 15px 30px;
+        }
+      `}</style>
+    </div>
+  );
+}

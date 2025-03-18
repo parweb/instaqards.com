@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { PreviewBackground } from 'components/editor/PreviewBackground';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
@@ -62,32 +63,41 @@ export default async function SiteHomePage({
 
   const data = { blocks: main, socials: social };
 
-  const media_type =
-    contentType(site?.background?.split('/').pop() ?? '') || '';
+  const media_type = site?.background?.startsWith('component:')
+    ? 'css'
+    : contentType(site?.background?.split('/').pop() ?? '') || '';
 
   return (
     <main className="relative flex-1 self-stretch items-center flex flex-col">
       <div className="absolute inset-0">
-        {media_type?.startsWith('video/') && (
-          <video
-            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
-            preload="auto"
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src={site?.background ?? ''} type="video/mp4" />
-          </video>
-        )}
+        {site.background && (
+          <>
+            {media_type?.startsWith('video/') && (
+              <video
+                className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
+                preload="auto"
+                autoPlay
+                loop
+                muted
+                playsInline
+              >
+                <source src={site.background} type="video/mp4" />
+              </video>
+            )}
 
-        {!media_type?.startsWith('video/') && !!site?.background && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
-            src={site.background}
-            alt=""
-          />
+            {media_type?.startsWith('image/') && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
+                src={site.background}
+                alt=""
+              />
+            )}
+
+            {media_type === 'css' && (
+              <PreviewBackground name={site.background} />
+            )}
+          </>
         )}
 
         <div className="absolute inset-0  bg-black/30" />

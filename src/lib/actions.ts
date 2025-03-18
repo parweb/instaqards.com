@@ -255,6 +255,13 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
       if (site.customDomain && site.customDomain !== value) {
         response = await removeDomainFromVercelProject(site.customDomain);
       }
+    } else if (['css-background'].includes(key)) {
+      response = await db.site.update({
+        where: { id: site.id },
+        data: {
+          background: value
+        }
+      });
     } else if (['image', 'logo', 'background'].includes(key)) {
       const file = formData.get(key) as File;
       const filename = `${nanoid()}.${file.type.split('/')[1]}`;

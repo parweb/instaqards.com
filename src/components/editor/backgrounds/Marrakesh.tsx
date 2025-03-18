@@ -1,0 +1,30 @@
+export function Marrakesh() {
+  return (
+    <div>
+      <style jsx>{`
+        div {
+          position: absolute;
+          inset: 0;
+
+          background-color: white;
+          background-image:
+            radial-gradient(midnightblue 9px, transparent 10px),
+            repeating-radial-gradient(
+              midnightblue 0,
+              midnightblue 4px,
+              transparent 5px,
+              transparent 20px,
+              midnightblue 21px,
+              midnightblue 25px,
+              transparent 26px,
+              transparent 50px
+            );
+          background-size:
+            30px 30px,
+            90px 90px;
+          background-position: 0 0;
+        }
+      `}</style>
+    </div>
+  );
+}

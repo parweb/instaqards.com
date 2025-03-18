@@ -2,21 +2,58 @@
 
 import type { Site } from '@prisma/client';
 import va from '@vercel/analytics';
+import { atom, useAtom, useAtomValue } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
+import * as backgrounds from 'components/editor/backgrounds';
 import LoadingDots from 'components/icons/loading-dots';
-import { cn } from 'lib/utils';
-import { useModal } from './provider';
+import { useModal } from 'components/modal/provider';
 import useTranslation from 'hooks/use-translation';
+import { updateSite } from 'lib/actions';
+import { cn } from 'lib/utils';
+
+const $selected = atom<string | null>(null);
+
+function BackgroundItem({
+  children,
+  name,
+  preview = false
+}: {
+  children: React.ReactNode;
+  name: string;
+  preview?: boolean;
+}) {
+  const [selected, setSelected] = useAtom($selected);
+
+  return (
+    <div
+      onClick={() => {
+        setSelected(state => (state === name ? null : name));
+      }}
+      onKeyDown={() => {}}
+      className={cn(
+        'aspect-video w-full rounded-lg bg-white border-4 border-transparent',
+        'relative overflow-hidden',
+        {
+          'border-4 border-black': selected === name && preview === false
+        }
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function UpdateSiteBackgroundModal({
   siteId
 }: {
   siteId: Site['id'];
 }) {
+  const selected = useAtomValue($selected);
+
   const [pending, setPending] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
   const [mediaType, setMediaType] = useState<'video' | 'image' | null>(null);
@@ -54,37 +91,57 @@ export default function UpdateSiteBackgroundModal({
       onSubmit={async e => {
         e.preventDefault();
 
-        if (acceptedFiles[0]) {
-          setPending(true);
+        const form = new FormData(e.currentTarget);
 
-          try {
-            const { url } = await fetch('/api/upload', {
-              method: 'POST',
-              body: JSON.stringify({
-                filename: acceptedFiles[0].name,
-                siteId,
-                attr: 'background'
-              })
-            }).then(res => res.json());
+        if (form.get('css-background')?.toString().startsWith('component:')) {
+          updateSite(form, siteId, 'css-background').then(res => {
+            if ('error' in res) {
+              toast.error(res.error);
+            } else {
+              va.track('Update site background', { id: siteId });
 
-            await fetch(url, {
-              method: 'PUT',
-              body: acceptedFiles[0]
-            });
+              router.refresh();
+              modal?.hide();
+              toast.success('Site background updated!');
+            }
+          });
 
-            va.track('Update site', { id: siteId });
+          router.refresh();
+          modal?.hide();
+          toast.success('Site updated!');
+        } else {
+          if (acceptedFiles[0]) {
+            setPending(true);
 
-            router.refresh();
-            modal?.hide();
-            toast.success('Site updated!');
-          } catch (error: unknown) {
-            toast.error(
-              error instanceof Error
-                ? error.message
-                : 'An unknown error occurred'
-            );
-          } finally {
-            setPending(false);
+            try {
+              const { url } = await fetch('/api/upload', {
+                method: 'POST',
+                body: JSON.stringify({
+                  filename: acceptedFiles[0].name,
+                  siteId,
+                  attr: 'background'
+                })
+              }).then(res => res.json());
+
+              await fetch(url, {
+                method: 'PUT',
+                body: acceptedFiles[0]
+              });
+
+              va.track('Update site', { id: siteId });
+
+              router.refresh();
+              modal?.hide();
+              toast.success('Site updated!');
+            } catch (error: unknown) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : 'An unknown error occurred'
+              );
+            } finally {
+              setPending(false);
+            }
           }
         }
       }}
@@ -95,49 +152,82 @@ export default function UpdateSiteBackgroundModal({
           {translate('components.site.updateBackground.title')}
         </h2>
 
-        <div
-          className={cn(
-            'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
-            'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
-            isDragActive && 'border-slate-900 text-slate-900'
-          )}
-        >
-          <div {...getRootProps()} className="text-center">
-            <input {...getInputProps({ name: 'background' })} />
-
-            {isDragActive ? (
-              <>
-                <p>Drop the files here</p>
-                <p>Image or Video</p>
-              </>
-            ) : (
-              <>
-                <p>{"Drag 'n' drop some files here,"}</p>
-                <p>or click to select files</p>
-              </>
+        <div className="flex flex-col gap-4">
+          <div
+            className={cn(
+              'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
+              'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
+              isDragActive && 'border-slate-900 text-slate-900'
             )}
+          >
+            <div {...getRootProps()} className="text-center">
+              <input {...getInputProps({ name: 'background' })} />
+
+              {isDragActive ? (
+                <>
+                  <p>Drop the files here</p>
+                  <p>Image or Video</p>
+                </>
+              ) : (
+                <>
+                  <p>{"Drag 'n' drop some files here,"}</p>
+                  <p>or click to select files</p>
+                </>
+              )}
+            </div>
+          </div>
+
+          {preview && (
+            <>
+              {mediaType === 'image' && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className="aspect-video object-contain"
+                  src={preview as string}
+                  alt="Upload preview"
+                />
+              )}
+
+              {mediaType === 'video' && (
+                <video className="aspect-video object-contain" controls>
+                  <source src={preview as string} />
+                  <track kind="captions" src="" label="no captions" />
+                </video>
+              )}
+            </>
+          )}
+
+          {selected && (
+            <>
+              <input
+                type="hidden"
+                name="css-background"
+                value={`component:${selected}`}
+              />
+
+              <BackgroundItem preview name={selected}>
+                {(() => {
+                  const Background =
+                    backgrounds[selected as keyof typeof backgrounds];
+
+                  return <Background />;
+                })()}
+              </BackgroundItem>
+            </>
+          )}
+
+          <div className="flex flex-col gap-2">
+            <h2>Backgrounds Prédéfinis</h2>
+
+            <div className="grid grid-cols-3 gap-2 max-h-[340px] overflow-y-auto">
+              {Object.entries(backgrounds).map(([name, Background]) => (
+                <BackgroundItem key={name} name={name}>
+                  <Background />
+                </BackgroundItem>
+              ))}
+            </div>
           </div>
         </div>
-
-        {preview && (
-          <>
-            {mediaType === 'image' && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                className="aspect-video object-contain"
-                src={preview as string}
-                alt="Upload preview"
-              />
-            )}
-
-            {mediaType === 'video' && (
-              <video className="aspect-video object-contain" controls>
-                <source src={preview as string} />
-                <track kind="captions" src="" label="no captions" />
-              </video>
-            )}
-          </>
-        )}
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">

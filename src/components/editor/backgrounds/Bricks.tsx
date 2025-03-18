@@ -1,0 +1,25 @@
+export function Bricks() {
+  return (
+    <div>
+      <style jsx>{`
+        div {
+          position: absolute;
+          inset: 0;
+
+          background-color: silver;
+          background-image:
+            linear-gradient(335deg, #b00 23px, transparent 23px),
+            linear-gradient(155deg, #d00 23px, transparent 23px),
+            linear-gradient(335deg, #b00 23px, transparent 23px),
+            linear-gradient(155deg, #d00 23px, transparent 23px);
+          background-size: 58px 58px;
+          background-position:
+            0px 2px,
+            4px 35px,
+            29px 31px,
+            34px 6px;
+        }
+      `}</style>
+    </div>
+  );
+}

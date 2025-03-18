@@ -1,0 +1,18 @@
+export function Tablecloth() {
+  return (
+    <div>
+      <style jsx>{`
+        div {
+          position: absolute;
+          inset: 0;
+
+          background-color: white;
+          background-image:
+            linear-gradient(90deg, rgba(200, 0, 0, 0.5) 50%, transparent 50%),
+            linear-gradient(rgba(200, 0, 0, 0.5) 50%, transparent 50%);
+          background-size: 50px 50px;
+        }
+      `}</style>
+    </div>
+  );
+}

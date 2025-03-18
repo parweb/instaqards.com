@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 
 import { BlockList } from 'components/BlockItem';
 import CreateBlockButton from 'components/create-block-button';
+import { PreviewBackground } from 'components/editor/PreviewBackground';
 import CreateBlockModal from 'components/modal/create-block';
 import UpdateSiteDescriptionModal from 'components/modal/update-description';
 import UpdateSiteDisplayNameModal from 'components/modal/update-display-name';
@@ -43,32 +44,43 @@ const Landing = async ({
 
   const data = { blocks: main, socials: social };
 
-  const media_type =
-    contentType(site?.background?.split('/').pop() ?? '') || '';
+  const media_type = site?.background?.startsWith('component:')
+    ? 'css'
+    : contentType(site?.background?.split('/').pop() ?? '') || '';
+
+  console.log({ media_type });
 
   return (
     <main className="relative flex-1 self-stretch items-center flex flex-col pointer-events-auto">
       <div className="absolute inset-0 group pointer-events-auto">
-        {media_type?.startsWith('video/') && (
-          <video
-            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
-            preload="auto"
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src={site?.background ?? ''} type="video/mp4" />
-          </video>
-        )}
+        {site.background && (
+          <>
+            {media_type?.startsWith('video/') && (
+              <video
+                className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
+                preload="auto"
+                autoPlay
+                loop
+                muted
+                playsInline
+              >
+                <source src={site.background} type="video/mp4" />
+              </video>
+            )}
 
-        {!media_type?.startsWith('video/') && !!site?.background && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
-            src={site.background}
-            alt=""
-          />
+            {media_type?.startsWith('image/') && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
+                src={site.background}
+                alt=""
+              />
+            )}
+
+            {media_type === 'css' && (
+              <PreviewBackground name={site.background} />
+            )}
+          </>
         )}
 
         <div className="absolute inset-0 bg-black/30 pointer-events-auto" />

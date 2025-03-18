@@ -1,0 +1,24 @@
+export function LinedPaper() {
+  return (
+    <div>
+      <style jsx>{`
+        div {
+          position: absolute;
+          inset: 0;
+
+          background-color: #fff;
+          background-image:
+            linear-gradient(
+              90deg,
+              transparent 79px,
+              #abced4 79px,
+              #abced4 81px,
+              transparent 81px
+            ),
+            linear-gradient(#eee 0.1em, transparent 0.1em);
+          background-size: 100% 1.2em;
+        }
+      `}</style>
+    </div>
+  );
+}

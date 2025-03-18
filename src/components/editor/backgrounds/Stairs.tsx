@@ -1,0 +1,25 @@
+export function Stairs() {
+  return (
+    <div>
+      <style jsx>{`
+        div {
+          position: absolute;
+          inset: 0;
+
+          background:
+            linear-gradient(63deg, #999 23%, transparent 23%) 7px 0,
+            linear-gradient(63deg, transparent 74%, #999 78%),
+            linear-gradient(
+              63deg,
+              transparent 34%,
+              #999 38%,
+              #999 58%,
+              transparent 62%
+            ),
+            #444;
+          background-size: 16px 48px;
+        }
+      `}</style>
+    </div>
+  );
+}
