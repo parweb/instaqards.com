@@ -16,6 +16,7 @@ import {
   Menu,
   Newspaper,
   Settings,
+  Users,
   X
 } from 'lucide-react';
 
@@ -46,6 +47,12 @@ export default function Nav({ children }: { children: ReactNode }) {
           href: `/site/${id}`,
           isActive: segments.length === 2,
           icon: <Newspaper width={18} />
+        },
+        {
+          name: translate('menu.subscribers'),
+          href: `/site/${id}/subscribers`,
+          isActive: segments.includes('subscribers'),
+          icon: <Users width={18} />
         },
         {
           name: translate('menu.analytics'),

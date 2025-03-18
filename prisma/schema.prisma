@@ -243,8 +243,8 @@ model Block {
   updatedAt DateTime @updatedAt
 
   clicks Click[]
-  site   Site?   @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  siteId String?
+  site   Site    @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  siteId String
 
   @@index([siteId])
   @@index([type])
@@ -268,12 +268,25 @@ model Site {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String?
-  blocks Block[]
-  clicks Click[]
+  user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId      String?
+  blocks      Block[]
+  clicks      Click[]
+  subscribers Subscriber[]
 
   @@index([userId])
+}
+
+model Subscriber {
+  id String @id @default(cuid())
+
+  email String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  site   Site   @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  siteId String
 }
 
 model Queue {

@@ -20,7 +20,8 @@ const BlockWidget = ({ block }: { block: Block }) => {
     () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`)
   );
 
-  return <Component {...(widget?.data ?? {})} />;
+  // @ts-ignore
+  return <Component {...(widget?.data ?? {})} block={block} />;
 };
 
 export const BlockItem = (block: Block) => {

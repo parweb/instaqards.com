@@ -503,6 +503,12 @@ const translations = {
     it: 'Design',
     es: 'Diseño'
   },
+  'menu.subscribers': {
+    fr: 'Abonnés',
+    en: 'Subscribers',
+    it: 'Abbonati',
+    es: 'Suscriptores'
+  },
   'menu.analytics': {
     fr: 'Statistiques',
     en: 'Analytics',

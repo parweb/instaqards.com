@@ -8,14 +8,14 @@ export const BlockTypesItem = ({
   onClick
 }: {
   label: string;
-  type: 'button' | 'picture' | 'text' | 'external';
+  type: 'button' | 'picture' | 'text' | 'external' | 'other';
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
 }) => {
   const variants: {
     id: string;
     label: string;
-    type: 'button' | 'picture' | 'text' | 'external';
+    type: 'button' | 'picture' | 'text' | 'external' | 'other';
   }[] = [
     { id: 'glow-up-001', label: 'Glow up 1', type: 'button' },
     { id: 'glow-up-002', label: 'Glow up 2', type: 'button' },
@@ -41,7 +41,9 @@ export const BlockTypesItem = ({
     { id: 'facebook', label: 'Facebook', type: 'external' },
     { id: 'soundcloud', label: 'Soundcloud', type: 'external' },
     { id: 'twitter', label: 'X', type: 'external' },
-    { id: 'apple-music', label: 'Apple Music', type: 'external' }
+    { id: 'apple-music', label: 'Apple Music', type: 'external' },
+
+    { id: 'email', label: 'Email', type: 'other' }
   ];
 
   return (

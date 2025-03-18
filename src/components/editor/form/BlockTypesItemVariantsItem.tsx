@@ -22,6 +22,7 @@ import Spotify from 'components/editor/blocks/external/spotify';
 import Tiktok from 'components/editor/blocks/external/tiktok';
 import Twitter from 'components/editor/blocks/external/twitter';
 import Youtube from 'components/editor/blocks/external/youtube';
+import Email from 'components/editor/blocks/other/email';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
 import Picture169 from 'components/editor/blocks/picture/picture-16-9';
@@ -59,6 +60,9 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     soundcloud: Soundcloud,
     twitter: Twitter,
     'apple-music': AppleMusic
+  },
+  other: {
+    email: Email
   }
 };
 
@@ -70,7 +74,7 @@ export const BlockTypesItemVariantsItem = ({
 }: {
   id: string;
   label: string;
-  type: 'button' | 'picture' | 'text' | 'external';
+  type: 'button' | 'picture' | 'text' | 'external' | 'other';
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
 }) => {
