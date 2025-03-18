@@ -74,7 +74,7 @@ export default async function SiteHomePage({
           <>
             {media_type?.startsWith('video/') && (
               <video
-                className="top-0 left-0 object-cover fixed w-full h-full"
+                className="fixed top-0 left-0 w-full h-full object-cover"
                 preload="auto"
                 autoPlay
                 loop
@@ -88,7 +88,7 @@ export default async function SiteHomePage({
             {media_type?.startsWith('image/') && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh]"
+                className="fixed top-0 left-0 w-full h-full object-cover"
                 src={site.background}
                 alt=""
               />
@@ -100,7 +100,7 @@ export default async function SiteHomePage({
           </>
         )}
 
-        <div className="absolute inset-0  bg-black/30" />
+        <div className="fixed inset-0 bg-black/30 pointer-events-auto" />
       </div>
 
       <section className="flex flex-col px-5 py-10 flex-1 self-stretch">

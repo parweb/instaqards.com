@@ -34,8 +34,8 @@ export default async function SiteSubscribers({
   });
 
   return (
-    <div className="p-8 flex flex-col gap-6">
-      <div className="flex flex-col items-center sm:flex-row flex-1 justify-between">
+    <div className="p-8 flex flex-col gap-6 flex-1 self-stretch">
+      <div className="flex flex-col items-center sm:flex-row justify-between">
         <h1 className="font-cal text-xl font-bold sm:text-3xl">
           Subscribers for {site.name}
         </h1>
@@ -57,9 +57,11 @@ export default async function SiteSubscribers({
         </a>
       </div>
 
-      {subscribers.map(subscriber => (
-        <div key={subscriber.id}>{subscriber.email}</div>
-      ))}
+      <div className="flex-1 self-stretch flex flex-col gap-4 ">
+        {subscribers.map(subscriber => (
+          <div key={subscriber.id}>{subscriber.email}</div>
+        ))}
+      </div>
     </div>
   );
 }

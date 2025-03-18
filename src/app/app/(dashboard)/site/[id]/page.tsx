@@ -51,13 +51,13 @@ const Landing = async ({
   console.log({ media_type });
 
   return (
-    <main className="relative flex-1 self-stretch items-center flex flex-col pointer-events-auto">
+    <main className="relative flex-1 self-stretch items-center flex flex-col pointer-events-auto h-screen">
       <div className="absolute inset-0 group pointer-events-auto">
         {site.background && (
           <>
             {media_type?.startsWith('video/') && (
               <video
-                className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
+                className="absolute top-0 left-0 w-full h-full object-cover"
                 preload="auto"
                 autoPlay
                 loop
@@ -71,7 +71,7 @@ const Landing = async ({
             {media_type?.startsWith('image/') && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                className="absolute top-0 right-0 object-cover min-h-full min-w-full h-[100vh] transition-all delay-1000 hover:opacity-5"
+                className="absolute top-0 left-0 w-full h-full object-cover"
                 src={site.background}
                 alt=""
               />
@@ -86,7 +86,7 @@ const Landing = async ({
         <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
       </div>
 
-      <section className="flex flex-col px-5 py-10 flex-1 self-stretch pointer-events-auto">
+      <section className="absolute inset-0 flex flex-col px-5 py-10 flex-1 self-stretch pointer-events-auto overflow-y-auto">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
           <header className="flex flex-col justify-center items-center gap-3 mt-4">
             <div className="group relative bg-white rounded-full overflow-hidden w-24 h-24 cursor-pointer flex items-center justify-center">
@@ -191,7 +191,7 @@ export default async function SitePosts({
 
   return (
     <>
-      <div className="p-8 flex flex-col gap-6">
+      <div className="flex flex-col gap-6 p-8">
         <div className="flex flex-col items-center sm:flex-row flex-1 justify-between">
           <h1 className="font-cal text-xl font-bold sm:text-3xl">
             {translate('dashboard.site.detail.title', {
@@ -219,7 +219,7 @@ export default async function SitePosts({
         {/*<CreatePostButton />*/}
       </div>
 
-      <div className="flex flex-col h-[100vh]">
+      <div className="flex flex-col flex-1 self-stretch overflow-y-auto">
         <Suspense fallback={null}>
           <Landing site={site} />
         </Suspense>

@@ -27,14 +27,14 @@ export default async function DashboardLayout({
   });
 
   return (
-    <div>
+    <div className="flex flex-1 self-stretch">
       <Nav>
         <Suspense fallback={null}>
           <Profile />
         </Suspense>
       </Nav>
 
-      <div className="min-h-screen dark:bg-black sm:pl-60">
+      <div className="flex-1 flex flex-col overflow-y-auto">
         {!subscription.valid() && (
           <div className="px-4 py-8">
             {/* @ts-ignore */}
@@ -48,7 +48,7 @@ export default async function DashboardLayout({
           </div>
         )}
 
-        <div className="">{children}</div>
+        <div className="flex flex-col flex-1 self-stretch">{children}</div>
       </div>
     </div>
   );

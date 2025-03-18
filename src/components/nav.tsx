@@ -122,9 +122,9 @@ export default function Nav({ children }: { children: ReactNode }) {
         onKeyUp={e => e.key === 'Enter' && setShowSidebar(false)}
         className={`transform ${
           showSidebar
-            ? 'w-full pr-[100px] sm:pr-0 translate-x-0 bg-gray-500/50'
+            ? 'w-full h-full pr-[100px] sm:pr-0 translate-x-0 bg-gray-500/50'
             : '-translate-x-full'
-        } fixed z-20 flex h-full flex-col gap-4 justify-between transition-all sm:w-60 sm:translate-x-0`}
+        } z-20 fixed sm:static flex flex-col gap-4 justify-between transition-all sm:w-60 sm:translate-x-0`}
       >
         <div
           onClick={e => e.stopPropagation()}
