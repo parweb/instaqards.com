@@ -19,6 +19,7 @@ export const BlockTypesItem = ({
   }[] = [
     { id: 'glow-up-001', label: 'Glow up 1', type: 'button' },
     { id: 'glow-up-002', label: 'Glow up 2', type: 'button' },
+    { id: 'glow-up-003', label: 'Glow up 3', type: 'button' },
     { id: 'slide-from-left-001', label: 'Slide from left', type: 'button' },
     { id: 'dont-press-me-001', label: 'Dont press me', type: 'button' },
     { id: 'dont-press-me-002', label: 'Dont press me 2', type: 'button' },
@@ -27,6 +28,7 @@ export const BlockTypesItem = ({
     { id: 'dont-press-me-005', label: 'Dont press me 5', type: 'button' },
     { id: 'flip-flap', label: 'Flip flap', type: 'button' },
     { id: '3d-spin', label: '3D spin', type: 'button' },
+    { id: 'glassy', label: 'Glassy', type: 'button' },
     { id: 'gold', label: 'Gold', type: 'button' },
     { id: 'shiny', label: 'Shiny', type: 'button' },
 

@@ -11,8 +11,10 @@ import DontPressMe002 from 'components/editor/blocks/button/dont-press-me-002';
 import DontPressMe003 from 'components/editor/blocks/button/dont-press-me-003';
 import DontPressMe004 from 'components/editor/blocks/button/dont-press-me-004';
 import DontPressMe005 from 'components/editor/blocks/button/dont-press-me-005';
+import Glassy from 'components/editor/blocks/button/glassy';
 import GlowUp001 from 'components/editor/blocks/button/glow-up-001';
 import GlowUp002 from 'components/editor/blocks/button/glow-up-002';
+import GlowUp003 from 'components/editor/blocks/button/glow-up-003';
 import Gold from 'components/editor/blocks/button/gold';
 import Shiny from 'components/editor/blocks/button/shiny';
 import SlideFromLeft001 from 'components/editor/blocks/button/slide-from-left-001';
@@ -37,6 +39,7 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
   button: {
     'glow-up-001': GlowUp001,
     'glow-up-002': GlowUp002,
+    'glow-up-003': GlowUp003,
     'slide-from-left-001': SlideFromLeft001,
     'dont-press-me-001': DontPressMe001,
     'dont-press-me-002': DontPressMe002,
@@ -45,6 +48,7 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     'dont-press-me-005': DontPressMe005,
     'flip-flap': FlipFlap,
     '3d-spin': ThreeDSpin,
+    glassy: Glassy,
     gold: Gold,
     shiny: Shiny
   },
