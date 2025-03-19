@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { LuExpand, LuPlus } from 'react-icons/lu';
 
 import FlipFlap from 'components/editor/blocks//button/flip-flap';
+import ThreeDSpin from 'components/editor/blocks/button/3d-spin';
 import DontPressMe001 from 'components/editor/blocks/button/dont-press-me-001';
 import DontPressMe002 from 'components/editor/blocks/button/dont-press-me-002';
 import DontPressMe003 from 'components/editor/blocks/button/dont-press-me-003';
@@ -43,6 +44,7 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     'dont-press-me-004': DontPressMe004,
     'dont-press-me-005': DontPressMe005,
     'flip-flap': FlipFlap,
+    '3d-spin': ThreeDSpin,
     gold: Gold,
     shiny: Shiny
   },
