@@ -38,6 +38,7 @@ function BackgroundItem({
         'aspect-video w-full rounded-lg bg-white border-4 border-transparent',
         'relative overflow-hidden',
         {
+          'aspect-[5/1]': preview === true,
           'border-4 border-black': selected === name && preview === false
         }
       )}
@@ -147,7 +148,7 @@ export default function UpdateSiteBackgroundModal({
       }}
       className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow dark:md:border-stone-700"
     >
-      <div className="relative flex flex-col p-5 md:p-10 gap-5">
+      <div className=" flex flex-col p-5 md:p-10 gap-5">
         <h2 className="font-cal text-2xl dark:text-white">
           {translate('components.site.updateBackground.title')}
         </h2>
@@ -219,12 +220,14 @@ export default function UpdateSiteBackgroundModal({
           <div className="flex flex-col gap-2">
             <h2>Backgrounds Prédéfinis</h2>
 
-            <div className="grid grid-cols-3 gap-2 max-h-[340px] overflow-y-auto">
-              {Object.entries(backgrounds).map(([name, Background]) => (
-                <BackgroundItem key={name} name={name}>
-                  <Background />
-                </BackgroundItem>
-              ))}
+            <div className="max-h-[200px] overflow-y-auto">
+              <div className="grid grid-cols-3 gap-2">
+                {Object.entries(backgrounds).map(([name, Background]) => (
+                  <BackgroundItem key={name} name={name}>
+                    <Background />
+                  </BackgroundItem>
+                ))}
+              </div>
             </div>
           </div>
         </div>

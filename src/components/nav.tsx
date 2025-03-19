@@ -124,7 +124,7 @@ export default function Nav({ children }: { children: ReactNode }) {
           showSidebar
             ? 'w-full h-full pr-[100px] sm:pr-0 translate-x-0 bg-gray-500/50'
             : '-translate-x-full'
-        } z-20 fixed sm:static flex flex-col gap-4 justify-between transition-all sm:w-60 sm:translate-x-0`}
+        } z-[200] fixed sm:static flex flex-col gap-4 justify-between transition-all sm:w-60 sm:translate-x-0`}
       >
         <div
           onClick={e => e.stopPropagation()}
