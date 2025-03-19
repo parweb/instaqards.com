@@ -4,6 +4,7 @@ import { memo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { LuExpand, LuPlus } from 'react-icons/lu';
 
+import FlipFlap from 'components/editor/blocks//button/flip-flap';
 import DontPressMe001 from 'components/editor/blocks/button/dont-press-me-001';
 import DontPressMe002 from 'components/editor/blocks/button/dont-press-me-002';
 import DontPressMe003 from 'components/editor/blocks/button/dont-press-me-003';
@@ -23,10 +24,10 @@ import Tiktok from 'components/editor/blocks/external/tiktok';
 import Twitter from 'components/editor/blocks/external/twitter';
 import Youtube from 'components/editor/blocks/external/youtube';
 import Email from 'components/editor/blocks/other/email';
+import Gallery from 'components/editor/blocks/picture/gallery';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
 import Picture169 from 'components/editor/blocks/picture/picture-16-9';
-import Gallery from 'components/editor/blocks/picture/gallery';
 import NormalText from 'components/editor/blocks/text/normal';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
@@ -41,6 +42,7 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     'dont-press-me-003': DontPressMe003,
     'dont-press-me-004': DontPressMe004,
     'dont-press-me-005': DontPressMe005,
+    'flip-flap': FlipFlap,
     gold: Gold,
     shiny: Shiny
   },

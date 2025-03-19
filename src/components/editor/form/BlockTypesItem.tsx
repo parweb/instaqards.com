@@ -25,6 +25,7 @@ export const BlockTypesItem = ({
     { id: 'dont-press-me-003', label: 'Dont press me 3', type: 'button' },
     { id: 'dont-press-me-004', label: 'Dont press me 4', type: 'button' },
     { id: 'dont-press-me-005', label: 'Dont press me 5', type: 'button' },
+    { id: 'flip-flap', label: 'Flip flap', type: 'button' },
     { id: 'gold', label: 'Gold', type: 'button' },
     { id: 'shiny', label: 'Shiny', type: 'button' },
 
