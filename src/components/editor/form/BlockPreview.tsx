@@ -5,116 +5,26 @@ import type { Block, Site } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useSetAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
-import { useDropzone } from 'react-dropzone';
+import type { Dispatch, SetStateAction } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { LuChevronLeft } from 'react-icons/lu';
 import { toast } from 'sonner';
 import * as z from 'zod';
 import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
 
-import {
-  Suspense,
-  useEffect,
-  useState,
-  type Dispatch,
-  type SetStateAction
-} from 'react';
-
 import { $lastSelected } from 'components/editor/form/BlockForm';
 import { BlockFormButton } from 'components/editor/form/BlockFormButton';
+import { Uploader } from 'components/editor/form/types/upload';
 import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { createBlock, updateBlock } from 'lib/actions';
-import { cn, text, type Block as BlockType } from 'lib/utils';
+import { text, type Block as BlockType } from 'lib/utils';
 
 const mutator = {
   create: createBlock,
   update: updateBlock
-};
-
-const Uploader = ({
-  setValue,
-  shape,
-  ...props
-}: {
-  name: string;
-  // eslint-disable-next-line no-unused-vars
-  setValue: (name: string, file: File) => void;
-  shape: Extract<BlockType, { kind: 'upload' }>;
-}) => {
-  console.log('Uploader', { props });
-
-  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-  const [mediaType, setMediaType] = useState<'video' | 'image' | null>(null);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: ([file]) => {
-      if (!file) return;
-
-      setValue(props.name, file);
-
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setMediaType((file.type.split('/').at(0) as 'video' | 'image') ?? null);
-
-        setPreview(reader.result);
-      };
-
-      reader.readAsDataURL(file);
-    },
-    multiple: false,
-    accept: shape.accept
-  });
-
-  return (
-    <div className="relative flex flex-col gap-5">
-      <div
-        className={cn(
-          'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
-          'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
-          isDragActive && 'border-slate-900 text-slate-900'
-        )}
-      >
-        <div {...getRootProps()} className="text-center">
-          <input {...getInputProps(props)} />
-
-          {isDragActive ? (
-            <>
-              <p>Drop the files here</p>
-              <p>Image or Video</p>
-            </>
-          ) : (
-            <>
-              <p>{"Drag 'n' drop some files here,"}</p>
-              <p>or click to select files</p>
-            </>
-          )}
-        </div>
-      </div>
-
-      {preview && false && (
-        <>
-          {mediaType === 'image' && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              className="aspect-video object-contain"
-              src={preview as string}
-              alt="Upload preview"
-            />
-          )}
-
-          {mediaType === 'video' && (
-            <video className="aspect-video object-contain" controls>
-              <source src={preview as string} />
-              <track kind="captions" src="" label="no captions" />
-            </video>
-          )}
-        </>
-      )}
-    </div>
-  );
 };
 
 export function BlockPreview({
@@ -194,7 +104,7 @@ export function BlockPreview({
   });
 
   const { widget, ...data } = useWatch({ control });
-  console.info({ widget, data });
+  console.info({ widget });
 
   const widgetString = JSON.stringify({ ...block_widget, data });
 
@@ -209,7 +119,14 @@ export function BlockPreview({
         const form = new FormData();
 
         for (const [key, value] of Object.entries(data)) {
-          form.append(key, value);
+          if (Array.isArray(value)) {
+            for (const [i, item] of value.entries()) {
+              for (const [attr, field] of Object.entries(item)) {
+                // @ts-ignore
+                form.append(`${key}[${i}][${attr}]`, field);
+              }
+            }
+          } else form.append(key, value);
         }
 
         // @ts-ignore
@@ -285,11 +202,10 @@ export function BlockPreview({
 
                       <Uploader
                         {...register(key)}
-                        setValue={
-                          // eslint-disable-next-line no-unused-vars
-                          setValue as (name: string, file: File) => void
-                        }
+                        data={data}
                         shape={property.shape}
+                        // @ts-ignore
+                        setValue={setValue}
                       />
                     </>
                   )}

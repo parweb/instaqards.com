@@ -5,34 +5,74 @@ import * as z from 'zod';
 import { json } from 'lib/utils';
 
 export const input = z.object({
-  media: z.instanceof(File, { message: 'Image is required' }).describe(
-    json({
-      label: 'Image',
-      kind: 'upload',
-      accept: { 'image/*': [] }
-    })
-  )
+  medias: z
+    .array(
+      z
+        .object({
+          id: z.string(),
+          link: z.string().optional()
+        })
+        .and(
+          z
+            .object({
+              kind: z.literal('remote'),
+              url: z.string()
+            })
+            .or(
+              z.object({
+                kind: z.literal('local'),
+                file: z.instanceof(File)
+              })
+            )
+        )
+    )
+
+    .describe(
+      json({
+        label: 'Image',
+        kind: 'upload',
+        multiple: false,
+        preview: true,
+        accept: { 'image/*': [] }
+      })
+    )
 });
 
 const placeholder = 'https://placehold.co/480x270.png?text=16:9';
 export default function Picture169({
-  media = placeholder
-}: Partial<{ media: string | File }>) {
+  medias: [media] = [{ id: '1', kind: 'remote', url: placeholder }]
+}: Partial<z.infer<typeof input>>) {
   const [src, setSrc] = useState<string>(
-    typeof media === 'string' ? media : placeholder
+    media.kind === 'remote' ? media.url : ''
   );
 
+  const mediaFile = media.kind === 'local' ? media.file : null;
   useEffect(() => {
-    if (media instanceof File) {
+    if (mediaFile) {
       const reader = new FileReader();
-      reader.onloadend = () => setSrc(reader.result as string);
-      reader.readAsDataURL(media);
+      reader.onloadend = () => setSrc(reader.result?.toString() ?? '');
+      reader.readAsDataURL(mediaFile);
     }
-  }, [media]);
+  }, [mediaFile]);
 
-  return (
-    <div className="bg-white rounded-md overflow-hidden aspect-video h-full flex items-center justify-center mx-auto">
-      <Image priority className="object-cover" src={src} alt="Image" fill />
+  const img = (
+    <div className="relative aspect-video w-full mx-auto bg-white rounded-md overflow-hidden">
+      <Image
+        priority
+        className="object-cover"
+        src={src}
+        alt="Image"
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      />
     </div>
+  );
+
+  return media.link ? (
+    <a href={media.link} target="_blank" rel="noopener noreferrer">
+      {img}
+    </a>
+  ) : (
+    img
   );
 }

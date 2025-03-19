@@ -141,7 +141,12 @@ type Share = {
 
 export type Block = Share &
   (
-    | { kind: 'upload'; accept: Record<string, string[]> }
+    | {
+        kind: 'upload';
+        multiple: boolean;
+        preview: boolean;
+        accept: Record<string, string[]>;
+      }
     | { kind: 'string' }
     | { kind: 'number'; plop: string }
   );

@@ -1,7 +1,7 @@
-import * as z from 'zod';
 import Link from 'next/link';
+import * as z from 'zod';
 
-import { cn, json } from 'lib/utils';
+import { json } from 'lib/utils';
 
 const $label = z
   .string()

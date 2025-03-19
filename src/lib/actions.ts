@@ -65,14 +65,65 @@ export const createSite = async (
   }
 };
 
+type Input = [string, number, string, string | File] | [string, string];
+type Output = Record<string, string | Record<string, string | File>[]>;
+
+const transformArrayToObject = (list: Input[]): Output =>
+  list.reduce((carry, entry) => {
+    if (entry.length === 2) {
+      const [key, value] = entry;
+      carry[key] = value;
+    } else {
+      const [key, index, attr, value] = entry;
+      if (!Array.isArray(carry[key])) carry[key] = [];
+
+      (carry[key] as Record<string, string | File>[])[index] = {
+        ...((carry[key] as Record<string, string | File>[])[index] || {}),
+        [attr]: value
+      };
+    }
+
+    return carry;
+  }, {} as Output);
+
+const hasFile = (value: unknown): boolean => {
+  if (value instanceof File) return true;
+
+  if (Array.isArray(value)) {
+    return value.some(item => hasFile(item));
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.values(value).some(val => hasFile(val));
+  }
+
+  return false;
+};
+
+const filterEntriesWithFiles = <T extends Record<string, unknown>>(
+  entries: T
+): Partial<T> => {
+  return Object.fromEntries(
+    Object.entries(entries).filter(([, value]) => hasFile(value))
+  ) as Partial<T>;
+};
+
 export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
   if (!blockId) {
     return { error: 'Block ID is required' };
   }
 
-  const uploadables: [string, File][] = [...form.entries()].filter(
-    ([, value]) => value instanceof File
-  ) as [string, File][];
+  const entries = transformArrayToObject(
+    [...form.entries()]
+      .map(([key, value]) => [...key.split(/\[|\]/).filter(Boolean), value])
+      .map(([key, index, attr, value]) =>
+        attr === undefined && value === undefined
+          ? [key, index]
+          : [key, Number(index), attr, value]
+      ) as Input[]
+  );
+
+  const uploadables = Object.entries(filterEntriesWithFiles(entries));
 
   const label = form.get('label') as Block['label'];
   const href = form.get('href') as Block['href'];
@@ -86,15 +137,37 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
   const [, widget] = await trySafe<string | undefined>(async () => {
     const parsed = JSON.parse(String(form.get('widget')));
 
-    const urls = await Promise.all(
-      uploadables.map(async ([key, file]) => {
-        const filename = `${nanoid()}.${file.type.split('/')[1]}`;
-        const { url } = await put(filename, file);
-        return [key, url];
-      })
+    const medias = Object.fromEntries(
+      await Promise.all(
+        uploadables.map(async ([key, items]) => [
+          key,
+          await Promise.all(
+            (
+              (items || []) as {
+                kind: 'local' | 'remote';
+                file: File;
+                [key: string]: string | File;
+              }[]
+            ).map(async ({ kind, file, ...media }) => {
+              if (kind !== 'local') return { kind, ...media };
+
+              const { url } = await put(
+                `${media.id}.${file.type.split('/')[1]}`,
+                file
+              );
+
+              return {
+                ...media,
+                kind: 'remote',
+                url
+              };
+            })
+          )
+        ])
+      )
     );
 
-    return { ...parsed, data: { ...parsed.data, ...Object.fromEntries(urls) } };
+    return { ...parsed, data: { ...parsed.data, ...medias } };
   }, undefined);
 
   try {
@@ -142,9 +215,17 @@ export const createBlock = async (
   site: Site['id'],
   type: Block['type']
 ): Promise<{ error: string } | Block> => {
-  const uploadables: [string, File][] = [...form.entries()].filter(
-    ([, value]) => value instanceof File
-  ) as [string, File][];
+  const entries = transformArrayToObject(
+    [...form.entries()]
+      .map(([key, value]) => [...key.split(/\[|\]/).filter(Boolean), value])
+      .map(([key, index, attr, value]) =>
+        attr === undefined && value === undefined
+          ? [key, index]
+          : [key, Number(index), attr, value]
+      ) as Input[]
+  );
+
+  const uploadables = Object.entries(filterEntriesWithFiles(entries));
 
   const label = form.get('label') as Block['label'];
   const href = form.get('href') as Block['href'];
@@ -158,15 +239,37 @@ export const createBlock = async (
   const [, widget] = await trySafe<string | undefined>(async () => {
     const parsed = JSON.parse(String(form.get('widget')));
 
-    const urls = await Promise.all(
-      uploadables.map(async ([key, file]) => {
-        const filename = `${nanoid()}.${file.type.split('/')[1]}`;
-        const { url } = await put(filename, file);
-        return [key, url];
-      })
+    const medias = Object.fromEntries(
+      await Promise.all(
+        uploadables.map(async ([key, items]) => [
+          key,
+          await Promise.all(
+            (
+              (items || []) as {
+                kind: 'local' | 'remote';
+                file: File;
+                [key: string]: string | File;
+              }[]
+            ).map(async ({ kind, file, ...media }) => {
+              if (kind !== 'local') return { kind, ...media };
+
+              const { url } = await put(
+                `${media.id}.${file.type.split('/')[1]}`,
+                file
+              );
+
+              return {
+                ...media,
+                kind: 'remote',
+                url
+              };
+            })
+          )
+        ])
+      )
     );
 
-    return { ...parsed, data: { ...parsed.data, ...Object.fromEntries(urls) } };
+    return { ...parsed, data: { ...parsed.data, ...medias } };
   }, undefined);
 
   try {

@@ -26,6 +26,7 @@ import Email from 'components/editor/blocks/other/email';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
 import Picture169 from 'components/editor/blocks/picture/picture-16-9';
+import Gallery from 'components/editor/blocks/picture/gallery';
 import NormalText from 'components/editor/blocks/text/normal';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
@@ -46,7 +47,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
   picture: {
     'logo-circle': LogoCircle,
     'logo-square': LogoSquare,
-    'picture-16-9': Picture169
+    'picture-16-9': Picture169,
+    gallery: Gallery
   },
   text: {
     normal: NormalText

@@ -48,8 +48,6 @@ const Landing = async ({
     ? 'css'
     : contentType(site?.background?.split('/').pop() ?? '') || '';
 
-  console.log({ media_type });
-
   return (
     <main className="relative flex-1 self-stretch items-center flex flex-col pointer-events-auto h-screen">
       <div className="absolute inset-0 group pointer-events-auto">

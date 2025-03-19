@@ -31,6 +31,7 @@ export const BlockTypesItem = ({
     { id: 'logo-circle', label: 'Logo circle', type: 'picture' },
     { id: 'logo-square', label: 'Logo square', type: 'picture' },
     { id: 'picture-16-9', label: 'Picture 16:9', type: 'picture' },
+    { id: 'gallery', label: 'Gallery', type: 'picture' },
 
     { id: 'normal', label: 'Normal', type: 'text' },
 

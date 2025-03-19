@@ -5,40 +5,65 @@ import * as z from 'zod';
 import { json } from 'lib/utils';
 
 export const input = z.object({
-  media: z.instanceof(File, { message: 'Logo is required' }).describe(
-    json({
-      label: 'Logo',
-      kind: 'upload',
-      accept: { 'image/*': [] }
-    })
-  )
+  medias: z
+    .array(
+      z
+        .object({
+          id: z.string(),
+          link: z.string().optional()
+        })
+        .and(
+          z
+            .object({
+              kind: z.literal('remote'),
+              url: z.string()
+            })
+            .or(
+              z.object({
+                kind: z.literal('local'),
+                file: z.instanceof(File)
+              })
+            )
+        )
+    )
+
+    .describe(
+      json({
+        label: 'Logo',
+        kind: 'upload',
+        multiple: false,
+        preview: false,
+        accept: { 'image/*': [] }
+      })
+    )
 });
 
 const placeholder = 'https://placehold.co/96x96.png';
 export default function LogoCircle({
-  media = placeholder
-}: Partial<{ media: string | File }>) {
+  medias: [media] = [{ id: '1', kind: 'remote', url: placeholder }]
+}: Partial<z.infer<typeof input>>) {
   const [src, setSrc] = useState<string>(
-    typeof media === 'string' ? media : placeholder
+    media.kind === 'remote' ? media.url : ''
   );
 
+  const mediaFile = media.kind === 'local' ? media.file : null;
   useEffect(() => {
-    if (media instanceof File) {
+    if (mediaFile) {
       const reader = new FileReader();
-      reader.onloadend = () => setSrc(reader.result as string);
-      reader.readAsDataURL(media);
+      reader.onloadend = () => setSrc(reader.result?.toString() ?? '');
+      reader.readAsDataURL(mediaFile);
     }
-  }, [media]);
+  }, [mediaFile]);
 
   return (
-    <div className="bg-white rounded-full overflow-hidden w-24 h-24 mx-auto flex items-center justify-center">
+    <div className="relative w-24 aspect-square mx-auto bg-white rounded-full overflow-hidden">
       <Image
         priority
-        className="object-contain"
+        className="object-cover"
         src={src}
         alt="Logo"
-        width={96}
-        height={96}
+        fill
+        sizes="100px"
       />
     </div>
   );

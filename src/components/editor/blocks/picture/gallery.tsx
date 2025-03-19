@@ -1,0 +1,150 @@
+import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
+import { useEffect, useState } from 'react';
+import * as z from 'zod';
+
+import { json } from 'lib/utils';
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem
+} from 'components/ui/carousel';
+
+export const input = z.object({
+  medias: z
+    .array(
+      z
+        .object({
+          id: z.string(),
+          link: z.string().optional()
+        })
+        .and(
+          z
+            .object({
+              kind: z.literal('remote'),
+              url: z.string()
+            })
+            .or(
+              z.object({
+                kind: z.literal('local'),
+                file: z.instanceof(File)
+              })
+            )
+        )
+    )
+
+    .describe(
+      json({
+        label: 'Images',
+        kind: 'upload',
+        multiple: true,
+        preview: true,
+        accept: { 'image/*': [] }
+      })
+    )
+});
+
+const GalleryItemLink = ({
+  link,
+  children
+}: {
+  link: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <a href={link} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  );
+};
+
+const GalleryItem = ({
+  media
+}: {
+  media: z.infer<typeof input>['medias'][number];
+}) => {
+  const [src, setSrc] = useState<string>(
+    media.kind === 'remote' ? media.url : ''
+  );
+
+  const mediaFile = media.kind === 'local' ? media.file : null;
+  useEffect(() => {
+    if (mediaFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => setSrc(reader.result?.toString() ?? '');
+      reader.readAsDataURL(mediaFile);
+    }
+  }, [mediaFile]);
+
+  // eslint-disable-next-line @next/next/no-img-element
+  const image = <img src={src} alt="" className="max-h-[300px] object-cover" />;
+
+  return (
+    <div className="rounded-md overflow-hidden">
+      {media.kind === 'local' ? (
+        image
+      ) : media.link ? (
+        <GalleryItemLink link={media.link}>{image}</GalleryItemLink>
+      ) : (
+        image
+      )}
+    </div>
+  );
+};
+
+export default function Gallery({
+  medias = [
+    {
+      id: '4',
+      kind: 'remote',
+      url: 'https://placehold.co/210x290.png?text=A4'
+    },
+    {
+      id: '5',
+      kind: 'remote',
+      url: 'https://placehold.co/210x290.png?text=A4'
+    },
+    {
+      id: '6',
+      kind: 'remote',
+      url: 'https://placehold.co/210x290.png?text=A4'
+    },
+    {
+      id: '7',
+      kind: 'remote',
+      url: 'https://placehold.co/210x290.png?text=A4'
+    },
+    { id: '8', kind: 'remote', url: 'https://placehold.co/210x290.png?text=A4' }
+    // { id: '1', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
+    // { id: '2', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
+    // { id: '3', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
+    // { id: '4', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
+    // { id: '5', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
+    // { id: '6', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
+    // { id: '7', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
+    // { id: '8', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' }
+  ]
+}: Partial<z.infer<typeof input>>) {
+  if (medias.length === 0) {
+    return (
+      <div className="rounded-md overflow-hidden bg-white p-4 flex-1 flex items-center justify-center">
+        No images
+      </div>
+    );
+  }
+
+  return (
+    <Carousel
+      opts={{ dragFree: true }}
+      plugins={[WheelGesturesPlugin({ forceWheelAxis: undefined /* 'y' */ })]}
+    >
+      <CarouselContent>
+        {medias.map(media => (
+          <CarouselItem key={media.id}>
+            <GalleryItem media={media} />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
+  );
+}
