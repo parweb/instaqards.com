@@ -27,18 +27,24 @@ function BackgroundItem({
   preview?: boolean;
 }) {
   const [selected, setSelected] = useAtom($selected);
+  const [expand, setExpand] = useState(false);
 
   return (
     <div
       onClick={() => {
-        setSelected(state => (state === name ? null : name));
+        if (preview === false) {
+          setSelected(state => (state === name ? null : name));
+        } else {
+          setExpand(state => !state);
+        }
       }}
       onKeyDown={() => {}}
       className={cn(
         'aspect-video w-full rounded-lg bg-white border-4 border-transparent',
         'relative overflow-hidden',
+        'transition-all duration-300',
         {
-          'aspect-[5/1]': preview === true,
+          'aspect-[5/1]': preview === true && expand === false,
           'border-4 border-black': selected === name && preview === false
         }
       )}
