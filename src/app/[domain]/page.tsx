@@ -100,7 +100,7 @@ export default async function SiteHomePage({
           </>
         )}
 
-        <div className="fixed inset-0 bg-black/30 pointer-events-auto" />
+        {/* <div className="fixed inset-0 bg-black/30 pointer-events-auto" /> */}
       </div>
 
       <section className="flex flex-col px-5 py-10 flex-1 self-stretch">

@@ -81,7 +81,7 @@ const Landing = async ({
           </>
         )}
 
-        <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
+        {/* <div className="absolute inset-0 bg-black/30 pointer-events-auto" /> */}
       </div>
 
       <section className="absolute inset-0 flex flex-col px-5 py-10 flex-1 self-stretch pointer-events-auto overflow-y-auto">
