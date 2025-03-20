@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 
@@ -58,6 +59,8 @@ export default function RootLayout({
 
         <SpeedInsights />
       </body>
+
+      <GoogleAnalytics gaId="G-XJM901XDPJ" />
     </html>
   );
 }
