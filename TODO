@@ -1,4 +1,18 @@
+
+
 TODO
+
+<!-- <Link href={`/click/${link.id}`} target="_blank" rel="noreferrer"> -->
+
+DONE -> subdomain apres suffix & préfix
+     -> duplicate block
+     -> apply style on all
+     -> custom font size color ... on text
+     -> block header
+     -> block social
+     -> deeplink headless
+     -> rendez-vous
+     -> generator de qards (ADMIN)
 
 DONE -> biography block under profil picture
      -> univers music, girly
