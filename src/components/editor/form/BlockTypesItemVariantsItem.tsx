@@ -16,6 +16,7 @@ import GlowUp001 from 'components/editor/blocks/button/glow-up-001';
 import GlowUp002 from 'components/editor/blocks/button/glow-up-002';
 import GlowUp003 from 'components/editor/blocks/button/glow-up-003';
 import Gold from 'components/editor/blocks/button/gold';
+import Icon from 'components/editor/blocks/button/icon';
 import Shiny from 'components/editor/blocks/button/shiny';
 import SlideFromLeft001 from 'components/editor/blocks/button/slide-from-left-001';
 import AppleMusic from 'components/editor/blocks/external/apple-music';
@@ -40,6 +41,7 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     'glow-up-001': GlowUp001,
     'glow-up-002': GlowUp002,
     'glow-up-003': GlowUp003,
+    icon: Icon,
     'slide-from-left-001': SlideFromLeft001,
     'dont-press-me-001': DontPressMe001,
     'dont-press-me-002': DontPressMe002,
