@@ -16,6 +16,8 @@ import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
 import { $lastSelected } from 'components/editor/form/BlockForm';
 import { BlockFormButton } from 'components/editor/form/BlockFormButton';
 import { Color } from 'components/editor/form/types/color';
+import { Container } from 'components/editor/form/types/container';
+import { Font } from 'components/editor/form/types/font';
 import { Uploader } from 'components/editor/form/types/upload';
 import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
@@ -214,6 +216,24 @@ export function BlockPreview({
                           setValue={setValue}
                         />
                       </>
+                    )}
+
+                    {property.shape.kind === 'container' && (
+                      <Container
+                        // @ts-ignore
+                        control={control}
+                        data={data}
+                        shape={property.shape}
+                      />
+                    )}
+
+                    {property.shape.kind === 'font' && (
+                      <Font
+                        // @ts-ignore
+                        control={control}
+                        data={data}
+                        shape={property.shape}
+                      />
                     )}
 
                     {property.shape.kind === 'color' && (

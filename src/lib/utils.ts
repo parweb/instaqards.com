@@ -150,6 +150,26 @@ export type Block = Share &
     | { kind: 'string' }
     | { kind: 'color'; default: string }
     | { kind: 'number'; plop: string }
+    | {
+        kind: 'font';
+        default: {
+          color: string;
+          fontSize: `${string}px`;
+          fontFamily: string;
+          textAlign: 'left' | 'center' | 'right' | 'justify';
+        };
+      }
+    | {
+        kind: 'container';
+        default: {
+          backgroundColor: string;
+          borderColor: string;
+          borderWidth: `${string}px`;
+          borderRadius: `${string}px`;
+          padding: `${string}px`;
+          margin: `${string}px`;
+        };
+      }
   );
 
 export const json = (data: Block) => JSON.stringify(data, null, 2);

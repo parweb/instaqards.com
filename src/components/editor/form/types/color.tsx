@@ -1,9 +1,11 @@
 'use client';
 
-import type { Block as BlockType } from 'lib/utils';
-import { Input } from 'components/ui/input';
-import { ColorPicker } from 'components/ui/color-picker';
 import { Controller, type Control, type FieldValues } from 'react-hook-form';
+
+import { ColorPicker } from 'components/ui/color-picker';
+import { Input } from 'components/ui/input';
+import type { Block as BlockType } from 'lib/utils';
+
 export const Color = (props: {
   control: Control<FieldValues>;
   name: string;
