@@ -42,11 +42,11 @@ export default function Uploader({
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       <label
         htmlFor={`${name}-upload`}
         className={cn(
-          'group relative mt-2 flex cursor-pointer flex-col items-center justify-center rounded-md border border-gray-300 bg-white shadow-sm transition-all hover:bg-gray-50',
+          'group relative flex cursor-pointer flex-col items-center justify-center rounded-md border border-gray-300 bg-white shadow-sm transition-all hover:bg-gray-50',
           aspectRatio,
           {
             'max-w-screen-md': aspectRatio === 'aspect-video',
@@ -127,9 +127,7 @@ export default function Uploader({
             className="h-full w-full rounded-md object-cover"
           />
         )}
-      </label>
 
-      <div className="mt-1 flex rounded-md shadow-sm">
         <input
           id={`${name}-upload`}
           ref={inputRef}
@@ -141,7 +139,7 @@ export default function Uploader({
             handleUpload(e.currentTarget.files?.[0] ?? null);
           }}
         />
-      </div>
+      </label>
     </div>
   );
 }

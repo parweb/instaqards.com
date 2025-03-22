@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { LuArrowUpRight } from 'react-icons/lu';
 
 import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
@@ -46,12 +47,12 @@ export default async function SiteAnalyticsLayout({
           }
           target="_blank"
           rel="noreferrer"
-          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200"
+          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
         >
           {process.env.NEXT_PUBLIC_VERCEL_ENV
             ? url
             : `${site.subdomain}.localhost:11000`}
-          ↗
+          <LuArrowUpRight />
         </a>
       </div>
 

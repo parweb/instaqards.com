@@ -9,10 +9,12 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   BarChart3,
+  Cog,
   DollarSign,
   Globe,
   HelpCircle,
   LayoutDashboard,
+  Link as LinkIcon,
   Menu,
   Newspaper,
   Settings,
@@ -21,12 +23,15 @@ import {
 } from 'lucide-react';
 
 import { LanguageChooser } from 'components/LanguageChooser';
+import { useCurrentRole } from 'hooks/use-current-role';
 import useTranslation from 'hooks/use-translation';
 
 export default function Nav({ children }: { children: ReactNode }) {
   const segments = useSelectedLayoutSegments();
   const { id } = useParams() as { id?: string };
   const translate = useTranslation();
+
+  const role = useCurrentRole();
 
   const tabs = useMemo(() => {
     const help = {
@@ -84,6 +89,22 @@ export default function Nav({ children }: { children: ReactNode }) {
         icon: <Globe width={18} />
       },
       {
+        name: translate('menu.links'),
+        href: '/links',
+        isActive: segments[0] === 'links',
+        icon: <LinkIcon width={18} />
+      },
+      ...(role === 'ADMIN'
+        ? [
+            {
+              name: translate('menu.generator'),
+              href: '/generator',
+              isActive: segments[0] === 'generator',
+              icon: <Cog width={18} />
+            }
+          ]
+        : []),
+      {
         name: translate('menu.affiliation'),
         href: '/affiliation',
         isActive: segments[0] === 'affiliation',
@@ -97,7 +118,7 @@ export default function Nav({ children }: { children: ReactNode }) {
       },
       help
     ];
-  }, [translate, segments, id]);
+  }, [translate, segments, id, role]);
 
   const [showSidebar, setShowSidebar] = useState(false);
 

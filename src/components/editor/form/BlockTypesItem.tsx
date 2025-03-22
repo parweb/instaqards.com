@@ -5,12 +5,14 @@ import { BlockTypesItemVariants } from './BlockTypesItemVariants';
 export const BlockTypesItem = ({
   label,
   type,
-  onClick
+  onClick,
+  value
 }: {
   label: string;
   type: 'button' | 'picture' | 'text' | 'external' | 'other';
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
+  value?: { type: string; id: string };
 }) => {
   const variants: {
     id: string;
@@ -56,32 +58,11 @@ export const BlockTypesItem = ({
     <div className="flex flex-col gap-2">
       <hgroup className="flex gap-2 items-center justify-between">
         <h3>{label}</h3>
-
-        {/* <div className="flex gap-2">
-              <Button
-                disabled={selected === 0}
-                type="button"
-                onClick={() => setSelected(clamp(selected - 1, 0, 2))}
-                variant="ghost"
-                size="icon"
-              >
-                <LuArrowLeft />
-              </Button>
-    
-              <Button
-                disabled={selected === variants.length - 1}
-                type="button"
-                onClick={() => setSelected(clamp(selected + 1, 0, 2))}
-                variant="ghost"
-                size="icon"
-              >
-                <LuArrowRight />
-              </Button>
-            </div> */}
       </hgroup>
 
       <BlockTypesItemVariants
         onClick={onClick}
+        value={value}
         variants={variants.filter(v => v.type === type)}
       />
     </div>

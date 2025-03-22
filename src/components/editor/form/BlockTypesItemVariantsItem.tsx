@@ -82,13 +82,15 @@ export const BlockTypesItemVariantsItem = ({
   id,
   label,
   type,
-  onClick
+  onClick,
+  value
 }: {
   id: string;
   label: string;
   type: 'button' | 'picture' | 'text' | 'external' | 'other';
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
+  value?: { type: string; id: string };
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -108,7 +110,7 @@ export const BlockTypesItemVariantsItem = ({
             <Component label="Press Me" />
           </div>
 
-          <div className="absolute inset-0 flex items-start justify-end z-60">
+          <div className="absolute inset-0 flex items-start justify-end z-60 cursor-pointer">
             <Button
               type="button"
               onClick={() => {
@@ -166,7 +168,15 @@ export const BlockTypesItemVariantsItem = ({
   }
 
   return (
-    <div className="touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px] border border-stone-200 rounded-md p-2">
+    <div
+      className={cn(
+        'touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px]',
+        'border border-stone-200 rounded-md p-2',
+        {
+          'border-2 border-primary': value?.id === id && value?.type === type
+        }
+      )}
+    >
       <Main />
     </div>
   );

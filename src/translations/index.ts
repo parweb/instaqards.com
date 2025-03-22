@@ -533,6 +533,18 @@ const translations = {
     it: 'Siti',
     es: 'Sitios'
   },
+  'menu.links': {
+    fr: 'Liens',
+    en: 'Links',
+    it: 'Link',
+    es: 'Enlaces'
+  },
+  'menu.generator': {
+    fr: 'Générateur',
+    en: 'Generator',
+    it: 'Generatore',
+    es: 'Generador'
+  },
   'menu.affiliation': {
     fr: 'Affiliation',
     en: 'Affiliation',

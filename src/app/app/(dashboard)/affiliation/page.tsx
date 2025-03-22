@@ -1,5 +1,6 @@
 import { eachHourOfInterval } from 'date-fns';
 import { redirect } from 'next/navigation';
+import { LuArrowUpRight } from 'react-icons/lu';
 
 import Analytics from 'components/analytics';
 import { db } from 'helpers/db';
@@ -53,10 +54,10 @@ export default async function AllAffiliation() {
               href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/?r=${session.user.id}`}
               target="_blank"
               rel="noreferrer"
-              className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700"
+              className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700 flex items-center gap-2"
             >
               {`${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/?r=${session.user.id}`}{' '}
-              ↗
+              <LuArrowUpRight />
             </a>
           </div>
         </div>

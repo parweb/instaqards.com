@@ -12,7 +12,8 @@ import {
 
 export const BlockTypesItemVariants = ({
   variants,
-  onClick
+  onClick,
+  value
 }: {
   variants: {
     id: string;
@@ -21,6 +22,7 @@ export const BlockTypesItemVariants = ({
   }[];
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
+  value?: { type: string; id: string };
 }) => {
   return (
     <Carousel
@@ -30,7 +32,11 @@ export const BlockTypesItemVariants = ({
       <CarouselContent>
         {variants.map(variant => (
           <CarouselItem key={variant.id}>
-            <BlockTypesItemVariantsItem {...variant} onClick={onClick} />
+            <BlockTypesItemVariantsItem
+              {...variant}
+              onClick={onClick}
+              value={value}
+            />
           </CarouselItem>
         ))}
       </CarouselContent>
