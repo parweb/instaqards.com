@@ -15,7 +15,7 @@ export async function getSiteData(domain: string) {
           : { customDomain: domain.toLowerCase() },
         include: {
           user: true,
-          blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'desc' }] }
+          blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
         }
       });
     },

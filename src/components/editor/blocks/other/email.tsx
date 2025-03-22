@@ -12,7 +12,7 @@ import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { json } from 'lib/utils';
-import { subscribe } from './actions';
+import { subscribe } from 'components/editor/blocks/other/actions';
 
 export const input = z.object({
   placeholder: z

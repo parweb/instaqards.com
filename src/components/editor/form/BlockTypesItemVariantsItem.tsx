@@ -28,6 +28,7 @@ import Tiktok from 'components/editor/blocks/external/tiktok';
 import Twitter from 'components/editor/blocks/external/twitter';
 import Youtube from 'components/editor/blocks/external/youtube';
 import Email from 'components/editor/blocks/other/email';
+import Profile from 'components/editor/blocks/other/profile';
 import Gallery from 'components/editor/blocks/picture/gallery';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
@@ -74,7 +75,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     'apple-music': AppleMusic
   },
   other: {
-    email: Email
+    email: Email,
+    profile: Profile
   }
 };
 

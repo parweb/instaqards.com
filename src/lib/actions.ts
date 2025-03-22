@@ -41,10 +41,30 @@ export const createSite = async (
     const response = await db.site.create({
       data: {
         name,
-        display_name: name,
         description,
         subdomain,
-        user: { connect: { id: session.user.id } }
+        user: { connect: { id: session.user.id } },
+        blocks: {
+          create: {
+            type: 'main',
+            position: 0,
+            widget: {
+              id: 'profile',
+              type: 'other',
+              data: {
+                name: name,
+                description: description,
+                images: [
+                  {
+                    id: '1',
+                    kind: 'remote',
+                    url: 'https://qards.link/rsz_noir-fon-transparent.png'
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     });
 

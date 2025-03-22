@@ -51,7 +51,8 @@ export const BlockTypesItem = ({
     { id: 'twitter', label: 'X', type: 'external' },
     { id: 'apple-music', label: 'Apple Music', type: 'external' },
 
-    { id: 'email', label: 'Email', type: 'other' }
+    { id: 'email', label: 'Email', type: 'other' },
+    { id: 'profile', label: 'Profile', type: 'other' }
   ];
 
   return (

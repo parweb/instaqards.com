@@ -151,111 +151,117 @@ export function BlockPreview({
       })}
     >
       <div className="flex-1 self-stretch overflow-y-scroll">
-        <div className="px-10 py-5 overflow-hidden">
-          <Suspense fallback={null}>
-            <Component {...data} />
-          </Suspense>
-        </div>
+        <div className="flex flex-col gap-4">
+          <div className="px-10 py-5 overflow-hidden relative flex flex-col gap-4">
+            <div className="absolute z-10 inset-0 bg-black/30 pointer-events-auto" />
 
-        <Controller
-          control={control}
-          name="widget"
-          render={({ field }) => (
-            <input
-              type="hidden"
-              {...field}
-              value={JSON.stringify({ ...block_widget, data })}
-            />
-          )}
-        />
+            <div className="z-20 ">
+              <Suspense fallback={null}>
+                <Component {...data} />
+              </Suspense>
+            </div>
+          </div>
 
-        <div id="editor">
-          <Suspense fallback={null}>
-            <Editor />
-          </Suspense>
-        </div>
+          <Controller
+            control={control}
+            name="widget"
+            render={({ field }) => (
+              <input
+                type="hidden"
+                {...field}
+                value={JSON.stringify({ ...block_widget, data })}
+              />
+            )}
+          />
 
-        <div className="px-4 flex flex-col gap-4">
-          {(
-            Object.entries(
-              (zodToJsonSchema(input) as JsonSchema7Type['default'])
-                ?.properties ?? {}
-            ) as [string, { description: string; type: string }][]
-          )
-            .map(
-              ([key, property]) =>
-                [key, { ...property, shape: text(property.description) }] as [
-                  never,
-                  { description: string; type: string; shape: BlockType }
-                ]
+          <div id="editor">
+            <Suspense fallback={null}>
+              <Editor />
+            </Suspense>
+          </div>
+
+          <div className="px-4 flex flex-col gap-4">
+            {(
+              Object.entries(
+                (zodToJsonSchema(input) as JsonSchema7Type['default'])
+                  ?.properties ?? {}
+              ) as [string, { description: string; type: string }][]
             )
-            .map(([key, property]) => {
-              return (
-                <div key={key} className="flex flex-col gap-2">
-                  {property.shape.kind === 'upload' && (
-                    <>
-                      {errors[key] && (
-                        <p className="text-red-500 text-sm text-center">
-                          {/* @ts-ignore */}
-                          {errors[key]?.message?.toString()}
-                        </p>
-                      )}
+              .map(
+                ([key, property]) =>
+                  [key, { ...property, shape: text(property.description) }] as [
+                    never,
+                    { description: string; type: string; shape: BlockType }
+                  ]
+              )
+              .map(([key, property]) => {
+                return (
+                  <div key={key} className="flex flex-col gap-2">
+                    {property.shape.kind === 'upload' && (
+                      <>
+                        {errors[key] && (
+                          <p className="text-red-500 text-sm text-center">
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
 
-                      <Uploader
-                        {...register(key)}
-                        data={data}
-                        shape={property.shape}
-                        // @ts-ignore
-                        setValue={setValue}
-                      />
-                    </>
-                  )}
+                        <Uploader
+                          {...register(key)}
+                          data={data}
+                          shape={property.shape}
+                          // @ts-ignore
+                          setValue={setValue}
+                        />
+                      </>
+                    )}
 
-                  {property.shape.kind === 'color' && (
-                    <>
-                      {errors[key] && (
-                        <p className="text-red-500 text-sm text-center">
-                          {/* @ts-ignore */}
-                          {errors[key]?.message?.toString()}
-                        </p>
-                      )}
+                    {property.shape.kind === 'color' && (
+                      <>
+                        {errors[key] && (
+                          <p className="text-red-500 text-sm text-center">
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
 
-                      <Color
-                        // @ts-ignore
-                        control={control}
-                        name={key}
-                        data={data}
-                        shape={property.shape}
-                      />
-                    </>
-                  )}
+                        <Color
+                          // @ts-ignore
+                          control={control}
+                          name={key}
+                          data={data}
+                          shape={property.shape}
+                        />
+                      </>
+                    )}
 
-                  {property.shape.kind === 'string' && (
-                    <>
-                      <label
-                        htmlFor={key}
-                        className="text-sm font-medium text-stone-500"
-                      >
-                        {property.shape.label}
-                      </label>
+                    {property.shape.kind === 'string' && (
+                      <>
+                        <label
+                          htmlFor={key}
+                          className="text-sm font-medium text-stone-500"
+                        >
+                          {property.shape.label}
+                        </label>
 
-                      <Input
-                        id={key}
-                        {...register(key)}
-                        placeholder={property.shape.label}
-                      />
+                        <Input
+                          id={key}
+                          {...register(key)}
+                          placeholder={property.shape.label}
+                        />
 
-                      {errors[key] && (
-                        <p style={{ color: 'red' }}>
-                          {/* @ts-ignore */}
-                          {errors[key]?.message?.toString()}
-                        </p>
-                      )}
-                    </>
-                  )}
-                </div>
-              );
-            })}
+                        {errors[key] && (
+                          <p style={{ color: 'red' }}>
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
         </div>
       </div>
 

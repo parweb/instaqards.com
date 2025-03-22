@@ -100,32 +100,13 @@ export default async function SiteHomePage({
           </>
         )}
 
-        {/* <div className="fixed inset-0 bg-black/30 pointer-events-auto" /> */}
+        {media_type === '' && (
+          <div className="fixed inset-0 bg-black/30 pointer-events-auto" />
+        )}
       </div>
 
       <section className="flex flex-col px-5 py-10 flex-1 self-stretch">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
-          <header className="flex flex-col justify-center items-center gap-6  pt-4">
-            <div className="bg-white rounded-full overflow-hidden w-24 h-24 flex items-center justify-center">
-              <Image
-                priority
-                className="object-cover"
-                src={site.logo ?? ''}
-                alt={site.name ?? ''}
-                width={96}
-                height={96}
-              />
-            </div>
-
-            <h1 className="text-white text-4xl font-bold">{site.name}</h1>
-
-            <div className="">
-              <p className="text-center whitespace-pre-wrap">
-                {site.description}
-              </p>
-            </div>
-          </header>
-
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1">
               <BlockList blocks={data.blocks} />

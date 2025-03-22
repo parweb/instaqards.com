@@ -82,58 +82,13 @@ export const Landing = async ({
           </>
         )}
 
-        {/* <div className="absolute inset-0 bg-black/30 pointer-events-auto" /> */}
+        {media_type === '' && (
+          <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
+        )}
       </div>
 
       <section className="absolute inset-0 flex flex-col px-5 py-10 flex-1 self-stretch pointer-events-auto overflow-y-auto">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
-          <header className="flex flex-col justify-center items-center gap-3 mt-4">
-            <div className="group relative bg-white rounded-full overflow-hidden w-24 h-24 cursor-pointer flex items-center justify-center">
-              <Image
-                priority
-                className="object-cover"
-                src={site.logo ?? ''}
-                alt={site.name ?? ''}
-                width={96}
-                height={96}
-              />
-
-              <div className="absolute inset-0 pointer-events-auto flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <UpdateSiteProfilePictureButton>
-                  <UpdateSiteProfilePictureModal siteId={site.id} />
-                </UpdateSiteProfilePictureButton>
-              </div>
-            </div>
-
-            <h1 className="text-white text-4xl font-bold relative group">
-              {site.display_name}
-
-              <div className="absolute -right-12 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <UpdateSiteDisplayNameButton>
-                  <UpdateSiteDisplayNameModal
-                    siteId={site.id}
-                    displayName={site.display_name}
-                  />
-                </UpdateSiteDisplayNameButton>
-              </div>
-            </h1>
-
-            <div className="relative group">
-              <p className="text-center whitespace-pre-wrap">
-                {site.description}
-              </p>
-
-              <div className="absolute -right-12 top-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <UpdateSiteDescriptionButton>
-                  <UpdateSiteDescriptionModal
-                    siteId={site.id}
-                    description={site.description}
-                  />
-                </UpdateSiteDescriptionButton>
-              </div>
-            </div>
-          </header>
-
           <div className="flex flex-1 self-stretch items-center justify-center">
             <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
               <BlockList blocks={data.blocks} site={site} type="main" />
@@ -175,7 +130,7 @@ export default async function SitePosts({
   const site = await db.site.findUnique({
     where: { id: decodeURIComponent(params.id) },
     include: {
-      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'desc' }] }
+      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     }
   });
 

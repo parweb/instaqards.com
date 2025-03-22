@@ -18,11 +18,11 @@ export const generateSite = async (form: FormData) => {
 
   const site = siteId
     ? await db.site.findUnique({
-        where: { id: siteId },
-        include: {
-          blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
-        }
-      })
+      where: { id: siteId },
+      include: {
+        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+      }
+    })
     : null;
 
   const data = Object.fromEntries(form);
@@ -47,13 +47,11 @@ export const generateSite = async (form: FormData) => {
     where: { id: site?.id ?? nanoid() },
     update: {
       name,
-      display_name: name,
       description,
       subdomain
     },
     create: {
       name,
-      display_name: name,
       description,
       subdomain,
       user: { connect: { id: session.user.id } }
