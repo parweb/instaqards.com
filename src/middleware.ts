@@ -66,7 +66,12 @@ export default async function middleware(req: NextRequest) {
   }
 
   if (url.pathname.startsWith('/click/')) {
-    return NextResponse.rewrite(new URL(`/api${url.pathname}`, req.url));
+    console.log('06', {
+      url: new URL(`/api${url.pathname}?${searchParams}`, req.url).toString()
+    });
+    return NextResponse.rewrite(
+      new URL(`/api${url.pathname}?${searchParams}`, req.url)
+    );
   }
 
   if (

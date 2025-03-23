@@ -221,6 +221,8 @@ model TwoFactorToken {
 model Click {
   id String @id @default(cuid())
 
+  part String?
+
   createdAt DateTime @default(now())
 
   block   Block?  @relation(fields: [blockId], references: [id])

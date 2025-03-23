@@ -1,4 +1,6 @@
+import type { Block } from '@prisma/client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import * as z from 'zod';
 
@@ -40,8 +42,9 @@ export const input = z.object({
 
 const placeholder = 'https://placehold.co/480x270.png?text=16:9';
 export default function Picture169({
-  medias: [media] = [{ id: '1', kind: 'remote', url: placeholder }]
-}: Partial<z.infer<typeof input>>) {
+  medias: [media] = [{ id: '1', kind: 'remote', url: placeholder }],
+  block
+}: Partial<z.infer<typeof input>> & { block?: Block }) {
   const [src, setSrc] = useState<string>(
     media.kind === 'remote' ? media.url : ''
   );
@@ -69,9 +72,14 @@ export default function Picture169({
   );
 
   return media.link ? (
-    <a href={media.link} target="_blank" rel="noopener noreferrer">
+    <Link
+      href={block ? `/click/${block?.id}/?id=${media?.id}` : media.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex-1 self-stretch"
+    >
       {img}
-    </a>
+    </Link>
   ) : (
     img
   );

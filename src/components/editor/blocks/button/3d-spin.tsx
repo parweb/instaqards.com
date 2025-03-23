@@ -1,3 +1,4 @@
+import type { Block } from '@prisma/client';
 import Link from 'next/link';
 import * as z from 'zod';
 
@@ -13,15 +14,12 @@ const $label = z
     })
   );
 
-const $href = z
-  .string()
-  .min(1, 'Link is required')
-  .describe(
-    json({
-      label: 'Link',
-      kind: 'string'
-    })
-  );
+const $href = z.string().describe(
+  json({
+    label: 'Link',
+    kind: 'string'
+  })
+);
 
 const BaseButtonProps = z.object({ label: $label });
 export const input = z.object({ label: $label, href: $href });
@@ -96,13 +94,14 @@ const BaseButton: React.FC<
 
 export default function ThreeDSpin({
   label = '3D Spin',
-  href
-}: Partial<z.infer<typeof input>>) {
+  href,
+  block
+}: Partial<z.infer<typeof input>> & { block?: Block }) {
   if (href) {
     return (
       <Link
         className="w-full"
-        href={href}
+        href={block ? `/click/${block.id}` : href}
         target="_blank"
         rel="noopener noreferrer"
       >

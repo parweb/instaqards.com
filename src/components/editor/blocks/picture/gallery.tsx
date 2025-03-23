@@ -1,4 +1,6 @@
+import type { Block } from '@prisma/client';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import * as z from 'zod';
 
@@ -45,23 +47,33 @@ export const input = z.object({
 });
 
 const GalleryItemLink = ({
+  id,
+  blockId,
   link,
   children
 }: {
+  id: string;
+  blockId: string | undefined;
   link: string;
   children: React.ReactNode;
 }) => {
   return (
-    <a href={link} target="_blank" rel="noopener noreferrer">
+    <Link
+      href={blockId ? `/click/${blockId}/?id=${id}` : link}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {children}
-    </a>
+    </Link>
   );
 };
 
 const GalleryItem = ({
-  media
+  media,
+  blockId
 }: {
   media: z.infer<typeof input>['medias'][number];
+  blockId: string | undefined;
 }) => {
   const [src, setSrc] = useState<string>(
     media.kind === 'remote' ? media.url : ''
@@ -84,7 +96,9 @@ const GalleryItem = ({
       {media.kind === 'local' ? (
         image
       ) : media.link ? (
-        <GalleryItemLink link={media.link}>{image}</GalleryItemLink>
+        <GalleryItemLink id={media.id} blockId={blockId} link={media.link}>
+          {image}
+        </GalleryItemLink>
       ) : (
         image
       )}
@@ -123,8 +137,9 @@ export default function Gallery({
     // { id: '6', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
     // { id: '7', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' },
     // { id: '8', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' }
-  ]
-}: Partial<z.infer<typeof input>>) {
+  ],
+  block
+}: Partial<z.infer<typeof input>> & { block?: Block }) {
   if (medias.length === 0) {
     return (
       <div className="rounded-md overflow-hidden bg-white p-4 flex-1 flex items-center justify-center">
@@ -141,7 +156,7 @@ export default function Gallery({
       <CarouselContent>
         {medias.map(media => (
           <CarouselItem key={media.id}>
-            <GalleryItem media={media} />
+            <GalleryItem media={media} blockId={block?.id} />
           </CarouselItem>
         ))}
       </CarouselContent>

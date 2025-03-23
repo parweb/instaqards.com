@@ -1,3 +1,4 @@
+import type { Block } from '@prisma/client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import * as z from 'zod';
@@ -14,15 +15,12 @@ const $label = z
     })
   );
 
-const $href = z
-  .string()
-  .min(1, 'Link is required')
-  .describe(
-    json({
-      label: 'Link',
-      kind: 'string'
-    })
-  );
+const $href = z.string().describe(
+  json({
+    label: 'Link',
+    kind: 'string'
+  })
+);
 
 const $background = z
   .string()
@@ -145,12 +143,14 @@ const BaseButton: React.FC<
   );
 };
 
-export default function Icon(props: Partial<z.infer<typeof input>>) {
+export default function Icon(
+  props: Partial<z.infer<typeof input>> & { block?: Block }
+) {
   if (props.href) {
     return (
       <Link
         className="w-full"
-        href={props.href}
+        href={props.block ? `/click/${props.block.id}` : props.href}
         target="_blank"
         rel="noopener noreferrer"
       >

@@ -18,11 +18,11 @@ export const generateSite = async (form: FormData) => {
 
   const site = siteId
     ? await db.site.findUnique({
-      where: { id: siteId },
-      include: {
-        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
-      }
-    })
+        where: { id: siteId },
+        include: {
+          blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+        }
+      })
     : null;
 
   const data = Object.fromEntries(form);
