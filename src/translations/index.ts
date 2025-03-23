@@ -107,6 +107,18 @@ const translations = {
     it: 'Tutti i siti',
     es: 'Todos los sitios'
   },
+  'dashboard.links.title': {
+    fr: 'Tous les liens',
+    en: 'All Links',
+    it: 'Tutti i link',
+    es: 'Todos los enlaces'
+  },
+  'dashboard.links.create': {
+    fr: 'Créer un lien',
+    en: 'Create Link',
+    it: 'Crea un link',
+    es: 'Crear un enlace'
+  },
   'components.prices.plan.renews': {
     fr: 'Votre abonnement se renouvelle le',
     en: 'Your plan renews on',

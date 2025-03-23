@@ -34,6 +34,7 @@ model User {
   sites                 Site[]
   subscriptions         Subscription[]
   Authenticator         Authenticator[]
+  links                 Link[]
   customer              Customer?
   twoFactorConfirmation TwoFactorConfirmation?
 
@@ -226,6 +227,20 @@ model Click {
   blockId String?
   site    Site?   @relation(fields: [siteId], references: [id])
   siteId  String?
+}
+
+model Link {
+  id String @id @default(cuid())
+
+  url         String  @db.Text
+  name        String? @db.Text
+  description String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }
 
 model Block {
