@@ -1,14 +1,12 @@
 import type { Site } from '@prisma/client';
 import { contentType } from 'mime-types';
+import Image from 'next/image';
 
 import { PreviewBackground } from 'components/editor/PreviewBackground';
-import { cn } from 'lib/utils';
 
 export const Background = ({
-  editor = false,
   background
 }: {
-  editor?: boolean;
   background: Site['background'];
 }) => {
   const media_type = background?.startsWith('component:')
@@ -21,9 +19,7 @@ export const Background = ({
         <>
           {media_type?.startsWith('video/') && (
             <video
-              className={cn('fixed top-0 left-0 w-full h-full object-cover', {
-                absolute: editor
-              })}
+              className="absolute top-0 left-0 w-full h-full object-cover"
               preload="auto"
               autoPlay
               loop
@@ -35,22 +31,20 @@ export const Background = ({
           )}
 
           {media_type?.startsWith('image/') && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              className={cn('fixed top-0 left-0 w-full h-full object-cover', {
-                absolute: editor
-              })}
-              src={background}
-              alt=""
-            />
+            <div className="absolute top-0 left-0 w-full h-full object-cover">
+              <Image
+                src={background}
+                alt=""
+                fill
+                sizes="100vw"
+                className="object-cover"
+                priority
+              />
+            </div>
           )}
 
           {media_type === 'css' && (
-            <div
-              className={cn('fixed top-0 left-0 w-full h-full object-cover', {
-                absolute: editor
-              })}
-            >
+            <div className="absolute top-0 left-0 w-full h-full object-cover">
               <PreviewBackground name={background} />
             </div>
           )}
@@ -58,11 +52,7 @@ export const Background = ({
       )}
 
       {media_type === '' && (
-        <div
-          className={cn('fixed inset-0 bg-black/30 pointer-events-auto', {
-            absolute: editor
-          })}
-        />
+        <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
       )}
     </div>
   );
