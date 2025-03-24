@@ -385,7 +385,10 @@ export const createBlock = async (
 
 export const duplicateBlock = async (blockId: Block['id']) => {
   try {
-    const block = await db.block.findUnique({ where: { id: blockId } });
+    const block = await db.block.findUnique({
+      include: { site: true },
+      where: { id: blockId }
+    });
 
     if (!block) {
       return { error: `Block (${blockId}) not found` };
@@ -403,6 +406,14 @@ export const duplicateBlock = async (blockId: Block['id']) => {
         widget: block.widget ?? {}
       }
     });
+
+    revalidateTag(
+      `${block?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
+    );
+    block?.site?.customDomain &&
+      revalidateTag(`${block?.site?.customDomain}-metadata`);
+
+
     return newBlock;
   } catch (error: unknown) {
     return {
