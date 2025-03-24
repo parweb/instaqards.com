@@ -15,3 +15,5 @@ DROP COLUMN "fontSize",
 ADD COLUMN     "widget" TEXT,
 ALTER COLUMN "label" DROP NOT NULL,
 ALTER COLUMN "href" DROP NOT NULL;
+ALTER TABLE "Block" DROP COLUMN "widget",
+ADD COLUMN     "widget" JSONB DEFAULT '{}';
