@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { LuArrowUpRight, LuCog, LuMousePointer } from 'react-icons/lu';
 
 import DeleteButton from './DeleteButton';
+import { PreviewBackground } from './editor/PreviewBackground';
+import { contentType } from 'mime-types';
 
 export default function SiteCard({
   data
@@ -11,13 +13,48 @@ export default function SiteCard({
 }) {
   const url = `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
+  const media_type = data?.background?.startsWith('component:')
+    ? 'css'
+    : contentType(data?.background?.split('/').pop() ?? '') || '';
+
   return (
-    <div className="group relative rounded-lg border border-stone-200 pb-10 shadow-md transition-all hover:shadow-xl dark:border-stone-700 dark:hover:border-white">
+    <div className="group relative rounded-lg border pb-10 shadow-md transition-all hover:shadow-xl border-stone-300 ">
+      {/* <div className="absolute inset-0 group pointer-events-auto">
+        {data.background && (
+          <>
+            {media_type?.startsWith('video/') && (
+              <video
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                preload="auto"
+                muted
+              >
+                <source src={data.background} type="video/mp4" />
+              </video>
+            )}
+
+            {media_type?.startsWith('image/') && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                src={data.background}
+                alt=""
+              />
+            )}
+
+            {media_type === 'css' && (
+              <PreviewBackground name={data.background} />
+            )}
+          </>
+        )}
+
+        <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
+      </div> */}
+
       <div className="flex flex-col overflow-hidden rounded-lg">
         <div className="border-t border-stone-200 p-4 dark:border-stone-700">
           <div className="flex items-center justify-between">
             <Link className="flex-1" href={`/site/${data.id}`}>
-              <h3 className="my-0 truncate font-cal text-xl font-bold tracking-wide dark:text-white">
+              <h3 className="my-0 truncate font-cal text-xl font-bold tracking-wide">
                 {data.name}
               </h3>
             </Link>
@@ -32,7 +69,7 @@ export default function SiteCard({
           </div>
 
           <Link href={`/site/${data.id}`}>
-            <p className="mt-2 line-clamp-1 text-sm font-normal leading-snug text-stone-500 dark:text-stone-400">
+            <p className="mt-2 line-clamp-1 text-sm font-light leading-snug text-black/80">
               {data.description}
             </p>
           </Link>
