@@ -16,8 +16,6 @@ const { auth } = NextAuth({
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
-  console.log('01', { url });
-
   const isApiAuthRoute = url.pathname.startsWith(apiAuthPrefix);
   const isAuthRoute = authRoutes.includes(url.pathname);
   const isPublicRoute =
@@ -25,13 +23,9 @@ export default async function middleware(req: NextRequest) {
     isAuthRoute ||
     isApiAuthRoute;
 
-  console.log('02', { isApiAuthRoute, isAuthRoute, isPublicRoute });
-
   let hostname = req.headers
     .get('host')
     ?.replace('.localhost:11000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
-
-  console.log('03', { hostname });
 
   if (
     hostname?.includes('---') &&
@@ -40,12 +34,8 @@ export default async function middleware(req: NextRequest) {
     hostname = `${hostname.split('---')[0]}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
   }
 
-  console.log('04', { hostname });
-
   const searchParams = req.nextUrl.searchParams.toString();
   const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
-
-  console.log('05', { path });
 
   if (url.searchParams.has('r')) {
     const referer = url.searchParams.get('r');
@@ -66,21 +56,12 @@ export default async function middleware(req: NextRequest) {
   }
 
   if (hostname === 'short.qards.link') {
-    console.log('06', {
-      url: new URL(
-        `/api/short${url.pathname}?${searchParams}`,
-        req.url
-      ).toString()
-    });
     return NextResponse.rewrite(
       new URL(`/api/short${url.pathname}?${searchParams}`, req.url)
     );
   }
 
   if (url.pathname.startsWith('/click/')) {
-    console.log('06', {
-      url: new URL(`/api${url.pathname}?${searchParams}`, req.url).toString()
-    });
     return NextResponse.rewrite(
       new URL(`/api${url.pathname}?${searchParams}`, req.url)
     );
@@ -90,18 +71,13 @@ export default async function middleware(req: NextRequest) {
     hostname === `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
     hostname?.includes('bore.pub:')
   ) {
-    console.log('06', { hostname });
-
     if (url.pathname === '/home') {
-      console.log('07', { pathname: url.pathname });
-
       return NextResponse.rewrite(
         new URL(url.pathname, req.url.replace(url.pathname, '/'))
       );
     }
 
     const session = await auth();
-    console.log('08', { session });
 
     if (
       (!!session === false || !session || !session?.user) &&
@@ -123,8 +99,6 @@ export default async function middleware(req: NextRequest) {
     hostname?.includes(':11000') ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
-    console.log('09', { hostname, path, pathname: url.pathname });
-
     if (url.pathname === '/') {
       return NextResponse.rewrite(
         new URL(`/home${path === '/' ? '' : path}`, req.url)
@@ -139,13 +113,9 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
-  console.log('10', { hostname, path });
-
   if (hostname?.startsWith('www.')) {
     return NextResponse.rewrite(new URL('/home', req.url));
   }
-
-  console.log('11', { hostname, path });
 
   return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }
