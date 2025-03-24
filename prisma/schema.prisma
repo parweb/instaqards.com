@@ -41,6 +41,12 @@ model User {
   affiliates User[]  @relation("Affiliation")
   referer    User?   @relation("Affiliation", fields: [refererId], references: [id])
   refererId  String?
+
+  @@index([email])
+  @@index([role])
+  @@index([refererId])
+  @@index([id])
+  @@index([emailVerified])
 }
 
 model TwoFactorConfirmation {
@@ -97,6 +103,8 @@ model Price {
   subscriptions Subscription[]
   product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId     String
+
+  @@index([productId])
 }
 
 enum SubscriptionStatus {
@@ -130,6 +138,12 @@ model Subscription {
   priceId String
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId  String
+
+  @@index([userId, status])
+  @@index([status])
+  @@index([userId])
+  @@index([current_period_end])
+  @@index([priceId])
 }
 
 model Account {
@@ -231,6 +245,11 @@ model Click {
   siteId  String?
   link    Link?   @relation(fields: [linkId], references: [id])
   linkId  String?
+
+  @@index([createdAt])
+  @@index([siteId])
+  @@index([linkId])
+  @@index([blockId])
 }
 
 model Link {
@@ -246,6 +265,10 @@ model Link {
   clicks Click[]
   user   User?   @relation(fields: [userId], references: [id])
   userId String?
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([url])
 }
 
 model Block {
@@ -269,6 +292,8 @@ model Block {
 
   @@index([siteId])
   @@index([type])
+  @@index([position])
+  @@index([siteId, type])
 }
 
 model Site {
@@ -296,6 +321,8 @@ model Site {
   subscribers Subscriber[]
 
   @@index([userId])
+  @@index([subdomain])
+  @@index([customDomain])
 }
 
 model Subscriber {
@@ -308,6 +335,10 @@ model Subscriber {
 
   site   Site   @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   siteId String
+
+  @@index([siteId])
+  @@index([email])
+  @@index([siteId, email])
 }
 
 model Reservation {
@@ -324,6 +355,12 @@ model Reservation {
 
   block   Block?  @relation(fields: [blockId], references: [id])
   blockId String?
+
+  @@index([dateStart])
+  @@index([dateEnd])
+  @@index([blockId])
+  @@index([email])
+  @@index([blockId, email])
 }
 
 model Queue {
@@ -339,4 +376,7 @@ model Queue {
   updatedAt DateTime @updatedAt @db.Timestamptz
 
   @@index([status, runAt])
+  @@index([status])
+  @@index([runAt])
+  @@index([id])
 }
