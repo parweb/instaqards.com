@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
-import { deleteSite } from 'lib/actions';
+import { deleteLink } from 'lib/actions';
 
 const DeleteButton = ({ linkId }: { linkId: Link['id'] }) => {
   const router = useRouter();
@@ -19,15 +19,14 @@ const DeleteButton = ({ linkId }: { linkId: Link['id'] }) => {
       className="cursor-pointer"
       action={async (data: FormData) => {
         window.confirm('Are you sure you want to delete this link?') &&
-          deleteSite(data, linkId, 'delete')
+          deleteLink(linkId)
             .then(async res => {
               if ('error' in res) {
                 toast.error(res.error);
               } else {
-                va.track('Deleted Site');
+                va.track('Deleted Link');
                 router.refresh();
-                router.push('/sites');
-                toast.success('Successfully deleted site!');
+                toast.success('Successfully deleted link!');
               }
             })
             .catch((err: Error) => toast.error(err.message));

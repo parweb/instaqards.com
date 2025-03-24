@@ -1,6 +1,6 @@
 'use client';
 
-import { nanoid } from 'nanoid';
+import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -8,24 +8,14 @@ import {
   LuArrowUpRight,
   LuCheck,
   LuClipboard,
-  LuCog,
   LuMousePointer
 } from 'react-icons/lu';
 
 import { Button } from 'components/ui/button';
 import { cn, random } from 'lib/utils';
-import DeleteButton from './delete/DeleteButton';
-import { EditButton } from './edit/EditButton';
-import { EditModal } from './edit/EditModal';
-
-type LinkCardProps = {
-  link: {
-    id: string;
-    name: string;
-    description: string;
-    url: string;
-  };
-};
+import DeleteButton from './DeleteButton';
+import { EditButton } from './EditButton';
+import { MutateModal } from './MutateModal';
 
 const CopyLink = ({ url }: { url: string }) => {
   const [isCopied, setIsCopied] = useState(false);
@@ -52,17 +42,27 @@ const CopyLink = ({ url }: { url: string }) => {
   );
 };
 
+type LinkCardProps = {
+  link: Prisma.LinkGetPayload<{ include: { clicks: true } }>;
+};
+
 export function LinkCard({ link }: LinkCardProps) {
-  const url = '';
-  // process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
-  //   ? `https://${link.url}`
-  //   : `http://${link.subdomain}.localhost:11000`;
+  const url = process.env.NEXT_PUBLIC_VERCEL_ENV
+    ? `https://short.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/${link.id}`
+    : `http://short.localhost:11000/${link.id}`;
 
   return (
     <div className="group relative rounded-lg border border-stone-200 shadow-md transition-all hover:shadow-xl">
       <div className="flex flex-col overflow-hidden rounded-lg">
         <div className="border-t border-stone-200 p-4 gap-4 flex flex-col">
           <div>
+            <div className="flex items-center justify-start gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-500" />
+              <p className="truncate text-xs font-medium text-stone-500 whitespace-nowrap">
+                {link.url}
+              </p>
+            </div>
+
             <div className="flex items-center justify-between gap-1">
               <Link className="flex-1" href={`/site/${link.id}`}>
                 <h3 className="truncate font-cal text-xl font-bold tracking-wide">
@@ -72,7 +72,7 @@ export function LinkCard({ link }: LinkCardProps) {
 
               <div className="transition-all opacity-0 group-hover:opacity-100 flex items-center gap-0">
                 <EditButton>
-                  <EditModal />
+                  <MutateModal link={link} />
                 </EditButton>
 
                 <DeleteButton linkId={link.id} />
@@ -99,7 +99,7 @@ export function LinkCard({ link }: LinkCardProps) {
                 rel="noreferrer"
                 className="flex items-center gap-1"
               >
-                <span>/{nanoid(5)}</span>
+                <span className="truncate max-w-20">{`/${link.id}`}</span>
                 <LuArrowUpRight />
               </Link>
 
@@ -110,7 +110,7 @@ export function LinkCard({ link }: LinkCardProps) {
               href={`/site/${link.id}/analytics`}
               className="flex items-center gap-2 rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400 dark:hover:bg-green-800 dark:hover:bg-opacity-50"
             >
-              <p>{random(10, 40)}</p>
+              <p>{link.clicks.length}</p>
               <LuMousePointer />
             </Link>
           </div>

@@ -1,8 +1,8 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { nanoid } from 'nanoid';
 import { revalidateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
@@ -72,17 +72,16 @@ export const generateSite = async (form: FormData) => {
       if (line.length === 1) {
         const link = String(line.at(0)?.replace(/\/$/, ''));
 
-        href = link.startsWith('https://') ? link : `https://${link}`;
-
-        label = new URL(href).hostname.split('.').at(-2);
+        href = link.includes(':') ? link : `https://${link}`;
+        label =
+          new URL(href).hostname.split('.').at(-2) ?? href.split(':').at(0);
       }
 
       if (line.length === 2) {
-        label = line.at(0);
-
         const link = String(line.at(1)?.replace(/\/$/, ''));
 
-        href = link.startsWith('https://') ? link : `https://${link}`;
+        label = line.at(0);
+        href = link.includes(':') ? link : `https://${link}`;
       }
 
       await db.block.create({

@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import authConfig from 'auth.config';
 import { apiAuthPrefix, authRoutes, publicRoutes } from 'settings';
@@ -63,6 +63,18 @@ export default async function middleware(req: NextRequest) {
         'Set-Cookie': `r=${encodeURIComponent(referer ?? '')}; Path=/; Domain=${domain.host.replace('app.', '.')}; HttpOnly; SameSite=Strict`
       }
     });
+  }
+
+  if (hostname === 'short.qards.link') {
+    console.log('06', {
+      url: new URL(
+        `/api/short${url.pathname}?${searchParams}`,
+        req.url
+      ).toString()
+    });
+    return NextResponse.rewrite(
+      new URL(`/api/short${url.pathname}?${searchParams}`, req.url)
+    );
   }
 
   if (url.pathname.startsWith('/click/')) {

@@ -1,12 +1,14 @@
 'use server';
 
-import type { Block, Site } from '@prisma/client';
+import type { Block, Link, Site } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
+import { z } from 'zod';
 
 import { db } from 'helpers/db';
 import { put } from 'helpers/storage';
 import { translate } from 'helpers/translate';
+import { shorten } from 'helpers/url';
 import { getSession, withSiteAuth } from 'lib/auth';
 import { getBlurDataURL } from 'lib/utils';
 
@@ -81,6 +83,66 @@ export const createSite = async (
           : error instanceof Error
             ? error.message
             : 'An unknown error occurred'
+    };
+  }
+};
+
+const input = z.object({
+  id: z.string().optional(),
+  url: z.string().min(1, 'url is required'),
+  name: z.string().optional(),
+  description: z.string().optional()
+});
+
+export const mutateLink = async (
+  form: FormData
+): Promise<{ error: string } | Link> => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: translate('auth.error') };
+  }
+
+  const { url, name, description, id } = input.parse(Object.fromEntries(form));
+
+  console.log({ url, name, description, id });
+
+  const href = url.includes(':') ? url : `https://${url}`;
+  const label =
+    new URL(href).hostname.split('.').at(-2) ?? href.split(':').at(0);
+
+  console.log({
+    label,
+    href,
+    hostname: new URL(href).hostname,
+    hostname_splited: new URL(href).hostname.split('.')
+  });
+
+  try {
+    const response = await db.link.upsert({
+      where: { id: id || shorten(session.user.id + href) },
+      update: {
+        name: name,
+        description,
+        url: href,
+        user: { connect: { id: session.user.id } }
+      },
+      create: {
+        id: shorten(session.user.id + href),
+        name: name || label,
+        description,
+        url: href,
+        user: { connect: { id: session.user.id } }
+      }
+    });
+
+    return response;
+  } catch (error: unknown) {
+    console.error(error);
+
+    return {
+      error:
+        error instanceof Error ? error.message : 'An unknown error occurred'
     };
   }
 };
@@ -448,6 +510,29 @@ export const deleteSite = withSiteAuth<Site>(async (_, site) => {
     };
   }
 });
+
+export const deleteLink = async (linkId: Link['id']) => {
+  try {
+    const session = await getSession();
+
+    if (!session?.user?.id) {
+      return { error: translate('auth.error') };
+    }
+
+    const response = await db.link.delete({
+      where: { id: linkId, userId: session.user.id }
+    });
+
+    return response;
+  } catch (error: unknown) {
+    console.error(error);
+
+    return {
+      error:
+        error instanceof Error ? error.message : 'An unknown error occurred'
+    };
+  }
+};
 
 export const editUser = async (
   formData: FormData,

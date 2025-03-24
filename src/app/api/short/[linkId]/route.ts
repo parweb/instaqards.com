@@ -58,49 +58,27 @@ const widgetMapper: WidgetMapper = {
 
 export async function GET(
   request: Request,
-  { params: { blockId } }: { params: { blockId: string } }
+  { params: { linkId } }: { params: { linkId: string } }
 ) {
   try {
-    const query = Object.fromEntries(new URL(request.url).searchParams);
-
-    console.log({ query: query.id });
-
     const click = await db.click.create({
-      include: { block: true },
-      data: { blockId, part: query.id }
+      include: { link: true },
+      data: { linkId }
     });
 
-    if (!click.block) {
-      console.error('api::click::[blockId] Block not found', { blockId });
+    if (!click.link) {
+      console.error('api::click::[linkId] Link not found', { linkId });
       return NextResponse.redirect('/');
     }
 
-    const widget = click.block.widget as WidgetData | null;
-    const hasWidget = Boolean(widget && Object.keys(widget).length > 0);
-
-    console.info('api::click::[blockId]', {
-      hasWidget,
-      blockId,
-      widgetType: widget?.type,
-      href: click.block.href
-    });
-
-    const redirectUrl =
-      hasWidget && widget && widget.type && widget.type in widgetMapper
-        ? (widgetMapper[widget.type as keyof WidgetMapper]?.(
-            widget,
-            query.id ?? ''
-          ) ??
-          click.block.href ??
-          '/')
-        : (click.block.href ?? '/');
+    const redirectUrl = click.link.url;
 
     console.log({ redirectUrl });
 
     return NextResponse.redirect(redirectUrl);
   } catch (error) {
-    console.error('api::click::[blockId] Error processing click', {
-      blockId,
+    console.error('api::click::[linkId] Error processing click', {
+      linkId,
       error: error instanceof Error ? error.message : 'Unknown error'
     });
     return NextResponse.redirect('/');

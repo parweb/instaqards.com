@@ -1,10 +1,10 @@
 'use client';
 
 import type { Prisma } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { LuArrowUpRight, LuLoader } from 'react-icons/lu';
 import { useDebouncedCallback } from 'use-debounce';
-import { useRouter } from 'next/navigation';
 
 import { BlockTypesItem } from 'components/editor/form/BlockTypesItem';
 import { AutosizeTextarea } from 'components/ui/autosize-textarea';
