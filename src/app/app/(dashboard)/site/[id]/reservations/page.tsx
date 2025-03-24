@@ -1,0 +1,70 @@
+import { notFound, redirect } from 'next/navigation';
+import { LuArrowUpRight } from 'react-icons/lu';
+
+import { db } from 'helpers/db';
+import { getSession } from 'lib/auth';
+
+import 'array-grouping-polyfill';
+
+export default async function SiteReservations({
+  params
+}: {
+  params: { id: string };
+}) {
+  const session = await getSession();
+
+  if (!session || !session?.user) {
+    redirect('/login');
+  }
+
+  const site = await db.site.findUnique({
+    where: { id: decodeURIComponent(params.id) }
+  });
+
+  if (
+    !site ||
+    (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
+  ) {
+    notFound();
+  }
+
+  const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+
+  const reservations = await db.reservation.findMany({
+    where: { block: { siteId: site.id } }
+  });
+
+  return (
+    <div className="p-8 flex flex-col gap-6 flex-1 self-stretch">
+      <div className="flex flex-col items-center sm:flex-row justify-between">
+        <h1 className="font-cal text-xl font-bold sm:text-3xl">
+          Reservations for {site.name}
+        </h1>
+
+        <a
+          href={
+            process.env.NEXT_PUBLIC_VERCEL_ENV
+              ? `https://${url}`
+              : `http://${site.subdomain}.localhost:11000`
+          }
+          target="_blank"
+          rel="noreferrer"
+          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
+        >
+          {process.env.NEXT_PUBLIC_VERCEL_ENV
+            ? url
+            : `${site.subdomain}.localhost:11000`}{' '}
+          <LuArrowUpRight />
+        </a>
+      </div>
+
+      <div className="flex-1 self-stretch flex flex-col gap-4 ">
+        {reservations.map(reservation => (
+          <div key={reservation.id}>
+            {reservation.id} | {reservation.name} | {reservation.email}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

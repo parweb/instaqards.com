@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   BarChart3,
+  Calendar,
   Cog,
   DollarSign,
   Globe,
@@ -58,6 +59,12 @@ export default function Nav({ children }: { children: ReactNode }) {
           href: `/site/${id}/subscribers`,
           isActive: segments.includes('subscribers'),
           icon: <Users width={18} />
+        },
+        {
+          name: translate('menu.reservations'),
+          href: `/site/${id}/reservations`,
+          isActive: segments.includes('reservations'),
+          icon: <Calendar width={18} />
         },
         {
           name: translate('menu.analytics'),

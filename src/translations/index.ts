@@ -521,6 +521,12 @@ const translations = {
     it: 'Abbonati',
     es: 'Suscriptores'
   },
+  'menu.reservations': {
+    fr: 'Réservations',
+    en: 'Reservations',
+    it: 'Prenotazioni',
+    es: 'Reservas'
+  },
   'menu.analytics': {
     fr: 'Statistiques',
     en: 'Analytics',
