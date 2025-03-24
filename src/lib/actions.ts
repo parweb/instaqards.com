@@ -520,7 +520,10 @@ export const deleteLink = async (linkId: Link['id']) => {
     }
 
     const response = await db.link.delete({
-      where: { id: linkId, userId: session.user.id }
+      where: {
+        id: linkId,
+        ...(session.user.role !== 'ADMIN' && { userId: session.user.id })
+      }
     });
 
     return response;
