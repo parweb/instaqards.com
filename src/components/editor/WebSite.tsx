@@ -7,6 +7,7 @@ import { PreviewBackground } from 'components/editor/PreviewBackground';
 import CreateBlockModal from 'components/modal/create-block';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
+import { Background } from 'components/editor/website/background';
 
 import 'array-grouping-polyfill';
 
@@ -32,47 +33,9 @@ export const WebSite = ({
 
   const data = { blocks: main, socials: social };
 
-  const media_type = site?.background?.startsWith('component:')
-    ? 'css'
-    : contentType(site?.background?.split('/').pop() ?? '') || '';
-
   return (
     <main className="relative flex-1 self-stretch items-center flex flex-col pointer-events-auto h-screen">
-      <div className="absolute inset-0 group pointer-events-auto">
-        {site.background && (
-          <>
-            {media_type?.startsWith('video/') && (
-              <video
-                className="absolute top-0 left-0 w-full h-full object-cover"
-                preload="auto"
-                autoPlay
-                loop
-                muted
-                playsInline
-              >
-                <source src={site.background} type="video/mp4" />
-              </video>
-            )}
-
-            {media_type?.startsWith('image/') && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                className="absolute top-0 left-0 w-full h-full object-cover"
-                src={site.background}
-                alt=""
-              />
-            )}
-
-            {media_type === 'css' && (
-              <PreviewBackground name={site.background} />
-            )}
-          </>
-        )}
-
-        {media_type === '' && (
-          <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
-        )}
-      </div>
+      <Background editor background={site.background} />
 
       <section className="absolute inset-0 flex flex-col px-5 py-10 flex-1 self-stretch pointer-events-auto overflow-y-auto">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">

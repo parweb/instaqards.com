@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { PreviewBackground } from 'components/editor/PreviewBackground';
+import { Background } from 'components/editor/website/background';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
@@ -69,41 +69,7 @@ export default async function SiteHomePage({
 
   return (
     <main className="relative flex-1 self-stretch items-center flex flex-col">
-      <div className="absolute inset-0">
-        {site.background && (
-          <>
-            {media_type?.startsWith('video/') && (
-              <video
-                className="fixed top-0 left-0 w-full h-full object-cover"
-                preload="auto"
-                autoPlay
-                loop
-                muted
-                playsInline
-              >
-                <source src={site.background} type="video/mp4" />
-              </video>
-            )}
-
-            {media_type?.startsWith('image/') && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                className="fixed top-0 left-0 w-full h-full object-cover"
-                src={site.background}
-                alt=""
-              />
-            )}
-
-            {media_type === 'css' && (
-              <PreviewBackground name={site.background} />
-            )}
-          </>
-        )}
-
-        {media_type === '' && (
-          <div className="fixed inset-0 bg-black/30 pointer-events-auto" />
-        )}
-      </div>
+      <Background background={site.background} />
 
       <section className="flex flex-col px-5 py-10 flex-1 self-stretch">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
