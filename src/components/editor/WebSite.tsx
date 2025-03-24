@@ -2,8 +2,8 @@ import type { Block, Prisma } from '@prisma/client';
 
 import { BlockList } from 'components/BlockItem';
 import CreateBlockButton from 'components/create-block-button';
-import { Background } from 'components/editor/website/background';
-import { Wrapper } from 'components/editor/website/wrapper';
+import { Background } from 'components/website/background';
+import { Wrapper } from 'components/website/wrapper';
 import CreateBlockModal from 'components/modal/create-block';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';

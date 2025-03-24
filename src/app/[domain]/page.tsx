@@ -3,8 +3,8 @@ import { contentType } from 'mime-types';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { Background } from 'components/editor/website/background';
-import { Wrapper } from 'components/editor/website/wrapper';
+import { Background } from 'components/website/background';
+import { Wrapper } from 'components/website/wrapper';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
