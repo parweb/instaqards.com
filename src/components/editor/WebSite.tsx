@@ -1,13 +1,12 @@
 import type { Block, Prisma } from '@prisma/client';
-import { contentType } from 'mime-types';
 
 import { BlockList } from 'components/BlockItem';
 import CreateBlockButton from 'components/create-block-button';
-import { PreviewBackground } from 'components/editor/PreviewBackground';
+import { Background } from 'components/editor/website/background';
+import { Wrapper } from 'components/editor/website/wrapper';
 import CreateBlockModal from 'components/modal/create-block';
 import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
-import { Background } from 'components/editor/website/background';
 
 import 'array-grouping-polyfill';
 
@@ -34,13 +33,13 @@ export const WebSite = ({
   const data = { blocks: main, socials: social };
 
   return (
-    <main className="relative flex-1 self-stretch items-center flex flex-col pointer-events-auto h-screen">
+    <Wrapper>
       <Background editor background={site.background} />
 
-      <section className="absolute inset-0 flex flex-col px-5 py-10 flex-1 self-stretch pointer-events-auto overflow-y-auto">
+      <section className="absolute inset-0 flex flex-col px-5 py-10 flex-1 self-stretch overflow-y-auto">
         <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
           <div className="flex flex-1 self-stretch items-center justify-center">
-            <div className="flex flex-col gap-10 flex-1 pointer-events-auto">
+            <div className="flex flex-col gap-10 flex-1">
               <BlockList blocks={data.blocks} site={site} type="main" />
 
               <BlockCreate type="main" />
@@ -48,7 +47,7 @@ export const WebSite = ({
           </div>
 
           <footer className="flex flex-col gap-3">
-            <div className="flex gap-3 items-center justify-center pointer-events-auto">
+            <div className="flex gap-3 items-center justify-center">
               <BlockList blocks={data.socials} site={site} type="social" />
 
               <BlockCreate type="social" />
@@ -62,6 +61,6 @@ export const WebSite = ({
           <UpdateSiteBackgroundModal siteId={site.id} />
         </UpdateSiteBackgroundButton>
       </div>
-    </main>
+    </Wrapper>
   );
 };

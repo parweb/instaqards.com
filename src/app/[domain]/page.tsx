@@ -1,10 +1,10 @@
 import type { Block } from '@prisma/client';
 import { contentType } from 'mime-types';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { Background } from 'components/editor/website/background';
+import { Wrapper } from 'components/editor/website/wrapper';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
@@ -68,7 +68,7 @@ export default async function SiteHomePage({
     : contentType(site?.background?.split('/').pop() ?? '') || '';
 
   return (
-    <main className="relative flex-1 self-stretch items-center flex flex-col">
+    <Wrapper>
       <Background background={site.background} />
 
       <section className="flex flex-col px-5 py-10 flex-1 self-stretch">
@@ -97,6 +97,6 @@ export default async function SiteHomePage({
           </footer>
         </div>
       </section>
-    </main>
+    </Wrapper>
   );
 }
