@@ -6,7 +6,7 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/lib/**/*.{js,ts,jsx,tsx}',
-    './node_modules/@tremor/**/*.{js,ts,jsx,tsx}' // Tremor module
+    './node_modules/@tremor/**/*.{js,ts,jsx,tsx}'
   ],
   theme: {
     extend: {
@@ -59,12 +59,8 @@ module.exports = {
             DEFAULT: '#ffffff',
             emphasis: '#374151'
           },
-          border: {
-            DEFAULT: '#e5e7eb'
-          },
-          ring: {
-            DEFAULT: '#e5e7eb'
-          },
+          border: { DEFAULT: '#e5e7eb' },
+          ring: { DEFAULT: '#e5e7eb' },
           content: {
             subtle: '#9ca3af',
             DEFAULT: '#6b7280',
@@ -88,12 +84,8 @@ module.exports = {
             DEFAULT: '#111827',
             emphasis: '#d1d5db'
           },
-          border: {
-            DEFAULT: '#1f2937'
-          },
-          ring: {
-            DEFAULT: '#1f2937'
-          },
+          border: { DEFAULT: '#1f2937' },
+          ring: { DEFAULT: '#1f2937' },
           content: {
             subtle: '#4b5563',
             DEFAULT: '#6b7280',
@@ -135,34 +127,13 @@ module.exports = {
         base: ['1rem', { lineHeight: '1.25rem' }],
         sm: ['1rem', { lineHeight: '1.25rem' }],
         'tremor-label': ['0.75rem'],
-        'tremor-default': [
-          '0.875rem',
-          {
-            lineHeight: '1.25rem'
-          }
-        ],
-        'tremor-title': [
-          '1.125rem',
-          {
-            lineHeight: '1.75rem'
-          }
-        ],
-        'tremor-metric': [
-          '1.875rem',
-          {
-            lineHeight: '2.25rem'
-          }
-        ]
+        'tremor-default': ['0.875rem', { lineHeight: '1.25rem' }],
+        'tremor-title': ['1.125rem', { lineHeight: '1.75rem' }],
+        'tremor-metric': ['1.875rem', { lineHeight: '2.25rem' }]
       },
-      width: {
-        1536: '1536px'
-      },
-      height: {
-        150: '37.5rem'
-      },
-      margin: {
-        30: '7.5rem'
-      },
+      width: { 1536: '1536px' },
+      height: { 150: '37.5rem' },
+      margin: { 30: '7.5rem' },
       fontFamily: {
         sans: ['var(--font-open-sans)'],
         default: ['var(--font-inter)'],
@@ -173,21 +144,11 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            h1: {
-              fontFamily: 'Cal Sans'
-            },
-            h2: {
-              fontFamily: 'Cal Sans'
-            },
-            h3: {
-              fontFamily: 'Cal Sans'
-            },
-            'blockquote p:first-of-type::before': {
-              content: 'none'
-            },
-            'blockquote p:first-of-type::after': {
-              content: 'none'
-            }
+            h1: { fontFamily: 'Cal Sans' },
+            h2: { fontFamily: 'Cal Sans' },
+            h3: { fontFamily: 'Cal Sans' },
+            'blockquote p:first-of-type::before': { content: 'none' },
+            'blockquote p:first-of-type::after': { content: 'none' }
           }
         }
       },
@@ -197,26 +158,13 @@ module.exports = {
             transform: 'translateX(0%)',
             transformOrigin: '50% 50%'
           },
-          '15%': {
-            transform: 'translateX(-6px) rotate(-6deg)'
-          },
-          '30%': {
-            transform: 'translateX(9px) rotate(6deg)'
-          },
-          '45%': {
-            transform: 'translateX(-9px) rotate(-3.6deg)'
-          },
-          '60%': {
-            transform: 'translateX(3px) rotate(2.4deg)'
-          },
-          '75%': {
-            transform: 'translateX(-2px) rotate(-1.2deg)'
-          }
+          '15%': { transform: 'translateX(-6px) rotate(-6deg)' },
+          '30%': { transform: 'translateX(9px) rotate(6deg)' },
+          '45%': { transform: 'translateX(-9px) rotate(-3.6deg)' },
+          '60%': { transform: 'translateX(3px) rotate(2.4deg)' },
+          '75%': { transform: 'translateX(-2px) rotate(-1.2deg)' }
         },
-        hide: {
-          from: { opacity: '1' },
-          to: { opacity: '0' }
-        },
+        hide: { from: { opacity: '1' }, to: { opacity: '0' } },
         slideDownAndFade: {
           from: { opacity: '0', transform: 'translateY(-6px)' },
           to: { opacity: '1', transform: 'translateY(0)' }
@@ -232,6 +180,14 @@ module.exports = {
         slideRightAndFade: {
           from: { opacity: '0', transform: 'translateX(-6px)' },
           to: { opacity: '1', transform: 'translateX(0)' }
+        },
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' }
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' }
         }
       },
       animation: {
@@ -243,7 +199,9 @@ module.exports = {
           'slideLeftAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         slideUpAndFade: 'slideUpAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         slideRightAndFade:
-          'slideRightAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1)'
+          'slideRightAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out'
       }
     }
   },
@@ -276,11 +234,7 @@ module.exports = {
         /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/
     }
   ],
-  variants: {
-    extend: {
-      display: ['empty']
-    }
-  },
+  variants: { extend: { display: ['empty'] } },
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),

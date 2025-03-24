@@ -2,6 +2,12 @@
 
 import { BlockTypesItemVariants } from './BlockTypesItemVariants';
 
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from 'components/ui/accordion';
+
 export const BlockTypesItem = ({
   label,
   type,
@@ -57,16 +63,22 @@ export const BlockTypesItem = ({
   ];
 
   return (
-    <div className="flex flex-col gap-2">
-      <hgroup className="flex gap-2 items-center justify-between">
-        <h3>{label}</h3>
-      </hgroup>
+    <AccordionItem value={type}>
+      <div className="flex flex-col gap-2">
+        <AccordionTrigger>
+          <hgroup className="flex gap-2 items-center justify-between">
+            <h3>{label}</h3>
+          </hgroup>
+        </AccordionTrigger>
 
-      <BlockTypesItemVariants
-        onClick={onClick}
-        value={value}
-        variants={variants.filter(v => v.type === type)}
-      />
-    </div>
+        <AccordionContent>
+          <BlockTypesItemVariants
+            onClick={onClick}
+            value={value}
+            variants={variants.filter(v => v.type === type)}
+          />
+        </AccordionContent>
+      </div>
+    </AccordionItem>
   );
 };

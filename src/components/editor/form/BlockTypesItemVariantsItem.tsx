@@ -37,6 +37,7 @@ import Picture169 from 'components/editor/blocks/picture/picture-16-9';
 import NormalText from 'components/editor/blocks/text/normal';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
+
 const blocks: Record<string, Record<string, React.ComponentType>> = {
   button: {
     'glow-up-001': GlowUp001,

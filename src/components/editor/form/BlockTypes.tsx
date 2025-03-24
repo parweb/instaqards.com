@@ -1,5 +1,6 @@
 'use client';
 
+import { Accordion } from 'components/ui/accordion';
 import { BlockTypesItem } from './BlockTypesItem';
 
 export const BlockTypes = ({
@@ -9,18 +10,20 @@ export const BlockTypes = ({
   onClick: (data: { type: string; id: string }) => void;
 }) => {
   return (
-    <div className="flex flex-col gap-4" style={{ touchAction: 'pan-y' }}>
-      {(
-        [
-          { type: 'button', label: 'Boutons' },
-          { type: 'picture', label: 'Images' },
-          { type: 'text', label: 'Textes' },
-          { type: 'external', label: 'Externes' },
-          { type: 'other', label: 'Autres' }
-        ] as const
-      ).map(block => (
-        <BlockTypesItem key={block.type} {...block} onClick={onClick} />
-      ))}
-    </div>
+    <Accordion type="single" collapsible>
+      <div className="flex flex-col gap-4" style={{ touchAction: 'pan-y' }}>
+        {(
+          [
+            { type: 'button', label: 'Boutons' },
+            { type: 'picture', label: 'Images' },
+            { type: 'text', label: 'Textes' },
+            { type: 'external', label: 'Externes' },
+            { type: 'other', label: 'Autres' }
+          ] as const
+        ).map(block => (
+          <BlockTypesItem key={block.type} {...block} onClick={onClick} />
+        ))}
+      </div>
+    </Accordion>
   );
 };

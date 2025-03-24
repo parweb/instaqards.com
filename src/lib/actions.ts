@@ -413,7 +413,6 @@ export const duplicateBlock = async (blockId: Block['id']) => {
     block?.site?.customDomain &&
       revalidateTag(`${block?.site?.customDomain}-metadata`);
 
-
     return newBlock;
   } catch (error: unknown) {
     return {
