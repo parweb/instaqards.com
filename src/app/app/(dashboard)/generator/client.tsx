@@ -2,7 +2,7 @@
 
 import type { Prisma } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { startTransition, useEffect, useRef, useState } from 'react';
 import { LuArrowUpRight, LuLoader } from 'react-icons/lu';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -17,6 +17,8 @@ export function Fields({
 }: {
   site: Prisma.SiteGetPayload<{ include: { blocks: true } }> | null;
 }) {
+  const [refreshInputs, setRefreshInputs] = useState(false);
+
   const submit = useRef<HTMLButtonElement>(null);
 
   const router = useRouter();
@@ -65,6 +67,45 @@ export function Fields({
     submit.current?.click();
   }, 1000);
 
+  useEffect(() => {
+    if (refreshInputs === false) return;
+
+    setButton(
+      site
+        ? // @ts-ignore
+          site?.blocks?.at?.(0)?.widget
+        : undefined
+    );
+
+    setLinks(
+      site
+        ? site.blocks
+            // @ts-ignore
+            .map(item => item?.widget?.data ?? item)
+            // @ts-ignore
+            .map(data =>
+              [
+                data?.label,
+                data?.href
+                  .replace('https://', '')
+                  .replace('www.', '')
+                  .replace(/\/$/, '')
+              ]
+                .filter(Boolean)
+                .join(' | ')
+            )
+            .filter(Boolean)
+            .join('\n')
+        : undefined
+    );
+
+    setName(site?.name || undefined);
+
+    setDescription(site?.description || undefined);
+
+    setRefreshInputs(false);
+  }, [refreshInputs, site]);
+
   return (
     <>
       <div>
@@ -95,7 +136,71 @@ export function Fields({
       </div>
 
       <form
-        action={form => generateSite(form).then(() => router.refresh())}
+        action={form =>
+          startTransition(() =>
+            generateSite(form).then(data => {
+              console.log({ data });
+              router.refresh();
+
+              // setRefreshInputs(true);
+
+              setButton(
+                data
+                  ? // @ts-ignore
+                    data?.blocks?.at?.(0)?.widget
+                  : undefined
+              );
+
+              console.log({
+                links: data
+                  ? data.blocks
+                      // @ts-ignore
+                      .map(item => item?.widget?.data ?? item)
+                      // @ts-ignore
+                      .map(data =>
+                        [
+                          data?.label,
+                          data?.href
+                            .replace('https://', '')
+                            .replace('www.', '')
+                            .replace(/\/$/, '')
+                        ]
+                          .filter(Boolean)
+                          .join(' | ')
+                      )
+                      .filter(Boolean)
+                      .join('\n')
+                  : undefined
+              });
+
+              setLinks(
+                data
+                  ? data.blocks
+                      // @ts-ignore
+                      .map(item => item?.widget?.data ?? item)
+                      // @ts-ignore
+                      .map(data =>
+                        [
+                          data?.label,
+                          data?.href
+                            .replace('https://', '')
+                            .replace('www.', '')
+                            .replace(/\/$/, '')
+                        ]
+                          .filter(Boolean)
+                          .join(' | ')
+                      )
+                      .filter(Boolean)
+                      .join('\n')
+                  : undefined
+              );
+
+              setName(data?.name || undefined);
+
+              setDescription(data?.description || undefined);
+            })
+          )
+        }
         className="flex flex-col gap-4"
         style={{ touchAction: 'pan-y' }}
       >

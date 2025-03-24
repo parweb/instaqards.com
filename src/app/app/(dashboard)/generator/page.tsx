@@ -1,7 +1,7 @@
 import { db } from 'helpers/db';
 import { redirect } from 'next/navigation';
 
-import { Landing } from 'app/app/(dashboard)/site/[id]/page';
+import { WebSite } from 'components/editor/WebSite';
 import { getSession } from 'lib/auth';
 import { Fields } from './client';
 

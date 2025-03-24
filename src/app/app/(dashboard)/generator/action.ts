@@ -43,8 +43,23 @@ export const generateSite = async (form: FormData) => {
     .filter(Boolean)
     .map(link => link.trim());
 
+  console.log('db.site.upsert', {
+    where: { id: site?.id || nanoid() },
+    update: {
+      name,
+      description,
+      subdomain
+    },
+    create: {
+      name,
+      description,
+      subdomain,
+      user: { connect: { id: session.user.id } }
+    }
+  });
+
   const qards = await db.site.upsert({
-    where: { id: site?.id ?? nanoid() },
+    where: { id: site?.id || nanoid() },
     update: {
       name,
       description,
@@ -59,6 +74,8 @@ export const generateSite = async (form: FormData) => {
   });
 
   if (links.length) {
+    console.log({ links: links.entries() });
+
     await db.block.deleteMany({
       where: { siteId: qards.id }
     });
@@ -92,7 +109,7 @@ export const generateSite = async (form: FormData) => {
           label,
           href,
 
-          ...(Object.keys(button).length && {
+          ...(Object.keys(button || {}).length && {
             widget: {
               ...button,
               data: { label, href }
@@ -114,5 +131,12 @@ export const generateSite = async (form: FormData) => {
   );
   site?.customDomain && revalidateTag(`${site?.customDomain}-metadata`);
 
-  // redirect(`?siteId=${qards.id}`);
+  console.log({ site });
+
+  if (site === null) redirect(`?siteId=${qards.id}`);
+
+  return db.site.findUnique({
+    where: { id: qards.id },
+    include: { blocks: true }
+  });
 };
