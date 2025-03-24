@@ -1,9 +1,11 @@
 import type { Block } from '@prisma/client';
-import { contentType } from 'mime-types';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { Background } from 'components/website/background';
+import { Content } from 'components/website/content';
+import { Footer } from 'components/website/footer';
+import { Main } from 'components/website/main';
 import { Wrapper } from 'components/website/wrapper';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
@@ -54,49 +56,39 @@ export default async function SiteHomePage({
 
   await db.click.create({ data: { siteId: site.id } });
 
-  const { main, social }: Record<Block['type'], Block[]> = {
+  const data: Record<Block['type'], Block[]> = {
     main: [],
     social: [],
 
     ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
   };
 
-  const data = { blocks: main, socials: social };
-
-  const media_type = site?.background?.startsWith('component:')
-    ? 'css'
-    : contentType(site?.background?.split('/').pop() ?? '') || '';
-
   return (
     <Wrapper>
       <Background background={site.background} />
 
-      <section className="absolute inset-0 flex flex-col px-5 py-10 flex-1 self-stretch overflow-y-auto">
-        <div className="relative flex flex-col items-center m-auto w-[80%] max-w-[600px] gap-20 justify-between flex-1">
-          <div className="flex flex-1 self-stretch items-center justify-center">
-            <div className="flex flex-col gap-10 flex-1">
-              <BlockList blocks={data.blocks} />
-            </div>
+      <Content>
+        <Main>
+          <BlockList blocks={data.main} />
+        </Main>
+
+        <Footer>
+          <div className="flex gap-3 items-center justify-center">
+            <BlockList blocks={data.social} />
           </div>
 
-          <footer className="flex flex-col gap-3">
-            <div className="flex gap-3 items-center justify-center">
-              <BlockList blocks={data.socials} />
-            </div>
-
-            <div className="text-center">
-              <a
-                href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/?r=${site.user?.id}`}
-                className="text-white"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {translate('page.public.site.ads')}
-              </a>
-            </div>
-          </footer>
-        </div>
-      </section>
+          <div className="text-center">
+            <a
+              href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/?r=${site.user?.id}`}
+              className="text-white"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {translate('page.public.site.ads')}
+            </a>
+          </div>
+        </Footer>
+      </Content>
     </Wrapper>
   );
 }
