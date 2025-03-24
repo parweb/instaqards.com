@@ -3,7 +3,6 @@
 import type { Block, Site } from '@prisma/client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useParams } from 'next/navigation';
 import { createBlock, updateBlock } from 'lib/actions';
 import va from '@vercel/analytics';
 import { toast } from 'sonner';
@@ -15,7 +14,8 @@ import { useModal } from 'components/modal/provider';
 
 export function BlockFormSocial({
   mode,
-  initialData
+  initialData,
+  siteId
 }: {
   mode: {
     id: Block['id'] | null;
@@ -28,8 +28,8 @@ export function BlockFormSocial({
     href: string;
     logo: string;
   };
+  siteId: Site['id'];
 }) {
-  const params = useParams();
   const router = useRouter();
   const modal = useModal();
 
@@ -43,7 +43,7 @@ export function BlockFormSocial({
         });
 
         if (mode.mode === 'create') {
-          createBlock(form, params.id as Site['id'], 'social').then(res => {
+          createBlock(form, siteId, 'social').then(res => {
             if ('error' in res) {
               toast.error(res.error);
             } else {
@@ -56,7 +56,7 @@ export function BlockFormSocial({
         } else {
           const id = form.get('id') as Block['id'];
 
-          updateBlock(form, params.id as Site['id'], id).then(res => {
+          updateBlock(form, siteId, id).then(res => {
             if ('error' in res) {
               toast.error(res.error);
             } else {

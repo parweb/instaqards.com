@@ -14,7 +14,8 @@ import { cn } from 'lib/utils';
 export function BlockFormMain({
   mode,
   initialData,
-  initialWidget
+  initialWidget,
+  siteId
 }: {
   mode: {
     id: Block['id'] | null;
@@ -28,9 +29,8 @@ export function BlockFormMain({
     logo: string;
   };
   initialWidget: Block['widget'];
+  siteId: Site['id'];
 }) {
-  const params = useParams();
-
   const [data, setData] = useState(initialData);
 
   const lastSelected = useAtomValue($lastSelected);
@@ -68,7 +68,7 @@ export function BlockFormMain({
               {...mode}
               block={selectedBlock}
               setSelectedBlock={setSelectedBlock}
-              siteId={params.id as Site['id']}
+              siteId={siteId}
             />
           </Suspense>
         </motion.div>

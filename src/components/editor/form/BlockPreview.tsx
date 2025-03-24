@@ -42,8 +42,8 @@ export function BlockPreview({
   mode: 'create' | 'update';
   block: Block['widget'];
   setSelectedBlock: Dispatch<SetStateAction<Block['widget']>>;
-  siteId: Site['id'];
   type: Block['type'];
+  siteId: Site['id'];
 }) {
   const router = useRouter();
   const modal = useModal();

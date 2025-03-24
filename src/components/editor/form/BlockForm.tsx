@@ -1,6 +1,6 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Block, Site } from '@prisma/client';
 import { atomWithStorage } from 'jotai/utils';
 
 import { BlockFormMain } from 'components/editor/form/BlockFormMain';
@@ -14,7 +14,8 @@ export const $lastSelected = atomWithStorage<Block['widget'] | null>(
 export function BlockForm({
   mode,
   initialData,
-  initialWidget
+  initialWidget,
+  siteId
 }: {
   mode: {
     id: Block['id'] | null;
@@ -28,6 +29,7 @@ export function BlockForm({
     logo: string;
   };
   initialWidget: Block['widget'];
+  siteId: Site['id'];
 }) {
   return (
     <div className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow overflow-hidden">
@@ -36,10 +38,15 @@ export function BlockForm({
           mode={mode}
           initialData={initialData}
           initialWidget={initialWidget}
+          siteId={siteId}
         />
       )}
       {mode.type === 'social' && (
-        <BlockFormSocial mode={mode} initialData={initialData} />
+        <BlockFormSocial
+          mode={mode}
+          initialData={initialData}
+          siteId={siteId}
+        />
       )}
     </div>
   );

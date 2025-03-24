@@ -1,4 +1,6 @@
-import type { Block, Prisma } from '@prisma/client';
+'use client';
+
+import type { Block, Prisma, Site } from '@prisma/client';
 
 import { BlockList } from 'components/BlockItem';
 import CreateBlockButton from 'components/create-block-button';
@@ -7,16 +9,22 @@ import UpdateSiteBackgroundModal from 'components/modal/update-site-background';
 import UpdateSiteBackgroundButton from 'components/update-site-background-button';
 import { Background } from 'components/website/background';
 import { Content } from 'components/website/content';
+import { Footer } from 'components/website/footer';
+import { Main } from 'components/website/main';
 import { Wrapper } from 'components/website/wrapper';
 
 import 'array-grouping-polyfill';
-import { Footer } from 'components/website/footer';
-import { Main } from 'components/website/main';
 
-const BlockCreate = ({ type }: { type: Block['type'] }) => {
+const BlockCreate = ({
+  type,
+  siteId
+}: {
+  type: Block['type'];
+  siteId: Site['id'];
+}) => {
   return (
     <CreateBlockButton type={type}>
-      <CreateBlockModal type={type} />
+      <CreateBlockModal type={type} siteId={siteId} />
     </CreateBlockButton>
   );
 };
@@ -41,13 +49,13 @@ export const WebSite = ({
         <Main>
           <BlockList blocks={data.main} site={site} type="main" />
 
-          <BlockCreate type="main" />
+          <BlockCreate type="main" siteId={site.id} />
         </Main>
 
         <Footer>
           <div className="flex gap-3 items-center justify-center">
             <BlockList blocks={data.social} site={site} type="social" />
-            <BlockCreate type="social" />
+            <BlockCreate type="social" siteId={site.id} />
           </div>
         </Footer>
       </Content>
