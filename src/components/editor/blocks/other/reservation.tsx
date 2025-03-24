@@ -13,6 +13,9 @@ import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { json } from 'lib/utils';
 import { subscribe } from 'components/editor/blocks/other/actions';
+import { CarouselContent, CarouselItem } from 'components/ui/carousel';
+import { Carousel } from 'components/ui/carousel';
+import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 
 export const input = z.object({
   placeholder: z
@@ -20,7 +23,15 @@ export const input = z.object({
     .describe(json({ label: 'Texte par default', kind: 'string' }))
 });
 
-export default function Email({
+const AvalaibleDays = ({ day }: { day: { id: number; label: string } }) => {
+  return (
+    <div className="aspect-square flex items-center justify-center border border-stone-200 rounded-md">
+      {day.label}
+    </div>
+  );
+};
+
+export default function Reservation({
   placeholder = 'Email',
   block
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
@@ -32,34 +43,43 @@ export default function Email({
     <form
       className="relative overflow-hidden flex-1 flex gap-2 items-center bg-white rounded-md p-2"
       action={form => {
-        console.log({ form: Object.fromEntries([...form.entries()]) });
-        setMode('loading');
-
-        subscribe(form).then(res => {
-          if ('error' in res) {
-            toast.error(res.error);
-            setMode('error');
-          } else {
-            va.track('Subscribe to newsletter', {
-              siteId: res.subscriber.siteId,
-              email: res.subscriber.email
-            });
-
-            toast.success('Email added to list!');
-            setMode('success');
-          }
-        });
+        // console.log({ form: Object.fromEntries([...form.entries()]) });
+        // setMode('loading');
+        // subscribe(form).then(res => {
+        //   if ('error' in res) {
+        //     toast.error(res.error);
+        //     setMode('error');
+        //   } else {
+        //     va.track('Subscribe to newsletter', {
+        //       siteId: res.subscriber.siteId,
+        //       email: res.subscriber.email
+        //     });
+        //     toast.success('Email added to list!');
+        //     setMode('success');
+        //   }
+        // });
       }}
     >
       <input type="hidden" name="blockId" value={block?.id} />
 
-      <div className="flex-1">
-        <Input type="email" name="email" placeholder={placeholder} />
-      </div>
-
-      <div>
-        <FormButton />
-      </div>
+      <Carousel
+        opts={{ dragFree: true }}
+        plugins={[WheelGesturesPlugin({ forceWheelAxis: undefined /* 'y' */ })]}
+      >
+        <CarouselContent>
+          {[
+            { id: 1, label: 'lundi' },
+            { id: 2, label: 'mardi' },
+            { id: 3, label: 'mercredi' },
+            { id: 4, label: 'jeudi' },
+            { id: 5, label: 'vendredi' },
+            { id: 6, label: 'samedi' },
+            { id: 7, label: 'dimanche' }
+          ].map(day => (
+            <AvalaibleDays key={day.id} day={day} />
+          ))}
+        </CarouselContent>
+      </Carousel>
 
       {mode === 'success' && (
         <div className="absolute inset-0 bg-green-600 text-white flex gap-2 items-center justify-center">

@@ -52,7 +52,8 @@ export const BlockTypesItem = ({
     { id: 'apple-music', label: 'Apple Music', type: 'external' },
 
     { id: 'email', label: 'Email', type: 'other' },
-    { id: 'profile', label: 'Profile', type: 'other' }
+    { id: 'profile', label: 'Profile', type: 'other' },
+    { id: 'reservation', label: 'Reservation', type: 'other' }
   ];
 
   return (

@@ -29,6 +29,7 @@ import Twitter from 'components/editor/blocks/external/twitter';
 import Youtube from 'components/editor/blocks/external/youtube';
 import Email from 'components/editor/blocks/other/email';
 import Profile from 'components/editor/blocks/other/profile';
+import Reservation from 'components/editor/blocks/other/reservation';
 import Gallery from 'components/editor/blocks/picture/gallery';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
@@ -36,7 +37,6 @@ import Picture169 from 'components/editor/blocks/picture/picture-16-9';
 import NormalText from 'components/editor/blocks/text/normal';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
-
 const blocks: Record<string, Record<string, React.ComponentType>> = {
   button: {
     'glow-up-001': GlowUp001,
@@ -76,7 +76,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
   },
   other: {
     email: Email,
-    profile: Profile
+    profile: Profile,
+    reservation: Reservation
   }
 };
 
