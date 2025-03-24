@@ -21,15 +21,14 @@ export default async function Sites({
   }
 
   const sites = await db.site.findMany({
+    include: { clicks: true },
+    orderBy: { createdAt: 'asc' },
+    ...(limit ? { take: limit } : {}),
     where: {
       user: {
         id: userId || session.user.id
       }
-    },
-    orderBy: {
-      createdAt: 'asc'
-    },
-    ...(limit ? { take: limit } : {})
+    }
   });
 
   return sites.length > 0 ? (
