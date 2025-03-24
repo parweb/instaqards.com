@@ -71,6 +71,7 @@ export function Fields({
     if (refreshInputs === false) return;
 
     setButton(
+      // @ts-ignore
       site
         ? // @ts-ignore
           site?.blocks?.at?.(0)?.widget
@@ -145,6 +146,7 @@ export function Fields({
               // setRefreshInputs(true);
 
               setButton(
+                // @ts-ignore
                 data
                   ? // @ts-ignore
                     data?.blocks?.at?.(0)?.widget

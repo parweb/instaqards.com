@@ -39,7 +39,7 @@ export default async function Generator({
         </div>
 
         <div className="flex-1 flex flex-col">
-          <div className="border border-stone-200 rounded-md p-4 self-stretch flex-1">
+          <div className="border border-stone-200 rounded-md p-4 self-stretch flex-1 flex flex-col">
             {site && <WebSite site={site} />}
           </div>
         </div>
