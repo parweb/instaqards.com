@@ -26,7 +26,8 @@ export default function UpdateBlockModal({ block }: { block: Block }) {
           href: String(block.href),
           logo: String(block.logo)
         },
-        initialWidget: block.widget
+        initialWidget: block.widget,
+        siteId: block.siteId
       }}
     />
   );
