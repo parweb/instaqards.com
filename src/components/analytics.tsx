@@ -151,8 +151,8 @@ export default function Analytics({
 
   const categories = [
     {
-      title: 'components.analytics.link.title',
-      subtitle: 'components.analytics.link.subtitle',
+      title: 'components.analytics.block.title',
+      subtitle: 'components.analytics.block.subtitle',
       data: links
     },
     {
