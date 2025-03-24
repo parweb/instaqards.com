@@ -2,10 +2,8 @@
 
 TODO
 
-<!-- <Link href={`/click/${link.id}`} target="_blank" rel="noreferrer"> -->
-
 DONE -> subdomain apres suffix & préfix
-     -> duplicate block
+DONE -> duplicate block
      -> apply style on all
      -> custom font size color ... on text
 DONE -> block header

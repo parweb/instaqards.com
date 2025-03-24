@@ -34,6 +34,7 @@ import {
 } from '@dnd-kit/sortable';
 
 import DeleteBlockButton from 'components/delete-block-button';
+import DuplicateBlockButton from 'components/duplicate-block-button';
 import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
@@ -46,8 +47,12 @@ const BlockUpdate = ({ block }: { block: Block }) => {
   );
 };
 
-const BlockDelete = (block: Block) => {
+const BlockDelete = ({ block }: { block: Block }) => {
   return <DeleteBlockButton {...block} />;
+};
+
+const BlockDuplicate = ({ block }: { block: Block }) => {
+  return <DuplicateBlockButton {...block} />;
 };
 
 const BlockWidget = memo(({ block }: { block: Block }) => {
@@ -145,9 +150,10 @@ const BlockItem = ({ block }: { block: Block }) => {
           </Suspense>
         )}
 
-        <div className="absolute left-3/4 z-50 flex items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100">
+        <div className="absolute left-3/4 z-50 flex flex-col items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100">
           <BlockUpdate block={block} />
-          <BlockDelete {...block} />
+          <BlockDuplicate block={block} />
+          <BlockDelete block={block} />
         </div>
       </motion.div>
     );
@@ -167,7 +173,8 @@ const BlockItem = ({ block }: { block: Block }) => {
           )}
         >
           <BlockUpdate block={block} />
-          <BlockDelete {...block} />
+          <BlockDuplicate block={block} />
+          <BlockDelete block={block} />
         </div>
 
         <div

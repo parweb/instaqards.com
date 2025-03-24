@@ -383,6 +383,35 @@ export const createBlock = async (
   }
 };
 
+export const duplicateBlock = async (blockId: Block['id']) => {
+  try {
+    const block = await db.block.findUnique({ where: { id: blockId } });
+
+    if (!block) {
+      return { error: `Block (${blockId}) not found` };
+    }
+
+    const newBlock = await db.block.create({
+      data: {
+        type: block.type,
+        position: block.position,
+        label: block.label,
+        href: block.href,
+        logo: block.logo,
+        style: block.style ?? {},
+        siteId: block.siteId,
+        widget: block.widget ?? {}
+      }
+    });
+    return newBlock;
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : 'An unknown error occurred'
+    };
+  }
+};
+
 export const deleteBlock = async (blockId: Block['id']) => {
   try {
     const response = await db.block.delete({
