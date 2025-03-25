@@ -6,6 +6,7 @@ import { LuExpand, LuPlus } from 'react-icons/lu';
 
 import FlipFlap from 'components/editor/blocks//button/flip-flap';
 import ThreeDSpin from 'components/editor/blocks/button/3d-spin';
+import Direction from 'components/editor/blocks/button/direction';
 import DontPressMe001 from 'components/editor/blocks/button/dont-press-me-001';
 import DontPressMe002 from 'components/editor/blocks/button/dont-press-me-002';
 import DontPressMe003 from 'components/editor/blocks/button/dont-press-me-003';
@@ -44,6 +45,7 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     'glow-up-002': GlowUp002,
     'glow-up-003': GlowUp003,
     icon: Icon,
+    direction: Direction,
     'slide-from-left-001': SlideFromLeft001,
     'dont-press-me-001': DontPressMe001,
     'dont-press-me-002': DontPressMe002,

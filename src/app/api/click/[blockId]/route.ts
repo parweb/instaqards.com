@@ -12,6 +12,7 @@ type WidgetData = {
   id: string;
   data: {
     href?: string;
+    address?: string;
     medias?: Media[];
     [key: string]: unknown;
   };
@@ -22,6 +23,16 @@ type PictureWidgetType =
   | 'logo-circle'
   | 'logo-square'
   | 'picture-16-9';
+
+type ButtonWidgetType = 'direction' | 'default';
+
+type ButtonWidgetMapper = {
+  // eslint-disable-next-line no-unused-vars
+  [K in ButtonWidgetType]: (
+    // eslint-disable-next-line no-unused-vars
+    data: WidgetData['data']
+  ) => string | undefined;
+};
 
 type PictureWidgetMapper = {
   // eslint-disable-next-line no-unused-vars
@@ -40,6 +51,12 @@ type WidgetMapper = {
   picture: (widget: WidgetData, id: string) => string | undefined;
 };
 
+const buttonWidgetMapper: ButtonWidgetMapper = {
+  direction: data =>
+    `https://www.google.com/maps/place/${encodeURIComponent(data?.address ?? '')}/`,
+  default: data => data.href
+};
+
 const pictureWidgetMapper: PictureWidgetMapper = {
   gallery: (data, id) => data.medias?.find(media => media.id === id)?.link,
   'logo-circle': (data, id) =>
@@ -51,11 +68,14 @@ const pictureWidgetMapper: PictureWidgetMapper = {
 };
 
 const widgetMapper: WidgetMapper = {
-  button: widget => widget.data.href,
-  picture: (widget, id) => {
-    const pictureType = widget.id as PictureWidgetType;
-    return pictureWidgetMapper[pictureType]?.(widget.data, id);
-  }
+  // button: widget => widget.data.href,
+  button: widget =>
+    (
+      buttonWidgetMapper?.[widget.id as ButtonWidgetType] ??
+      buttonWidgetMapper.default
+    )?.(widget.data),
+  picture: (widget, id) =>
+    pictureWidgetMapper[widget.id as PictureWidgetType]?.(widget.data, id)
 };
 
 export async function GET(

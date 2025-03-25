@@ -31,6 +31,7 @@ export const BlockTypesItem = ({
     { id: 'glow-up-002', label: 'Glow up 2', type: 'button' },
     { id: 'glow-up-003', label: 'Glow up 3', type: 'button' },
     { id: 'icon', label: 'Image', type: 'button' },
+    { id: 'direction', label: 'Direction', type: 'button' },
     { id: 'slide-from-left-001', label: 'Slide from left', type: 'button' },
     { id: 'dont-press-me-001', label: 'Dont press me', type: 'button' },
     { id: 'dont-press-me-002', label: 'Dont press me 2', type: 'button' },
