@@ -27,7 +27,7 @@ export const BlockTypesItemVariants = ({
   return (
     <Carousel
       opts={{ dragFree: true }}
-      plugins={[WheelGesturesPlugin({ forceWheelAxis: undefined /* 'y' */ })]}
+      plugins={[WheelGesturesPlugin({ forceWheelAxis: 'y' })]}
     >
       <CarouselContent>
         {variants.map(variant => (

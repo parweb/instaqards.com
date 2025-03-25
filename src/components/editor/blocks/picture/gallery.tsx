@@ -151,7 +151,7 @@ export default function Gallery({
   return (
     <Carousel
       opts={{ dragFree: true }}
-      plugins={[WheelGesturesPlugin({ forceWheelAxis: undefined /* 'y' */ })]}
+      plugins={[WheelGesturesPlugin({ forceWheelAxis: 'y' })]}
     >
       <CarouselContent>
         {medias.map(media => (

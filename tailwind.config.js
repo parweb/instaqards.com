@@ -123,6 +123,7 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       fontSize: {
+        '2xs': ['0.5rem', { lineHeight: '0.75rem' }],
         xs: ['0.75rem', { lineHeight: '1rem' }],
         base: ['1rem', { lineHeight: '1.25rem' }],
         sm: ['1rem', { lineHeight: '1.25rem' }],

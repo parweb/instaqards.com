@@ -1,5 +1,7 @@
 'use client';
 
+import { ErrorBoundary } from 'react-error-boundary';
+
 import { BlockTypesItemVariants } from './BlockTypesItemVariants';
 
 import {
@@ -63,22 +65,38 @@ export const BlockTypesItem = ({
   ];
 
   return (
-    <AccordionItem value={type}>
-      <div className="flex flex-col gap-2">
-        <AccordionTrigger>
+    <ErrorBoundary
+      fallback={
+        <div className="flex flex-col gap-2">
           <hgroup className="flex gap-2 items-center justify-between">
             <h3>{label}</h3>
           </hgroup>
-        </AccordionTrigger>
 
-        <AccordionContent>
           <BlockTypesItemVariants
             onClick={onClick}
             value={value}
             variants={variants.filter(v => v.type === type)}
           />
-        </AccordionContent>
-      </div>
-    </AccordionItem>
+        </div>
+      }
+    >
+      <AccordionItem value={type}>
+        <div className="flex flex-col gap-2">
+          <AccordionTrigger>
+            <hgroup className="flex gap-2 items-center justify-between">
+              <h3>{label}</h3>
+            </hgroup>
+          </AccordionTrigger>
+
+          <AccordionContent>
+            <BlockTypesItemVariants
+              onClick={onClick}
+              value={value}
+              variants={variants.filter(v => v.type === type)}
+            />
+          </AccordionContent>
+        </div>
+      </AccordionItem>
+    </ErrorBoundary>
   );
 };

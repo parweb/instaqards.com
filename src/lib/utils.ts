@@ -149,7 +149,7 @@ export type Block = Share &
       }
     | { kind: 'string' }
     | { kind: 'color'; default: string }
-    | { kind: 'number'; plop: string }
+    | { kind: 'number' }
     | {
         kind: 'font';
         default: {
