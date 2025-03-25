@@ -26,7 +26,9 @@ type PictureWidgetType =
 type PictureWidgetMapper = {
   // eslint-disable-next-line no-unused-vars
   [K in PictureWidgetType]: (
+    // eslint-disable-next-line no-unused-vars
     data: WidgetData['data'],
+    // eslint-disable-next-line no-unused-vars
     id: string
   ) => string | undefined;
 };

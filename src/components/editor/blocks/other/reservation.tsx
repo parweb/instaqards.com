@@ -5,8 +5,7 @@ import va from '@vercel/analytics';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useFormStatus } from 'react-dom';
-import { LuCheck, LuSend } from 'react-icons/lu';
+import { LuCheck } from 'react-icons/lu';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
@@ -24,9 +23,6 @@ import {
 } from 'components/ui/carousel';
 
 export const input = z.object({
-  placeholder: z
-    .string()
-    .describe(json({ label: 'Texte par default', kind: 'string' })),
   timeSlotInterval: z
     .number()
     .describe(json({ label: 'Intervalle de temps', kind: 'number' }))
@@ -103,6 +99,7 @@ const AvalaibleDays = ({
 }: {
   day: Day;
   value: Day['id'] | undefined;
+  // eslint-disable-next-line no-unused-vars
   onChange: (id: Day['id'] | undefined) => void;
 }) => {
   return (
@@ -151,6 +148,7 @@ const AvalaibleTimeSlot = ({
 }: {
   timeSlot: TimeSlot;
   value: TimeSlot['id'] | undefined;
+  // eslint-disable-next-line no-unused-vars
   onChange: (id: TimeSlot['id'] | undefined) => void;
 }) => {
   return (
@@ -183,7 +181,6 @@ const AvalaibleTimeSlot = ({
 };
 
 export default function Reservation({
-  placeholder = 'Email',
   timeSlotInterval = 30,
   block
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
@@ -336,15 +333,5 @@ export default function Reservation({
         </div>
       )}
     </form>
-  );
-}
-
-function FormButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit">
-      {pending ? <LoadingDots color="#808080" /> : <LuSend />}
-    </Button>
   );
 }

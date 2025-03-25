@@ -17,7 +17,7 @@ const DeleteButton = ({ linkId }: { linkId: Link['id'] }) => {
   return (
     <form
       className="cursor-pointer"
-      action={async (data: FormData) => {
+      action={async () => {
         window.confirm('Are you sure you want to delete this link?') &&
           deleteLink(linkId)
             .then(async res => {

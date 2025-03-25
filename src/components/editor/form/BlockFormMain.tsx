@@ -3,7 +3,6 @@
 import type { Block, Site } from '@prisma/client';
 import { useAtomValue } from 'jotai';
 import { motion } from 'motion/react';
-import { useParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
 import { $lastSelected } from 'components/editor/form/BlockForm';

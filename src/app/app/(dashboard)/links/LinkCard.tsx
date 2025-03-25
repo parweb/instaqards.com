@@ -12,7 +12,7 @@ import {
 } from 'react-icons/lu';
 
 import { Button } from 'components/ui/button';
-import { cn, random } from 'lib/utils';
+import { cn } from 'lib/utils';
 import DeleteButton from './DeleteButton';
 import { EditButton } from './EditButton';
 import { MutateModal } from './MutateModal';

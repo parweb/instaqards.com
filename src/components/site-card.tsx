@@ -3,8 +3,6 @@ import Link from 'next/link';
 import { LuArrowUpRight, LuCog, LuMousePointer } from 'react-icons/lu';
 
 import DeleteButton from './DeleteButton';
-import { PreviewBackground } from './editor/PreviewBackground';
-import { contentType } from 'mime-types';
 
 export default function SiteCard({
   data
@@ -12,10 +10,6 @@ export default function SiteCard({
   data: Prisma.SiteGetPayload<{ include: { clicks: true } }>;
 }) {
   const url = `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-
-  const media_type = data?.background?.startsWith('component:')
-    ? 'css'
-    : contentType(data?.background?.split('/').pop() ?? '') || '';
 
   return (
     <div className="group relative rounded-lg border pb-10 shadow-md transition-all hover:shadow-xl border-stone-300 ">
