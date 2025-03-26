@@ -4,6 +4,7 @@ import type { Block } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { LuLink } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
@@ -17,11 +18,20 @@ const BlockWidget = ({ block }: { block: Block }) => {
   };
 
   const Component = dynamic(
-    () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`)
+    () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`),
+    { ssr: false }
   );
 
-  // @ts-ignore
-  return <Component {...(widget?.data ?? {})} block={block} />;
+  return (
+    <ErrorBoundary
+      fallbackRender={({ error }) => (
+        console.error(error), (<div>Something went wrong, sorry!</div>)
+      )}
+    >
+      {/* @ts-ignore */}
+      <Component {...(widget?.data ?? {})} block={block} />
+    </ErrorBoundary>
+  );
 };
 
 export const BlockItem = (block: Block) => {
