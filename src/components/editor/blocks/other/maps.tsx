@@ -13,6 +13,12 @@ export const input = z.object({
       label: 'Adresse',
       placeholder: 'Entrez une adresse'
     })
+  ),
+  address: z.string().describe(
+    json({
+      kind: 'hidden',
+      label: 'Adresse'
+    })
   )
 });
 
@@ -21,16 +27,18 @@ export default function Maps({
   block
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
   return (
-    <>
-      <MapContainer
-        mapPosition={position}
-        selectedLocation={{
-          id: 'default',
-          display_name: 'default',
-          lat: position.at(0) ?? 0,
-          lon: position.at(1) ?? 0
-        }}
-      />
-    </>
+    <MapContainer
+      inputValue={{
+        name: 'Le chateaux',
+        address: '2 Rue des Cévennes, 75015 Paris'
+      }}
+      mapPosition={position}
+      selectedLocation={{
+        id: 'default',
+        display_name: 'default',
+        lat: position.at(0) ?? 0,
+        lon: position.at(1) ?? 0
+      }}
+    />
   );
 }

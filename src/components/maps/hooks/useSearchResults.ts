@@ -22,6 +22,7 @@ export const useSearchResults = (
   const filterResults = useCallback(
     (data: SearchResult[], currentLocation: SearchResult | null) => {
       if (!currentLocation) return data;
+
       return data.filter(
         result => result.display_name !== currentLocation.display_name
       );
@@ -74,7 +75,6 @@ export const useSearchResults = (
         }));
         const filteredResults = filterResults(mappedData, selectedLocation);
 
-        // Ensure we update isSearching to false right away
         updateSearchState({
           results: filteredResults,
           isPopoverOpen: filteredResults.length > 0,

@@ -235,6 +235,8 @@ export function BlockPreview({
                         name={key}
                         data={data}
                         shape={property.shape}
+                        // @ts-ignore
+                        setValue={setValue}
                       />
                     )}
 

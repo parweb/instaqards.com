@@ -6,11 +6,7 @@ import { useSearchResults } from './useSearchResults';
 import { useMapPosition } from './useMapPosition';
 
 interface UseMapSearchProps {
-  onLocationSelect?: (location: {
-    display_name: string;
-    lat: number;
-    lon: number;
-  }) => void;
+  onLocationSelect?: (location: SearchResult) => void;
 }
 
 const DEBOUNCE_DELAY = 300;

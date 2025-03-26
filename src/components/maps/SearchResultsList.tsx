@@ -1,13 +1,7 @@
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList
-} from 'components/ui/command';
+import { Command, CommandGroup, CommandList } from 'components/ui/command';
 import { memo, useCallback } from 'react';
-import type { SearchResultsListProps } from './types';
 import { LocationIcon } from './icons/LocationIcon';
+import type { SearchResultsListProps } from './types';
 
 const SearchResultsListComponent = ({
   results,

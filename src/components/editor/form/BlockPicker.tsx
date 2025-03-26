@@ -32,7 +32,7 @@ export function BlockPicker({
   onClick: (data: { type: string; id: string }) => void;
 }) {
   return (
-    <div className="max-h-[340px] overflow-y-scroll flex flex-col gap-4">
+    <div className="max-h-[500px] overflow-y-scroll flex flex-col gap-4">
       <div className="flex flex-col gap-4">
         {type === 'main' && (
           <div>

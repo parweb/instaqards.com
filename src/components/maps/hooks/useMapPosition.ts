@@ -5,11 +5,7 @@ const DEFAULT_POSITION: [number, number] = [48.8566, 2.3522];
 const SELECTION_RESET_DELAY = 150;
 
 interface UseMapPositionProps {
-  onLocationSelect?: (location: {
-    display_name: string;
-    lat: number;
-    lon: number;
-  }) => void;
+  onLocationSelect?: (location: SearchResult) => void;
 }
 
 export const useMapPosition = ({ onLocationSelect }: UseMapPositionProps) => {
@@ -21,14 +17,8 @@ export const useMapPosition = ({ onLocationSelect }: UseMapPositionProps) => {
       setMapPosition([result.lat, result.lon]);
 
       if (onLocationSelect) {
-        const locationData = {
-          display_name: result.display_name,
-          lat: result.lat,
-          lon: result.lon
-        };
-
         setTimeout(() => {
-          onLocationSelect(locationData);
+          onLocationSelect(result);
         }, 0);
       }
 

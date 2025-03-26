@@ -3,6 +3,17 @@ export interface SearchResult {
   display_name: string;
   lat: number;
   lon: number;
+  address?: {
+    suburb: string;
+    city_district: string;
+    city: string;
+    'ISO3166-2-lvl6': string;
+    state: string;
+    'ISO3166-2-lvl4': string;
+    region: string;
+    country: string;
+    country_code: string;
+  };
 }
 
 export interface Location {

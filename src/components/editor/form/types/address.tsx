@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Controller,
   ControllerRenderProps,
@@ -10,21 +10,27 @@ import {
 
 import { useMapSearch } from 'components/maps/hooks/useMapSearch';
 import SearchInput from 'components/maps/SearchInput';
-import { SearchResult } from 'components/maps/types';
 import type { Block as BlockType } from 'lib/utils';
 
 // Composant optimisé pour l'adresse
-const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
+const AddressInput = (
+  props: ControllerRenderProps<FieldValues, string> & {
+    // eslint-disable-next-line no-unused-vars
+    onAddressChange: (location: {
+      display_name: string;
+      lat: number;
+      lon: number;
+    }) => void;
+  }
+) => {
   // Utilisation du hook useMapSearch avec un callback optimisé
   const {
     query,
     setQuery,
     searchResults,
     isSearching,
-    selectedLocation,
     isOpen,
     setIsOpen,
-    mapPosition,
     isHandlingSelection,
     handleSearch,
     handleSelectResult,
@@ -33,8 +39,8 @@ const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
   } = useMapSearch({
     onLocationSelect: useCallback(
       (location: { display_name: string; lat: number; lon: number }) => {
-        // Mise à jour directe du champ avec les coordonnées, sans log
         props.onChange([location.lat, location.lon]);
+        props.onAddressChange(location);
       },
       [props]
     )
@@ -57,6 +63,8 @@ const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
     [clearSearch]
   );
 
+  console.log({ query });
+
   return (
     <>
       <SearchInput
@@ -78,13 +86,13 @@ const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
 export const Address = ({
   control,
   name,
-  shape,
-  data
+  setValue
 }: {
   control: Control<FieldValues>;
   name: string;
   shape: Extract<BlockType, { kind: 'address' }>;
   data: Record<string, unknown>;
+  setValue: (name: string, value: string) => void; // eslint-disable-line no-unused-vars
 }) => {
   return (
     <>
@@ -94,7 +102,12 @@ export const Address = ({
         render={({ field }) => {
           return (
             <>
-              <AddressInput {...field} />
+              <AddressInput
+                {...field}
+                onAddressChange={location =>
+                  setValue('address', location.display_name ?? '')
+                }
+              />
             </>
           );
         }}
