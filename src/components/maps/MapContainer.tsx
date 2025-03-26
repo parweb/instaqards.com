@@ -1,3 +1,5 @@
+'use client';
+
 import { useMemo } from 'react';
 import MapView from './map/MapView';
 import { getMarkerPosition } from './map/MapMarker';

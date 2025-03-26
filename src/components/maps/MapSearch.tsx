@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useCallback, useMemo } from 'react';
 import { useMapSearch } from 'components/maps/hooks/useMapSearch';
 import SearchInput from './SearchInput';
