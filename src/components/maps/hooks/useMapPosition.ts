@@ -5,6 +5,7 @@ const DEFAULT_POSITION: [number, number] = [48.8566, 2.3522];
 const SELECTION_RESET_DELAY = 150;
 
 interface UseMapPositionProps {
+  // eslint-disable-next-line no-unused-vars
   onLocationSelect?: (location: SearchResult) => void;
 }
 

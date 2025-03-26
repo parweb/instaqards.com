@@ -23,8 +23,7 @@ export const input = z.object({
 });
 
 export default function Maps({
-  position = [48.8566, 2.3522],
-  block
+  position = [48.8566, 2.3522]
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
   return (
     <MapContainer

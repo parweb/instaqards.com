@@ -1,11 +1,12 @@
-import { useEffect, useCallback } from 'react';
-import type { SearchResult } from 'components/maps/types';
 import { useDebounce } from 'components/maps/hooks/useDebounce';
-import { useSearchState } from './useSearchState';
-import { useSearchResults } from './useSearchResults';
+import type { SearchResult } from 'components/maps/types';
+import { useCallback } from 'react';
 import { useMapPosition } from './useMapPosition';
+import { useSearchResults } from './useSearchResults';
+import { useSearchState } from './useSearchState';
 
 interface UseMapSearchProps {
+  // eslint-disable-next-line no-unused-vars
   onLocationSelect?: (location: SearchResult) => void;
 }
 
@@ -53,6 +54,7 @@ export const useMapSearch = ({ onLocationSelect }: UseMapSearchProps) => {
           isSelecting.current = false;
         });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [handleSelectLocation, updateSearchState]
   );
 

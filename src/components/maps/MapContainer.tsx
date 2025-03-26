@@ -1,13 +1,12 @@
 'use client';
 
-import { Suspense, useMemo } from 'react';
-// import MapView from './map/MapView';
-import { getMarkerPosition } from './map/MapMarker';
-import type { SearchResult } from './types';
-import React from 'react';
-import Yolo from './map/Yolo';
+import { memo, Suspense, useMemo } from 'react';
+
+import { getMarkerPosition } from 'components/maps/map/MapMarker';
+import Yolo from 'components/maps/map/Yolo';
+import type { SearchResult } from 'components/maps/types';
 import { cn } from 'lib/utils';
-import { cal, inter, open } from 'styles/fonts';
+import { inter, open } from 'styles/fonts';
 
 interface MapContainerProps {
   selectedLocation: SearchResult | null;
@@ -71,4 +70,4 @@ const MapContainer = ({
   );
 };
 
-export default React.memo(MapContainer);
+export default memo(MapContainer);

@@ -1,15 +1,18 @@
+import { X } from 'lucide-react';
+import { forwardRef, memo } from 'react';
+
+import LoadingIcon from 'components/maps/icons/LoadingIcon';
+import SearchIcon from 'components/maps/icons/SearchIcon';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { cn } from 'lib/utils';
-import { X } from 'lucide-react';
-import { forwardRef, memo } from 'react';
-import LoadingIcon from './icons/LoadingIcon';
-import SearchIcon from './icons/SearchIcon';
 
 interface SearchFieldProps {
   query: string;
   isSearching: boolean;
+  // eslint-disable-next-line no-unused-vars
   onQueryChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  // eslint-disable-next-line no-unused-vars
   onClearSearch: (e: React.MouseEvent) => void;
   className?: string;
   placeholder?: string;

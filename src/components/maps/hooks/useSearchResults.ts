@@ -11,8 +11,9 @@ interface SearchStateUpdates {
 const MIN_QUERY_LENGTH = 3;
 
 export const useSearchResults = (
-  query: string,
+  _: string,
   selectedLocation: SearchResult | null,
+  // eslint-disable-next-line no-unused-vars
   updateSearchState: (updates: SearchStateUpdates) => void
 ) => {
   const abortControllerRef = useRef<AbortController | null>(null);

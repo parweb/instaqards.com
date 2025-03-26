@@ -70,6 +70,10 @@ const MapSearch = ({ onLocationSelect, className }: MapSearchProps) => {
       />
 
       <MapContainer
+        inputValue={{
+          name: 'Le chateaux',
+          address: '2 Rue des Cévennes, 75015 Paris'
+        }}
         selectedLocation={selectedLocation}
         mapPosition={mapPosition}
       />

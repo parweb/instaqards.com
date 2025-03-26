@@ -27,14 +27,19 @@ export interface SearchInputProps {
   isOpen: boolean;
   isSearching: boolean;
   searchResults: SearchResult[];
+  // eslint-disable-next-line no-unused-vars
   onQueryChange: (value: string) => void;
+  // eslint-disable-next-line no-unused-vars
   onOpenChange: (open: boolean) => void;
+  // eslint-disable-next-line no-unused-vars
   onResultSelect: (result: SearchResult) => void;
+  // eslint-disable-next-line no-unused-vars
   onClearSearch: (e: React.MouseEvent) => void;
   isHandlingSelection: React.MutableRefObject<boolean>;
 }
 
 export interface MapSearchProps {
+  // eslint-disable-next-line no-unused-vars
   onLocationSelect?: (location: Location) => void;
   className?: string;
 }
@@ -42,13 +47,17 @@ export interface MapSearchProps {
 export interface SearchInputFieldProps {
   query: string;
   isSearching: boolean;
+  // eslint-disable-next-line no-unused-vars
   onQueryChange: (value: string) => void;
+  // eslint-disable-next-line no-unused-vars
   onClearSearch: (e: React.MouseEvent) => void;
+  // eslint-disable-next-line no-unused-vars
   onOpenChange: (open: boolean) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export interface SearchResultsListProps {
   results: SearchResult[];
+  // eslint-disable-next-line no-unused-vars
   onSelect: (result: SearchResult) => void;
 }

@@ -156,8 +156,10 @@ const MapViewInner = ({
 
       // Reset refs
       mapInstanceRef.current = null;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       markerRefsMap.current.clear();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Enlever updateMarkers des dépendances
 
   // Update view when position changes, but keep markers
