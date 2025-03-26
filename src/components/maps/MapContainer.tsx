@@ -16,10 +16,10 @@ const MapContainer = ({ selectedLocation, mapPosition }: MapContainerProps) => {
   );
 
   return (
-    <div className='w-full aspect-video relative overflow-hidden rounded-lg transition-all'>
+    <div className="w-full aspect-video relative overflow-hidden rounded-lg transition-all">
       <MapView
         position={mapPosition}
-        markers={[markerPosition].filter(Boolean)}
+        markers={markerPosition ? [markerPosition] : []}
       />
     </div>
   );

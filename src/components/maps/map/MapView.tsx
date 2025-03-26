@@ -1,23 +1,23 @@
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import React, { useEffect, useRef, useMemo, useCallback } from 'react';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+
 import {
   MapContainer,
   Marker,
   TileLayer,
   useMap,
-  ZoomControl,
+  ZoomControl
 } from 'react-leaflet';
 
-// Fix for missing marker icons in react-leaflet
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import 'leaflet/dist/leaflet.css';
 
 const DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
+  iconUrl: icon.src,
+  shadowUrl: iconShadow.src,
   iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconAnchor: [12, 41]
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
@@ -58,7 +58,7 @@ const ChangeView = React.memo<{ center: [number, number]; zoom: number }>(
           clearInterval(intervalId);
           const flyToAnimation = map.flyTo(center, zoom, {
             duration: 1.5,
-            easeLinearity: 0.25,
+            easeLinearity: 0.25
           });
 
           return () => {
@@ -83,7 +83,7 @@ ChangeView.displayName = 'ChangeView';
 const MapView: React.FC<MapViewProps> = ({
   position,
   zoom = 13,
-  markers = [{ position, id: 'default' }],
+  markers = [{ position, id: 'default' }]
 }) => {
   console.log({ position, zoom, markers });
 
@@ -119,13 +119,13 @@ const MapView: React.FC<MapViewProps> = ({
   const mapContainerStyle = useMemo(
     () => ({
       height: '100%',
-      width: '100%',
+      width: '100%'
     }),
     []
   );
 
   return (
-    <div className='w-full h-full map-container overflow-hidden'>
+    <div className="w-full h-full map-container overflow-hidden">
       <MapContainer
         center={position}
         zoom={zoom}
@@ -133,15 +133,15 @@ const MapView: React.FC<MapViewProps> = ({
         style={mapContainerStyle}
         zoomControl={false}
       >
-        <ZoomControl position='bottomright' />
-        <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
+        <ZoomControl position="bottomright" />
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <ChangeView center={position} zoom={zoom} />
 
-        {markers.map((marker) => (
+        {markers.map(marker => (
           <Marker
             key={marker.id}
             position={marker.position}
-            ref={(ref) => {
+            ref={ref => {
               if (ref) {
                 markerRefs.current.set(marker.id, ref);
               } else {

@@ -62,7 +62,8 @@ export const BlockTypesItem = ({
 
     { id: 'email', label: 'Email', type: 'other' },
     { id: 'profile', label: 'Profile', type: 'other' },
-    { id: 'reservation', label: 'Reservation', type: 'other' }
+    { id: 'reservation', label: 'Reservation', type: 'other' },
+    { id: 'maps', label: 'Maps', type: 'other' }
   ];
 
   return (

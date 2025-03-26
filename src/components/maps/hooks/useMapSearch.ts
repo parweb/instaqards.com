@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { SearchResult } from 'components/maps/types';
-import { useDebounce } from '../../../hooks/useDebounce';
+import { useDebounce } from 'components/maps/hooks/useDebounce';
 import { useSearchState } from './useSearchState';
 import { useSearchResults } from './useSearchResults';
 import { useMapPosition } from './useMapPosition';
