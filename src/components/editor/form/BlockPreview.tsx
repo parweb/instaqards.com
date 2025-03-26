@@ -15,6 +15,7 @@ import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
 
 import { $lastSelected } from 'components/editor/form/BlockForm';
 import { BlockFormButton } from 'components/editor/form/BlockFormButton';
+import { Address } from 'components/editor/form/types/address';
 import { Color } from 'components/editor/form/types/color';
 import { Container } from 'components/editor/form/types/container';
 import { Font } from 'components/editor/form/types/font';
@@ -182,7 +183,7 @@ export function BlockPreview({
             </Suspense>
           </div>
 
-          <div className="px-4 flex flex-col gap-4">
+          <div className="px-4 flex flex-col gap-4 p-0.5">
             {(
               Object.entries(
                 (zodToJsonSchema(input) as JsonSchema7Type['default'])
@@ -222,6 +223,16 @@ export function BlockPreview({
                       <Container
                         // @ts-ignore
                         control={control}
+                        data={data}
+                        shape={property.shape}
+                      />
+                    )}
+
+                    {property.shape.kind === 'address' && (
+                      <Address
+                        // @ts-ignore
+                        control={control}
+                        name={key}
                         data={data}
                         shape={property.shape}
                       />

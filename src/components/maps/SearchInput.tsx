@@ -1,84 +1,83 @@
-import { Button } from 'components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
 import { useSearchField } from 'components/maps/hooks/useSearchField';
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import type { SearchInputProps, SearchResult } from './types';
-import { SearchInputField } from './SearchInputField';
+import SearchInputField from './SearchInputField';
 import { SearchResultsList } from './SearchResultsList';
 
-const SearchInput = memo(
-  ({
-    query,
-    isOpen,
-    isSearching,
-    searchResults,
-    onQueryChange,
-    onOpenChange,
-    onResultSelect,
-    onClearSearch,
-    isHandlingSelection
-  }: SearchInputProps) => {
-    const { inputRef, handleInputChange, focusInput } = useSearchField({
-      query,
-      onQueryChange
-    });
+const SearchInput = ({
+  query,
+  isOpen,
+  isSearching,
+  searchResults,
+  onQueryChange,
+  onOpenChange,
+  onResultSelect,
+  onClearSearch,
+  isHandlingSelection
+}: SearchInputProps) => {
+  const { inputRef, focusInput } = useSearchField({ query });
 
-    const shouldShowResults = useMemo(
-      () => isOpen && searchResults.length > 0 && !isHandlingSelection.current,
-      [isOpen, searchResults.length, isHandlingSelection]
-    );
+  const shouldShowResults = useMemo(
+    () => isOpen && searchResults.length > 0 && !isHandlingSelection.current,
+    [isOpen, searchResults.length, isHandlingSelection]
+  );
 
-    const handleResultSelection = useCallback(
-      (result: SearchResult) => {
-        onResultSelect(result);
+  const handleResultSelection = useCallback(
+    (result: SearchResult) => {
+      onOpenChange(false);
+      onResultSelect(result);
+      setTimeout(focusInput, 10);
+    },
+    [onResultSelect, onOpenChange, focusInput]
+  );
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      onOpenChange(open);
+      if (!open) {
         focusInput();
-      },
-      [onResultSelect, focusInput]
-    );
+      }
+    },
+    [onOpenChange, focusInput]
+  );
 
-    return (
-      <Popover
-        open={shouldShowResults}
-        onOpenChange={open => {
-          onOpenChange(open);
-          if (!open) {
-            focusInput();
-          }
-        }}
-      >
-        <PopoverTrigger asChild>
-          <div className="w-full rounded-md border border-input bg-background px-3 py-2">
-            <SearchInputField
-              query={query}
-              isSearching={isSearching}
-              onQueryChange={onQueryChange}
-              onClearSearch={onClearSearch}
-              onOpenChange={onOpenChange}
-              inputRef={inputRef}
-            />
-          </div>
-        </PopoverTrigger>
+  const handleAutoFocus = useCallback((e: Event) => e.preventDefault(), []);
 
-        <PopoverContent
-          className="w-full p-0 z-50"
-          align="start"
-          side="bottom"
-          sideOffset={4}
-          alignOffset={0}
-          avoidCollisions
-          onOpenAutoFocus={e => e.preventDefault()}
-          onCloseAutoFocus={e => e.preventDefault()}
-        >
-          <SearchResultsList
-            results={searchResults}
-            onSelect={handleResultSelection}
+  return (
+    <Popover modal open={shouldShowResults} onOpenChange={handleOpenChange}>
+      <PopoverTrigger asChild>
+        <div className="w-full">
+          <SearchInputField
+            query={query}
+            isSearching={isSearching}
+            onQueryChange={onQueryChange}
+            onClearSearch={onClearSearch}
+            onOpenChange={onOpenChange}
+            inputRef={inputRef}
           />
-        </PopoverContent>
-      </Popover>
-    );
-  }
-);
+        </div>
+      </PopoverTrigger>
+
+      <PopoverContent
+        className="w-full p-0 z-[300]"
+        align="start"
+        side="bottom"
+        sideOffset={4}
+        alignOffset={0}
+        avoidCollisions
+        onOpenAutoFocus={handleAutoFocus}
+        onCloseAutoFocus={handleAutoFocus}
+      >
+        <SearchResultsList
+          results={searchResults}
+          onSelect={handleResultSelection}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 SearchInput.displayName = 'SearchInput';
 
-export default SearchInput;
+export default memo(SearchInput);

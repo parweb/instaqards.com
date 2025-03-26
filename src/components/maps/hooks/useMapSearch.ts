@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import type { SearchResult } from 'components/maps/types';
 import { useDebounce } from 'components/maps/hooks/useDebounce';
 import { useSearchState } from './useSearchState';
@@ -16,15 +16,11 @@ interface UseMapSearchProps {
 const DEBOUNCE_DELAY = 300;
 
 export const useMapSearch = ({ onLocationSelect }: UseMapSearchProps) => {
-  const {
-    searchState,
-    updateSearchState,
-    setQuery,
-    clearSearch,
-  } = useSearchState();
+  const { searchState, updateSearchState, setQuery, clearSearch } =
+    useSearchState();
 
   const { mapPosition, handleSelectLocation } = useMapPosition({
-    onLocationSelect,
+    onLocationSelect
   });
 
   const { handleSearch, isSelecting } = useSearchResults(
@@ -35,21 +31,34 @@ export const useMapSearch = ({ onLocationSelect }: UseMapSearchProps) => {
 
   const debouncedQuery = useDebounce(searchState.query, DEBOUNCE_DELAY);
 
-  useEffect(() => {
-    handleSearch(debouncedQuery);
-  }, [debouncedQuery, handleSearch]);
+  const handleSelectResult = useCallback(
+    async (result: SearchResult) => {
+      isSelecting.current = true;
 
-  const handleSelectResult = async (result: SearchResult) => {
-    isSelecting.current = true;
-    await handleSelectLocation(result);
-    updateSearchState({
-      selectedLocation: result,
-      query: result.display_name,
-      isPopoverOpen: false,
-      results: [],
-    });
-    isSelecting.current = false;
-  };
+      updateSearchState({
+        isSearching: true,
+        selectedLocation: result,
+        query: result.display_name,
+        isPopoverOpen: false,
+        results: []
+      });
+
+      handleSelectLocation(result)
+        .then(() => {
+          updateSearchState({
+            isSearching: false
+          });
+          isSelecting.current = false;
+        })
+        .catch(() => {
+          updateSearchState({
+            isSearching: false
+          });
+          isSelecting.current = false;
+        });
+    },
+    [handleSelectLocation, updateSearchState]
+  );
 
   return {
     query: searchState.query,
@@ -58,12 +67,13 @@ export const useMapSearch = ({ onLocationSelect }: UseMapSearchProps) => {
     isSearching: searchState.isSearching,
     selectedLocation: searchState.selectedLocation,
     isOpen: searchState.isPopoverOpen,
-    setIsOpen: (isOpen: boolean) => updateSearchState({ isPopoverOpen: isOpen }),
+    setIsOpen: (isOpen: boolean) =>
+      updateSearchState({ isPopoverOpen: isOpen }),
     mapPosition,
     isHandlingSelection: isSelecting,
     handleSearch,
     handleSelectResult,
     clearSearch,
-    debouncedQuery,
+    debouncedQuery
   };
-}; 
+};

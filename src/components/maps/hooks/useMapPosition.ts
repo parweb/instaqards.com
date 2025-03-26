@@ -1,10 +1,8 @@
-import { useState, useCallback } from 'react';
 import type { SearchResult } from 'components/maps/types';
-import { formatDisplayName } from 'components/maps/services/nominatim';
-import { toast } from 'sonner';
+import { useCallback, useState } from 'react';
 
 const DEFAULT_POSITION: [number, number] = [48.8566, 2.3522];
-const SELECTION_RESET_DELAY = 300;
+const SELECTION_RESET_DELAY = 150;
 
 interface UseMapPositionProps {
   onLocationSelect?: (location: {
@@ -15,26 +13,26 @@ interface UseMapPositionProps {
 }
 
 export const useMapPosition = ({ onLocationSelect }: UseMapPositionProps) => {
-  const [mapPosition, setMapPosition] = useState<[number, number]>(DEFAULT_POSITION);
+  const [mapPosition, setMapPosition] =
+    useState<[number, number]>(DEFAULT_POSITION);
 
   const handleSelectLocation = useCallback(
     (result: SearchResult) => {
-      const displayNameShort = formatDisplayName(result.display_name);
       setMapPosition([result.lat, result.lon]);
 
       if (onLocationSelect) {
-        onLocationSelect({
+        const locationData = {
           display_name: result.display_name,
           lat: result.lat,
-          lon: result.lon,
-        });
+          lon: result.lon
+        };
+
+        setTimeout(() => {
+          onLocationSelect(locationData);
+        }, 0);
       }
 
-      toast.success('Location selected', {
-        description: displayNameShort,
-      });
-
-      return new Promise<void>((resolve) => {
+      return new Promise<void>(resolve => {
         setTimeout(resolve, SELECTION_RESET_DELAY);
       });
     },
@@ -43,6 +41,6 @@ export const useMapPosition = ({ onLocationSelect }: UseMapPositionProps) => {
 
   return {
     mapPosition,
-    handleSelectLocation,
+    handleSelectLocation
   };
-}; 
+};

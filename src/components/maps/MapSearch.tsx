@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+
 import { useMapSearch } from 'components/maps/hooks/useMapSearch';
-import SearchInput from './SearchInput';
-import MapContainer from './MapContainer';
 import { cn } from 'lib/utils';
+import MapContainer from './MapContainer';
+import SearchInput from './SearchInput';
 
 interface MapSearchProps {
+  // eslint-disable-next-line no-unused-vars
   onLocationSelect?: (location: {
     display_name: string;
     lat: number;
@@ -32,8 +34,11 @@ const MapSearch = ({ onLocationSelect, className }: MapSearchProps) => {
     debouncedQuery
   } = useMapSearch({ onLocationSelect });
 
+  // Efficiently run search only when debounced query changes
   useEffect(() => {
-    handleSearch(debouncedQuery);
+    if (debouncedQuery.trim().length > 0) {
+      handleSearch(debouncedQuery);
+    }
   }, [debouncedQuery, handleSearch]);
 
   const handleClearSearch = useCallback(

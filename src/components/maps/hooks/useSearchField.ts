@@ -2,21 +2,10 @@ import { useCallback, useEffect, useRef } from 'react';
 
 interface UseSearchFieldProps {
   query: string;
-  onQueryChange: (value: string) => void;
 }
 
-export const useSearchField = ({
-  query,
-  onQueryChange,
-}: UseSearchFieldProps) => {
+export const useSearchField = ({ query }: UseSearchFieldProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onQueryChange(e.target.value);
-    },
-    [onQueryChange]
-  );
 
   const focusInput = useCallback(() => {
     requestAnimationFrame(() => {
@@ -33,7 +22,7 @@ export const useSearchField = ({
 
   return {
     inputRef,
-    handleInputChange,
-    focusInput,
+
+    focusInput
   };
-}; 
+};

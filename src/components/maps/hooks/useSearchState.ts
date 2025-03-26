@@ -14,7 +14,7 @@ const INITIAL_STATE: SearchState = {
   results: [],
   isSearching: false,
   selectedLocation: null,
-  isPopoverOpen: false,
+  isPopoverOpen: false
 };
 
 export const useSearchState = () => {
@@ -24,14 +24,17 @@ export const useSearchState = () => {
     setSearchState(prev => ({ ...prev, ...updates }));
   }, []);
 
-  const setQuery = useCallback((newQuery: string) => {
-    updateSearchState({ query: newQuery });
-  }, [updateSearchState]);
+  const setQuery = useCallback(
+    (newQuery: string) => {
+      updateSearchState({ query: newQuery });
+    },
+    [updateSearchState]
+  );
 
   const clearSearch = useCallback(() => {
     updateSearchState({
       ...INITIAL_STATE,
-      isPopoverOpen: false,
+      isPopoverOpen: false
     });
   }, [updateSearchState]);
 
@@ -39,6 +42,6 @@ export const useSearchState = () => {
     searchState,
     updateSearchState,
     setQuery,
-    clearSearch,
+    clearSearch
   };
-}; 
+};

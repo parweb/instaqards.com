@@ -34,10 +34,10 @@ export interface SearchInputFieldProps {
   onQueryChange: (value: string) => void;
   onClearSearch: (e: React.MouseEvent) => void;
   onOpenChange: (open: boolean) => void;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export interface SearchResultsListProps {
   results: SearchResult[];
   onSelect: (result: SearchResult) => void;
-} 
+}

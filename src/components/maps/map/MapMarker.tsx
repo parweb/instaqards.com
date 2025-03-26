@@ -7,6 +7,6 @@ export const getMarkerPosition = (
 
   return {
     position: [selectedLocation.lat, selectedLocation.lon],
-    id: 'default',
+    id: 'default'
   };
 };

@@ -5,40 +5,52 @@ import {
   CommandItem,
   CommandList
 } from 'components/ui/command';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import type { SearchResultsListProps } from './types';
 import { LocationIcon } from './icons/LocationIcon';
 
-export const SearchResultsList = memo(
-  ({ results, onSelect }: SearchResultsListProps) => {
-    return (
-      <Command className="max-h-[300px]" shouldFilter={false} loop>
-        <CommandList>
-          <CommandEmpty className="p-6 text-center">
-            <div className="text-muted-foreground">
-              <LocationIcon className="mx-auto h-6 w-6 mb-2 opacity-50" />
-              <p className="text-sm font-medium">No locations found</p>
-              <p className="text-xs mt-1">
-                Try searching for a different place
-              </p>
-            </div>
-          </CommandEmpty>
+const SearchResultsListComponent = ({
+  results,
+  onSelect
+}: SearchResultsListProps) => {
+  // Handler unifié et memoïzé
+  const handleResultSelection = useCallback(
+    (result: any) => {
+      // Appel direct sans log pour réduire la latence
+      onSelect(result);
+    },
+    [onSelect]
+  );
 
-          <CommandGroup>
-            {results.map(result => (
-              <CommandItem
-                key={result.id}
-                value={result.display_name}
-                onSelect={() => onSelect(result)}
-                className="flex items-center gap-2 cursor-pointer"
-              >
+  return (
+    <Command className="max-h-[300px]" shouldFilter={false} loop>
+      <CommandList>
+        <CommandGroup>
+          {results.map(result => (
+            <div
+              key={result.id}
+              className="location-result-wrapper relative block w-full p-2 hover:bg-accent hover:text-accent-foreground rounded-sm cursor-pointer"
+              onClick={() => handleResultSelection(result)}
+              onMouseDown={e => {
+                e.preventDefault(); // Évite les problèmes de focus
+                handleResultSelection(result);
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label={`Select location: ${result.display_name}`}
+            >
+              <div className="flex items-center gap-2">
                 <LocationIcon className="flex-shrink-0 h-4 w-4" />
                 <span>{result.display_name}</span>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      </Command>
-    );
-  }
-);
+              </div>
+            </div>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
+};
+
+SearchResultsListComponent.displayName = 'SearchResultsList';
+
+export const SearchResultsList = memo(SearchResultsListComponent);

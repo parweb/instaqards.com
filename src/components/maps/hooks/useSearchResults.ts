@@ -1,5 +1,4 @@
 import { useCallback, useRef, useEffect } from 'react';
-import { toast } from 'sonner';
 import type { SearchResult } from 'components/maps/types';
 import { searchPlaces } from 'components/maps/services/nominatim';
 
@@ -18,12 +17,13 @@ export const useSearchResults = (
 ) => {
   const abortControllerRef = useRef<AbortController | null>(null);
   const isSelecting = useRef(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const filterResults = useCallback(
     (data: SearchResult[], currentLocation: SearchResult | null) => {
       if (!currentLocation) return data;
       return data.filter(
-        (result) => result.display_name !== currentLocation.display_name
+        result => result.display_name !== currentLocation.display_name
       );
     },
     []
@@ -33,6 +33,12 @@ export const useSearchResults = (
     async (searchQuery: string) => {
       const trimmedQuery = searchQuery.trim();
 
+      // Clear any pending search timeout
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+        searchTimeoutRef.current = null;
+      }
+
       if (
         trimmedQuery === '' ||
         trimmedQuery.length < MIN_QUERY_LENGTH ||
@@ -41,39 +47,48 @@ export const useSearchResults = (
         updateSearchState({
           results: [],
           isPopoverOpen: false,
+          isSearching: false
         });
         return;
       }
 
+      // Cancel any ongoing request
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
 
       abortControllerRef.current = new AbortController();
 
+      // Immediately set searching to true for UI feedback
       updateSearchState({ isSearching: true });
 
       try {
-        const data = await searchPlaces(trimmedQuery);
+        const data = await searchPlaces(
+          trimmedQuery,
+          abortControllerRef.current.signal
+        );
         const mappedData = data.map(result => ({
           ...result,
           lat: Number(result.lat),
-          lon: Number(result.lon),
+          lon: Number(result.lon)
         }));
         const filteredResults = filterResults(mappedData, selectedLocation);
 
+        // Ensure we update isSearching to false right away
         updateSearchState({
           results: filteredResults,
           isPopoverOpen: filteredResults.length > 0,
+          isSearching: false
         });
       } catch (error) {
-        if (error.name !== 'AbortError') {
+        if (error instanceof Error && error.name !== 'AbortError') {
           console.error('Search error:', error);
-          toast.error('Failed to search for places. Please try again.');
-          updateSearchState({ results: [], isPopoverOpen: false });
+          updateSearchState({
+            results: [],
+            isPopoverOpen: false,
+            isSearching: false
+          });
         }
-      } finally {
-        updateSearchState({ isSearching: false });
       }
     },
     [filterResults, selectedLocation, updateSearchState]
@@ -84,11 +99,14 @@ export const useSearchResults = (
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
     };
   }, []);
 
   return {
     handleSearch,
-    isSelecting,
+    isSelecting
   };
-}; 
+};
