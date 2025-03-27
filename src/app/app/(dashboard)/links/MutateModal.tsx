@@ -45,7 +45,7 @@ export function MutateModal({ link }: MutateModalProps) {
           }
         })
       }
-      className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow"
+      className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm"
     >
       {link && <input type="hidden" name="id" value={link.id} />}
 

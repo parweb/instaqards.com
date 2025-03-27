@@ -43,7 +43,7 @@ const SearchField = memo(
             onChange={onQueryChange}
             placeholder={placeholder}
             className={cn(
-              'pl-10 pr-12 h-12 transition-all shadow-sm hover:shadow',
+              'pl-10 pr-12 h-12 transition-all shadow-xs hover:shadow-sm',
               'focus:border-primary focus:ring-2 focus:ring-primary/10'
             )}
             type="text"

@@ -76,7 +76,7 @@ function YoutubeVideo({ url }: z.infer<typeof input>) {
       {playing === false && (
         <button
           type="button"
-          className="absolute inset-0 h-full aspect-video flex items-center justify-center bg-black transition-opacity hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="absolute inset-0 h-full aspect-video flex items-center justify-center bg-black transition-opacity hover:bg-opacity-10 focus:outline-hidden focus:ring-2 focus:ring-red-500"
           onClick={activatePlayer}
           aria-label="Activer le son et afficher les contrôles"
         >

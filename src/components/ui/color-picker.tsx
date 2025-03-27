@@ -31,7 +31,7 @@ export const ColorPicker = ({
 
       <input name={name} type="hidden" value={value} />
 
-      <PopoverContent className="w-auto p-0 z-[300] relative">
+      <PopoverContent className="w-auto p-0 z-300 relative">
         <HexAlphaColorPicker color={value} onChange={onChange} />
       </PopoverContent>
     </Popover>

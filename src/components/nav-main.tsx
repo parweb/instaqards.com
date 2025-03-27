@@ -47,7 +47,7 @@ export function NavMain({
     <div
       className={cn(
         dark &&
-          'dark bg-sidebar rounded-md sticky top-2 backdrop-blur-sm z-10 mx-1'
+          'dark bg-sidebar rounded-md sticky top-2 backdrop-blur-xs z-10 mx-1'
       )}
     >
       <SidebarGroup>

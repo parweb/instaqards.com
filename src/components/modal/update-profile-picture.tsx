@@ -81,7 +81,7 @@ export default function UpdateSiteProfilePictureModal({
           }
         }
       }}
-      className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow dark:md:border-stone-700"
+      className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700"
     >
       <div className="relative flex flex-col p-5 md:p-10 gap-5">
         <h2 className="font-cal text-2xl dark:text-white">
@@ -138,7 +138,7 @@ function UpdateSiteProfilePictureFormButton({ pending = false }) {
     <button
       type="submit"
       className={cn(
-        'flex h-10 w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-none',
+        'flex h-10 w-full items-center justify-center space-x-2 rounded-md border text-sm transition-all focus:outline-hidden',
         pending
           ? 'cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300'
           : 'border-black bg-black text-white hover:bg-white hover:text-black dark:border-stone-700 dark:hover:border-stone-200 dark:hover:bg-black dark:hover:text-white dark:active:bg-stone-800'

@@ -34,7 +34,7 @@ const SearchResultsListComponent = ({
               aria-label={`Select location: ${result.display_name}`}
             >
               <div className="flex items-center gap-2">
-                <LocationIcon className="flex-shrink-0 h-4 w-4" />
+                <LocationIcon className="shrink-0 h-4 w-4" />
                 <span>{result.display_name}</span>
               </div>
             </div>

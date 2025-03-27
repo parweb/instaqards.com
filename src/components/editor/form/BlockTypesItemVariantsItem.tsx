@@ -149,7 +149,6 @@ export const BlockTypesItemVariantsItem = ({
             <Button
               type="button"
               size="icon"
-              className={cn('scale-300')}
               onClick={() => onClick({ type, id })}
             >
               <LuPlus />

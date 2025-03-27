@@ -43,7 +43,7 @@ export const YoutubeWidget = ({ videoId }: { videoId: string }) => {
       {!playing && (
         <button
           type="button"
-          className="absolute inset-0 w-full h-full flex items-center justify-center bg-black opacity-20 transition-opacity hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="absolute inset-0 w-full h-full flex items-center justify-center bg-black opacity-20 transition-opacity hover:bg-opacity-10 focus:outline-hidden focus:ring-2 focus:ring-red-500"
           onClick={activatePlayer}
           aria-label="Activer le son et afficher les contrôles"
         >

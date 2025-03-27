@@ -86,7 +86,7 @@ export const UploaderItem = ({
       style={style}
       className={cn(
         'flex items-center gap-2',
-        isActive && 'p-1 shadow-sm border border-stone-300 rounded-md'
+        isActive && 'p-1 shadow-xs border border-stone-300 rounded-md'
       )}
     >
       {list.length > 1 && (

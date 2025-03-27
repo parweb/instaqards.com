@@ -60,7 +60,7 @@ const SearchInput = ({
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-full p-0 z-[300]"
+        className="w-full p-0 z-300"
         align="start"
         side="bottom"
         sideOffset={4}

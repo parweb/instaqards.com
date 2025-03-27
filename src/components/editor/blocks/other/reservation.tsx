@@ -111,13 +111,13 @@ const AvalaibleDays = ({
       type="button"
       onClick={() => onChange(value === day.id ? undefined : day.id)}
       className={cn(
-        'group-hover:scale-100 group-hover:hover:scale-100 transition-all duration-300',
+        'group-hover:scale-100 hover:group-hover:scale-100 transition-all duration-300',
         value === day.id && 'scale-100'
       )}
     >
       <div
         className={cn(
-          'aspect-video h-16 flex items-center justify-center border-4 border-stone-200 hover:border-stone-300 rounded-md flex-col bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer',
+          'aspect-video h-16 flex items-center justify-center border-4 border-stone-200 hover:border-stone-300 rounded-md flex-col bg-white shadow-xs hover:shadow-md transition-all duration-300 cursor-pointer',
           value === day.id && 'border-black hover:border-black bg-stone-200'
         )}
       >
@@ -160,13 +160,13 @@ const AvalaibleTimeSlot = ({
       type="button"
       onClick={() => onChange(value === timeSlot.id ? undefined : timeSlot.id)}
       className={cn(
-        'group-hover:scale-100 group-hover:hover:scale-100 transition-all duration-300',
+        'group-hover:scale-100 hover:group-hover:scale-100 transition-all duration-300',
         value === timeSlot.id && 'scale-100'
       )}
     >
       <div
         className={cn(
-          'aspect-video h-16 flex items-center justify-center border-4 border-stone-200 hover:border-stone-300 rounded-md flex-col bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer',
+          'aspect-video h-16 flex items-center justify-center border-4 border-stone-200 hover:border-stone-300 rounded-md flex-col bg-white shadow-xs hover:shadow-md transition-all duration-300 cursor-pointer',
           value === timeSlot.id &&
             'border-black hover:border-black bg-stone-200'
         )}
@@ -199,7 +199,7 @@ export default function Reservation({
 
   return (
     <form
-      className="w-full flex-1 flex flex-col gap-4 bg-white/30 backdrop-blur-sm rounded-md p-4 overflow-hidden"
+      className="w-full flex-1 flex flex-col gap-4 bg-white/30 backdrop-blur-xs rounded-md p-4 overflow-hidden"
       action={(form: FormData) => {
         setMode('loading');
 

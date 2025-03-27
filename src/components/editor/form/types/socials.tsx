@@ -73,7 +73,7 @@ const SocialItem = ({
       style={style}
       className={cn(
         'flex gap-2 items-center flex-1',
-        isActive && 'p-1 shadow-sm border border-stone-300 rounded-md'
+        isActive && 'p-1 shadow-xs border border-stone-300 rounded-md'
       )}
     >
       {list.length > 1 && (

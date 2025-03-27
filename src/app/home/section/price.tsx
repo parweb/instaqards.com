@@ -137,7 +137,7 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
           >
             <span>{translate('page.home.pricing.annual')}</span>
 
-            <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+            <Badge className="bg-linear-to-r from-green-500 to-emerald-600 text-white">
               {(((offer.year?.unit_amount ?? 0) * 12) /
                 ((offer.month?.unit_amount ?? 0) * 12) -
                 1) *
@@ -147,7 +147,7 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
           </button>
 
           <div
-            className="absolute top-1 left-1 h-[calc(100%-8px)] w-40 rounded-full bg-white shadow-sm transition-transform duration-400 ease-&lsqb;cubic-bezier(0.16,1,0.3,1)&rsqb;"
+            className="absolute top-1 left-1 h-[calc(100%-8px)] w-40 rounded-full bg-white shadow-xs transition-transform duration-400 ease-&lsqb;cubic-bezier(0.16,1,0.3,1)&rsqb;"
             style={{
               transform:
                 billingCycle === 'month'
@@ -166,7 +166,7 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
       >
         <div className="max-w-sm mx-auto transition duration-400 ease-in-out -translate-y-1 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_10px_10px_-5px_rgba(0,0,0,0.02)] bg-white rounded-2xl border border-gray-100">
           <div className="absolute -top-3 right-0 left-0 flex justify-center">
-            <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-1 rounded-full font-medium text-sm shadow-md">
+            <div className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-4 py-1 rounded-full font-medium text-sm shadow-md">
               {translate('page.home.pricing.trial')}
             </div>
           </div>
@@ -233,7 +233,7 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
                 >
-                  <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-green-300/20 to-green-500/20 mr-2 mt-0.5">
+                  <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-linear-to-br from-green-300/20 to-green-500/20 mr-2 mt-0.5">
                     <Check size={12} className="text-green-600" />
                   </div>
 

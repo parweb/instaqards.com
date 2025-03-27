@@ -50,7 +50,7 @@ export default function Modal({
   return (
     <AnimatePresence>
       {showModal && (
-        <div className="pointer-events-auto z-[200]">
+        <div className="pointer-events-auto z-200">
           {isMobile && <Leaflet setShow={setShowModal}>{children}</Leaflet>}
 
           {isDesktop && (
@@ -59,7 +59,7 @@ export default function Modal({
                 <motion.div
                   ref={desktopModalRef}
                   key="desktop-modal"
-                  className="fixed inset-0 z-[240] hidden min-h-screen items-center justify-center md:flex"
+                  className="fixed inset-0 z-240 hidden min-h-screen items-center justify-center md:flex"
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.95 }}
@@ -75,7 +75,7 @@ export default function Modal({
 
               <motion.div
                 key="desktop-backdrop"
-                className="fixed inset-0 z-[230] bg-gray-100 bg-opacity-10 backdrop-blur"
+                className="fixed inset-0 z-230 bg-gray-100 bg-opacity-10 backdrop-blur-sm"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

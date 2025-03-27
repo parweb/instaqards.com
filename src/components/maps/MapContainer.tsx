@@ -49,7 +49,7 @@ const MapContainer = ({
           className={cn(
             'transition-all duration-300',
             'absolute inset-0 p-4 flex flex-col gap-0 items-start justify-end',
-            'bg-gradient-to-t from-black/50 to-transparent',
+            'bg-linear-to-t from-black/50 to-transparent',
             'group-hover:opacity-0 group-hover:pointer-events-none'
           )}
         >

@@ -81,8 +81,8 @@ export const Calendar = ({
                     'absolute inset-x-1/2 bottom-1.5 h-0.5 w-4 -translate-x-1/2 rounded-[2px]',
                     {
                       'bg-blue-500 dark:bg-blue-500': !selected,
-                      '!bg-white dark:!bg-gray-950': selected,
-                      '!bg-gray-400 dark:!bg-gray-600':
+                      'bg-white! dark:bg-gray-950!': selected,
+                      'bg-gray-400! dark:bg-gray-600!':
                         selected && range_middle,
                       'bg-gray-400 text-gray-400 dark:bg-gray-400 dark:text-gray-600':
                         disabled
