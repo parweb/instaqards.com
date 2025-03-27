@@ -119,7 +119,6 @@ export const UploaderItem = ({
 
 export const Uploader = forwardRef(
   ({
-    name,
     setValue,
     ...props
   }: {
@@ -132,7 +131,7 @@ export const Uploader = forwardRef(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: shut up
     const medias = useMemo(
-      () => (props?.data?.[name] ?? []) as Media[],
+      () => (props?.data?.[props.name] ?? []) as Media[],
       [name] // eslint-disable-line react-hooks/exhaustive-deps
     );
 
@@ -160,13 +159,13 @@ export const Uploader = forwardRef(
 
             const result = arrayMove(items, oldIndex, newIndex);
 
-            setValue(name, result);
+            setValue(props.name, result);
 
             return result;
           });
         }
       },
-      [name, setValue]
+      [props.name, setValue]
     );
 
     const onDrop = useCallback(
@@ -183,12 +182,12 @@ export const Uploader = forwardRef(
             }))
           ];
 
-          setValue(name, result);
+          setValue(props.name, result);
 
           return result;
         });
       },
-      [isMultiple, name, setValue]
+      [isMultiple, props.name, setValue]
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -207,7 +206,7 @@ export const Uploader = forwardRef(
           )}
         >
           <div {...getRootProps()} className="text-center">
-            <input {...getInputProps({ ...props, name })} />
+            <input {...getInputProps({ ...props })} />
 
             {isDragActive ? (
               <>
@@ -246,7 +245,7 @@ export const Uploader = forwardRef(
                           item.id === id ? { ...item, link } : item
                         );
 
-                        setValue(name, result);
+                        setValue(props.name, result);
 
                         return result;
                       })
@@ -255,7 +254,7 @@ export const Uploader = forwardRef(
                       setItems(items => {
                         const result = items.filter(item => item.id !== id);
 
-                        setValue(name, result);
+                        setValue(props.name, result);
 
                         return result;
                       })
