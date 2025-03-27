@@ -32,7 +32,6 @@ const BaseButton: React.FC<
       <span className="glowing-txt">
         {label?.split('').map((char, index) =>
           index === 1 ? (
-            // biome-ignore lint/suspicious/noArrayIndexKey: shut up
             <span key={index} className="faulty-letter">
               {char}
             </span>

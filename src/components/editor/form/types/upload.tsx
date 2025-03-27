@@ -139,7 +139,6 @@ export const Uploader = forwardRef(
   }) => {
     const isMultiple = props.shape.multiple;
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: shut up
     const medias = useMemo(
       () => (props?.data?.[props.name] ?? []) as Media[],
       [name] // eslint-disable-line react-hooks/exhaustive-deps

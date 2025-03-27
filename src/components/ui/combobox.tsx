@@ -44,7 +44,6 @@ export function Combobox({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          // biome-ignore lint/a11y/useSemanticElements: shut up
           role="combobox"
           aria-expanded={open}
           className="justify-between"

@@ -158,7 +158,6 @@ export default async function SiteReservations({
                     {reservation.comment && (
                       <div
                         className="whitespace-pre-wrap p-4 rounded-md border border-stone-200 bg-slate-500 text-white"
-                        // biome-ignore lint/security/noDangerouslySetInnerHtml: shut up
                         dangerouslySetInnerHTML={{
                           __html: reservation.comment
                         }}

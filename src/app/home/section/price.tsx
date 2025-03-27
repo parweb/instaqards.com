@@ -87,7 +87,6 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
   const [billingCycle, setBillingCycle] = useState<'year' | 'month'>('year');
 
   const offer: Partial<Record<typeof billingCycle, PriceType>> = prices.reduce(
-    // biome-ignore lint/performance/noAccumulatingSpread: shut up
     (carry, price) => ({ ...carry, [String(price.interval)]: price }),
     {}
   );

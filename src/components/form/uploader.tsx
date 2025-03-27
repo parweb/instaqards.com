@@ -92,7 +92,6 @@ export default function Uploader({
               : 'bg-white opacity-100 hover:bg-gray-50'
           }`}
         >
-          {/* biome-ignore lint/a11y/noSvgWithoutTitle: shut up */}
           <svg
             className={`${
               dragActive ? 'scale-110' : 'scale-100'

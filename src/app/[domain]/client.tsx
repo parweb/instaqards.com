@@ -46,7 +46,6 @@ export const BlockItem = (block: Block) => {
     if (hasWidget === false) {
       return (
         <Link href={`/click/${block.id}`} target="_blank" legacyBehavior>
-          {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
           <a
             id={block.id}
             className={cn(

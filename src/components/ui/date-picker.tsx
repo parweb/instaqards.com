@@ -141,7 +141,6 @@ const TimeInput = React.forwardRef<HTMLDivElement, TimeInputProps>(
       >
         {state.segments.map((segment, index) => (
           <TimeSegment
-            // biome-ignore lint/suspicious/noArrayIndexKey: shut up
             key={segment.type + segment.value + index}
             segment={segment}
             state={state}
@@ -512,7 +511,6 @@ const SingleDatePicker = ({
         : new Time(0, 0)
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: shut up
   const initialDate = React.useMemo(() => {
     return date;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -528,7 +526,6 @@ const SingleDatePicker = ({
     }
   }, [date]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: shut up
   React.useEffect(() => {
     if (!open) {
       setMonth(date);
@@ -747,7 +744,6 @@ const RangeDatePicker = ({
         : new Time(0, 0)
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: shut up
   const initialRange = React.useMemo(() => {
     return range;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -763,7 +759,6 @@ const RangeDatePicker = ({
     }
   }, [range]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: shut up
   React.useEffect(() => {
     if (!open) {
       setMonth(range?.from);

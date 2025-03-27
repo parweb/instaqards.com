@@ -89,7 +89,6 @@ const FontPickerList = ({
 
   useGoogleFontLoader(value);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: on open only
   useEffect(() => {
     if (!open) return;
 
