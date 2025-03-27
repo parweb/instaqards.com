@@ -4,8 +4,6 @@ import type { ReactNode } from 'react';
 import { LuPlus } from 'react-icons/lu';
 
 import { useModal } from 'components/modal/provider';
-import { Button } from 'components/ui/button';
-import useTranslation from 'hooks/use-translation';
 
 export default function CreateSiteButtonSidebar({
   children
@@ -13,7 +11,6 @@ export default function CreateSiteButtonSidebar({
   children: ReactNode;
 }) {
   const modal = useModal();
-  const translate = useTranslation();
 
   return (
     <LuPlus

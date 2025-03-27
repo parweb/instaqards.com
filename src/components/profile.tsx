@@ -1,17 +1,18 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import {
   BadgeCheck,
-  Bell,
   ChevronsUpDown,
   CreditCard,
   LogOut,
   Sparkles
 } from 'lucide-react';
 
+import LogoutButton from 'components/logout-button';
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
+import { getSession } from 'lib/auth';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,15 +22,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from 'components/ui/dropdown-menu';
+
 import {
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar
+  SidebarMenuItem
 } from 'components/ui/sidebar';
-
-import { getSession } from 'lib/auth';
-import LogoutButton from './logout-button';
 
 export default async function Profile() {
   const session = await getSession();
