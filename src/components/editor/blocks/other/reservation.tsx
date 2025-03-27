@@ -23,9 +23,13 @@ import {
 } from 'components/ui/carousel';
 
 export const input = z.object({
-  timeSlotInterval: z
-    .number()
-    .describe(json({ label: 'Intervalle de temps', kind: 'number' }))
+  timeSlotInterval: z.number().describe(
+    json({
+      label: 'Intervalle de temps',
+      kind: 'number',
+      defaultValue: 30
+    })
+  )
 });
 
 type Day = {

@@ -268,6 +268,32 @@ export function BlockPreview({
                       </>
                     )}
 
+                    {property.shape.kind === 'number' && (
+                      <>
+                        <label
+                          htmlFor={key}
+                          className="text-sm font-medium text-stone-500"
+                        >
+                          {property.shape.label}
+                        </label>
+
+                        <Input
+                          id={key}
+                          type="number"
+                          {...register(key, { valueAsNumber: true })}
+                          defaultValue={property.shape.defaultValue}
+                          placeholder={property.shape.label}
+                        />
+
+                        {errors[key] && (
+                          <p style={{ color: 'red' }}>
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
+                      </>
+                    )}
+
                     {property.shape.kind === 'string' && (
                       <>
                         <label

@@ -150,7 +150,7 @@ export type Block = Share &
     | { kind: 'string' }
     | { kind: 'hidden' }
     | { kind: 'color'; default: string }
-    | { kind: 'number' }
+    | { kind: 'number'; defaultValue: number }
     | { kind: 'address'; placeholder: string }
     | {
         kind: 'font';
