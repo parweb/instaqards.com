@@ -1,6 +1,4 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
+'use client';
 
 import {
   BadgeCheck,
@@ -12,6 +10,7 @@ import {
 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from 'components/ui/dropdown-menu';
+
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -28,26 +28,16 @@ import {
   useSidebar
 } from 'components/ui/sidebar';
 
-import { getSession } from 'lib/auth';
-import LogoutButton from './logout-button';
-
-export default async function Profile() {
-  const session = await getSession();
-
-  if (!session?.user) {
-    redirect('/login');
-  }
-
-  const user: {
+export function NavUser({
+  user
+}: {
+  user: {
     name: string;
     email: string;
     avatar: string;
-  } = {
-    name: session.user.name ?? '',
-    email: session.user.email ?? '',
-    avatar:
-      session.user.image ?? `https://avatar.vercel.sh/${session.user.email}`
   };
+}) {
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -62,19 +52,16 @@ export default async function Profile() {
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
-
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
-
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side="bottom"
+            side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}
           >
@@ -90,47 +77,33 @@ export default async function Profile() {
                 </div>
               </div>
             </DropdownMenuLabel>
-
             <DropdownMenuSeparator />
-
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <Sparkles />
-                  Upgrade to Pro
-                </Link>
+              <DropdownMenuItem>
+                <Sparkles />
+                Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-
             <DropdownMenuSeparator />
-
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <BadgeCheck />
-                  Account
-                </Link>
+              <DropdownMenuItem>
+                <BadgeCheck />
+                Account
               </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <CreditCard />
-                  Billing
-                </Link>
+              <DropdownMenuItem>
+                <CreditCard />
+                Billing
               </DropdownMenuItem>
-
-              {/* <DropdownMenuItem>
+              <DropdownMenuItem>
                 <Bell />
                 Notifications
-              </DropdownMenuItem> */}
+              </DropdownMenuItem>
             </DropdownMenuGroup>
-
             <DropdownMenuSeparator />
-
-            <LogoutButton>
+            <DropdownMenuItem>
               <LogOut />
               Log out
-            </LogoutButton>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

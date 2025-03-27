@@ -43,9 +43,9 @@ export function Fields({
             [
               data?.label,
               data?.href
-                .replace('https://', '')
-                .replace('www.', '')
-                .replace(/\/$/, '')
+                ?.replace('https://', '')
+                ?.replace('www.', '')
+                ?.replace(/\/$/, '')
             ]
               .filter(Boolean)
               .join(' | ')
@@ -162,9 +162,9 @@ export function Fields({
                         [
                           data?.label,
                           data?.href
-                            .replace('https://', '')
-                            .replace('www.', '')
-                            .replace(/\/$/, '')
+                            ?.replace('https://', '')
+                            ?.replace('www.', '')
+                            ?.replace(/\/$/, '')
                         ]
                           .filter(Boolean)
                           .join(' | ')

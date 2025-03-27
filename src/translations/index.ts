@@ -546,10 +546,10 @@ const translations = {
     es: 'Resumen'
   },
   'menu.sites': {
-    fr: 'Sites',
-    en: 'Sites',
-    it: 'Siti',
-    es: 'Sitios'
+    fr: 'Qards',
+    en: 'Qards',
+    it: 'Qards',
+    es: 'Qards'
   },
   'menu.links': {
     fr: 'Liens',
@@ -568,6 +568,18 @@ const translations = {
     en: 'Affiliation',
     it: 'Affiliazione',
     es: 'Afiliación'
+  },
+  'menu.support': {
+    fr: 'Support',
+    en: 'Support',
+    it: 'Supporto',
+    es: 'Soporte'
+  },
+  'menu.feedback': {
+    fr: 'Feedback',
+    en: 'Feedback',
+    it: 'Feedback',
+    es: 'Feedback'
   },
   'page.home.register': {
     fr: 'Inscription',
