@@ -7,6 +7,12 @@ type Media = {
   link: string;
 };
 
+type Social = {
+  id: string;
+  href: string;
+  logo: string;
+};
+
 type WidgetData = {
   type: string;
   id: string;
@@ -14,6 +20,7 @@ type WidgetData = {
     href?: string;
     address?: string;
     medias?: Media[];
+    socials?: Social[];
     [key: string]: unknown;
   };
 };
@@ -23,6 +30,8 @@ type PictureWidgetType =
   | 'logo-circle'
   | 'logo-square'
   | 'picture-16-9';
+
+type OtherWidgetType = 'socials';
 
 type ButtonWidgetType = 'direction' | 'default';
 
@@ -44,11 +53,23 @@ type PictureWidgetMapper = {
   ) => string | undefined;
 };
 
+type OtherWidgetMapper = {
+  // eslint-disable-next-line no-unused-vars
+  [K in OtherWidgetType]: (
+    // eslint-disable-next-line no-unused-vars
+    data: WidgetData['data'],
+    // eslint-disable-next-line no-unused-vars
+    id: string
+  ) => string | undefined;
+};
+
 type WidgetMapper = {
   // eslint-disable-next-line no-unused-vars
   button: (widget: WidgetData) => string | undefined;
   // eslint-disable-next-line no-unused-vars
   picture: (widget: WidgetData, id: string) => string | undefined;
+  // eslint-disable-next-line no-unused-vars
+  other: (widget: WidgetData, id: string) => string | undefined;
 };
 
 const buttonWidgetMapper: ButtonWidgetMapper = {
@@ -67,6 +88,10 @@ const pictureWidgetMapper: PictureWidgetMapper = {
     data.medias?.find(media => media.id === id)?.link
 };
 
+const otherWidgetMapper: OtherWidgetMapper = {
+  socials: (data, id) => data.socials?.find(social => social.id === id)?.href
+};
+
 const widgetMapper: WidgetMapper = {
   // button: widget => widget.data.href,
   button: widget =>
@@ -75,7 +100,9 @@ const widgetMapper: WidgetMapper = {
       buttonWidgetMapper.default
     )?.(widget.data),
   picture: (widget, id) =>
-    pictureWidgetMapper[widget.id as PictureWidgetType]?.(widget.data, id)
+    pictureWidgetMapper[widget.id as PictureWidgetType]?.(widget.data, id),
+  other: (widget, id) =>
+    otherWidgetMapper[widget.id as OtherWidgetType]?.(widget.data, id)
 };
 
 export async function GET(

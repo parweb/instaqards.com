@@ -32,6 +32,7 @@ import Email from 'components/editor/blocks/other/email';
 import Maps from 'components/editor/blocks/other/maps';
 import Profile from 'components/editor/blocks/other/profile';
 import Reservation from 'components/editor/blocks/other/reservation';
+import Socials from 'components/editor/blocks/other/socials';
 import Gallery from 'components/editor/blocks/picture/gallery';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
@@ -84,7 +85,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     email: Email,
     profile: Profile,
     reservation: Reservation,
-    maps: Maps
+    maps: Maps,
+    socials: Socials
   }
 };
 

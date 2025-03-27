@@ -17,6 +17,7 @@ import { $lastSelected } from 'components/editor/form/BlockForm';
 import { BlockFormButton } from 'components/editor/form/BlockFormButton';
 import { Address } from 'components/editor/form/types/address';
 import { Color } from 'components/editor/form/types/color';
+import { Socials } from 'components/editor/form/types/socials';
 import { Container } from 'components/editor/form/types/container';
 import { Font } from 'components/editor/form/types/font';
 import { Uploader } from 'components/editor/form/types/upload';
@@ -220,33 +221,60 @@ export function BlockPreview({
                     )}
 
                     {property.shape.kind === 'container' && (
-                      <Container
-                        // @ts-ignore
-                        control={control}
-                        data={data}
-                        shape={property.shape}
-                      />
+                      <>
+                        <Container
+                          // @ts-ignore
+                          control={control}
+                          data={data}
+                          shape={property.shape}
+                        />
+
+                        {errors[key] && (
+                          <p className="text-red-500 text-sm text-center">
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
+                      </>
                     )}
 
                     {property.shape.kind === 'address' && (
-                      <Address
-                        // @ts-ignore
-                        control={control}
-                        name={key}
-                        data={data}
-                        shape={property.shape}
-                        // @ts-ignore
-                        setValue={setValue}
-                      />
+                      <>
+                        <Address
+                          // @ts-ignore
+                          control={control}
+                          name={key}
+                          data={data}
+                          shape={property.shape}
+                          // @ts-ignore
+                          setValue={setValue}
+                        />
+
+                        {errors[key] && (
+                          <p className="text-red-500 text-sm text-center">
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
+                      </>
                     )}
 
                     {property.shape.kind === 'font' && (
-                      <Font
-                        // @ts-ignore
-                        control={control}
-                        data={data}
-                        shape={property.shape}
-                      />
+                      <>
+                        <Font
+                          // @ts-ignore
+                          control={control}
+                          data={data}
+                          shape={property.shape}
+                        />
+
+                        {errors[key] && (
+                          <p className="text-red-500 text-sm text-center">
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
+                      </>
                     )}
 
                     {property.shape.kind === 'color' && (
@@ -268,6 +296,26 @@ export function BlockPreview({
                       </>
                     )}
 
+                    {property.shape.kind === 'socials' && (
+                      <>
+                        <Socials
+                          // @ts-ignore
+                          control={control}
+                          name={key}
+                          data={data}
+                          shape={property.shape}
+                          // @ts-ignore
+                          setValue={setValue}
+                        />
+
+                        {errors[key] && (
+                          <p style={{ color: 'red' }}>
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
+                      </>
+                    )}
                     {property.shape.kind === 'number' && (
                       <>
                         <label
