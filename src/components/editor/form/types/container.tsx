@@ -75,8 +75,6 @@ export const Container = (props: {
   shape: Extract<BlockType, { kind: 'container' }>;
   data: Record<string, unknown>;
 }) => {
-  console.log('Form::types::Container', { props });
-
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2 items-center">

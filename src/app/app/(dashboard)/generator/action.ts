@@ -26,7 +26,6 @@ export const generateSite = async (form: FormData) => {
     : null;
 
   const data = Object.fromEntries(form);
-  console.log({ data });
 
   const name = data.name as string;
   const description = data.description as string;

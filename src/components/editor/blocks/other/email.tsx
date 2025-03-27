@@ -32,7 +32,6 @@ export default function Email({
     <form
       className="relative overflow-hidden flex-1 flex gap-2 items-center bg-white rounded-md p-2"
       action={form => {
-        console.log({ form: Object.fromEntries([...form.entries()]) });
         setMode('loading');
 
         subscribe(form).then(res => {

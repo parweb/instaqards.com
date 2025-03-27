@@ -140,7 +140,6 @@ export function Fields({
         action={form =>
           startTransition(() =>
             generateSite(form).then(data => {
-              console.log({ data });
               router.refresh();
 
               // setRefreshInputs(true);
@@ -152,28 +151,6 @@ export function Fields({
                     data?.blocks?.at?.(0)?.widget
                   : undefined
               );
-
-              console.log({
-                links: data
-                  ? data.blocks
-                      // @ts-ignore
-                      .map(item => item?.widget?.data ?? item)
-                      // @ts-ignore
-                      .map(data =>
-                        [
-                          data?.label,
-                          data?.href
-                            .replace('https://', '')
-                            .replace('www.', '')
-                            .replace(/\/$/, '')
-                        ]
-                          .filter(Boolean)
-                          .join(' | ')
-                      )
-                      .filter(Boolean)
-                      .join('\n')
-                  : undefined
-              });
 
               setLinks(
                 data

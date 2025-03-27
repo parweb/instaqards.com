@@ -38,10 +38,6 @@ export function BlockFormSocial({
   return (
     <form
       action={async (form: FormData) => {
-        console.log({
-          data: Object.fromEntries([...form.entries()])
-        });
-
         if (mode.mode === 'create') {
           createBlock(form, siteId, 'social').then(res => {
             if ('error' in res) {

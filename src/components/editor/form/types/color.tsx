@@ -12,8 +12,6 @@ export const Color = (props: {
   shape: Extract<BlockType, { kind: 'color' }>;
   data: Record<string, unknown>;
 }) => {
-  console.log({ props });
-
   return (
     <>
       <Controller
@@ -21,8 +19,6 @@ export const Color = (props: {
         name={props.name}
         defaultValue={props.shape.default}
         render={({ field }) => {
-          console.log({ field });
-
           return (
             <div className="flex flex-col gap-2">
               <label

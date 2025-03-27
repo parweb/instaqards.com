@@ -177,8 +177,6 @@ export const Font = (props: {
   shape: Extract<BlockType, { kind: 'font' }>;
   data: Record<string, unknown>;
 }) => {
-  console.log('Form::types::Font', { props });
-
   const fonts = useAtomValue($fonts);
 
   return (

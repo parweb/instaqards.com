@@ -201,8 +201,6 @@ export default function Reservation({
     <form
       className="w-full flex-1 flex flex-col gap-4 bg-white/30 backdrop-blur-sm rounded-md p-4 overflow-hidden"
       action={(form: FormData) => {
-        console.log({ form: Object.fromEntries([...form.entries()]) });
-
         setMode('loading');
 
         book(form).then(res => {

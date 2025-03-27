@@ -64,8 +64,6 @@ const AddressInput = (
     [clearSearch]
   );
 
-  console.log({ query });
-
   return (
     <>
       <SearchInput

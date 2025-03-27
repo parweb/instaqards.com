@@ -116,8 +116,6 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
         ? url.split('/channel/').at(-1)
         : null;
 
-  console.log({ handle });
-
   useEffect(() => {
     const controller = new AbortController();
 

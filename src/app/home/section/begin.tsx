@@ -29,8 +29,6 @@ export function Begin() {
             subdomain: String(form.get('subdomain')),
             email: String(form.get('email'))
           }).then(data => {
-            console.log({ data });
-
             setError(data.error || null);
           });
         });

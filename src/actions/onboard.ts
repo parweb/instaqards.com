@@ -41,7 +41,7 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
 
     return { success: true /*, site*/ };
   } catch (error) {
-    console.log({ error });
+    console.error({ error });
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
