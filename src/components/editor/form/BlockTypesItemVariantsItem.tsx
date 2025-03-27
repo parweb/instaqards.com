@@ -36,7 +36,8 @@ import Gallery from 'components/editor/blocks/picture/gallery';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
 import Picture169 from 'components/editor/blocks/picture/picture-16-9';
-import NormalText from 'components/editor/blocks/text/normal';
+import Ghibli from 'components/editor/blocks/text/ghibli';
+import Normal from 'components/editor/blocks/text/normal';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
 
@@ -66,7 +67,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     gallery: Gallery
   },
   text: {
-    normal: NormalText
+    normal: Normal,
+    ghibli: Ghibli
   },
   external: {
     spotify: Spotify,

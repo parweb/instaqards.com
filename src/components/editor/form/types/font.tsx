@@ -184,37 +184,45 @@ export const Font = (props: {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2 items-center">
-        <Color
-          name="font[color]"
-          control={props.control}
-          defaultValue={props.shape.default.color}
-        />
+        {props.shape.default.color && (
+          <Color
+            name="font[color]"
+            control={props.control}
+            defaultValue={props.shape.default.color}
+          />
+        )}
 
-        <Size
-          name="font[fontSize]"
-          control={props.control}
-          defaultValue={props.shape.default.fontSize}
-        />
+        {props.shape.default.fontSize && (
+          <Size
+            name="font[fontSize]"
+            control={props.control}
+            defaultValue={props.shape.default.fontSize}
+          />
+        )}
 
-        <div className="flex-1">
-          <Suspense fallback={<FontLoading />}>
-            <Family
-              name="font[fontFamily]"
-              control={props.control}
-              fonts={fonts}
-              defaultValue={props.shape.default.fontFamily}
-            />
-          </Suspense>
+        {props.shape.default.fontFamily && (
+          <div className="flex-1">
+            <Suspense fallback={<FontLoading />}>
+              <Family
+                name="font[fontFamily]"
+                control={props.control}
+                fonts={fonts}
+                defaultValue={props.shape.default.fontFamily}
+              />
+            </Suspense>
+          </div>
+        )}
+      </div>
+
+      {props.shape.default.textAlign && (
+        <div>
+          <Align
+            name="font[textAlign]"
+            control={props.control}
+            defaultValue={props.shape.default.textAlign}
+          />
         </div>
-      </div>
-
-      <div>
-        <Align
-          name="font[textAlign]"
-          control={props.control}
-          defaultValue={props.shape.default.textAlign}
-        />
-      </div>
+      )}
     </div>
   );
 };

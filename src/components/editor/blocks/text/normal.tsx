@@ -52,7 +52,7 @@ export const input = z.object({
     )
 });
 
-export default function NormalText({
+export default function Normal({
   text = 'Normal text',
   font = {
     color: '#000f',

@@ -142,36 +142,37 @@ type Share = {
 export type Block = Share &
   (
     | {
-        kind: 'upload';
-        multiple: boolean;
-        preview: boolean;
-        accept: Record<string, string[]>;
-      }
+      kind: 'upload';
+      multiple: boolean;
+      preview: boolean;
+      accept: Record<string, string[]>;
+    }
     | { kind: 'string' }
+    | { kind: 'socials' }
     | { kind: 'hidden' }
     | { kind: 'color'; default: string }
     | { kind: 'number'; defaultValue: number }
     | { kind: 'address'; placeholder: string }
     | {
-        kind: 'font';
-        default: {
-          color: string;
-          fontSize: `${string}px`;
-          fontFamily: string;
-          textAlign: 'left' | 'center' | 'right' | 'justify';
-        };
-      }
+      kind: 'font';
+      default: Partial<{
+        color: string;
+        fontSize: `${string}px`;
+        fontFamily: string;
+        textAlign: 'left' | 'center' | 'right' | 'justify';
+      }>;
+    }
     | {
-        kind: 'container';
-        default: {
-          backgroundColor: string;
-          borderColor: string;
-          borderWidth: `${string}px`;
-          borderRadius: `${string}px`;
-          padding: `${string}px`;
-          margin: `${string}px`;
-        };
-      }
+      kind: 'container';
+      default: Partial<{
+        backgroundColor: string;
+        borderColor: string;
+        borderWidth: `${string}px`;
+        borderRadius: `${string}px`;
+        padding: `${string}px`;
+        margin: `${string}px`;
+      }>;
+    }
   );
 
 export const json = (data: Block) => JSON.stringify(data, null, 2);

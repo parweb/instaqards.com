@@ -50,6 +50,7 @@ export const BlockTypesItem = ({
     { id: 'gallery', label: 'Gallery', type: 'picture' },
 
     { id: 'normal', label: 'Normal', type: 'text' },
+    { id: 'ghibli', label: 'Ghibli', type: 'text' },
 
     { id: 'spotify', label: 'Spotify', type: 'external' },
     { id: 'youtube', label: 'Youtube', type: 'external' },

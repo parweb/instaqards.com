@@ -80,41 +80,53 @@ export const Container = (props: {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2 items-center">
-        <Color
-          name="container[backgroundColor]"
-          control={props.control}
-          defaultValue={props.shape.default.backgroundColor}
-        />
+        {props.shape.default.backgroundColor && (
+          <Color
+            name="container[backgroundColor]"
+            control={props.control}
+            defaultValue={props.shape.default.backgroundColor}
+          />
+        )}
 
-        <Color
-          name="container[borderColor]"
-          control={props.control}
-          defaultValue={props.shape.default.borderColor}
-        />
+        {props.shape.default.borderColor && (
+          <Color
+            name="container[borderColor]"
+            control={props.control}
+            defaultValue={props.shape.default.borderColor}
+          />
+        )}
 
-        <Size
-          name="container[borderWidth]"
-          control={props.control}
-          defaultValue={props.shape.default.borderWidth}
-        />
+        {props.shape.default.borderWidth && (
+          <Size
+            name="container[borderWidth]"
+            control={props.control}
+            defaultValue={props.shape.default.borderWidth}
+          />
+        )}
 
-        <Size
-          name="container[borderRadius]"
-          control={props.control}
-          defaultValue={props.shape.default.borderRadius}
-        />
+        {props.shape.default.borderRadius && (
+          <Size
+            name="container[borderRadius]"
+            control={props.control}
+            defaultValue={props.shape.default.borderRadius}
+          />
+        )}
 
-        <Size
-          name="container[padding]"
-          control={props.control}
-          defaultValue={props.shape.default.padding}
-        />
+        {props.shape.default.padding && (
+          <Size
+            name="container[padding]"
+            control={props.control}
+            defaultValue={props.shape.default.padding}
+          />
+        )}
 
-        <Size
-          name="container[margin]"
-          control={props.control}
-          defaultValue={props.shape.default.margin}
-        />
+        {props.shape.default.margin && (
+          <Size
+            name="container[margin]"
+            control={props.control}
+            defaultValue={props.shape.default.margin}
+          />
+        )}
       </div>
     </div>
   );
