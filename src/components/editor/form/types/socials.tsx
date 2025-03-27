@@ -11,8 +11,10 @@ import * as z from 'zod';
 import {
   closestCenter,
   DndContext,
+  DragStartEvent,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent
@@ -26,7 +28,6 @@ import {
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
@@ -34,16 +35,18 @@ import {
 import { input } from 'components/editor/blocks/other/socials';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
-import type { Block as BlockType } from 'lib/utils';
+import { cn, type Block as BlockType } from 'lib/utils';
 
 type Social = z.infer<typeof input>['socials'][number];
 
 const SocialItem = ({
+  isActive,
   item,
   list,
   onLinkChange,
   onDelete
 }: {
+  isActive: boolean;
   item: Social;
   list: Social[];
   // eslint-disable-next-line no-unused-vars
@@ -65,9 +68,16 @@ const SocialItem = ({
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="flex gap-2 items-center">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        'flex gap-2 items-center flex-1',
+        isActive && 'p-1 shadow-sm border border-stone-300 rounded-md'
+      )}
+    >
       {list.length > 1 && (
-        <div {...attributes} {...listeners}>
+        <div {...attributes} {...listeners} className="cursor-move">
           <LuMove />
         </div>
       )}
@@ -141,23 +151,24 @@ export const Socials = (props: {
   );
 
   const [items, setItems] = useState(socials);
+  const [activeId, setActiveId] = useState<string>();
 
   useEffect(() => {
     setItems(socials);
   }, [socials]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
-    })
+    useSensor(MouseSensor, { activationConstraint: undefined }),
+    useSensor(TouchSensor, { activationConstraint: undefined }),
+    useSensor(KeyboardSensor)
   );
 
   const name = props.name;
   const setValue = props.setValue;
+
   const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event;
+    ({ active, over }: DragEndEvent) => {
+      setActiveId(undefined);
 
       if (active.id !== over?.id) {
         setItems(items => {
@@ -175,11 +186,16 @@ export const Socials = (props: {
     [name, setValue]
   );
 
+  const handleDragStart = useCallback(({ active }: DragStartEvent) => {
+    setActiveId(active.id as string);
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 items-stretch">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
       >
@@ -188,6 +204,7 @@ export const Socials = (props: {
             {items?.map((link, _, list) => (
               <SocialItem
                 key={link.id}
+                isActive={activeId === link.id}
                 item={link}
                 list={list}
                 onLinkChange={data => {

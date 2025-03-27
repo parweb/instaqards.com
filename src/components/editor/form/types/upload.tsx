@@ -9,8 +9,10 @@ import { LuMove, LuTrash } from 'react-icons/lu';
 import {
   closestCenter,
   DndContext,
+  DragStartEvent,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent
@@ -24,7 +26,6 @@ import {
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
@@ -39,11 +40,13 @@ type Media = {
 } & ({ kind: 'remote'; url: string } | { kind: 'local'; file: File });
 
 export const UploaderItem = ({
+  isActive,
   item,
   list,
   onDelete,
   onLinkChange
 }: {
+  isActive: boolean;
   item: Media;
   list: Media[];
   // eslint-disable-next-line no-unused-vars
@@ -78,9 +81,16 @@ export const UploaderItem = ({
   }, [itemFile]);
 
   return (
-    <div className="flex items-center gap-2" ref={setNodeRef} style={style}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        'flex items-center gap-2',
+        isActive && 'p-1 shadow-sm border border-stone-300 rounded-md'
+      )}
+    >
       {list.length > 1 && (
-        <div {...attributes} {...listeners}>
+        <div {...attributes} {...listeners} className="cursor-move">
           <LuMove />
         </div>
       )}
@@ -136,21 +146,21 @@ export const Uploader = forwardRef(
     );
 
     const [items, setItems] = useState(medias);
+    const [activeId, setActiveId] = useState<string>();
 
     useEffect(() => {
       setItems(medias);
     }, [medias]);
 
     const sensors = useSensors(
-      useSensor(PointerSensor),
-      useSensor(KeyboardSensor, {
-        coordinateGetter: sortableKeyboardCoordinates
-      })
+      useSensor(MouseSensor, { activationConstraint: undefined }),
+      useSensor(TouchSensor, { activationConstraint: undefined }),
+      useSensor(KeyboardSensor)
     );
 
     const handleDragEnd = useCallback(
-      (event: DragEndEvent) => {
-        const { active, over } = event;
+      ({ active, over }: DragEndEvent) => {
+        setActiveId(undefined);
 
         if (active.id !== over?.id) {
           setItems(items => {
@@ -167,6 +177,10 @@ export const Uploader = forwardRef(
       },
       [props.name, setValue]
     );
+
+    const handleDragStart = useCallback(({ active }: DragStartEvent) => {
+      setActiveId(active.id as string);
+    }, []);
 
     const onDrop = useCallback(
       (files: File[]) => {
@@ -226,6 +240,7 @@ export const Uploader = forwardRef(
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
           >
@@ -237,6 +252,7 @@ export const Uploader = forwardRef(
                 {items?.map((item, index, list) => (
                   <UploaderItem
                     key={item.id}
+                    isActive={activeId === item.id}
                     item={item}
                     list={list}
                     onLinkChange={(id, link) =>

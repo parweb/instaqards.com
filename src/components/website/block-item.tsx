@@ -14,7 +14,8 @@ import {
   closestCenter,
   DndContext,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent
@@ -30,7 +31,6 @@ import {
   arrayMove,
   horizontalListSortingStrategy,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
 
@@ -256,10 +256,9 @@ export const BlockList = ({
   }, [blocks]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
-    })
+    useSensor(MouseSensor, { activationConstraint: undefined }),
+    useSensor(TouchSensor, { activationConstraint: undefined }),
+    useSensor(KeyboardSensor)
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
