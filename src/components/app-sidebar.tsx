@@ -179,13 +179,19 @@ export function AppSidebar(
 
   return (
     <Sidebar variant="inset" {...props}>
-      <SidebarHeader className="flex items-center justify-center">
+      <SidebarHeader className="flex flex-col items-stretch justify-center p-1">
         <Link
           href="/"
-          className="rounded-lg px-2 hover:bg-stone-200 flex items-center gap-3 uppercase"
+          className="rounded-lg px-2 flex items-center justify-center gap-3 uppercase"
+          style={{
+            backgroundImage: 'url("/assets/bg-logo.png")',
+
+            backgroundPosition: '80px 80px',
+            backgroundRepeat: 'no-repeat'
+          }}
         >
           <Image
-            src="/rsz_black-transparent_nolink.png"
+            src="/rsz_transparent_nolink.png"
             alt="Logo qards.link"
             width={800 * 0.2}
             height={400 * 0.2}
