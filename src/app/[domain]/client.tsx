@@ -10,29 +10,10 @@ import { SocialIcon } from 'react-social-icons';
 
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
-const BlockWidget = ({ block }: { block: Block }) => {
-  const widget = block.widget as unknown as {
-    type: string;
-    id: string;
-    data: unknown;
-  };
-
-  const Component = dynamic(
-    () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`),
-    { ssr: false }
-  );
-
-  return (
-    <ErrorBoundary
-      fallbackRender={({ error }) => (
-        console.error(error), (<div>Something went wrong, sorry!</div>)
-      )}
-    >
-      {/* @ts-ignore */}
-      <Component {...(widget?.data ?? {})} block={block} />
-    </ErrorBoundary>
-  );
-};
+const BlockWidget = dynamic(
+  () => import('components/BlockWidget').then(mod => mod.BlockWidget),
+  { ssr: false }
+);
 
 export const BlockItem = (block: Block) => {
   const css = block.style as unknown as BlockStyle;
@@ -78,9 +59,15 @@ export const BlockItem = (block: Block) => {
     }
 
     return (
-      <Suspense fallback={null}>
-        <BlockWidget block={block} />
-      </Suspense>
+      <ErrorBoundary
+        fallbackRender={({ error }) => (
+          console.error(error), (<div>Something went wrong, sorry!</div>)
+        )}
+      >
+        <Suspense fallback={null}>
+          <BlockWidget block={block} />
+        </Suspense>
+      </ErrorBoundary>
     );
   }
 

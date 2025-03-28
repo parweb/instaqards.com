@@ -107,8 +107,12 @@ const widgetMapper: WidgetMapper = {
 
 export async function GET(
   request: Request,
-  { params: { blockId } }: { params: { blockId: string } }
+  props: { params: Promise<{ blockId: string }> }
 ) {
+  const params = await props.params;
+
+  const { blockId } = params;
+
   try {
     const query = Object.fromEntries(new URL(request.url).searchParams);
 

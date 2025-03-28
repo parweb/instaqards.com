@@ -6,11 +6,10 @@ import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
 
-export default async function SiteSubscribers({
-  params
-}: {
-  params: { id: string };
+export default async function SiteSubscribers(props: {
+  params: Promise<{ id: string }>;
 }) {
+  const params = await props.params;
   const session = await getSession();
 
   if (!session || !session?.user) {

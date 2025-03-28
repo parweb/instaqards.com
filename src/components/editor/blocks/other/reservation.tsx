@@ -3,7 +3,7 @@
 import type { Block } from '@prisma/client';
 import va from '@vercel/analytics';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useState } from 'react';
 import { LuCheck } from 'react-icons/lu';
 import { toast } from 'sonner';

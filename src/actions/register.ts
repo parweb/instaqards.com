@@ -19,12 +19,12 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
 
   console.log({ validatedFields });
 
-  const referer: User['id'] | null = cookies().get('r')?.value ?? null;
+  const referer: User['id'] | null = (await cookies()).get('r')?.value ?? null;
 
   console.log({ referer });
 
   if (!validatedFields.success) {
-    return { error: translate('actions.register.field.error') };
+    return { error: await translate('actions.register.field.error') };
   }
 
   const { email, password, name } = validatedFields.data;
@@ -40,7 +40,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   console.log({ existingUser });
 
   if (existingUser) {
-    return { error: translate('actions.register.email.error') };
+    return { error: await translate('actions.register.email.error') };
   }
 
   await db.user.create({
@@ -60,7 +60,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     console.error
   );
 
-  console.log({ success: translate('actions.register.form.success') });
+  console.log({ success: await translate('actions.register.form.success') });
 
-  return { success: translate('actions.register.form.success') };
+  return { success: await translate('actions.register.form.success') };
 };

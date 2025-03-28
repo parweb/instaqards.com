@@ -4,11 +4,10 @@ import { db } from 'helpers/db';
 import { updateSite } from 'lib/actions';
 import { getSession } from 'lib/auth';
 
-export default async function SiteSettingsIndex({
-  params
-}: {
-  params: { id: string };
+export default async function SiteSettingsIndex(props: {
+  params: Promise<{ id: string }>;
 }) {
+  const params = await props.params;
   const session = await getSession();
 
   const data = await db.site.findUnique({

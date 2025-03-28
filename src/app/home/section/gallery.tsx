@@ -15,16 +15,16 @@ const qards = [
   { url: 'https://by-ayya.qards.link/' }
 ];
 
-export const Gallery = () => {
+export const Gallery = async () => {
   return (
     <div id="Gallery" className="flex flex-col p-10 gap-10">
       <hgroup className="text-center flex flex-col gap-4">
         <h2 className="text-4xl sm:text-5xl font-[900]">
-          {translate('page.home.gallery.title')}
+          {await translate('page.home.gallery.title')}
         </h2>
 
         <p className="text-gray-600 text-2xl">
-          {translate('page.home.gallery.description')}
+          {await translate('page.home.gallery.description')}
         </p>
       </hgroup>
 

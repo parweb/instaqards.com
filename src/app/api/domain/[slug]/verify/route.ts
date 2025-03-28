@@ -10,8 +10,9 @@ import {
 
 export async function GET(
   _req: Request,
-  { params }: { params: { slug: string } }
+  props: { params: Promise<{ slug: string }> }
 ) {
+  const params = await props.params;
   const domain = decodeURIComponent(params.slug);
   let status: DomainVerificationStatusProps = 'Valid Configuration';
 

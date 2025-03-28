@@ -2,10 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-// Import MapView dynamically with SSR disabled
-const MapViewComponent = dynamic(() => import('./MapView'), {
-  ssr: false
-});
+const MapViewComponent = dynamic(() => import('./MapView'), { ssr: false });
 
 const Yolo = (props: {
   position: [number, number];

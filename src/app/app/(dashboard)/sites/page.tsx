@@ -1,13 +1,11 @@
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 
 import CreateSiteButton from 'components/create-site-button';
 import CreateSiteModal from 'components/modal/create-site';
-import PlaceholderCard from 'components/placeholder-card';
 import Sites from 'components/sites';
-import { getSession } from 'lib/auth';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
+import { getSession } from 'lib/auth';
 
 export default async function AllSites() {
   const session = await getSession();
@@ -29,7 +27,7 @@ export default async function AllSites() {
       <div className="flex flex-col space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="font-cal text-3xl font-bold dark:text-white">
-            {translate('dashboard.sites.title')}
+            {await translate('dashboard.sites.title')}
           </h1>
 
           <CreateSiteButton>

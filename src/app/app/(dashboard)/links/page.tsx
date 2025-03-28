@@ -32,10 +32,10 @@ export default async function AllLinks() {
       <div className="flex flex-col">
         <hgroup className="flex items-center justify-between">
           <h1 className="font-cal text-3xl font-bold">
-            {translate('dashboard.links.title')}
+            {await translate('dashboard.links.title')}
           </h1>
 
-          <CreateButton label={translate('dashboard.links.create')}>
+          <CreateButton label={await translate('dashboard.links.create')}>
             <MutateModal link={null} />
           </CreateButton>
         </hgroup>

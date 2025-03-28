@@ -13,7 +13,8 @@ export async function POST(req: Request) {
   try {
     const { user = null } = (await auth()) || {};
 
-    if (user === null) throw new Error(translate('api.stripe.user.error'));
+    if (user === null)
+      throw new Error(await translate('api.stripe.user.error'));
 
     // 3. Retrieve or create the customer in Stripe
     const customer = await createOrRetrieveCustomer(user);
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
       JSON.stringify({
         error: {
           statusCode: 500,
-          message: translate('api.stripe.error')
+          message: await translate('api.stripe.error')
         }
       }),
       { status: 500 }

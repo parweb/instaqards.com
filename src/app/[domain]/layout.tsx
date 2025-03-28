@@ -4,11 +4,10 @@ import type { ReactNode } from 'react';
 
 import { getSiteData } from 'lib/fetchers';
 
-export async function generateMetadata({
-  params
-}: {
-  params: { domain: string };
+export async function generateMetadata(props: {
+  params: Promise<{ domain: string }>;
 }): Promise<Metadata | null> {
+  const params = await props.params;
   const domain = decodeURIComponent(params.domain);
   const data = await getSiteData(domain);
 
@@ -48,13 +47,14 @@ export async function generateMetadata({
   };
 }
 
-export default async function SiteLayout({
-  params,
-  children
-}: {
-  params: { domain: string };
+export default async function SiteLayout(props: {
+  params: Promise<{ domain: string }>;
   children: ReactNode;
 }) {
+  const params = await props.params;
+
+  const { children } = props;
+
   const domain = decodeURIComponent(params.domain);
   const data = await getSiteData(domain);
 

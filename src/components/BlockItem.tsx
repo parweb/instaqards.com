@@ -5,8 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import type { Block, Site } from '@prisma/client';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { memo, Suspense, useEffect, useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { Suspense, useEffect, useState } from 'react';
 import { LuLink, LuMove } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
@@ -40,6 +39,11 @@ import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
+const BlockWidget = dynamic(
+  () => import('./BlockWidget').then(mod => mod.BlockWidget),
+  { ssr: false }
+);
+
 const BlockUpdate = ({ block }: { block: Block }) => {
   return (
     <UpdateBlockButton>
@@ -55,32 +59,6 @@ const BlockDelete = ({ block }: { block: Block }) => {
 const BlockDuplicate = ({ block }: { block: Block }) => {
   return <DuplicateBlockButton {...block} />;
 };
-
-const BlockWidget = memo(({ block }: { block: Block }) => {
-  const widget = block.widget as unknown as {
-    type: string;
-    id: string;
-    data: unknown;
-  };
-
-  const Component = dynamic(
-    () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`),
-    { ssr: false }
-  );
-
-  return (
-    <ErrorBoundary
-      fallbackRender={({ error }) => (
-        console.error(error), (<div>Something went wrong, sorry!</div>)
-      )}
-    >
-      {/* @ts-ignore */}
-      <Component {...(widget?.data ?? {})} block={block} />
-    </ErrorBoundary>
-  );
-});
-
-BlockWidget.displayName = 'BlockWidget';
 
 const BlockItem = ({ block }: { block: Block }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =

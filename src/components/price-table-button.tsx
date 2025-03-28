@@ -32,7 +32,7 @@ export const PriceTableButton = ({ price }: { price: Price }) => {
       });
 
       (await getStripe())?.redirectToCheckout({ sessionId });
-    } catch (error) {
+    } catch {
       setLoading(false);
       router.push(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL as string}/register`);
     } finally {

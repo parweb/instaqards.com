@@ -15,11 +15,10 @@ import { BlockList } from './client';
 
 import 'array-grouping-polyfill';
 
-export default async function SiteHomePage({
-  params
-}: {
-  params: { domain: string };
+export default async function SiteHomePage(props: {
+  params: Promise<{ domain: string }>;
 }) {
+  const params = await props.params;
   const domain = decodeURIComponent(params.domain);
   const site = await getSiteData(domain);
 
@@ -34,11 +33,11 @@ export default async function SiteHomePage({
       <div className="flex items-center justify-center flex-1 self-stretch">
         <div className="max-w-md m-2 p-6 border border-gray-200 rounded-lg shadow-lg bg-white flex flex-col gap-5">
           <h2 className="text-xl font-semibold text-gray-800">
-            {translate('page.public.site.title')}
+            {await translate('page.public.site.title')}
           </h2>
 
           <p className="text-gray-600 ">
-            {translate('page.public.site.description')}
+            {await translate('page.public.site.description')}
           </p>
 
           <div>
@@ -46,7 +45,7 @@ export default async function SiteHomePage({
               className="bg-black rounded-md px-3 py-2 text-white"
               href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`}
             >
-              {translate('page.public.site.create')}
+              {await translate('page.public.site.create')}
             </Link>
           </div>
         </div>
@@ -84,7 +83,7 @@ export default async function SiteHomePage({
               target="_blank"
               rel="noreferrer"
             >
-              {translate('page.public.site.ads')}
+              {await translate('page.public.site.ads')}
             </a>
           </div>
         </Footer>

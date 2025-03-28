@@ -13,37 +13,6 @@ export default function SiteCard({
 
   return (
     <div className="group relative rounded-lg border pb-10 shadow-md transition-all hover:shadow-xl border-stone-300 ">
-      {/* <div className="absolute inset-0 group pointer-events-auto">
-        {data.background && (
-          <>
-            {media_type?.startsWith('video/') && (
-              <video
-                className="absolute top-0 left-0 w-full h-full object-cover"
-                preload="auto"
-                muted
-              >
-                <source src={data.background} type="video/mp4" />
-              </video>
-            )}
-
-            {media_type?.startsWith('image/') && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                className="absolute top-0 left-0 w-full h-full object-cover"
-                src={data.background}
-                alt=""
-              />
-            )}
-
-            {media_type === 'css' && (
-              <PreviewBackground name={data.background} />
-            )}
-          </>
-        )}
-
-        <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
-      </div> */}
-
       <div className="flex flex-col overflow-hidden rounded-lg">
         <div className="border-t border-stone-200 p-4 dark:border-stone-700">
           <div className="flex items-center justify-between">

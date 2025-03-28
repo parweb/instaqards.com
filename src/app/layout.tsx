@@ -34,14 +34,14 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://qards.link')
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
   return (
     <html
-      lang={cookies().get('lang')?.value ?? DEFAULT_LANG}
+      lang={(await cookies()).get('lang')?.value ?? DEFAULT_LANG}
       suppressHydrationWarning
     >
       <body
@@ -59,7 +59,6 @@ export default function RootLayout({
 
         <SpeedInsights />
       </body>
-
       <GoogleAnalytics gaId="G-XJM901XDPJ" />
     </html>
   );

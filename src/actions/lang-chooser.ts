@@ -1,10 +1,10 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 
-export const setLang = (prev: string, form: FormData) => {
+export const setLang = async (prev: string, form: FormData) => {
   const lang = form.get('lang') as string;
-  cookies().set('lang', lang);
+  (cookies() as unknown as UnsafeUnwrappedCookies).set('lang', lang);
 
   return lang;
 };

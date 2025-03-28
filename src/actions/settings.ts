@@ -17,13 +17,13 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
 
   if (!user?.id) {
-    return { error: translate('actions.settings.unauthorized') };
+    return { error: await translate('actions.settings.unauthorized') };
   }
 
   const dbUser = await getUserById(user.id);
 
   if (!dbUser) {
-    return { error: translate('actions.settings.unauthorized') };
+    return { error: await translate('actions.settings.unauthorized') };
   }
 
   if (user.isOAuth) {
@@ -37,13 +37,13 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     const existingUser = await getUserByEmail(values.email);
 
     if (existingUser && existingUser.id !== user.id) {
-      return { error: translate('actions.settings.email.error') };
+      return { error: await translate('actions.settings.email.error') };
     }
 
     const verificationToken = await generateVerificationToken(values.email);
     await sendVerificationEmail(values.email, verificationToken.token);
 
-    return { success: translate('actions.settings.email.success') };
+    return { success: await translate('actions.settings.email.success') };
   }
 
   if (values.password && values.newPassword && dbUser.password) {
@@ -53,7 +53,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     );
 
     if (!passwordsMatch) {
-      return { error: translate('actions.settings.password.error') };
+      return { error: await translate('actions.settings.password.error') };
     }
 
     const hashedPassword = await bcrypt.hash(values.newPassword, 10);
@@ -75,5 +75,5 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     }
   });
 
-  return { success: translate('actions.settings.form.success') };
+  return { success: await translate('actions.settings.form.success') };
 };

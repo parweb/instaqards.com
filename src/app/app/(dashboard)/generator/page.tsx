@@ -5,11 +5,13 @@ import { WebSite } from 'components/editor/WebSite';
 import { getSession } from 'lib/auth';
 import { Fields } from './client';
 
-export default async function Generator({
-  searchParams: { siteId }
-}: {
-  searchParams: { siteId: string };
+export default async function Generator(props: {
+  searchParams: Promise<{ siteId: string }>;
 }) {
+  const searchParams = await props.searchParams;
+
+  const { siteId } = searchParams;
+
   const session = await getSession();
 
   if (!session) {

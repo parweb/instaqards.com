@@ -164,17 +164,17 @@ const comments = [
   }
 ];
 
-export const Testimonial = () => {
-  const lang = getLang();
+export const Testimonial = async () => {
+  const lang = await getLang();
 
   return (
     <div id="Testimonial" className="flex flex-col p-5 sm:p-10 gap-20">
       <hgroup className="text-center flex flex-col gap-4">
         <h2 className="text-4xl sm:text-5xl font-[900]">
-          {translate('page.home.testimonial.title')}
+          {await translate('page.home.testimonial.title')}
         </h2>
         <p className="text-gray-600 text-2xl">
-          {translate('page.home.testimonial.description')}
+          {await translate('page.home.testimonial.description')}
         </p>
       </hgroup>
 

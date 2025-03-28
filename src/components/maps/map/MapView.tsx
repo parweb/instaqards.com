@@ -3,10 +3,7 @@
 import dynamic from 'next/dynamic';
 
 // Dynamically import the Leaflet map component with SSR disabled
-const LeafletMap = dynamic(() => import('./MapViewInner'), {
-  loading: () => <p>A map is loading</p>,
-  ssr: false
-});
+const LeafletMap = dynamic(() => import('./MapViewInner'), { ssr: false });
 
 const MapView = ({
   position,

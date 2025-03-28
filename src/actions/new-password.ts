@@ -14,13 +14,13 @@ export const newPassword = async (
   token?: string | null
 ) => {
   if (!token) {
-    return { error: translate('actions.new-password.token.missing') };
+    return { error: await translate('actions.new-password.token.missing') };
   }
 
   const validatedFields = NewPasswordSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: translate('actions.new-password.field.error') };
+    return { error: await translate('actions.new-password.field.error') };
   }
 
   const { password } = validatedFields.data;
@@ -28,19 +28,19 @@ export const newPassword = async (
   const existingToken = await getPasswordResetTokenByToken(token);
 
   if (!existingToken) {
-    return { error: translate('actions.new-password.token.error') };
+    return { error: await translate('actions.new-password.token.error') };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) {
-    return { error: translate('actions.new-password.token.expire') };
+    return { error: await translate('actions.new-password.token.expire') };
   }
 
   const existingUser = await getUserByEmail(existingToken.email);
 
   if (!existingUser) {
-    return { error: translate('actions.new-password.email.error') };
+    return { error: await translate('actions.new-password.email.error') };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -54,5 +54,7 @@ export const newPassword = async (
     where: { id: existingToken.id }
   });
 
-  return { success: translate('actions.new-password.password.form.success') };
+  return {
+    success: await translate('actions.new-password.password.form.success')
+  };
 };

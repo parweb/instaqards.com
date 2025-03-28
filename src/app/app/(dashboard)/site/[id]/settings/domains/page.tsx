@@ -2,11 +2,10 @@ import Form from 'components/form';
 import { db } from 'helpers/db';
 import { updateSite } from 'lib/actions';
 
-export default async function SiteSettingsDomains({
-  params
-}: {
-  params: { id: string };
+export default async function SiteSettingsDomains(props: {
+  params: Promise<{ id: string }>;
 }) {
+  const params = await props.params;
   const data = await db.site.findUnique({
     where: {
       id: decodeURIComponent(params.id)

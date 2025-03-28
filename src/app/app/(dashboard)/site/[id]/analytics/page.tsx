@@ -24,11 +24,10 @@ const getCachedClicks = unstable_cache(
   { revalidate: 3600 }
 );
 
-export default async function SiteAnalytics({
-  params
-}: {
-  params: { id: string };
+export default async function SiteAnalytics(props: {
+  params: Promise<{ id: string }>;
 }) {
+  const params = await props.params;
   const session = await getSession();
 
   if (!session || !session?.user) {

@@ -6,13 +6,14 @@ import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 import SiteSettingsNav from './nav';
 
-export default async function SiteAnalyticsLayout({
-  params,
-  children
-}: {
-  params: { id: string };
+export default async function SiteAnalyticsLayout(props: {
+  params: Promise<{ id: string }>;
   children: ReactNode;
 }) {
+  const params = await props.params;
+
+  const { children } = props;
+
   const session = await getSession();
 
   if (!session) {

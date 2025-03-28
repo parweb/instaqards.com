@@ -29,7 +29,7 @@ export const createSite = async (
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: translate('auth.error') };
+    return { error: await translate('auth.error') };
   }
 
   const name = formData.get('name') as string;
@@ -79,7 +79,7 @@ export const createSite = async (
     return {
       error:
         error instanceof Error && 'code' in error && error.code === 'P2002'
-          ? translate('lib.actions.domain.taken')
+          ? await translate('lib.actions.domain.taken')
           : error instanceof Error
             ? error.message
             : 'An unknown error occurred'
@@ -100,7 +100,7 @@ export const mutateLink = async (
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: translate('auth.error') };
+    return { error: await translate('auth.error') };
   }
 
   const { url, name, description, id } = input.parse(Object.fromEntries(form));
@@ -446,7 +446,7 @@ export const deleteBlock = async (blockId: Block['id']) => {
 
 export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
   if (!key) {
-    return { error: translate('lib.actions.update-site.error') };
+    return { error: await translate('lib.actions.update-site.error') };
   }
 
   const value = formData.get(key) as string;
@@ -456,7 +456,7 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
 
     if (key === 'customDomain') {
       if (value.includes('vercel.pub')) {
-        return { error: translate('lib.actions.vercel.domain.error') };
+        return { error: await translate('lib.actions.vercel.domain.error') };
       }
 
       if (validDomainRegex.test(value)) {
@@ -521,7 +521,7 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
     return {
       error:
         error instanceof Error && 'code' in error && error.code === 'P2002'
-          ? translate('lib.actions.update-site.error')
+          ? await translate('lib.actions.update-site.error')
           : error instanceof Error
             ? error.message
             : 'An unknown error occurred'
@@ -555,7 +555,7 @@ export const deleteLink = async (linkId: Link['id']) => {
     const session = await getSession();
 
     if (!session?.user?.id) {
-      return { error: translate('auth.error') };
+      return { error: await translate('auth.error') };
     }
 
     const response = await db.link.delete({
@@ -584,7 +584,7 @@ export const editUser = async (
   const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: translate('auth.error') };
+    return { error: await translate('auth.error') };
   }
 
   let value = formData.get(key) as string | boolean;
@@ -604,7 +604,7 @@ export const editUser = async (
     return {
       error:
         error instanceof Error && 'code' in error && error.code === 'P2002'
-          ? translate('lib.actions.edit-user.error')
+          ? await translate('lib.actions.edit-user.error')
           : error instanceof Error
             ? error.message
             : 'An unknown error occurred'

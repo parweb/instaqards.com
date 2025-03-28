@@ -14,7 +14,7 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   const validatedFields = OnboardSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: translate('actions.login.validation.error') };
+    return { error: await translate('actions.login.validation.error') };
   }
 
   const { email, subdomain } = validatedFields.data;
@@ -24,13 +24,13 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   });
 
   if (alreadyExistsSubdomain) {
-    return { error: translate('actions.onboard.subdomain.error') };
+    return { error: await translate('actions.onboard.subdomain.error') };
   }
 
   const user = await getUserByEmail(email);
 
   if (user) {
-    return { error: translate('actions.onboard.email.error') };
+    return { error: await translate('actions.onboard.email.error') };
   }
 
   try {
@@ -45,9 +45,11 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return { error: translate('actions.login.credentials.invalid') };
+          return {
+            error: await translate('actions.login.credentials.invalid')
+          };
         default:
-          return { error: translate('actions.login.credentials.oops') };
+          return { error: await translate('actions.login.credentials.oops') };
       }
     }
 

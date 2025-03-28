@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Alert, AlertDescription } from 'components/ui/alert';
 import { translate } from 'helpers/translate';
 
-const EmailInPage = () => {
+const EmailInPage = async () => {
   return (
     <div className="flex flex-col items-center justify-center p-4 gap-8 max-w-[500px]">
       <div className="flex flex-col gap-4 items-center">
@@ -28,11 +28,11 @@ const EmailInPage = () => {
         </div>
 
         <h2 className="text-3xl font-extrabold text-gray-900">
-          {translate('page.auth.email-in.title')}
+          {await translate('page.auth.email-in.title')}
         </h2>
 
         <p className="text-sm text-gray-600">
-          {translate('page.auth.email-in.description')}
+          {await translate('page.auth.email-in.description')}
         </p>
       </div>
 
@@ -41,12 +41,12 @@ const EmailInPage = () => {
           <AlertCircle className="h-4 w-4" />
 
           <AlertDescription className="flex flex-col gap-4">
-            <div>{translate('page.auth.email-in.alert')}</div>
+            <div>{await translate('page.auth.email-in.alert')}</div>
           </AlertDescription>
         </Alert>
 
         <div className="text-sm text-gray-500">
-          <Link href="/home">{translate('auth.return.home')}</Link>
+          <Link href="/home">{await translate('auth.return.home')}</Link>
         </div>
       </div>
     </div>

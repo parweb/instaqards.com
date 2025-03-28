@@ -7,8 +7,8 @@ export const admin = async () => {
   const role = await currentRole();
 
   if (role === 'ADMIN') {
-    return { success: translate('actions.admin.success') };
+    return { success: await translate('actions.admin.success') };
   }
 
-  return { error: translate('actions.admin.error') };
+  return { error: await translate('actions.admin.error') };
 };

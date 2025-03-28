@@ -62,7 +62,7 @@ export default async function Overview() {
     <div className="flex flex-col space-y-12 p-8">
       <div className="flex flex-col space-y-6">
         <h1 className="font-cal text-3xl font-bold dark:text-white">
-          {translate('dashboard.home.title')}
+          {await translate('dashboard.home.title')}
         </h1>
 
         <OverviewStats
@@ -75,7 +75,7 @@ export default async function Overview() {
       <div className="flex flex-col space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="font-cal text-3xl font-bold dark:text-white">
-            {translate('dashboard.home.top-sites')}
+            {await translate('dashboard.home.top-sites')}
           </h1>
 
           <Suspense fallback={null}>

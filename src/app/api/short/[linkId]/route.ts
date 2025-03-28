@@ -4,8 +4,12 @@ import { db } from 'helpers/db';
 
 export async function GET(
   _: Request,
-  { params: { linkId } }: { params: { linkId: string } }
+  props: { params: Promise<{ linkId: string }> }
 ) {
+  const params = await props.params;
+
+  const { linkId } = params;
+
   try {
     const click = await db.click.create({
       include: { link: true },

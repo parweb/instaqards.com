@@ -5,7 +5,7 @@ import { cn } from 'lib/utils';
 import { Begin } from './begin';
 import { Iphone } from './iphone';
 
-export const Hero = ({ bg = '06' }) => {
+export const Hero = async ({ bg = '06' }) => {
   return (
     <div
       id="Hero"
@@ -30,30 +30,30 @@ export const Hero = ({ bg = '06' }) => {
           <div className="flex items-center justify-center">
             <div className="flex flex-col gap-5 text-white p-4 rounded-md">
               <div className={cn('text-4xl sm:text-7xl font-[900] b')}>
-                {translate('page.home.hero.title')}
+                {await translate('page.home.hero.title')}
               </div>
 
               <div className="text-2xl">
-                {translate('page.home.hero.description')}
+                {await translate('page.home.hero.description')}
               </div>
 
               <ul className="">
                 <li className="flex gap-2">
                   <LuCheck />
 
-                  <span>{translate('page.home.hero.bullet.one')}</span>
+                  <span>{await translate('page.home.hero.bullet.one')}</span>
                 </li>
 
                 <li className="flex gap-2">
                   <LuCheck />
 
-                  <span>{translate('page.home.hero.bullet.two')}</span>
+                  <span>{await translate('page.home.hero.bullet.two')}</span>
                 </li>
 
                 <li className="flex gap-2">
                   <LuCheck />
 
-                  <span>{translate('page.home.hero.bullet.three')}</span>
+                  <span>{await translate('page.home.hero.bullet.three')}</span>
                 </li>
               </ul>
 

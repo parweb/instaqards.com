@@ -40,7 +40,7 @@ export default async function Sites({
   ) : (
     <div className="mt-20 flex flex-col items-center space-x-4">
       <h1 className="font-cal text-4xl">
-        {translate('components.sites.empty.title')}
+        {await translate('components.sites.empty.title')}
       </h1>
 
       <Image
@@ -51,7 +51,7 @@ export default async function Sites({
       />
 
       <p className="text-lg text-stone-500">
-        {translate('components.sites.empty.description')}
+        {await translate('components.sites.empty.description')}
       </p>
     </div>
   );

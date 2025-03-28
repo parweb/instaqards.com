@@ -47,8 +47,6 @@ export function NavMain({
   }[];
   dark?: boolean;
 }) {
-  console.log({ items });
-
   return (
     <div
       className={cn({

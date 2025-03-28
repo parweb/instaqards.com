@@ -7,11 +7,10 @@ import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 
-export default async function SitePosts({
-  params
-}: {
-  params: { id: string };
+export default async function SitePosts(props: {
+  params: Promise<{ id: string }>;
 }) {
+  const params = await props.params;
   const session = await getSession();
 
   if (!session) {

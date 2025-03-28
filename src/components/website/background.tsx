@@ -1,5 +1,5 @@
 import type { Site } from '@prisma/client';
-import { contentType, lookup } from 'mime-types';
+import { contentType } from 'mime-types';
 import Image from 'next/image';
 
 import { PreviewBackground } from 'components/editor/PreviewBackground';
@@ -12,14 +12,6 @@ export const Background = ({
   const media_type = background?.startsWith('component:')
     ? 'css'
     : contentType(background?.split('/').pop() ?? '') || '';
-
-  console.log({
-    media_type,
-    background,
-    background_type: background?.split('/').pop() ?? '',
-    contentType: contentType(background?.split('/').pop() ?? ''),
-    lookup: lookup(background?.split('/').pop() ?? '')
-  });
 
   return (
     <div className="absolute inset-0 group pointer-events-auto">

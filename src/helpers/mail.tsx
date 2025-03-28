@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { cookies } from 'next/headers';
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { Resend } from 'resend';
 
 import ConfirmAccountEmail from '../../emails/confirm-account';
@@ -13,8 +13,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const domain = `http://app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
-const getLang = () => {
-  let lang = (cookies().get('lang')?.value ?? DEFAULT_LANG) as Lang;
+const getLang = async () => {
+  let lang = (((await cookies()) as unknown as UnsafeUnwrappedCookies).get(
+    'lang'
+  )?.value ?? DEFAULT_LANG) as Lang;
 
   switch (true) {
     case lang.toLowerCase().includes('fr'):
@@ -46,7 +48,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     from: 'contact@qards.link',
     to: email,
     subject: '2FA Code',
-    react: <TwoFactorTokenEmail lang={getLang()} token={token} />
+    react: <TwoFactorTokenEmail lang={await getLang()} token={token} />
   });
 };
 
@@ -57,7 +59,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     from: 'contact@qards.link',
     to: email,
     subject: 'Reset your password',
-    react: <ResetPasswordEmail lang={getLang()} resetLink={resetLink} />
+    react: <ResetPasswordEmail lang={await getLang()} resetLink={resetLink} />
   });
 };
 
@@ -68,7 +70,9 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     from: 'contact@qards.link',
     to: email,
     subject: 'Confirm your email',
-    react: <ConfirmAccountEmail lang={getLang()} confirmLink={confirmLink} />
+    react: (
+      <ConfirmAccountEmail lang={await getLang()} confirmLink={confirmLink} />
+    )
   });
 };
 
@@ -77,6 +81,6 @@ export const sendMagicLinkEmail = async (email: string, magicLink: string) => {
     from: 'contact@qards.link',
     to: email,
     subject: 'Activate your account',
-    react: <MagicLinkEmail lang={getLang()} magicLink={magicLink} />
+    react: <MagicLinkEmail lang={await getLang()} magicLink={magicLink} />
   });
 };

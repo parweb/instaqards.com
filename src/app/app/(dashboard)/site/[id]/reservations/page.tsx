@@ -9,13 +9,12 @@ import { Calendar } from './client';
 
 import 'array-grouping-polyfill';
 
-export default async function SiteReservations({
-  params,
-  searchParams: query
-}: {
-  params: { id: string };
-  searchParams: { date: string };
+export default async function SiteReservations(props: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ date: string }>;
 }) {
+  const query = await props.searchParams;
+  const params = await props.params;
   const date = query.date ? new Date(query.date) : new Date();
 
   const session = await getSession();

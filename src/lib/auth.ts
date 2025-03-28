@@ -181,7 +181,7 @@ export function withSiteAuth<T>(
     const session = await getSession();
 
     if (!session || !session?.user) {
-      return { error: translate('auth.error') };
+      return { error: await translate('auth.error') };
     }
 
     const site = await db.site.findUnique({
@@ -192,7 +192,7 @@ export function withSiteAuth<T>(
       !site ||
       (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
     ) {
-      return { error: translate('auth.authorized.error') };
+      return { error: await translate('auth.authorized.error') };
     }
 
     return action(formData, site, key);

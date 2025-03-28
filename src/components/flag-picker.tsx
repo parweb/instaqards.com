@@ -1,8 +1,7 @@
 'use client';
 
 import type { RefObject } from 'react';
-import { Suspense, useRef, useState } from 'react';
-import { useFormState } from 'react-dom';
+import { Suspense, useRef, useState, useActionState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 
 import { setLang } from 'actions/lang-chooser';
@@ -70,7 +69,7 @@ export const FlagPicker = ({
     setIsOpen(false);
   });
 
-  const [selectedFlag, action, pending] = useFormState(setLang, value);
+  const [selectedFlag, action, pending] = useActionState(setLang, value);
 
   const otherFlags = options.filter(code => code !== selectedFlag);
 

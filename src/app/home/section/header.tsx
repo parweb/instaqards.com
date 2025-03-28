@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -7,7 +7,7 @@ import { Button } from 'components/ui/button';
 import { translate } from 'helpers/translate';
 import { DEFAULT_LANG } from 'translations';
 
-export const Header = () => {
+export const Header = async () => {
   const ratio = 0.2;
 
   return (
@@ -22,10 +22,16 @@ export const Header = () => {
 
         <div className="flex items-center gap-2">
           <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
-            <Button>{translate('page.home.register')}</Button>
+            <Button>{await translate('page.home.register')}</Button>
           </Link>
 
-          <FlagPicker value={cookies().get('lang')?.value || DEFAULT_LANG} />
+          <FlagPicker
+            value={
+              ((await cookies()) as unknown as UnsafeUnwrappedCookies).get(
+                'lang'
+              )?.value || DEFAULT_LANG
+            }
+          />
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ export const login = async (
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: translate('actions.login.validation.error') };
+    return { error: await translate('actions.login.validation.error') };
   }
 
   const { email, password, code } = validatedFields.data;
@@ -33,7 +33,7 @@ export const login = async (
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: translate('actions.login.validation.email.error') };
+    return { error: await translate('actions.login.validation.email.error') };
   }
 
   if (!existingUser.emailVerified) {
@@ -43,7 +43,9 @@ export const login = async (
 
     await sendVerificationEmail(existingUser.email, verificationToken.token);
 
-    return { success: translate('actions.login.validation.form.success') };
+    return {
+      success: await translate('actions.login.validation.form.success')
+    };
   }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -51,17 +53,17 @@ export const login = async (
       const twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
 
       if (!twoFactorToken) {
-        return { error: translate('actions.login.token.error') };
+        return { error: await translate('actions.login.token.error') };
       }
 
       if (twoFactorToken.token !== code) {
-        return { error: translate('actions.login.token.error') };
+        return { error: await translate('actions.login.token.error') };
       }
 
       const hasExpired = new Date(twoFactorToken.expires) < new Date();
 
       if (hasExpired) {
-        return { error: translate('actions.login.token.expire') };
+        return { error: await translate('actions.login.token.expire') };
       }
 
       await db.twoFactorToken.delete({
@@ -99,9 +101,11 @@ export const login = async (
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return { error: translate('actions.login.credentials.invalid') };
+          return {
+            error: await translate('actions.login.credentials.invalid')
+          };
         default:
-          return { error: translate('actions.login.credentials.oops') };
+          return { error: await translate('actions.login.credentials.oops') };
       }
     }
 
