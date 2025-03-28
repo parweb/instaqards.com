@@ -105,7 +105,7 @@ export default async function SiteAnalytics({
         </a>
       </div>
 
-      <Suspense fallback={<div>Chargement des analytics...</div>}>
+      <Suspense fallback={null}>
         <Analytics chartdata={chartdata} />
       </Suspense>
     </div>

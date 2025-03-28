@@ -37,17 +37,7 @@ export default async function AllSites() {
           </CreateSiteButton>
         </div>
 
-        <Suspense
-          fallback={
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {Array.from({ length: 8 }).map((_, index) => (
-                <PlaceholderCard key={index} />
-              ))}
-            </div>
-          }
-        >
-          <Sites />
-        </Suspense>
+        <Sites />
 
         {users.length > 0 && (
           <div className="flex flex-col gap-8">
@@ -58,17 +48,7 @@ export default async function AllSites() {
                   <small className="text-gray-500">{user.email}</small>
                 </h2>
 
-                <Suspense
-                  fallback={
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                      {Array.from({ length: 8 }).map((_, index) => (
-                        <PlaceholderCard key={index} />
-                      ))}
-                    </div>
-                  }
-                >
-                  <Sites userId={user.id} />
-                </Suspense>
+                <Sites userId={user.id} />
               </div>
             ))}
           </div>

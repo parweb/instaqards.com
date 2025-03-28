@@ -2,6 +2,7 @@
 
 import { memo, Suspense, useMemo } from 'react';
 
+import LoadingDots from 'components/icons/loading-dots';
 import { getMarkerPosition } from 'components/maps/map/MapMarker';
 import Yolo from 'components/maps/map/Yolo';
 import type { SearchResult } from 'components/maps/types';
@@ -39,7 +40,7 @@ const MapContainer = ({
       <Suspense
         fallback={
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            Loading...
+            <LoadingDots />
           </div>
         }
       >

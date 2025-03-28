@@ -1,15 +1,9 @@
-import PlaceholderCard from 'components/placeholder-card';
+import LoadingDots from 'components/icons/loading-dots';
 
 export default function Loading() {
   return (
-    <>
-      <div className="h-10 w-48 animate-pulse rounded-md bg-stone-100 dark:bg-stone-800" />
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 8 }).map(i => (
-          <PlaceholderCard key={String(i)} />
-        ))}
-      </div>
-    </>
+    <div className="flex h-full w-full items-center justify-center">
+      <LoadingDots />
+    </div>
   );
 }
