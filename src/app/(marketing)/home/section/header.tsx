@@ -13,12 +13,14 @@ export const Header = async () => {
   return (
     <div className="sticky top-0 bg-white/80 z-10 shadow-md">
       <div className="flex items-center justify-between pr-2 max-w-[1200px] m-auto">
-        <Image
-          src="/rsz_black-transparent_nolink.png"
-          alt="Logo qards.link"
-          width={800 * ratio}
-          height={400 * ratio}
-        />
+        <Link href="/">
+          <Image
+            src="/rsz_black-transparent_nolink.png"
+            alt="Logo qards.link"
+            width={800 * ratio}
+            height={400 * ratio}
+          />
+        </Link>
 
         <div className="flex items-center gap-2">
           <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>

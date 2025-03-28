@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import authConfig from 'auth.config';
-import { apiAuthPrefix, authRoutes, publicRoutes } from 'settings';
+import { apiAuthPrefix, authRoutes, marketingRoutes, publicRoutes } from 'settings';
 
 export const config = {
   matcher: ['/((?!api/|_next/|assets|_static/|_vercel|[\\w-]+\\.\\w+).*)']
@@ -36,6 +36,9 @@ export default async function middleware(req: NextRequest) {
 
   const searchParams = req.nextUrl.searchParams.toString();
   const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
+  const isProduction = () =>
+    hostname === `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
+    hostname?.includes('bore.pub:');
 
   if (url.searchParams.has('r')) {
     const referer = url.searchParams.get('r');
@@ -67,11 +70,19 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
-  if (
-    hostname === `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
-    hostname?.includes('bore.pub:')
-  ) {
-    if (url.pathname === '/home') {
+  console.log({
+    hostname,
+    url,
+    path,
+    isPublicRoute,
+    yolo: `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
+    isProduction: isProduction()
+  });
+
+  if (isProduction()) {
+    if (marketingRoutes.includes(url.pathname) && hostname?.startsWith('app.') === false) {
+      console.log('this is the marketing route', url.pathname)
+
       return NextResponse.rewrite(
         new URL(url.pathname, req.url.replace(url.pathname, '/'))
       );
@@ -86,6 +97,7 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
+    console.log({ session, isPublicRoute });
     if (session && isPublicRoute) {
       return NextResponse.redirect(new URL('/', req.url));
     }
@@ -95,15 +107,24 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
+  console.log({
+    bool: hostname?.includes(':11000') ||
+      hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
+  })
+
   if (
     hostname?.includes(':11000') ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
-    if (url.pathname === '/') {
+    console.log({ pathname: url.pathname, marketingRoutes })
+    if (marketingRoutes.includes(url.pathname)) {
+      console.log('this is the marketing route', `${path === '/' ? '/home' : path}`)
       return NextResponse.rewrite(
-        new URL(`/home${path === '/' ? '' : path}`, req.url)
+        new URL(`${path === '/' ? '/home' : path}`, req.url)
       );
     }
+
+    console.log({ yo: `/${path.replace('/', '')}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/` })
 
     return NextResponse.rewrite(
       new URL(
@@ -116,6 +137,8 @@ export default async function middleware(req: NextRequest) {
   if (hostname?.startsWith('www.')) {
     return NextResponse.rewrite(new URL('/home', req.url));
   }
+
+  console.log('this is the end')
 
   return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }
