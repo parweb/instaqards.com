@@ -103,8 +103,10 @@ export default async function DashboardLayout({
         <div className="flex-1 flex flex-col overflow-y-auto">
           {!subscription.valid() && (
             <div className="px-4 py-8">
-              {/* @ts-ignore */}
-              <PriceTable products={products} subscription={subscription} />
+              <Suspense fallback={null}>
+                {/* @ts-ignore */}
+                <PriceTable products={products} subscription={subscription} />
+              </Suspense>
             </div>
           )}
 
@@ -114,7 +116,9 @@ export default async function DashboardLayout({
             </div>
           )}
 
-          <div className="flex flex-col flex-1 self-stretch">{children}</div>
+          <div className="flex flex-col flex-1 self-stretch">
+            <Suspense fallback={null}>{children}</Suspense>
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>

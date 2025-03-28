@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
 import CreateSiteButton from 'components/create-site-button';
 import CreateSiteModal from 'components/modal/create-site';
@@ -35,7 +36,9 @@ export default async function AllSites() {
           </CreateSiteButton>
         </div>
 
-        <Sites />
+        <Suspense fallback={null}>
+          <Sites />
+        </Suspense>
 
         {users.length > 0 && (
           <div className="flex flex-col gap-8">
@@ -46,7 +49,9 @@ export default async function AllSites() {
                   <small className="text-gray-500">{user.email}</small>
                 </h2>
 
-                <Sites userId={user.id} />
+                <Suspense fallback={null}>
+                  <Sites userId={user.id} />
+                </Suspense>
               </div>
             ))}
           </div>

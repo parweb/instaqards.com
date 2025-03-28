@@ -1,8 +1,11 @@
-/**
- * @type {import('next').NextConfig}
- */
-module.exports = {
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
   experimental: {
+    // reactCompiler: true,
+    // dynamicIO: true,
+    ppr: true,
+    viewTransition: true,
     serverActions: {
       allowedOrigins: ['app.localhost:11000']
     }
@@ -23,5 +26,8 @@ module.exports = {
       { hostname: 'i.ytimg.com' },
       { hostname: 'placehold.co' }
     ]
-  }
-};
+
+  },
+}
+
+export default nextConfig

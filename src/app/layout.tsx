@@ -1,7 +1,8 @@
-import { Analytics } from '@vercel/analytics/react';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
 import { cn } from 'lib/utils';
 import { cookies } from 'next/headers';
@@ -53,7 +54,7 @@ export default async function RootLayout({
         )}
       >
         <Providers>
-          {children}
+          <Suspense fallback={null}>{children}</Suspense>
           <Analytics />
         </Providers>
 
