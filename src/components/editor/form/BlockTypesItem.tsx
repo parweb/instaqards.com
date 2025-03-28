@@ -2,6 +2,7 @@
 
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { Badge } from 'components/ui/badge';
 import { BlockTypesItemVariants } from './BlockTypesItemVariants';
 
 import {
@@ -68,12 +69,14 @@ export const BlockTypesItem = ({
     { id: 'socials', label: 'Socials', type: 'other' }
   ];
 
+  const collection = variants.filter(v => v.type === type);
+
   return (
     <ErrorBoundary
       fallback={
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <hgroup className="flex gap-2 items-center justify-between">
-            <h3>{label}</h3>
+            <label>{label}</label>
           </hgroup>
 
           <BlockTypesItemVariants
@@ -84,11 +87,15 @@ export const BlockTypesItem = ({
         </div>
       }
     >
-      <AccordionItem value={type}>
-        <div className="flex flex-col gap-2">
+      <AccordionItem
+        value={type}
+        className="border border-stone-200 rounded-md px-2 cursor-pointer hover:bg-stone-100 shadow-sm"
+      >
+        <div className="flex flex-col gap-0">
           <AccordionTrigger>
             <hgroup className="flex gap-2 items-center justify-between">
-              <h3>{label}</h3>
+              <Badge variant="outline">{collection.length}</Badge>
+              <label>{label}</label>
             </hgroup>
           </AccordionTrigger>
 
@@ -96,7 +103,7 @@ export const BlockTypesItem = ({
             <BlockTypesItemVariants
               onClick={onClick}
               value={value}
-              variants={variants.filter(v => v.type === type)}
+              variants={collection}
             />
           </AccordionContent>
         </div>
