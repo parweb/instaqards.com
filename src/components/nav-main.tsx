@@ -2,7 +2,9 @@
 
 import { ChevronRight, type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
+import { LuExternalLink } from 'react-icons/lu';
 
+import { Badge } from 'components/ui/badge';
 import { cn } from 'lib/utils';
 
 import {
@@ -32,6 +34,7 @@ export function NavMain({
   items: {
     title: string;
     url: string;
+    secondaryUrl?: string;
     icon: LucideIcon;
     isActive: boolean;
     items?: {
@@ -39,24 +42,41 @@ export function NavMain({
       url: string;
       isActive: boolean;
       icon: LucideIcon;
+      count?: number;
     }[];
   }[];
   dark?: boolean;
 }) {
+  console.log({ items });
+
   return (
     <div
-      className={cn(
-        dark &&
-          'dark bg-sidebar rounded-md sticky top-2 backdrop-blur-xs z-10 mx-1'
-      )}
+      className={cn({
+        'dark bg-sidebar rounded-md sticky top-2 backdrop-blur-xs z-10 mx-1 shadow-lg inset-shadow-md border border-black/80 ring-1 ring-indigo-500/40':
+          dark,
+        'bg-gradient-to-b from-stone-900/75 via-stone-800/90 to-stone-900/80':
+          dark
+      })}
     >
       <SidebarGroup>
-        <SidebarGroupLabel>{label}</SidebarGroupLabel>
+        <SidebarGroupLabel className="flex gap-2 items-center justify-between">
+          <span>{label}</span>
+
+          {dark && (
+            <Link
+              href={items.at(0)?.secondaryUrl ?? ''}
+              target="_blank"
+              className="hover:text-white"
+            >
+              <LuExternalLink />
+            </Link>
+          )}
+        </SidebarGroupLabel>
 
         <SidebarMenu>
           {items.map(item => (
             <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
-              <SidebarMenuItem>
+              <SidebarMenuItem className="gap-2 flex flex-col">
                 <SidebarMenuButton
                   asChild
                   tooltip={item.title}
@@ -79,16 +99,29 @@ export function NavMain({
                     </CollapsibleTrigger>
 
                     <CollapsibleContent>
-                      <SidebarMenuSub>
+                      <SidebarMenuSub className="gap-1 flex flex-col mr-0 pr-2">
                         {item.items?.map(subItem => (
-                          <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuSubItem
+                            className="flex flex-col items-stretch"
+                            key={subItem.title}
+                          >
                             <SidebarMenuSubButton
+                              className="flex-1 flex gap-2 p-2"
                               isActive={subItem.isActive}
                               asChild
                             >
                               <Link href={subItem.url}>
                                 <subItem.icon />
-                                <span>{subItem.title}</span>
+
+                                <span className="flex-1 text-xs truncate">
+                                  {subItem.title}
+                                </span>
+
+                                {subItem.count && subItem.count > 0 && (
+                                  <Badge className="bg-white/2.5">
+                                    {subItem.count.toString()}
+                                  </Badge>
+                                )}
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>

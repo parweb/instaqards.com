@@ -50,7 +50,11 @@ export default async function DashboardLayout({
   });
 
   const sites = await db.site.findMany({
-    include: { clicks: true },
+    include: {
+      clicks: true,
+      subscribers: true,
+      blocks: { include: { reservations: true } }
+    },
     orderBy: { updatedAt: 'desc' },
     where: {
       userId: session.user.id

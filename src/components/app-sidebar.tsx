@@ -37,7 +37,13 @@ import {
 
 export function AppSidebar(
   props: React.ComponentProps<typeof Sidebar> & {
-    sites: Prisma.SiteGetPayload<{ include: { clicks: true } }>[];
+    sites: Prisma.SiteGetPayload<{
+      include: {
+        clicks: true;
+        subscribers: true;
+        blocks: { include: { reservations: true } };
+      };
+    }>[];
   }
 ) {
   const role = useCurrentRole();
@@ -118,10 +124,16 @@ export function AppSidebar(
       })
   };
 
+  const url = `${openProject?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+  const secondaryUrl = process.env.NEXT_PUBLIC_VERCEL_ENV
+    ? `https://${url}`
+    : `http://${openProject?.subdomain}.localhost:11000`;
+
   const project = openProject
     ? {
         title: openProject.name ?? 'Untitled',
         url: `/site/${openProject.id}`,
+        secondaryUrl,
         icon: Frame,
         isActive: true,
         items: [
@@ -135,19 +147,25 @@ export function AppSidebar(
             title: translate('menu.subscribers'),
             url: `/site/${openProject.id}/subscribers`,
             isActive: segments.includes('subscribers'),
-            icon: Users
+            icon: Users,
+            count: openProject.subscribers.length
           },
           {
             title: translate('menu.reservations'),
             url: `/site/${openProject.id}/reservations`,
             isActive: segments.includes('reservations'),
-            icon: Calendar
+            icon: Calendar,
+            count: openProject.blocks.reduce(
+              (carry, block) => carry + (block?.reservations?.length ?? 0),
+              0
+            )
           },
           {
             title: translate('menu.analytics'),
             url: `/site/${openProject.id}/analytics`,
             isActive: segments.includes('analytics'),
-            icon: BarChart3
+            icon: BarChart3,
+            count: openProject.clicks.length
           },
           {
             title: translate('menu.settings'),
