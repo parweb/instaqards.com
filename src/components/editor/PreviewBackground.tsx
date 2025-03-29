@@ -1,8 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { memo } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
-export function PreviewBackground({ name }: { name: string }) {
+function PreviewBackgroundComponent({ name }: { name: string }) {
   const file = name?.replace('component:', '');
 
   const Background = dynamic(
@@ -11,5 +13,15 @@ export function PreviewBackground({ name }: { name: string }) {
     { ssr: false }
   );
 
-  return <Background />;
+  return (
+    <ErrorBoundary
+      fallbackRender={({ error }) => (
+        console.error(error), (<div>Something went wrong, sorry!</div>)
+      )}
+    >
+      <Background />
+    </ErrorBoundary>
+  );
 }
+
+export const PreviewBackground = memo(PreviewBackgroundComponent);

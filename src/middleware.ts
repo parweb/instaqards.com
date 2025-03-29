@@ -2,7 +2,12 @@ import NextAuth from 'next-auth';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import authConfig from 'auth.config';
-import { apiAuthPrefix, authRoutes, marketingRoutes, publicRoutes } from 'settings';
+import {
+  apiAuthPrefix,
+  authRoutes,
+  marketingRoutes,
+  publicRoutes
+} from 'settings';
 
 export const config = {
   matcher: ['/((?!api/|_next/|assets|_static/|_vercel|[\\w-]+\\.\\w+).*)']
@@ -80,8 +85,11 @@ export default async function middleware(req: NextRequest) {
   });
 
   if (isProduction()) {
-    if (marketingRoutes.includes(url.pathname) && hostname?.startsWith('app.') === false) {
-      console.log('this is the marketing route', url.pathname)
+    if (
+      marketingRoutes.includes(url.pathname) &&
+      hostname?.startsWith('app.') === false
+    ) {
+      console.log('this is the marketing route', url.pathname);
 
       return NextResponse.rewrite(
         new URL(url.pathname, req.url.replace(url.pathname, '/'))
@@ -108,23 +116,29 @@ export default async function middleware(req: NextRequest) {
   }
 
   console.log({
-    bool: hostname?.includes(':11000') ||
+    bool:
+      hostname?.includes(':11000') ||
       hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
-  })
+  });
 
   if (
     hostname?.includes(':11000') ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
-    console.log({ pathname: url.pathname, marketingRoutes })
+    console.log({ pathname: url.pathname, marketingRoutes });
     if (marketingRoutes.includes(url.pathname)) {
-      console.log('this is the marketing route', `${path === '/' ? '/home' : path}`)
+      console.log(
+        'this is the marketing route',
+        `${path === '/' ? '/home' : path}`
+      );
       return NextResponse.rewrite(
         new URL(`${path === '/' ? '/home' : path}`, req.url)
       );
     }
 
-    console.log({ yo: `/${path.replace('/', '')}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/` })
+    console.log({
+      yo: `/${path.replace('/', '')}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/`
+    });
 
     return NextResponse.rewrite(
       new URL(
@@ -138,7 +152,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.rewrite(new URL('/home', req.url));
   }
 
-  console.log('this is the end')
+  console.log('this is the end');
 
   return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }

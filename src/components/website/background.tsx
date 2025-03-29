@@ -1,13 +1,21 @@
 import type { Site } from '@prisma/client';
 import { contentType } from 'mime-types';
 import Image from 'next/image';
+import React, { RefObject } from 'react';
 
 import { PreviewBackground } from 'components/editor/PreviewBackground';
+import { cn } from 'lib/utils';
 
 export const Background = ({
-  background
+  background,
+  autoPlay = true,
+  state,
+  videoRef
 }: {
   background: Site['background'];
+  autoPlay?: boolean;
+  state?: 'playing' | 'paused';
+  videoRef?: RefObject<HTMLVideoElement>;
 }) => {
   const media_type = background?.startsWith('component:')
     ? 'css'
@@ -20,9 +28,10 @@ export const Background = ({
           {(media_type?.startsWith('video/') ||
             media_type === 'application/mp4') && (
             <video
+              ref={videoRef}
               className="absolute top-0 left-0 w-full h-full object-cover"
-              preload="auto"
-              autoPlay
+              preload="metadata"
+              autoPlay={autoPlay}
               loop
               muted
               playsInline
@@ -45,7 +54,12 @@ export const Background = ({
           )}
 
           {media_type === 'css' && (
-            <div className="absolute top-0 left-0 w-full h-full object-cover">
+            <div
+              className={cn(
+                `absolute top-0 left-0 w-full h-full object-cover`,
+                { ' ': autoPlay === false && state === 'paused' }
+              )}
+            >
               <PreviewBackground name={background} />
             </div>
           )}

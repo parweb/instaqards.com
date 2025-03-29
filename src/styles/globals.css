@@ -183,3 +183,7 @@
     @apply text-base;
   }
 }
+
+.animation-paused, .animation-paused * {
+  animation-play-state: paused;
+}
