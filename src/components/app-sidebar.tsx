@@ -101,7 +101,7 @@ export function AppSidebar(
       },
       {
         title: translate('menu.feedback'),
-        url: '/help',
+        url: '/feedback',
         icon: Send,
         isActive: false
       }

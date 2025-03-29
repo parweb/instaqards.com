@@ -71,6 +71,30 @@ const translations = {
     it: "L'email è già in uso!",
     es: '¡El correo electrónico ya está en uso!'
   },
+  'dashboard.feedback.title': {
+    fr: 'Feedback',
+    en: 'Feedback',
+    it: 'Feedback',
+    es: 'Feedback'
+  },
+  'dashboard.feedback.description': {
+    fr: 'Envoyez-nous vos commentaires, suggestions ou signalement de bugs',
+    en: 'Send us your comments, suggestions or bug reports',
+    it: 'Invia i tuoi commenti, suggerimenti o segnalazioni di bug',
+    es: 'Envíanos tus comentarios, sugerencias o reportes de errores'
+  },
+  'dashboard.feedback.placeholder': {
+    fr: 'Message',
+    en: 'Message',
+    it: 'Messaggio',
+    es: 'Mensaje'
+  },
+  'dashboard.feedback.submit': {
+    fr: 'Envoyer',
+    en: 'Submit',
+    it: 'Invia',
+    es: 'Enviar'
+  },
   'dashboard.site.detail.title': {
     fr: 'Configurer le design de {name}',
     en: 'Configure {name} design',
