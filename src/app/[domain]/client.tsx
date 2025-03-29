@@ -132,7 +132,9 @@ const BlockListComponent = ({ blocks }: { blocks: Block[] }) => {
       `}</style>
 
       {blocks.map(props => (
-        <BlockItem key={`BlockItem-${props.id}`} {...props} />
+        <Suspense key={`BlockItem-${props.id}`} fallback={null}>
+          <BlockItem {...props} />
+        </Suspense>
       ))}
     </>
   );

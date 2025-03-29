@@ -3,7 +3,7 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   experimental: {
     // reactCompiler: true,
-    // dynamicIO: true,
+    dynamicIO: true,
     ppr: true,
     viewTransition: true,
     serverActions: {

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 
 import { getSiteData } from 'lib/fetchers';
 
@@ -70,5 +70,5 @@ export default async function SiteLayout(props: {
     return redirect(`https://${data.customDomain}`);
   }
 
-  return <>{children}</>;
+  return <Suspense fallback={null}>{children}</Suspense>;
 }

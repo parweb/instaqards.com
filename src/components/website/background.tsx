@@ -1,7 +1,7 @@
 import type { Site } from '@prisma/client';
 import { contentType } from 'mime-types';
 import Image from 'next/image';
-import React, { RefObject } from 'react';
+import React, { RefObject, Suspense } from 'react';
 
 import { PreviewBackground } from 'components/editor/PreviewBackground';
 import { cn } from 'lib/utils';
@@ -60,7 +60,9 @@ export const Background = ({
                 { ' ': autoPlay === false && state === 'paused' }
               )}
             >
-              <PreviewBackground name={background} />
+              <Suspense fallback={null}>
+                <PreviewBackground name={background} />
+              </Suspense>
             </div>
           )}
         </>

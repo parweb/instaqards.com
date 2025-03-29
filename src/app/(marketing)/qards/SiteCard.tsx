@@ -3,7 +3,14 @@
 import { Block, Prisma } from '@prisma/client';
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import { memo, useActionState, useEffect, useRef, useState } from 'react';
+import {
+  memo,
+  Suspense,
+  useActionState,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { LuExternalLink } from 'react-icons/lu';
 
@@ -45,7 +52,6 @@ const SiteCardComponent = ({
   const [isVisible, setIsVisible] = useState(() => false);
   const [state, setState] = useState<'playing' | 'paused'>('paused');
 
-  const translate = useTranslation();
   const isMobile = useIsMobile();
   const isDesktop = !isMobile;
 
@@ -132,36 +138,33 @@ const SiteCardComponent = ({
       className="relative w-full aspect-[9/16] flex"
     >
       <Wrapper key={site.id}>
-        <Background
-          background={site.background}
-          autoPlay={false}
-          state={state}
-          videoRef={videoRef as React.RefObject<HTMLVideoElement>}
-        />
+        <Suspense fallback={null}>
+          <Background
+            background={site.background}
+            autoPlay={false}
+            state={state}
+            videoRef={videoRef as React.RefObject<HTMLVideoElement>}
+          />
+        </Suspense>
 
         <Content>
           <Main>
-            <BlockList blocks={data.main} />
+            <Suspense fallback={null}>
+              <BlockList blocks={data.main} />
+            </Suspense>
           </Main>
 
           <Footer>
             <div className="flex gap-3 items-center justify-center">
-              <BlockList blocks={data.social} />
+              <Suspense fallback={null}>
+                <BlockList blocks={data.social} />
+              </Suspense>
             </div>
           </Footer>
         </Content>
       </Wrapper>
 
       <div className="absolute inset-0 flex gap-4 items-end justify-end p-2">
-        {/* <div className="flex-1 flex flex-col items-stretch">
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
-          >
-            <span className="text-xl font-bold">Utiliser ce modèle</span>
-          </button>
-        </div> */}
-
         <div>
           <Link
             href={

@@ -14,6 +14,7 @@ import { getSiteData } from 'lib/fetchers';
 import { BlockList } from './client';
 
 import 'array-grouping-polyfill';
+import { Suspense } from 'react';
 
 export default async function SiteHomePage(props: {
   params: Promise<{ domain: string }>;
@@ -53,7 +54,7 @@ export default async function SiteHomePage(props: {
     );
   }
 
-  await db.click.create({ data: { siteId: site.id } });
+  db.click.create({ data: { siteId: site.id } });
 
   const data: Record<Block['type'], Block[]> = {
     main: [],
@@ -64,16 +65,22 @@ export default async function SiteHomePage(props: {
 
   return (
     <Wrapper>
-      <Background background={site.background} />
+      <Suspense fallback={null}>
+        <Background background={site.background} />
+      </Suspense>
 
       <Content>
         <Main>
-          <BlockList blocks={data.main} />
+          <Suspense fallback={null}>
+            <BlockList blocks={data.main} />
+          </Suspense>
         </Main>
 
         <Footer>
           <div className="flex gap-3 items-center justify-center">
-            <BlockList blocks={data.social} />
+            <Suspense fallback={null}>
+              <BlockList blocks={data.social} />
+            </Suspense>
           </div>
 
           <div className="text-center">
