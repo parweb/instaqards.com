@@ -25,13 +25,7 @@ export const SiteCard = ({ site }: { site: any }) => {
   const isMobile = useIsMobile();
   const isDesktop = !isMobile;
 
-  useEffect(() => {
-    console.log('QARDS', { isVisible, site: site.subdomain });
-  }, [isVisible]);
-
   const handleMouseEnter = () => {
-    console.log('handleMouseEnter', { isMobile, isVisible });
-
     if (isDesktop && isVisible) {
       setState('playing');
 
@@ -75,18 +69,8 @@ export const SiteCard = ({ site }: { site: any }) => {
     const observer = new IntersectionObserver(([entry]) => {
       if (videoRef.current && isMobile) {
         if (entry.isIntersecting) {
-          console.log(
-            'QARDS',
-            { playing: entry.isIntersecting },
-            site.subdomain
-          );
           videoRef.current.play();
         } else {
-          console.log(
-            'QARDS',
-            { playing: entry.isIntersecting },
-            site.subdomain
-          );
           videoRef.current.pause();
         }
       }
@@ -98,8 +82,6 @@ export const SiteCard = ({ site }: { site: any }) => {
 
     return () => observer.disconnect();
   }, [isMobile, isVisible]);
-
-  console.log({ isVisible });
 
   if (!isVisible) {
     return (
@@ -115,8 +97,6 @@ export const SiteCard = ({ site }: { site: any }) => {
     social: [],
     ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
   };
-
-  console.log({ state });
 
   return (
     <div

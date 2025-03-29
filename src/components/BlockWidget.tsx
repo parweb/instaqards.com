@@ -12,8 +12,6 @@ export const BlockWidgetComponent = ({ block }: { block: Block }) => {
     data: unknown;
   };
 
-  console.log({ widget });
-
   const Component = dynamic(
     () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`),
     { ssr: false }
