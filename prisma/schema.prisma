@@ -39,6 +39,7 @@ model User {
   twoFactorConfirmation TwoFactorConfirmation?
 
   feedback   Feedback[]
+  likes      Like[]
   affiliates User[]     @relation("Affiliation")
   referer    User?      @relation("Affiliation", fields: [refererId], references: [id])
   refererId  String?
@@ -312,6 +313,24 @@ model Block {
   @@index([siteId, type])
 }
 
+model Like {
+  id String @id @default(cuid())
+
+  ip String
+
+  createdAt DateTime @default(now())
+
+  site   Site    @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  siteId String
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+
+  @@index([userId])
+  @@index([siteId])
+  @@index([ip])
+  @@index([siteId, ip])
+}
+
 model Site {
   id String @id @default(cuid())
 
@@ -335,6 +354,7 @@ model Site {
   blocks      Block[]
   clicks      Click[]
   subscribers Subscriber[]
+  likes       Like[]
 
   @@index([userId])
   @@index([subdomain])

@@ -141,9 +141,9 @@ export async function GET(
     const redirectUrl =
       hasWidget && widget && widget.type && widget.type in widgetMapper
         ? (widgetMapper[widget.type as keyof WidgetMapper]?.(
-          widget,
-          query.id ?? ''
-        ) ??
+            widget,
+            query.id ?? ''
+          ) ??
           click.block.href ??
           '/')
         : (click.block.href ?? '/');

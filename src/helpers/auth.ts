@@ -1,7 +1,8 @@
-import { auth } from 'auth';
+import { getSession } from 'lib/auth';
 
 export const currentUser = async () => {
-  const session = await auth();
+  const session = await getSession();
+  console.log({ session });
   return session?.user;
 };
 

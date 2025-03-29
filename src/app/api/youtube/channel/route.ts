@@ -10,8 +10,8 @@ const getYouTubeChannelData = unstable_cache(
     const channelId = url.includes('/channel/')
       ? handle
       : await fetch(`https://www.youtube.com/c/${handle}`)
-        .then(async res => await res.text())
-        .then(text => text.match(/channel_id=([a-zA-Z0-9\-_]{1,})/)?.[1]);
+          .then(async res => await res.text())
+          .then(text => text.match(/channel_id=([a-zA-Z0-9\-_]{1,})/)?.[1]);
 
     const feed = await fetch(
       `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`
