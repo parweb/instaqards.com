@@ -3,7 +3,7 @@
 import type { Block } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { memo, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { LuLink } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
@@ -14,7 +14,7 @@ const BlockWidget = dynamic(() => import('components/BlockWidget'), {
   ssr: false
 });
 
-export const BlockItem = (block: Block) => {
+export const BlockItemComponent = (block: Block) => {
   const css = block.style as unknown as BlockStyle;
 
   if (block.type === 'main') {
@@ -25,34 +25,35 @@ export const BlockItem = (block: Block) => {
 
     if (hasWidget === false) {
       return (
-        <Link href={`/click/${block.id}`} target="_blank" legacyBehavior>
-          <a
-            id={block.id}
-            className={cn(
-              'transition-all',
-              'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
-              'hover:bg-white hover:text-black'
-            )}
-          >
-            {block.label}
-            <style jsx>{`
-              #${block.id} {
-                transition: all 0.3s ease;
+        <Link
+          id={block.id}
+          href={`/click/${block.id}`}
+          target="_blank"
+          className={cn(
+            'transition-all',
+            'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
+            'hover:bg-white hover:text-black'
+          )}
+        >
+          {block.label}
 
-                ${generateCssProperties(css.normal)}
+          <style jsx>{`
+            #${block.id} {
+              transition: all 0.3s ease;
 
-                ${Object.keys(css || {})
-                  .filter(key => key !== 'normal')
-                  .map(
-                    key => `
+              ${generateCssProperties(css.normal)}
+
+              ${Object.keys(css || {})
+                .filter(key => key !== 'normal')
+                .map(
+                  key => `
                     &:${key} {
                       ${generateCssProperties(css[key as keyof BlockStyle])}
                     }
                   `
-                  )}
-              }
-            `}</style>
-          </a>
+                )}
+            }
+          `}</style>
         </Link>
       );
     }
@@ -111,7 +112,9 @@ export const BlockItem = (block: Block) => {
   return <></>;
 };
 
-export const BlockList = ({ blocks }: { blocks: Block[] }) => {
+export const BlockItem = memo(BlockItemComponent);
+
+const BlockListComponent = ({ blocks }: { blocks: Block[] }) => {
   const fontsNeeded = blocks
     .flatMap(({ style }) =>
       Object.values(style as Record<string, { fontFamily: string }>).flatMap(
@@ -134,3 +137,5 @@ export const BlockList = ({ blocks }: { blocks: Block[] }) => {
     </>
   );
 };
+
+export const BlockList = memo(BlockListComponent);

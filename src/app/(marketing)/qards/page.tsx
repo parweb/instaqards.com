@@ -1,6 +1,8 @@
+import { headers } from 'next/headers';
+import { Suspense } from 'react';
+
 import { db } from 'helpers/db';
 import { SiteCard } from './SiteCard';
-import { headers } from 'next/headers';
 
 const QardsPage = async () => {
   const headersList = await headers();
@@ -17,8 +19,13 @@ const QardsPage = async () => {
       likes: true,
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     },
-    // take: 5,
+    // take: 4,
     orderBy: { clicks: { _count: 'desc' } }
+    // where: {
+    //   user: {
+    //     id: 'cljxegubd0000xiugs1tqdjdu'
+    //   }
+    // }
     // where: {
     //   background: {
     //     startsWith: 'component:'
@@ -29,7 +36,9 @@ const QardsPage = async () => {
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-0 p-0">
       {sites.map(site => (
-        <SiteCard key={site.id} site={site} ip={ip} />
+        <Suspense key={site.id} fallback={null}>
+          <SiteCard site={site} ip={ip} />
+        </Suspense>
       ))}
     </div>
   );

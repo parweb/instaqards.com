@@ -1,12 +1,14 @@
 'use client';
 
 import { Block, Prisma } from '@prisma/client';
-import { useActionState, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
+import Link from 'next/link';
+import { memo, useActionState, useEffect, useRef, useState } from 'react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { LuExternalLink } from 'react-icons/lu';
 
 import { like } from 'actions/like';
 import { BlockList } from 'app/[domain]/client';
-import { Button } from 'components/ui/button';
 import { Background } from 'components/website/background';
 import { Content } from 'components/website/content';
 import { Footer } from 'components/website/footer';
@@ -15,11 +17,10 @@ import { Wrapper } from 'components/website/wrapper';
 import { useIsMobile } from 'hooks/use-mobile';
 import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 import 'array-grouping-polyfill';
 
-export const SiteCard = ({
+const SiteCardComponent = ({
   site,
   ip
 }: {
@@ -121,6 +122,8 @@ export const SiteCard = ({
     ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
   };
 
+  const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+
   return (
     <div
       onMouseEnter={handleMouseEnter}
@@ -145,22 +148,37 @@ export const SiteCard = ({
             <div className="flex gap-3 items-center justify-center">
               <BlockList blocks={data.social} />
             </div>
-
-            <div className="text-center">
-              <a
-                href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/?r=${site.user?.id}`}
-                className="text-white"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {translate('page.public.site.ads')}
-              </a>
-            </div>
           </Footer>
         </Content>
       </Wrapper>
 
-      <div className="absolute inset-0 flex flex-col gap-4 items-end justify-end p-2">
+      <div className="absolute inset-0 flex gap-4 items-end justify-end p-2">
+        {/* <div className="flex-1 flex flex-col items-stretch">
+          <button
+            type="button"
+            className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
+          >
+            <span className="text-xl font-bold">Utiliser ce modèle</span>
+          </button>
+        </div> */}
+
+        <div>
+          <Link
+            href={
+              (process.env.NEXT_PUBLIC_VERCEL_ENV
+                ? `https://${url}`
+                : `http://${site.subdomain}.localhost:11000`) +
+              '?utm_source=qards.link&utm_medium=marketing&utm_campaign=lookmeup'
+            }
+            target="_blank"
+            className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
+          >
+            <LuExternalLink className="" />
+
+            <span className="text-xl font-bold">Share</span>
+          </Link>
+        </div>
+
         <form action={likeAction}>
           <input type="hidden" name="siteId" value={site.id} />
 
@@ -190,3 +208,5 @@ export const SiteCard = ({
     </div>
   );
 };
+
+export const SiteCard = memo(SiteCardComponent);

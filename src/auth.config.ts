@@ -16,8 +16,7 @@ import { sendMagicLinkEmail } from 'helpers/mail';
 export default {
   pages: {
     verifyRequest: '/email-in',
-    signIn: '/login',
-    error: '/error'
+    signIn: '/login'
   },
   experimental: { enableWebAuthn: true },
   providers: [
