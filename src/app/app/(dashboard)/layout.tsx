@@ -63,7 +63,7 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar sites={sites}>
+      <AppSidebar sites={sites} role={session.user.role}>
         <Suspense fallback={null}>
           <Profile />
         </Suspense>

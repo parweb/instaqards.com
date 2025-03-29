@@ -1,6 +1,6 @@
 'use client';
 
-import type { Prisma } from '@prisma/client';
+import type { Prisma, User } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useSelectedLayoutSegments } from 'next/navigation';
@@ -25,7 +25,6 @@ import {
 import { NavMain } from 'components/nav-main';
 import { NavProjects } from 'components/nav-projects';
 import { NavSecondary } from 'components/nav-secondary';
-import { useCurrentRole } from 'hooks/use-current-role';
 import useTranslation from 'hooks/use-translation';
 
 import {
@@ -37,6 +36,7 @@ import {
 
 export function AppSidebar(
   props: React.ComponentProps<typeof Sidebar> & {
+    role: User['role'];
     sites: Prisma.SiteGetPayload<{
       include: {
         clicks: true;
@@ -46,8 +46,6 @@ export function AppSidebar(
     }>[];
   }
 ) {
-  const role = useCurrentRole();
-
   const segments = useSelectedLayoutSegments();
   const { id } = useParams() as { id?: string };
 
@@ -81,7 +79,7 @@ export function AppSidebar(
         icon: DollarSign,
         isActive: segments[0] === 'affiliation'
       },
-      ...(role === 'ADMIN'
+      ...(props.role === 'ADMIN'
         ? [
             {
               title: translate('menu.generator'),
