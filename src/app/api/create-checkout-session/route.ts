@@ -8,7 +8,7 @@ import type Stripe from 'stripe';
 export async function POST(req: Request) {
   // 1. Destructure the price and quantity from the POST body
   const { price, quantity = 1, metadata = {} } = await req.json();
-  console.log({ price, quantity, metadata });
+  console.info({ price, quantity, metadata });
 
   try {
     const { user = null } = (await auth()) || {};
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     // 3. Retrieve or create the customer in Stripe
     const customer = await createOrRetrieveCustomer(user);
 
-    console.log({ customer });
+    console.info({ customer });
 
     // 4. Create a checkout session in Stripe
     let session: Stripe.Checkout.Session | null = null;
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   } catch (err: unknown) {
-    console.log(err);
+    console.info(err);
     return new Response(JSON.stringify(err), { status: 500 });
   }
 }

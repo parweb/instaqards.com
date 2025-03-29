@@ -18,11 +18,11 @@ export const generateSite = async (form: FormData) => {
 
   const site = siteId
     ? await db.site.findUnique({
-        where: { id: siteId },
-        include: {
-          blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
-        }
-      })
+      where: { id: siteId },
+      include: {
+        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+      }
+    })
     : null;
 
   const data = Object.fromEntries(form);
@@ -42,7 +42,7 @@ export const generateSite = async (form: FormData) => {
     .filter(Boolean)
     .map(link => link.trim());
 
-  console.log('db.site.upsert', {
+  console.info('db.site.upsert', {
     where: { id: site?.id || nanoid() },
     update: {
       name,
@@ -73,7 +73,7 @@ export const generateSite = async (form: FormData) => {
   });
 
   if (links.length) {
-    console.log({ links: links.entries() });
+    console.info({ links: links.entries() });
 
     await db.block.deleteMany({
       where: { siteId: qards.id }
@@ -130,7 +130,7 @@ export const generateSite = async (form: FormData) => {
   );
   site?.customDomain && revalidateTag(`${site?.customDomain}-metadata`);
 
-  console.log({ site });
+  console.info({ site });
 
   if (site === null) redirect(`?siteId=${qards.id}`);
 

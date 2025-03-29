@@ -4,7 +4,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { db } from 'helpers/db';
 
 async function processJob(job: Queue) {
-  console.log('Processing job :', job);
+  console.info('Processing job :', job);
 
   // throw new Error('test');
 }

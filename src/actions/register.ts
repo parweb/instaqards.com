@@ -13,15 +13,15 @@ import { translate } from 'helpers/translate';
 import { RegisterSchema } from 'schemas';
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
-  console.log({ values });
+  console.info({ values });
 
   const validatedFields = RegisterSchema.safeParse(values);
 
-  console.log({ validatedFields });
+  console.info({ validatedFields });
 
   const referer: User['id'] | null = (await cookies()).get('r')?.value ?? null;
 
-  console.log({ referer });
+  console.info({ referer });
 
   if (!validatedFields.success) {
     return { error: await translate('actions.register.field.error') };
@@ -29,15 +29,15 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
 
   const { email, password, name } = validatedFields.data;
 
-  console.log({ email, password, name });
+  console.info({ email, password, name });
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  console.log({ hashedPassword });
+  console.info({ hashedPassword });
 
   const existingUser = await getUserByEmail(email);
 
-  console.log({ existingUser });
+  console.info({ existingUser });
 
   if (existingUser) {
     return { error: await translate('actions.register.email.error') };
@@ -54,13 +54,13 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
 
   const verificationToken = await generateVerificationToken(email);
 
-  console.log({ verificationToken });
+  console.info({ verificationToken });
 
   await sendVerificationEmail(email, verificationToken.token).catch(
     console.error
   );
 
-  console.log({ success: await translate('actions.register.form.success') });
+  console.info({ success: await translate('actions.register.form.success') });
 
   return { success: await translate('actions.register.form.success') };
 };

@@ -3,7 +3,7 @@
 import { db } from 'helpers/db';
 
 export const subscribe = async (form: FormData) => {
-  console.log({ form: Object.fromEntries([...form.entries()]) });
+  console.info({ form: Object.fromEntries([...form.entries()]) });
 
   const email = String(form.get('email'));
 
@@ -35,7 +35,7 @@ export const subscribe = async (form: FormData) => {
 };
 
 export const book = async (form: FormData) => {
-  console.log({ form: Object.fromEntries([...form.entries()]) });
+  console.info({ form: Object.fromEntries([...form.entries()]) });
 
   const blockId = String(form.get('blockId'));
 

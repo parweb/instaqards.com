@@ -13,7 +13,7 @@ const extension = (name: string) => name.split('.').at(-1)?.toLowerCase();
 export async function POST(request: Request): Promise<NextResponse> {
   const body = await request.json();
 
-  console.log({ body });
+  console.info({ body });
 
   try {
     const filename = `${nanoid()}.${extension(body.filename)}`;

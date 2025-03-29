@@ -75,7 +75,7 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
-  console.log({
+  console.info({
     hostname,
     url,
     path,
@@ -89,7 +89,7 @@ export default async function middleware(req: NextRequest) {
       marketingRoutes.includes(url.pathname) &&
       hostname?.startsWith('app.') === false
     ) {
-      console.log('this is the marketing route', url.pathname);
+      console.info('this is the marketing route', url.pathname);
 
       return NextResponse.rewrite(
         new URL(url.pathname, req.url.replace(url.pathname, '/'))
@@ -105,7 +105,7 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
-    console.log({ session, isPublicRoute });
+    console.info({ session, isPublicRoute });
     if (session && isPublicRoute) {
       return NextResponse.redirect(new URL('/', req.url));
     }
@@ -115,7 +115,7 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
-  console.log({
+  console.info({
     bool:
       hostname?.includes(':11000') ||
       hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
@@ -125,9 +125,9 @@ export default async function middleware(req: NextRequest) {
     hostname?.includes(':11000') ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
-    console.log({ pathname: url.pathname, marketingRoutes });
+    console.info({ pathname: url.pathname, marketingRoutes });
     if (marketingRoutes.includes(url.pathname)) {
-      console.log(
+      console.info(
         'this is the marketing route',
         `${path === '/' ? '/home' : path}`
       );
@@ -136,7 +136,7 @@ export default async function middleware(req: NextRequest) {
       );
     }
 
-    console.log({
+    console.info({
       yo: `/${path.replace('/', '')}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/`
     });
 
@@ -152,7 +152,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.rewrite(new URL('/home', req.url));
   }
 
-  console.log('this is the end');
+  console.info('this is the end');
 
   return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }

@@ -23,7 +23,7 @@ export async function GET(
 
     const redirectUrl = click.link.url;
 
-    console.log({ redirectUrl });
+    console.info({ redirectUrl });
 
     return NextResponse.redirect(redirectUrl);
   } catch (error) {

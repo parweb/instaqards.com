@@ -116,7 +116,7 @@ export async function GET(
   try {
     const query = Object.fromEntries(new URL(request.url).searchParams);
 
-    console.log({ query: query.id });
+    console.info({ query: query.id });
 
     const click = await db.click.create({
       include: { block: true },
@@ -141,14 +141,14 @@ export async function GET(
     const redirectUrl =
       hasWidget && widget && widget.type && widget.type in widgetMapper
         ? (widgetMapper[widget.type as keyof WidgetMapper]?.(
-            widget,
-            query.id ?? ''
-          ) ??
+          widget,
+          query.id ?? ''
+        ) ??
           click.block.href ??
           '/')
         : (click.block.href ?? '/');
 
-    console.log({ redirectUrl });
+    console.info({ redirectUrl });
 
     return NextResponse.redirect(redirectUrl);
   } catch (error) {

@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         status: 200
       });
     } catch (error: unknown) {
-      console.log(error);
+      console.info(error);
       return new Response(
         JSON.stringify({
           error: {

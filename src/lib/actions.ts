@@ -105,13 +105,13 @@ export const mutateLink = async (
 
   const { url, name, description, id } = input.parse(Object.fromEntries(form));
 
-  console.log({ url, name, description, id });
+  console.info({ url, name, description, id });
 
   const href = url.includes(':') ? url : `https://${url}`;
   const label =
     new URL(href).hostname.split('.').at(-2) ?? href.split(':').at(0);
 
-  console.log({
+  console.info({
     label,
     href,
     hostname: new URL(href).hostname,
