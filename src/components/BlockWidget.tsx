@@ -3,8 +3,9 @@
 import type { Block } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import { memo } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
-export const BlockWidget = memo(({ block }: { block: Block }) => {
+export const BlockWidgetComponent = ({ block }: { block: Block }) => {
   const widget = block.widget as unknown as {
     type: string;
     id: string;
@@ -16,8 +17,16 @@ export const BlockWidget = memo(({ block }: { block: Block }) => {
     { ssr: false }
   );
 
-  // @ts-ignore
-  return <Component {...(widget?.data ?? {})} block={block} />;
-});
+  return (
+    <ErrorBoundary
+      fallbackRender={({ error }) => (
+        console.error(error), (<div>Something went wrong, sorry!</div>)
+      )}
+    >
+      {/* @ts-ignore */}
+      <Component {...(widget?.data ?? {})} block={block} />
+    </ErrorBoundary>
+  );
+};
 
-BlockWidget.displayName = 'BlockWidget';
+export default memo(BlockWidgetComponent);

@@ -39,10 +39,7 @@ import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
-const BlockWidget = dynamic(
-  () => import('./BlockWidget').then(mod => mod.BlockWidget),
-  { ssr: false }
-);
+const BlockWidget = dynamic(() => import('./BlockWidget'), { ssr: false });
 
 const BlockUpdate = ({ block }: { block: Block }) => {
   return (

@@ -10,10 +10,9 @@ import { SocialIcon } from 'react-social-icons';
 
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
-const BlockWidget = dynamic(
-  () => import('components/BlockWidget').then(mod => mod.BlockWidget),
-  { ssr: false }
-);
+const BlockWidget = dynamic(() => import('components/BlockWidget'), {
+  ssr: false
+});
 
 export const BlockItem = (block: Block) => {
   const css = block.style as unknown as BlockStyle;
