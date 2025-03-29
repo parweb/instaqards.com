@@ -1,12 +1,12 @@
 TODO
 
-     -> block social
+DONE -> block social
      -> block qards (qards dans qards)
 DONE -> rendez-vous
      -> inspiration canva
      -> container ?
      -> twitch integration
-     -> integration google map
+DONE -> integration google map
      -> bug background si css deja select et quon upload un custom
 
      -> restaurateur (integration uber eat, tripadvisior)
