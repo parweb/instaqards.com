@@ -27,17 +27,21 @@ export const Background = ({
         <>
           {(media_type?.startsWith('video/') ||
             media_type === 'application/mp4') && (
-            <video
-              ref={videoRef}
-              className="absolute top-0 left-0 w-full h-full object-cover"
-              preload="metadata"
-              autoPlay={autoPlay}
-              loop
-              muted
-              playsInline
-            >
-              <source src={background} type="video/mp4" />
-            </video>
+            <>
+              <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
+
+              <video
+                ref={videoRef}
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                preload="metadata"
+                autoPlay={autoPlay}
+                loop
+                muted
+                playsInline
+              >
+                <source src={background} type="video/mp4" />
+              </video>
+            </>
           )}
 
           {media_type?.startsWith('image/') && (
