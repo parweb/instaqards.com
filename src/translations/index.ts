@@ -71,6 +71,18 @@ const translations = {
     it: "L'email è già in uso!",
     es: '¡El correo electrónico ya está en uso!'
   },
+  'dashboard.referals.title': {
+    fr: 'Référents',
+    en: 'Referals',
+    it: 'Riferimenti',
+    es: 'Referencias'
+  },
+  'dashboard.referals.description': {
+    fr: 'Vous pouvez nous joindre ici',
+    en: 'You can reach us here',
+    it: 'Puoi contattarci qui',
+    es: 'Puedes comunicarte con nosotros aquí'
+  },
   'dashboard.feedback.title': {
     fr: 'Feedback',
     en: 'Feedback',
@@ -586,6 +598,12 @@ const translations = {
     en: 'Generator',
     it: 'Generatore',
     es: 'Generador'
+  },
+  'menu.referals': {
+    fr: 'Référents',
+    en: 'Referals',
+    it: 'Riferimenti',
+    es: 'Referencias'
   },
   'menu.affiliation': {
     fr: 'Affiliation',

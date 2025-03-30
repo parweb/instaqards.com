@@ -19,7 +19,8 @@ import {
   Newspaper,
   Send,
   Settings,
-  Users
+  Users,
+  Workflow
 } from 'lucide-react';
 
 import { NavMain } from 'components/nav-main';
@@ -86,6 +87,12 @@ export function AppSidebar(
               url: '/generator',
               icon: Cog,
               isActive: segments[0] === 'generator'
+            },
+            {
+              title: translate('menu.referals'),
+              url: '/referals',
+              icon: Workflow,
+              isActive: segments[0] === 'referals'
             }
           ]
         : [])
