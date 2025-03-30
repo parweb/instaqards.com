@@ -2,7 +2,6 @@
 
 import { currentUser } from 'helpers/auth';
 import { db } from 'helpers/db';
-import { getSession } from 'lib/auth';
 import { headers } from 'next/headers';
 
 export const like = async (

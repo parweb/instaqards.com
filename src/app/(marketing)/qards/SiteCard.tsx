@@ -22,7 +22,6 @@ import { Footer } from 'components/website/footer';
 import { Main } from 'components/website/main';
 import { Wrapper } from 'components/website/wrapper';
 import { useIsMobile } from 'hooks/use-mobile';
-import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
 
 import 'array-grouping-polyfill';
