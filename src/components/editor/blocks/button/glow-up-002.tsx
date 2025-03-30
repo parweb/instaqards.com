@@ -96,6 +96,7 @@ export default function GlowUp002({
   if (href) {
     return (
       <Link
+        prefetch={false}
         className="w-full"
         href={block ? `/click/${block.id}` : href}
         target="_blank"

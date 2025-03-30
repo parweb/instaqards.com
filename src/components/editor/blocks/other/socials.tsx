@@ -40,6 +40,7 @@ export default function Socials({
     <div className="flex-1 flex gap-3 items-center justify-center">
       {socials.map(social => (
         <Link
+          prefetch={false}
           key={social.href}
           href={`/click/${block?.id}/?id=${social.id}`}
           target="_blank"

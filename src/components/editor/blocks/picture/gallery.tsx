@@ -59,6 +59,7 @@ const GalleryItemLink = ({
 }) => {
   return (
     <Link
+      prefetch={false}
       href={blockId ? `/click/${blockId}/?id=${id}` : link}
       target="_blank"
       rel="noopener noreferrer"

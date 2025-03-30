@@ -149,6 +149,7 @@ export default function Icon(
   if (props.href) {
     return (
       <Link
+        prefetch={false}
         className="w-full"
         href={props.block ? `/click/${props.block.id}` : props.href}
         target="_blank"

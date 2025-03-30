@@ -73,6 +73,7 @@ export default function Picture169({
 
   return media.link ? (
     <Link
+      prefetch={false}
       href={block ? `/click/${block?.id}/?id=${media?.id}` : media.link}
       target="_blank"
       rel="noopener noreferrer"

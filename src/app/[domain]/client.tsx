@@ -26,6 +26,7 @@ export const BlockItemComponent = (block: Block) => {
     if (hasWidget === false) {
       return (
         <Link
+          prefetch={false}
           id={block.id}
           href={`/click/${block.id}`}
           target="_blank"
@@ -73,7 +74,12 @@ export const BlockItemComponent = (block: Block) => {
 
   if (block.type === 'social') {
     return (
-      <Link href={`/click/${block.id}`} target="_blank" rel="noreferrer">
+      <Link
+        prefetch={false}
+        href={`/click/${block.id}`}
+        target="_blank"
+        rel="noreferrer"
+      >
         <div className="transition-all hover:scale-125">
           {block.logo?.includes('http') ? (
             <>

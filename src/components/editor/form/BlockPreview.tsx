@@ -131,6 +131,7 @@ export function BlockPreview({
                 form.append(`${key}[${i}][${attr}]`, field);
               }
             }
+            // @ts-ignore
           } else form.append(key, value);
         }
 
