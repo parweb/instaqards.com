@@ -89,6 +89,12 @@ export function AppSidebar(
               isActive: segments[0] === 'generator'
             },
             {
+              title: translate('menu.users'),
+              url: '/users',
+              icon: Users,
+              isActive: segments[0] === 'users'
+            },
+            {
               title: translate('menu.referals'),
               url: '/referals',
               icon: Workflow,

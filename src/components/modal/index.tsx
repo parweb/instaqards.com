@@ -75,7 +75,7 @@ export default function Modal({
 
               <motion.div
                 key="desktop-backdrop"
-                className="fixed inset-0 z-230 bg-gray-100 bg-opacity-10 backdrop-blur-sm"
+                className="fixed inset-0 z-230 bg-gray-100/10 backdrop-blur-sm"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

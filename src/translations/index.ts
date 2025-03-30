@@ -137,6 +137,19 @@ const translations = {
     it: 'Puoi contattarci qui',
     es: 'Puedes comunicarte con nosotros aquí'
   },
+  'dashboard.users.title': {
+    fr: 'Utilisateurs',
+    en: 'Users',
+    it: 'Utenti',
+    es: 'Usuarios'
+  },
+  'dashboard.users.description': {
+    fr: 'Vous pouvez nous joindre ici',
+    en: 'You can reach us here',
+    it: 'Puoi contattarci qui',
+    es: 'Puedes comunicarte con nosotros aquí'
+  },
+
   'dashboard.sites.title': {
     fr: 'Tous les sites',
     en: 'All Sites',
@@ -598,6 +611,12 @@ const translations = {
     en: 'Generator',
     it: 'Generatore',
     es: 'Generador'
+  },
+  'menu.users': {
+    fr: 'Utilisateurs',
+    en: 'Users',
+    it: 'Utenti',
+    es: 'Usuarios'
   },
   'menu.referals': {
     fr: 'Référents',

@@ -2,7 +2,7 @@ import type { Price, Prisma, Product } from '@prisma/client';
 
 import { PriceTableButton } from 'components/price-table-button';
 import { translate } from 'helpers/translate';
-import type { Subscription } from 'lib/auth';
+import type { Subscription } from 'lib/Subscription';
 import { cn } from 'lib/utils';
 
 export const PriceTable = ({
