@@ -35,39 +35,50 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://qards.link')
 };
 
+const Html = async ({ children }: { children: React.ReactNode }) => {
+  const lang = (await cookies()).get('lang')?.value ?? DEFAULT_LANG;
+
+  return (
+    <html lang={lang} suppressHydrationWarning>
+      {children}
+    </html>
+  );
+};
+
 export default async function RootLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang={(await cookies()).get('lang')?.value ?? DEFAULT_LANG}
-      suppressHydrationWarning
-    >
-      {/* <head>
+    <Suspense fallback={null}>
+      <Html>
+        {/* <head>
         <script
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
         />
       </head> */}
 
-      <body
-        className={cn(
-          cal.variable,
-          inter.variable,
-          open.variable,
-          'font-sans flex flex-col h-[100vh] relative'
-        )}
-      >
-        <Providers>
-          <Suspense fallback={null}>{children}</Suspense>
-          <Analytics />
-        </Providers>
+        <body
+          className={cn(
+            cal.variable,
+            inter.variable,
+            open.variable,
+            'font-sans flex flex-col h-[100vh] relative'
+          )}
+        >
+          <Suspense fallback={null}>
+            <Providers>
+              <Suspense fallback={null}>{children}</Suspense>
+              <Analytics />
+            </Providers>
+          </Suspense>
 
-        <SpeedInsights />
-      </body>
-      <GoogleAnalytics gaId="G-XJM901XDPJ" />
-    </html>
+          <SpeedInsights />
+        </body>
+        <GoogleAnalytics gaId="G-XJM901XDPJ" />
+      </Html>
+    </Suspense>
   );
 }

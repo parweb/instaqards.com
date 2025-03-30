@@ -1,6 +1,7 @@
 import type { Block } from '@prisma/client';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import { Background } from 'components/website/background';
 import { Content } from 'components/website/content';
@@ -14,7 +15,6 @@ import { getSiteData } from 'lib/fetchers';
 import { BlockList } from './client';
 
 import 'array-grouping-polyfill';
-import { Suspense } from 'react';
 
 export default async function SiteHomePage(props: {
   params: Promise<{ domain: string }>;
