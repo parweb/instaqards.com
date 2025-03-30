@@ -115,7 +115,7 @@ export function NavMain({
                                   {subItem.title}
                                 </span>
 
-                                {subItem.count && subItem.count > 0 && (
+                                {!!subItem.count && subItem.count > 0 && (
                                   <Badge className="bg-white/2.5">
                                     {subItem.count.toString()}
                                   </Badge>
