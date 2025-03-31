@@ -75,22 +75,11 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
-  console.info({
-    hostname,
-    url,
-    path,
-    isPublicRoute,
-    yolo: `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
-    isProduction: isProduction()
-  });
-
   if (isProduction()) {
     if (
       marketingRoutes.includes(url.pathname) &&
       hostname?.startsWith('app.') === false
     ) {
-      console.info('this is the marketing route', url.pathname);
-
       return NextResponse.rewrite(
         new URL(url.pathname, req.url.replace(url.pathname, '/'))
       );
@@ -105,7 +94,6 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
-    console.info({ session, isPublicRoute });
     if (session && isPublicRoute) {
       return NextResponse.redirect(new URL('/', req.url));
     }
@@ -115,30 +103,15 @@ export default async function middleware(req: NextRequest) {
     );
   }
 
-  console.info({
-    bool:
-      hostname?.includes(':11000') ||
-      hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
-  });
-
   if (
     hostname?.includes(':11000') ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
-    console.info({ pathname: url.pathname, marketingRoutes });
     if (marketingRoutes.includes(url.pathname)) {
-      console.info(
-        'this is the marketing route',
-        `${path === '/' ? '/home' : path}`
-      );
       return NextResponse.rewrite(
         new URL(`${path === '/' ? '/home' : path}`, req.url)
       );
     }
-
-    console.info({
-      yo: `/${path.replace('/', '')}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/`
-    });
 
     return NextResponse.rewrite(
       new URL(
@@ -151,8 +124,6 @@ export default async function middleware(req: NextRequest) {
   if (hostname?.startsWith('www.')) {
     return NextResponse.rewrite(new URL('/home', req.url));
   }
-
-  console.info('this is the end');
 
   return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }
