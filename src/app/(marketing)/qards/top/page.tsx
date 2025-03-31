@@ -2,24 +2,9 @@ import { headers } from 'next/headers';
 import { Suspense } from 'react';
 
 import { db } from 'helpers/db';
-import { SiteCard } from './SiteCard';
-
-// const range = (start: number, end: number) => {
-//   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-// };
+import { SiteCard } from '../SiteCard';
 
 const QardsPage = async () => {
-  // const sites = await db.site.findMany();
-  // for (const site of sites) {
-  //   await db.like.createMany({
-  //     data: range(30, Math.floor(Math.random() * 100)).map(i => ({
-  //       ip: nanoid(),
-  //       siteId: site.id
-  //     }))
-  //   });
-  // }
-  // return null;
-
   const headersList = await headers();
 
   const ip =
@@ -34,7 +19,7 @@ const QardsPage = async () => {
       likes: true,
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     },
-    // take: 4,
+    take: 12,
     orderBy: { clicks: { _count: 'desc' } }
     // where: {
     //   user: {

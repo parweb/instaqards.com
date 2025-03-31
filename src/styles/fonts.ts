@@ -13,6 +13,13 @@ export const cal = localFont({
   display: 'swap'
 });
 
+export const boldonse = localFont({
+  src: './Boldonse-Regular.ttf',
+  variable: '--font-boldonse',
+  weight: '400',
+  display: 'swap'
+});
+
 export const open = Open_Sans({
   variable: '--font-open-sans',
   subsets: ['latin']

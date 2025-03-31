@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { FlagPicker } from 'components/flag-picker';
 import { Button } from 'components/ui/button';
 import { translate } from 'helpers/translate';
+import { cn } from 'lib/utils';
+import { boldonse } from 'styles/fonts';
 import { DEFAULT_LANG } from 'translations';
 
 export const Header = async () => {
@@ -13,7 +15,7 @@ export const Header = async () => {
   return (
     <div className="sticky top-0 bg-white/80 z-10 shadow-md">
       <div className="flex items-center justify-between pr-2 max-w-[1200px] m-auto">
-        <Link href="/">
+        <Link href="/" prefetch={true}>
           <Image
             src="/rsz_black-transparent_nolink.png"
             alt="Logo qards.link"
@@ -23,6 +25,14 @@ export const Header = async () => {
         </Link>
 
         <div className="flex items-center gap-2">
+          <Link
+            prefetch={true}
+            href="/qards/top"
+            className={cn('hover:underline hover:text-gray-500')}
+          >
+            qards du mois
+          </Link>
+
           <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
             <Button>{await translate('page.home.register')}</Button>
           </Link>

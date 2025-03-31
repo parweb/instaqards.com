@@ -10,7 +10,9 @@ export const marketingRoutes = [
   '/about',
   '/contact',
   '/terms',
-  '/privacy'
+  '/privacy',
+  '/pro',
+  '/qards/top'
 ];
 
 export const authRoutes = [
