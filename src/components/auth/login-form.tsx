@@ -68,7 +68,12 @@ export const LoginForm = () => {
             setShowTwoFactor(true);
           }
         })
-        .catch(() => setError('Something went wrong'));
+        .catch(error => {
+          console.error({ error });
+          if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
+            setError('Something went wrong');
+          }
+        });
     });
   };
 
@@ -80,7 +85,11 @@ export const LoginForm = () => {
       showSocial={false}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          method="post"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           <div className="space-y-4">
             {showTwoFactor && (
               <FormField

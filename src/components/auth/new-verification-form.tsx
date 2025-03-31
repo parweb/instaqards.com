@@ -30,8 +30,11 @@ export const NewVerificationForm = () => {
         setSuccess(data.success);
         setError(data.error);
       })
-      .catch(() => {
-        setTimeout(() => setError('Something went wrong!'), 4000);
+      .catch(error => {
+        console.error({ error });
+        if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
+          setError('Something went wrong');
+        }
       });
   }, [token, success, error]);
 

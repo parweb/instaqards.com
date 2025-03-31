@@ -40,10 +40,17 @@ export const RegisterForm = () => {
     setSuccess('');
 
     startTransition(() => {
-      register(values).then(data => {
-        setError(data.error);
-        setSuccess(data.success);
-      });
+      register(values)
+        .then(data => {
+          setError(data.error);
+          setSuccess(data.success);
+        })
+        .catch(error => {
+          console.error({ error });
+          if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
+            setError('Something went wrong');
+          }
+        });
     });
   };
 

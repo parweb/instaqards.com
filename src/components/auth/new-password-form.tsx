@@ -41,10 +41,17 @@ export const NewPasswordForm = () => {
     setSuccess('');
 
     startTransition(() => {
-      newPassword(values, token).then(data => {
-        setError(data?.error);
-        setSuccess(data?.success);
-      });
+      newPassword(values, token)
+        .then(data => {
+          setError(data?.error);
+          setSuccess(data?.success);
+        })
+        .catch(error => {
+          console.error({ error });
+          if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
+            setError('Something went wrong');
+          }
+        });
     });
   };
 

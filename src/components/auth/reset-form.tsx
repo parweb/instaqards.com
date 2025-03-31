@@ -38,10 +38,17 @@ export const ResetForm = () => {
     setSuccess('');
 
     startTransition(() => {
-      reset(values).then(data => {
-        setError(data?.error);
-        setSuccess(data?.success);
-      });
+      reset(values)
+        .then(data => {
+          setError(data?.error);
+          setSuccess(data?.success);
+        })
+        .catch(error => {
+          console.error({ error });
+          if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
+            setError('Something went wrong');
+          }
+        });
     });
   };
 
