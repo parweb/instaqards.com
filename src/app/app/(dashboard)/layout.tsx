@@ -69,8 +69,8 @@ export default async function DashboardLayout({
         </Suspense>
       </AppSidebar>
 
-      <SidebarInset className="overflow-hidden border-2 border-indigo-900/20 ">
-        <header className="absolute top-1 left-1 flex shrink-0 items-center gap-2">
+      <SidebarInset className="isolate overflow-hidden border-2 border-indigo-900/20 ">
+        <header className="z-20 absolute top-4 left-1 flex shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 p-1">
             <SidebarTrigger className="-ml-1 md:hidden" />
 
@@ -100,7 +100,7 @@ export default async function DashboardLayout({
           </div>
         </header>
 
-        <div className="flex-1 flex flex-col overflow-y-auto">
+        <div className="z-10 flex-1 flex flex-col overflow-y-auto">
           {!subscription.valid() && (
             <div className="px-4 py-8">
               <Suspense fallback={null}>
