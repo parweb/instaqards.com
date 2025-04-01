@@ -37,7 +37,10 @@ type FeedItem = {
   pubDate: string;
 };
 
-function YoutubeVideo({ url }: z.infer<typeof input>) {
+function YoutubeVideo({
+  url,
+  title
+}: z.infer<typeof input> & { title?: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const videoId = url.split('v=')[1];
@@ -96,6 +99,14 @@ function YoutubeVideo({ url }: z.infer<typeof input>) {
           <div className="absolute inset-0 flex items-center justify-center">
             <FaYoutube className="text-red-600 w-24 h-24" />
           </div>
+
+          {title && (
+            <div className="absolute inset-0 flex items-end justify-start bg-gradient-to-t from-black/50 to-transparent p-2">
+              <p className="text-white text-lg font-bold text-left text-balance">
+                {title}
+              </p>
+            </div>
+          )}
         </button>
       )}
     </div>
@@ -103,9 +114,9 @@ function YoutubeVideo({ url }: z.infer<typeof input>) {
 }
 
 function YoutubeChannel({ url }: z.infer<typeof input>) {
-  const [videos, setVideos] = useState<z.infer<typeof galleryInput>['medias']>(
-    []
-  );
+  const [videos, setVideos] = useState<
+    (z.infer<typeof galleryInput>['medias'][number] & { title: string })[]
+  >([]);
   // https://www.youtube.com/feeds/videos.xml?channel_id=UCLOAPb7ATQUs_nDs9ViLcMw
 
   const handle = url.includes('/c/')
@@ -139,7 +150,8 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
               return {
                 id: videoId,
                 url: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
-                kind: 'remote'
+                kind: 'remote',
+                title: video.title
               };
             })
         );
@@ -179,6 +191,7 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
             <CarouselItem key={video.id}>
               <YoutubeVideo
                 url={`https://www.youtube.com/watch?v=${video.id}`}
+                title={video.title}
               />
             </CarouselItem>
           ))}
