@@ -70,6 +70,22 @@ export const createSite = async (
       }
     });
 
+    db.event
+      .create({
+        data: {
+          userId: session.user.id,
+          eventType: 'SITE_CREATED',
+          payload: response,
+          correlationId: nanoid()
+        }
+      })
+      .then(event => {
+        console.log('events::createSite', event);
+      })
+      .catch(error => {
+        console.error('events::createSite', error);
+      });
+
     revalidateTag(
       `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
     );

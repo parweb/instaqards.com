@@ -7,6 +7,7 @@ import { getAccountByUserId } from 'data/account';
 import { getTwoFactorConfirmationByUserId } from 'data/two-factor-confirmation';
 import { getUserById } from 'data/user';
 import { db } from 'helpers/db';
+import { nanoid } from 'nanoid';
 
 export const {
   handlers: { GET, POST },
@@ -16,17 +17,71 @@ export const {
   unstable_update: update
 } = NextAuth({
   events: {
-    async linkAccount(data) {
+    linkAccount: async data => {
+      console.log('events::linkAccount', data);
       // @ts-ignore
       await db.account.create({ data });
-      // await db.user.update({
-      //   where: { id: user.id },
-      //   data: { emailVerified: new Date() }
-      // });
+    },
+    createUser: async message => {
+      console.log('events::createUser', message);
+
+      /*
+      
+      events::createUser {
+        user: {
+          id: 'cm8yas7jz0001spnkvjlpthtd',
+          name: null,
+          email: 'parweb+salam@gmail.com',
+          emailVerified: 2025-04-01T09:30:31.102Z,
+          image: null,
+          password: null,
+          isTwoFactorEnabled: false,
+          billing_address: {},
+          payment_method: {},
+          createdAt: 2025-04-01T09:30:31.103Z,
+          updatedAt: 2025-04-01T09:30:31.103Z,
+          role: 'USER',
+          refererId: null
+        }
+      }
+
+      */
+
+      if (message.user.id) {
+        db.event
+          .create({
+            data: {
+              userId: message.user.id,
+              eventType: 'USER_SIGNUP',
+              payload: JSON.parse(JSON.stringify(message)),
+              correlationId: nanoid()
+            }
+          })
+          .then(event => {
+            console.log('events::createUser', event);
+          })
+          .catch(error => {
+            console.error('events::createUser', error);
+          });
+      }
+    },
+    updateUser: async message => {
+      console.log('events::updateUser', message);
+    },
+    signIn: async message => {
+      console.log('events::signIn', message);
+    },
+    signOut: async message => {
+      console.log('events::signOut', message);
+    },
+    session: async message => {
+      // console.log('events::session', message);
     }
   },
   callbacks: {
     async signIn({ user, account }) {
+      console.log('callbacks::signIn', { user, account });
+
       // Allow OAuth without email verification
       if (account?.provider !== 'credentials') return true;
 
@@ -50,7 +105,7 @@ export const {
 
       return true;
     },
-    // @ts-ignore
+
     async session({ token, session }) {
       if (token.sub && session.user) {
         session.user.id = token.sub;
@@ -92,6 +147,7 @@ export const {
       return token;
     }
   },
+
   adapter: PrismaAdapter(db),
   session: { strategy: 'jwt' },
   ...authConfig
