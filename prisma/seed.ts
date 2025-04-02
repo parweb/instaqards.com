@@ -1,4 +1,9 @@
-import { PrismaClient, ActionType, ConditionType, Operator } from '@prisma/client';
+import {
+  PrismaClient,
+  ActionType,
+  ConditionType,
+  Operator
+} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -85,7 +90,7 @@ const prisma = new PrismaClient();
       internalName: 'webhook_cs_new_creator',
       actionType: ActionType.CALL_WEBHOOK,
       version: 1,
-      description: 'Notifie le service client de la création d\'un nouveau site',
+      description: "Notifie le service client de la création d'un nouveau site",
       config: {
         url: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK_OR_ZAPIER', // URL exemple
         method: 'POST',
@@ -103,7 +108,8 @@ const prisma = new PrismaClient();
       internalName: 'reengagement_inactive_trial',
       actionType: ActionType.SEND_EMAIL,
       version: 1,
-      description: 'Envoie un email de réengagement aux utilisateurs inactifs en période d\'essai',
+      description:
+        "Envoie un email de réengagement aux utilisateurs inactifs en période d'essai",
       config: {
         subject: 'On ne vous voit plus, {{user.name}} ?',
         bodyHtml: "<p>Besoin d'aide pour continuer ? ...</p>",
@@ -119,7 +125,8 @@ const prisma = new PrismaClient();
       internalName: 'email_trial_reminder_3d',
       actionType: ActionType.SEND_EMAIL,
       version: 1,
-      description: 'Rappelle aux utilisateurs que leur période d\'essai se termine dans 3 jours',
+      description:
+        "Rappelle aux utilisateurs que leur période d'essai se termine dans 3 jours",
       config: {
         subject: "🚨 Plus que 3 jours d'essai !",
         bodyHtml: '<p>Finalisez votre choix pour ne rien perdre...</p>',
@@ -135,7 +142,7 @@ const prisma = new PrismaClient();
       internalName: 'webhook_sales_trial_ending',
       actionType: ActionType.CALL_WEBHOOK,
       version: 1,
-      description: 'Notifie l\'équipe commerciale des fins de période d\'essai',
+      description: "Notifie l'équipe commerciale des fins de période d'essai",
       config: {
         url: 'https://hooks.zapier.com/hooks/catch/YOUR/ZAPIER/WEBHOOK_OR_INTERNAL', // Autre URL exemple
         method: 'POST',
@@ -333,7 +340,6 @@ const prisma = new PrismaClient();
   });
 
   console.log('Workflow Rules and Conditions created/linked.');
-  console.log('Seeding finished.');
 })()
   .then(async () => {
     await prisma.$disconnect();
