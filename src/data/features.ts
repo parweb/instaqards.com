@@ -1,4 +1,13 @@
-import { Calendar, Camera, CreditCard, Mail, Users, Clock, Menu, Music } from 'lucide-react';
+import {
+  Calendar,
+  Camera,
+  CreditCard,
+  Mail,
+  Users,
+  Clock,
+  Menu,
+  Music
+} from 'lucide-react';
 
 export const all = [
   {

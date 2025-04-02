@@ -47,7 +47,11 @@ export const all = [
       it: 'Cantante',
       es: 'Cantante'
     },
-    features: [feature.get('music'), feature.get('event'), feature.get('gallery')]
+    features: [
+      feature.get('music'),
+      feature.get('event'),
+      feature.get('gallery')
+    ]
   },
   {
     id: 'hairdresser',
@@ -87,7 +91,11 @@ export const all = [
       it: 'Gruppo',
       es: 'Grupo'
     },
-    features: [feature.get('music'), feature.get('event'), feature.get('gallery')]
+    features: [
+      feature.get('music'),
+      feature.get('event'),
+      feature.get('gallery')
+    ]
   },
   {
     id: 'butcher',
@@ -97,7 +105,7 @@ export const all = [
       it: 'Macellaio',
       es: 'Carnicero'
     },
-    features: [feature.get('gallery'),]
+    features: [feature.get('gallery')]
   },
   {
     id: 'tattooist',
