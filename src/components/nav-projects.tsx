@@ -58,7 +58,7 @@ export function NavProjects({
         {projects.map(item => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <Link href={item.url}>
+              <Link prefetch href={item.url}>
                 <item.icon />
                 <span className="truncate">{item.name}</span>
               </Link>
@@ -78,7 +78,7 @@ export function NavProjects({
                 align={isMobile ? 'end' : 'start'}
               >
                 <DropdownMenuItem asChild>
-                  <Link href={item.url}>
+                  <Link prefetch href={item.url}>
                     <Folder className="text-muted-foreground" />
                     <span>View Project</span>
                   </Link>
@@ -96,7 +96,7 @@ export function NavProjects({
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem asChild>
-                  <Link href={`${item.url}/settings`}>
+                  <Link prefetch href={`${item.url}/settings`}>
                     <Trash2 className="text-muted-foreground" />
                     <span>Delete Project</span>
                   </Link>

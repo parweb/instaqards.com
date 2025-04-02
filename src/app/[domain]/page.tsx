@@ -43,6 +43,7 @@ export default async function SiteHomePage(props: {
 
           <div>
             <Link
+              prefetch
               className="bg-black rounded-md px-3 py-2 text-white"
               href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`}
             >

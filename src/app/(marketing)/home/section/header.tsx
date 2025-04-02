@@ -15,7 +15,7 @@ export const Header = async () => {
   return (
     <div className="sticky top-0 bg-white/80 z-10 shadow-md">
       <div className="flex items-center justify-between pr-2 max-w-[1200px] m-auto">
-        <Link href="/" prefetch={true}>
+        <Link href="/" prefetch>
           <Image
             src="/rsz_black-transparent_nolink.png"
             alt="Logo qards.link"
@@ -26,14 +26,17 @@ export const Header = async () => {
 
         <div className="flex items-center gap-2">
           <Link
-            prefetch={true}
+            prefetch
             href="/qards/top"
             className={cn('hover:underline hover:text-gray-500')}
           >
             qards du mois
           </Link>
 
-          <Link href={`${process.env.NEXTAUTH_URL as string}/register`}>
+          <Link
+            prefetch
+            href={`${process.env.NEXTAUTH_URL as string}/register`}
+          >
             <Button>{await translate('page.home.register')}</Button>
           </Link>
 

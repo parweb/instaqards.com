@@ -198,6 +198,7 @@ export function AppSidebar(
     <Sidebar variant="inset" {...props}>
       <SidebarHeader className="flex flex-col items-stretch justify-center p-1">
         <Link
+          prefetch
           href="/"
           className="rounded-lg px-2 flex items-center justify-center gap-3 uppercase"
           style={{

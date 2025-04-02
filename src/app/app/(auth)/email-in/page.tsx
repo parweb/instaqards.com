@@ -46,7 +46,9 @@ const EmailInPage = async () => {
         </Alert>
 
         <div className="text-sm text-gray-500">
-          <Link href="/home">{await translate('auth.return.home')}</Link>
+          <Link prefetch href="/home">
+            {await translate('auth.return.home')}
+          </Link>
         </div>
       </div>
     </div>

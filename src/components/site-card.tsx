@@ -16,14 +16,14 @@ export default function SiteCard({
       <div className="flex flex-col overflow-hidden rounded-lg">
         <div className="border-t border-stone-200 p-4 dark:border-stone-700">
           <div className="flex items-center justify-between">
-            <Link className="flex-1" href={`/site/${data.id}`}>
+            <Link prefetch className="flex-1" href={`/site/${data.id}`}>
               <h3 className="my-0 truncate font-cal text-xl font-bold tracking-wide">
                 {data.name}
               </h3>
             </Link>
 
             <div className="transition-all opacity-0 group-hover:opacity-100 flex items-center gap-2">
-              <Link href={`/site/${data.id}/settings`} className="">
+              <Link prefetch href={`/site/${data.id}/settings`} className="">
                 <LuCog />
               </Link>
 
@@ -31,7 +31,7 @@ export default function SiteCard({
             </div>
           </div>
 
-          <Link href={`/site/${data.id}`}>
+          <Link prefetch href={`/site/${data.id}`}>
             <p className="mt-2 line-clamp-1 text-sm font-light leading-snug text-black/80">
               {data.description}
             </p>
@@ -55,6 +55,7 @@ export default function SiteCard({
         </a>
 
         <Link
+          prefetch
           href={`/site/${data.id}/analytics`}
           className="flex items-center gap-2 rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400 dark:hover:bg-green-800 dark:hover:bg-opacity-50"
         >

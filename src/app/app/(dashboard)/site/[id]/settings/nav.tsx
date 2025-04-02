@@ -31,6 +31,7 @@ export default function SiteSettingsNav() {
     <div className="flex space-x-4 border-b border-stone-200 pb-4 pt-2 dark:border-stone-700">
       {navItems.map(item => (
         <Link
+          prefetch
           key={item.name}
           href={item.href}
           // Change style depending on whether the link is active

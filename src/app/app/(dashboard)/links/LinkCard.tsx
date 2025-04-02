@@ -64,7 +64,7 @@ export function LinkCard({ link }: LinkCardProps) {
             </div>
 
             <div className="flex items-center justify-between gap-1">
-              <Link className="flex-1" href={`/site/${link.id}`}>
+              <Link prefetch className="flex-1" href={`/site/${link.id}`}>
                 <h3 className="truncate font-cal text-xl font-bold tracking-wide">
                   {link.name}
                 </h3>
@@ -79,7 +79,7 @@ export function LinkCard({ link }: LinkCardProps) {
               </div>
             </div>
 
-            <Link href={`/site/${link.id}`}>
+            <Link prefetch href={`/site/${link.id}`}>
               <p className="line-clamp-1 text-sm font-normal leading-snug text-stone-500 dark:text-stone-400">
                 {link.description}
               </p>
@@ -94,6 +94,7 @@ export function LinkCard({ link }: LinkCardProps) {
               )}
             >
               <Link
+                prefetch
                 href={url}
                 target="_blank"
                 rel="noreferrer"
@@ -107,6 +108,7 @@ export function LinkCard({ link }: LinkCardProps) {
             </div>
 
             <Link
+              prefetch
               href={`/site/${link.id}/analytics`}
               className="flex items-center gap-2 rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400 dark:hover:bg-green-800 dark:hover:bg-opacity-50"
             >

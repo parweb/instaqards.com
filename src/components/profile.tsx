@@ -93,7 +93,7 @@ export default async function Profile() {
 
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/settings">
+                <Link prefetch href="/settings">
                   <Sparkles />
                   Upgrade to Pro
                 </Link>
@@ -104,14 +104,14 @@ export default async function Profile() {
 
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/settings">
+                <Link prefetch href="/settings">
                   <BadgeCheck />
                   Account
                 </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild>
-                <Link href="/settings">
+                <Link prefetch href="/settings">
                   <CreditCard />
                   Billing
                 </Link>

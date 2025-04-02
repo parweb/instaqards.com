@@ -60,6 +60,7 @@ export default function UserSiteModal({
                 </div>
 
                 <Link
+                  prefetch
                   href={`/site/${site.id}`}
                   target="_blank"
                   className="text-sm font-medium text-blue-600 hover:text-blue-800"

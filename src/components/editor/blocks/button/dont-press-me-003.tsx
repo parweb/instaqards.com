@@ -108,6 +108,7 @@ export default function DontPressMe003({
   if (href) {
     return (
       <Link
+        prefetch={false}
         className="w-full"
         href={block ? `/click/${block.id}` : href}
         target="_blank"

@@ -62,6 +62,7 @@ export function NavMain({
 
           {dark && (
             <Link
+              prefetch
               href={items.at(0)?.secondaryUrl ?? ''}
               target="_blank"
               className="hover:text-white"
@@ -81,7 +82,7 @@ export function NavMain({
                   isActive={item.isActive}
                   className="data-[active=true]:bg-transparent[data-active='true']"
                 >
-                  <Link href={item.url}>
+                  <Link prefetch href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>
                   </Link>
@@ -108,7 +109,7 @@ export function NavMain({
                               isActive={subItem.isActive}
                               asChild
                             >
-                              <Link href={subItem.url}>
+                              <Link prefetch href={subItem.url}>
                                 <subItem.icon />
 
                                 <span className="flex-1 text-xs truncate">
