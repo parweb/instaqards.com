@@ -35,7 +35,7 @@ const ActionNode = ({ data }: { data: any }) => (
     <div className="text-xs text-gray-500">{data.description}</div>
     <div className="mt-2 text-xs">
       <span className="rounded bg-green-200 px-2 py-1 dark:bg-green-800">
-        {data.actionType}
+        {data.type}
       </span>
     </div>
   </div>

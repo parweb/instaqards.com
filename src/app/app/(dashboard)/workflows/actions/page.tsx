@@ -10,14 +10,14 @@ export default async function WorkflowsActions() {
   //   }
   // });
 
-  // const actionsByType = actionTypes.reduce<Record<ActionType, Action[]>>(
-  //   (acc, { actionType }) => {
-  //     acc[actionType] = actions.filter(
-  //       action => action.actionType === actionType
+  // const actionsByType = types.reduce<Record<Action['type'], Action[]>>(
+  //   (acc, { type }) => {
+  //     acc[type] = actions.filter(
+  //       action => action.type === type
   //     );
   //     return acc;
   //   },
-  //   {} as Record<ActionType, Action[]>
+  //   {} as Record<Action['type'], Action[]>
   // );
 
   return actions.map(action => (

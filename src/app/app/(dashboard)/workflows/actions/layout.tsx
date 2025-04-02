@@ -19,11 +19,11 @@ export default async function WorkflowActionsLayout({
   const types = await db.action
     .findMany({
       select: {
-        actionType: true
+        type: true
       },
-      distinct: ['actionType']
+      distinct: ['type']
     })
-    .then(actions => actions.map(action => action.actionType));
+    .then(actions => actions.map(action => action.type));
 
   return (
     <div className="flex flex-col space-y-6">

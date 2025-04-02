@@ -80,7 +80,7 @@ export const createSite = async (
         }
       })
       .then(event => {
-        console.log('events::createSite', event);
+        console.info('events::createSite', event);
       })
       .catch(error => {
         console.error('events::createSite', error);

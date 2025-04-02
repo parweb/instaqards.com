@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import {
   Body,
   Container,
@@ -9,7 +11,6 @@ import {
   Preview,
   Text
 } from '@react-email/components';
-import * as React from 'react';
 
 const translations = {
   en: {
@@ -47,10 +48,7 @@ const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const ConfirmAccount = ({
-  confirmLink,
-  lang = 'en'
-}: ConfirmAccountProps) => {
+const ConfirmAccount = ({ confirmLink, lang = 'en' }: ConfirmAccountProps) => {
   return (
     <Html>
       <Head />

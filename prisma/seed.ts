@@ -1,14 +1,10 @@
-import {
-  PrismaClient,
-  ActionType,
-  ConditionType,
-  Operator
-} from '@prisma/client';
+import { ConditionType, Operator, PrismaClient } from '@prisma/client';
+import { nanoid } from 'nanoid';
 
 const prisma = new PrismaClient();
 
 (async () => {
-  console.log('Starting workflow seeding...');
+  console.info('Starting workflow seeding...');
 
   // 1. Workflow Principal
   const onboardingWorkflow = await prisma.workflow.upsert({
@@ -23,7 +19,7 @@ const prisma = new PrismaClient();
     }
   });
 
-  console.log(`Workflow upserted: ${onboardingWorkflow.id}`);
+  console.info(`Workflow upserted: ${onboardingWorkflow.id}`);
 
   // 2. Triggers (Types d'événements)
   const signupTrigger = await prisma.trigger.upsert({
@@ -52,7 +48,7 @@ const prisma = new PrismaClient();
       description: "Alerte de fin d'essai (via Cron)"
     }
   });
-  console.log('Triggers upserted.');
+  console.info('Triggers upserted.');
 
   // 3. Actions (ActionTemplates) - Plusieurs types !
   const welcomeEmailAction = await prisma.action.upsert({
@@ -60,13 +56,12 @@ const prisma = new PrismaClient();
     update: {},
     create: {
       internalName: 'onboarding_welcome_email',
-      actionType: ActionType.SEND_EMAIL,
+      type: 'SEND_EMAIL',
       version: 1,
       description: 'Envoie un email de bienvenue aux nouveaux utilisateurs',
       config: {
-        subject: 'Bienvenue chez [App Name], {{user.name}} !',
-        bodyHtml: '<p>Ravi de vous compter parmi nous...</p>',
-        bodyText: '...'
+        function: 'sendWelcomeEmail',
+        email: '{{user.email}}'
       }
     }
   });
@@ -76,7 +71,7 @@ const prisma = new PrismaClient();
     update: {},
     create: {
       internalName: 'tag_user_creator',
-      actionType: ActionType.ADD_USER_TAG,
+      type: 'ADD_USER_TAG',
       version: 1,
       description: 'Ajoute le tag "creator" à un utilisateur',
       config: { tagName: 'creator' } // Le code exécutant cette action saura quoi faire avec "tagName"
@@ -88,7 +83,7 @@ const prisma = new PrismaClient();
     update: {},
     create: {
       internalName: 'webhook_cs_new_creator',
-      actionType: ActionType.CALL_WEBHOOK,
+      type: 'CALL_WEBHOOK',
       version: 1,
       description: "Notifie le service client de la création d'un nouveau site",
       config: {
@@ -106,7 +101,7 @@ const prisma = new PrismaClient();
     update: {},
     create: {
       internalName: 'reengagement_inactive_trial',
-      actionType: ActionType.SEND_EMAIL,
+      type: 'SEND_EMAIL',
       version: 1,
       description:
         "Envoie un email de réengagement aux utilisateurs inactifs en période d'essai",
@@ -123,7 +118,7 @@ const prisma = new PrismaClient();
     update: {},
     create: {
       internalName: 'email_trial_reminder_3d',
-      actionType: ActionType.SEND_EMAIL,
+      type: 'SEND_EMAIL',
       version: 1,
       description:
         "Rappelle aux utilisateurs que leur période d'essai se termine dans 3 jours",
@@ -140,7 +135,7 @@ const prisma = new PrismaClient();
     update: {},
     create: {
       internalName: 'webhook_sales_trial_ending',
-      actionType: ActionType.CALL_WEBHOOK,
+      type: 'CALL_WEBHOOK',
       version: 1,
       description: "Notifie l'équipe commerciale des fins de période d'essai",
       config: {
@@ -152,7 +147,7 @@ const prisma = new PrismaClient();
     }
   });
 
-  console.log('ActionTemplates upserted.');
+  console.info('ActionTemplates upserted.');
 
   // 4. Conditions (Réutilisables)
   const isFirstSiteCond = await prisma.condition.upsert({
@@ -195,7 +190,7 @@ const prisma = new PrismaClient();
     }
   });
 
-  console.log('Conditions upserted.');
+  console.info('Conditions upserted.');
 
   // 5. Règles du Workflow (WorkflowRules)
   // Règle 1: Bienvenue Email
@@ -339,7 +334,90 @@ const prisma = new PrismaClient();
     }
   });
 
-  console.log('Workflow Rules and Conditions created/linked.');
+  console.info('Workflow Rules and Conditions created/linked.');
+
+  await prisma.user.create({
+    data: {
+      id: 'cm8zwbi0y0001spa09s9s7eat',
+      email: 'parweb@gmail.com',
+      emailVerified: new Date(),
+      role: 'ADMIN',
+      sites: {
+        create: {
+          name: 'yolo',
+          subdomain: 'yolo',
+          blocks: {
+            create: {
+              type: 'main',
+              position: 0,
+              widget: {
+                id: 'profile',
+                data: {
+                  name: 'kjzegh',
+                  images: [
+                    {
+                      id: '1',
+                      url: 'https://qards.link/rsz_noir-fon-transparent.png',
+                      kind: 'remote'
+                    }
+                  ],
+                  description: ''
+                },
+                type: 'other'
+              }
+            }
+          }
+        }
+      },
+      events: {
+        create: [
+          {
+            eventType: 'USER_SIGNUP',
+            correlationId: nanoid(),
+            payload: {
+              user: {
+                id: 'cm8zwbi0y0001spa09s9s7eat',
+                name: null,
+                role: 'USER',
+                email: 'parweb@gmail.com',
+                image: null,
+                password: null,
+                createdAt: '2025-04-02T12:21:09.250Z',
+                refererId: null,
+                updatedAt: '2025-04-02T12:21:09.250Z',
+                emailVerified: '2025-04-02T12:21:09.248Z',
+                payment_method: {},
+                billing_address: {},
+                isTwoFactorEnabled: false
+              }
+            }
+          },
+          {
+            eventType: 'SITE_CREATED',
+            correlationId: nanoid(),
+            payload: {
+              id: 'cm8zwbl6r0004spa0p7f3baps',
+              font: 'font-cal',
+              logo: 'https://qards.link/rsz_noir-fon-transparent.png',
+              name: 'kjzegh',
+              image: 'https://qards.link/site-default.png',
+              userId: 'cm8zwbi0y0001spa09s9s7eat',
+              createdAt: '2025-04-02T12:21:13.348Z',
+              subdomain: 'kjzegh',
+              updatedAt: '2025-04-02T12:21:13.348Z',
+              background: null,
+              message404: "Blimey! You've found a page that doesn't exist.",
+              description: '',
+              customDomain: null,
+              display_name: null,
+              imageBlurhash:
+                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC'
+            }
+          }
+        ]
+      }
+    }
+  });
 })()
   .then(async () => {
     await prisma.$disconnect();

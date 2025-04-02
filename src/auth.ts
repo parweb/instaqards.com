@@ -18,12 +18,12 @@ export const {
 } = NextAuth({
   events: {
     linkAccount: async data => {
-      console.log('events::linkAccount', data);
+      console.info('events::linkAccount', data);
       // @ts-ignore
       await db.account.create({ data });
     },
     createUser: async message => {
-      console.log('events::createUser', message);
+      console.info('events::createUser', message);
 
       /*
       
@@ -58,7 +58,7 @@ export const {
             }
           })
           .then(event => {
-            console.log('events::createUser', event);
+            console.info('events::createUser', event);
           })
           .catch(error => {
             console.error('events::createUser', error);
@@ -66,21 +66,21 @@ export const {
       }
     },
     updateUser: async message => {
-      console.log('events::updateUser', message);
+      console.info('events::updateUser', message);
     },
     signIn: async message => {
-      console.log('events::signIn', message);
+      console.info('events::signIn', message);
     },
     signOut: async message => {
-      console.log('events::signOut', message);
+      console.info('events::signOut', message);
     },
     session: async message => {
-      // console.log('events::session', message);
+      // console.info('events::session', message);
     }
   },
   callbacks: {
     async signIn({ user, account }) {
-      console.log('callbacks::signIn', { user, account });
+      console.info('callbacks::signIn', { user, account });
 
       // Allow OAuth without email verification
       if (account?.provider !== 'credentials') return true;

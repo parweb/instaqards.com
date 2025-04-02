@@ -4,8 +4,9 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { db } from 'helpers/db';
 
 async function processEvent(event: Event): Promise<void> {
-  console.log(
-    ` -> Processing Event ID: ${event.id}, Type: ${event.eventType}, User: ${event.userId}`
+  console.info(
+    ` -> Processing Event ID: ${event.id}, Type: ${event.eventType}, User: ${event.userId}`,
+    event
   );
 
   // 1. Trouver le Trigger correspondant
@@ -14,12 +15,12 @@ async function processEvent(event: Event): Promise<void> {
   });
 
   if (!trigger) {
-    console.log(
+    console.info(
       `    No trigger found for event type "${event.eventType}". Skipping.`
     );
     return; // Pas de trigger défini pour cet événement
   }
-  console.log(`    Found Trigger: ${trigger.id}`);
+  console.info(`    Found Trigger: ${trigger.id}`);
 
   // 2. Trouver les Règles Actives liées à ce Trigger
   const rules = await db.rule.findMany({
@@ -35,22 +36,22 @@ async function processEvent(event: Event): Promise<void> {
   });
 
   if (rules.length === 0) {
-    console.log(`    No active rules found for trigger ${trigger.code}.`);
+    console.info(`    No active rules found for trigger ${trigger.code}.`);
     return; // Aucune règle à exécuter
   }
-  console.log(`    Found ${rules.length} active rule(s).`);
+  console.info(`    Found ${rules.length} active rule(s).`);
 
   // 3. Pour chaque Règle...
   for (const rule of rules) {
     // S'assurer que le workflow parent est actif
     if (!rule.workflow.isActive) {
-      console.log(
+      console.info(
         `    Skipping Rule ${rule.id} because Workflow ${rule.workflow.name} is inactive.`
       );
       continue;
     }
 
-    console.log(
+    console.info(
       `    Evaluating Rule ID: ${rule.id} (Workflow: ${rule.workflow.name}, Action: ${rule.actionId}, Delay: ${rule.delayMinutes}min)`
     );
 
@@ -77,7 +78,7 @@ async function processEvent(event: Event): Promise<void> {
 
     // Si l'utilisateur n'est pas ACTIF dans ce workflow, on ignore la règle
     if (workflowState.status !== WorkflowStateStatus.ACTIVE) {
-      console.log(
+      console.info(
         `    User ${event.userId} is not ACTIVE in workflow ${rule.workflow.name} (Status: ${workflowState.status}). Skipping rule ${rule.id}.`
       );
       continue;
@@ -108,7 +109,7 @@ async function processEvent(event: Event): Promise<void> {
       }
     });
 
-    console.log(
+    console.info(
       `    Created Queue Job ID: ${newQueueJob.id} for Rule ${rule.id} to run at ${runAt.toISOString()}`
     );
   } // Fin de la boucle sur les règles

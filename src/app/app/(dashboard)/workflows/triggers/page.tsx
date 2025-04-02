@@ -66,10 +66,6 @@ export default async function WorkflowsTriggers() {
                 formAction={async () => {
                   'use server';
 
-                  console.log({
-                    where: { id: trigger.id }
-                  });
-
                   await db.trigger.delete({
                     where: { id: trigger.id }
                   });

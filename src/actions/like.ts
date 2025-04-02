@@ -18,7 +18,7 @@ export const like = async (
       ? '127.0.0.1'
       : headersList.get('x-forwarded-for');
 
-  console.log({ headers: Object.fromEntries(headersList.entries()), user, ip });
+  console.info({ headers: Object.fromEntries(headersList.entries()), user, ip });
 
   if (!ip) {
     throw new Error('Unauthorized');

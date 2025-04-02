@@ -432,26 +432,16 @@ model Queue {
   @@index([job])
 }
 
-enum ActionType {
-  SEND_EMAIL
-  UPDATE_USER_FIELD
-  CALL_WEBHOOK
-  ADD_USER_TAG
-  REMOVE_USER_TAG
-  SEND_PUSH_NOTIFICATION
-  CREATE_QUEUE_TASK
-}
-
 model Action {
-  id           String     @id @default(cuid())
-  internalName String     @unique
+  id           String   @id @default(cuid())
+  internalName String   @unique
   description  String?
-  actionType   ActionType
+  type         String
   config       Json
-  isPublished  Boolean    @default(true)
-  version      Int        @default(1)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  isPublished  Boolean  @default(true)
+  version      Int      @default(1)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   rules      Rule[]      @relation("ActionRules")
   executions Execution[] @relation("ActionLogs")

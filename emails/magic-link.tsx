@@ -47,7 +47,7 @@ const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const MagicLink = ({ magicLink, lang = 'en' }: MagicLinkProps) => {
+const MagicLink = ({ magicLink, lang = 'en' }: MagicLinkProps) => {
   return (
     <Html>
       <Head />

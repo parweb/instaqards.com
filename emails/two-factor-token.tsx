@@ -51,7 +51,7 @@ const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const TwoFactorToken = ({ token, lang = 'en' }: TwoFactorTokenProps) => (
+const TwoFactorToken = ({ token, lang = 'en' }: TwoFactorTokenProps) => (
   <Html>
     <Head />
 

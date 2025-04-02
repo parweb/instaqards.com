@@ -1,22 +1,17 @@
 import type {
-  Queue,
-  User,
-  Event,
-  Subscription,
-  WorkflowState,
-  Rule,
   Action,
   Condition,
+  Event,
+  Prisma,
+  Queue,
   RuleCondition,
-  Prisma
+  Subscription,
+  User
 } from '@prisma/client';
-import { type NextRequest, NextResponse } from 'next/server';
+import { ExecutionStatus, WorkflowStateStatus } from '@prisma/client'; // Importez vos enums
 import { db } from 'helpers/db'; // Assurez-vous que ce chemin est correct
-import {
-  ExecutionStatus,
-  WorkflowStateStatus,
-  ActionType
-} from '@prisma/client'; // Importez vos enums
+import * as template from 'helpers/mail';
+import { type NextRequest, NextResponse } from 'next/server';
 
 // --- Interfaces pour la clarté du Payload ---
 interface ExecuteWorkflowActionPayload {
@@ -36,9 +31,9 @@ const conditionEngine = {
     subscription: Subscription | null // Peut être null si l'utilisateur n'a pas d'abonnement
     // Potentiellement d'autres contextes si nécessaire
   ): Promise<boolean> => {
-    console.log(`[Condition Engine] Evaluating conditions for rule...`); // Simuler l'évaluation
+    console.info(`[Condition Engine] Evaluating conditions for rule...`); // Simuler l'évaluation
     if (!ruleConditions || ruleConditions.length === 0) {
-      console.log(
+      console.info(
         '[Condition Engine] No conditions to evaluate, returning true.'
       );
       return true; // Pas de conditions = toujours vrai
@@ -55,7 +50,7 @@ const conditionEngine = {
 
     // Pour l'exemple, on retourne toujours true
     const conditionsMet = true;
-    console.log(
+    console.info(
       `[Condition Engine] Conditions evaluated. Result: ${conditionsMet}`
     );
     return conditionsMet;
@@ -66,71 +61,54 @@ const conditionEngine = {
 // Dans une vraie app, ceci serait un service/classe complexe
 const actionExecutor = {
   execute: async (
-    actionType: ActionType,
+    type: Action['type'],
     config: Prisma.JsonValue,
     user: User,
-    triggeringEvent: Event
+    triggeringEvent: Event,
+    job: Queue
     // Potentiellement d'autres contextes
   ): Promise<{
     success: boolean;
     resultPayload?: any;
     errorMessage?: string;
   }> => {
-    console.log(`[Action Executor] Executing action type: ${actionType}`);
+    console.info(`[Action Executor] Executing action type: ${type}`);
 
     try {
-      switch (actionType) {
-        case ActionType.SEND_EMAIL:
-          // 1. Extraire sujet/corps depuis `config`
-          // 2. Remplacer les variables (ex: {{user.name}})
-          // 3. Appeler le service d'emailing (ex: SendGrid)
-          console.log(
-            `[Action Executor] Simulating SEND_EMAIL to ${user.email}`
-          );
-          // const emailConfig = config as { subject: string; bodyHtml: string; ... };
-          // await emailService.send(user.email, emailConfig.subject, emailConfig.bodyHtml);
-          return {
-            success: true,
-            resultPayload: { messageId: 'simulated-email-id' }
-          };
+      switch (type) {
+        case 'SEND_EMAIL':
+          const params = config as { email: string; function: string };
 
-        case ActionType.ADD_USER_TAG:
-          // 1. Extraire tagName depuis `config`
-          // 2. Mettre à jour l'utilisateur dans la BDD
-          console.log(`[Action Executor] Simulating ADD_USER_TAG.`);
-          // const tagConfig = config as { tagName: string };
-          // await db.user.update({ where: { id: user.id }, data: { tags: { push: tagConfig.tagName } } });
+          console.info('actionExecutor::SEND_EMAIL', {
+            config,
+            job,
+            template,
+            params
+          });
+
+          const mailFunction =
+            template[params.function as keyof typeof template];
+
+          if (!mailFunction) {
+            throw new Error(`Invalid email function: ${params.function}`);
+          }
+
+          // @ts-ignore
+          await mailFunction(
+            params.email.replace('{{user.email}}', user.email)
+          );
+
           return { success: true };
 
-        case ActionType.CALL_WEBHOOK:
-          // 1. Extraire url, method, headers, bodyTemplate depuis `config`
-          // 2. Remplacer les variables dans le bodyTemplate
-          // 3. Faire l'appel HTTP (fetch/axios)
-          console.log(`[Action Executor] Simulating CALL_WEBHOOK.`);
-          // const webhookConfig = config as { url: string; method: string; ... };
-          // const response = await fetch(webhookConfig.url, { method: webhookConfig.method, ... });
-          // const responseData = await response.json();
-          // if (!response.ok) throw new Error(`Webhook failed: ${response.status}`);
-          return {
-            success: true,
-            resultPayload: { status: 200, body: 'simulated_webhook_response' }
-          };
-
-        // ... autres cas pour les autres ActionType ...
-
         default:
-          console.warn(
-            `[Action Executor] Unhandled action type: ${actionType}`
-          );
-          return {
-            success: false,
-            errorMessage: `Unhandled action type: ${actionType}`
-          };
+          console.warn(`[Action Executor] Unhandled action type: ${type}`);
+
+          throw new Error(`[Action Executor] Unhandled action type: ${type}`);
       }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(
-        `[Action Executor] Error executing action ${actionType}:`,
+        `[Action Executor] Error executing action ${type}:`,
         message
       );
       return { success: false, errorMessage: message };
@@ -191,7 +169,7 @@ async function processJob(job: Queue): Promise<void> {
       !rule.workflow ||
       !rule.workflow.isActive
     ) {
-      console.log(
+      console.info(
         `Rule ${ruleId} not found, inactive, or workflow inactive. Skipping job ${job.id}.`
       );
       // Marquer comme complété car il n'y a rien à faire
@@ -229,7 +207,7 @@ async function processJob(job: Queue): Promise<void> {
     });
 
     if (!workflowState || workflowState.status !== WorkflowStateStatus.ACTIVE) {
-      console.log(
+      console.info(
         `User ${userId} is not ACTIVE in workflow ${rule.workflowId}. Skipping job ${job.id}.`
       );
       await db.queue.update({
@@ -240,7 +218,7 @@ async function processJob(job: Queue): Promise<void> {
       return;
     }
 
-    console.log(
+    console.info(
       `Data loaded for job ${job.id}. User: ${user.email}, Rule: ${rule.id}, Trigger: ${triggeringEvent.eventType}`
     );
 
@@ -254,16 +232,17 @@ async function processJob(job: Queue): Promise<void> {
 
     // 5. Exécuter l'Action (si conditions remplies)
     if (conditionsMet) {
-      console.log(
+      console.info(
         `Conditions MET for rule ${rule.id}. Executing action ${rule.action.internalName}...`
       );
       executionStatus = ExecutionStatus.PROCESSING; // Avant l'exécution
 
       const executionResult = await actionExecutor.execute(
-        rule.action.actionType,
+        rule.action.type,
         rule.action.config,
         user,
-        triggeringEvent
+        triggeringEvent,
+        job
       );
 
       executionStatus = executionResult.success
@@ -272,11 +251,11 @@ async function processJob(job: Queue): Promise<void> {
       executionResultPayload = executionResult.resultPayload ?? null;
       executionErrorMessage = executionResult.errorMessage ?? null;
 
-      console.log(
+      console.info(
         `Action execution finished for rule ${rule.id}. Status: ${executionStatus}`
       );
     } else {
-      console.log(`Conditions NOT MET for rule ${rule.id}. Skipping action.`);
+      console.info(`Conditions NOT MET for rule ${rule.id}. Skipping action.`);
       // On considère que le job est terminé, l'action est juste skipée
       executionStatus = ExecutionStatus.SUCCESS; // Ou un nouveau statut SKIPPED? Pour l'instant SUCCESS=rien n'a échoué.
     }
@@ -306,7 +285,7 @@ async function processJob(job: Queue): Promise<void> {
           correlationId: correlationId
         }
       });
-      console.log(
+      console.info(
         `Execution logged for job ${job.id} with status ${executionStatus}.`
       );
     } else {
@@ -328,7 +307,7 @@ export async function GET(request: NextRequest) {
   const job = await db.$transaction(async () => {
     const [job] = await db.$queryRaw<Queue[]>`
         UPDATE "Queue"
-        SET status = 'processing', attempts = attempts + 1, processingStartedAt = NOW()
+        SET status = 'processing', attempts = attempts + 1, "processingStartedAt" = NOW()
         WHERE id = (
           SELECT id FROM "Queue"
           WHERE "Queue"."status" = 'pending' AND "Queue"."runAt" <= NOW()
@@ -357,7 +336,7 @@ export async function GET(request: NextRequest) {
       data: { status: 'completed', processingStartedAt: null }
     });
 
-    console.log(`Job ${job.id} completed successfully.`);
+    console.info(`Job ${job.id} completed successfully.`);
     return NextResponse.json({ status: 'success', job }, { status: 200 });
   } catch (error: unknown) {
     console.error(`Failed to process job ${job?.id ?? 'unknown'}:`, error);

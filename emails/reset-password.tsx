@@ -47,10 +47,7 @@ const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-export const ResetPassword = ({
-  resetLink,
-  lang = 'en'
-}: ResetPasswordProps) => (
+const ResetPassword = ({ resetLink, lang = 'en' }: ResetPasswordProps) => (
   <Html>
     <Head />
 

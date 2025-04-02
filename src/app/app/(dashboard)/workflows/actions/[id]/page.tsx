@@ -1,4 +1,4 @@
-import { ActionType } from '@prisma/client';
+import { Action } from '@prisma/client';
 
 import { db } from 'helpers/db';
 
@@ -11,7 +11,7 @@ export default async function WorkflowActionPage({
 
   const actions = await db.action.findMany({
     where: {
-      actionType: query.id as ActionType
+      type: query.id as Action['type']
     }
   });
 
