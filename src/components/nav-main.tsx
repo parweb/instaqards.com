@@ -4,6 +4,7 @@ import { ChevronRight, type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { LuExternalLink } from 'react-icons/lu';
 
+import { MiniGold } from 'components/editor/blocks/button/gold';
 import { Badge } from 'components/ui/badge';
 import { cn } from 'lib/utils';
 
@@ -82,10 +83,18 @@ export function NavMain({
                   isActive={item.isActive}
                   className="data-[active=true]:bg-transparent[data-active='true']"
                 >
-                  <Link prefetch href={item.url}>
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </Link>
+                  {item.url === '/affiliation' ? (
+                    <MiniGold
+                      href={item.url}
+                      label={item.title}
+                      className="h-auto text-center"
+                    />
+                  ) : (
+                    <Link prefetch href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  )}
                 </SidebarMenuButton>
 
                 {item.items?.length ? (

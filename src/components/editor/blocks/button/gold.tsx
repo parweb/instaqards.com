@@ -85,6 +85,18 @@ const BaseButton: React.FC<
   );
 };
 
+export const MiniGold = ({
+  label,
+  href,
+  className
+}: z.infer<typeof input> & { className?: string }) => {
+  return (
+    <Link href={href}>
+      <BaseButton className={cn('w-full', className)} label={label} />
+    </Link>
+  );
+};
+
 export default function Gold({
   label = 'Press me',
   href,
