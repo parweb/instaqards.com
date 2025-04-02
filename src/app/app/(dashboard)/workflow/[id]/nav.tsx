@@ -5,7 +5,7 @@ import { useParams, useSelectedLayoutSegment } from 'next/navigation';
 
 import { cn } from 'lib/utils';
 
-export default async function WorkflowNav() {
+export default function WorkflowNav() {
   const { id } = useParams() as { id?: string };
   const segment = useSelectedLayoutSegment();
 

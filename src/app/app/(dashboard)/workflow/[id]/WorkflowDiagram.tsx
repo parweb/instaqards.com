@@ -1,5 +1,7 @@
 'use client';
 
+import { useCallback } from 'react';
+
 import ReactFlow, {
   Background,
   Controls,
@@ -7,11 +9,11 @@ import ReactFlow, {
   Handle,
   Node,
   Position,
-  useNodesState,
-  useEdgesState
+  useEdgesState,
+  useNodesState
 } from 'reactflow';
+
 import 'reactflow/dist/style.css';
-import { useCallback } from 'react';
 
 interface WorkflowDiagramProps {
   workflow: any;

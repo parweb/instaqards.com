@@ -17,6 +17,7 @@ import {
   LifeBuoy,
   LinkIcon,
   Newspaper,
+  Play,
   Send,
   Settings,
   Users,
@@ -103,7 +104,7 @@ export function AppSidebar(
             {
               title: translate('menu.workflows'),
               url: '/workflows',
-              icon: Workflow,
+              icon: Play,
               isActive: segments[0] === 'workflows'
             }
           ]

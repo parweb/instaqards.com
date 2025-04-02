@@ -1,5 +1,6 @@
-import { db } from 'helpers/db';
 import { notFound } from 'next/navigation';
+
+import { db } from 'helpers/db';
 import { WorkflowDiagram } from './WorkflowDiagram';
 
 export default async function WorkflowPage(props: {

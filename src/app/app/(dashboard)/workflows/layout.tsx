@@ -1,11 +1,7 @@
-import { notFound, redirect } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
-import { LuArrowUpRight } from 'react-icons/lu';
 
-import { db } from 'helpers/db';
-import { getSession } from 'lib/auth';
-import WorkflowsNav from './nav';
 import { translate } from 'helpers/translate';
+import WorkflowsNav from './nav';
 
 export default async function WorkflowsLayout({
   children
