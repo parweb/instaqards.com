@@ -149,7 +149,12 @@ const translations = {
     it: 'Puoi contattarci qui',
     es: 'Puedes comunicarte con nosotros aquí'
   },
-
+  'dashboard.workflows.title': {
+    fr: 'Workflows',
+    en: 'Workflows',
+    it: 'Workflows',
+    es: 'Workflows'
+  },
   'dashboard.sites.title': {
     fr: 'Tous les sites',
     en: 'All Sites',
@@ -557,6 +562,12 @@ const translations = {
     en: 'Back to All Sites',
     it: 'Torna a tutti i siti',
     es: 'Volver a todos los sitios'
+  },
+  'menu.workflows': {
+    fr: 'Workflows',
+    en: 'Workflows',
+    it: 'Workflows',
+    es: 'Workflows'
   },
   'menu.design': {
     fr: 'Design',

@@ -1,0 +1,31 @@
+import { notFound, redirect } from 'next/navigation';
+import { Suspense, type ReactNode } from 'react';
+import { LuArrowUpRight } from 'react-icons/lu';
+
+import { db } from 'helpers/db';
+import { getSession } from 'lib/auth';
+import WorkflowNav from './nav';
+import { translate } from 'helpers/translate';
+
+export default async function WorkflowsLayout({
+  children
+}: {
+  params: Promise<{ id: string }>;
+  children: ReactNode;
+}) {
+  return (
+    <div className="p-8 flex flex-col gap-6 flex-1 self-stretch">
+      <div className="flex flex-col items-center sm:flex-row justify-between">
+        <h1 className="font-cal text-xl font-bold sm:text-3xl">
+          {await translate('dashboard.workflows.title')}
+        </h1>
+      </div>
+
+      <Suspense fallback={null}>
+        <WorkflowNav />
+      </Suspense>
+
+      {children}
+    </div>
+  );
+}

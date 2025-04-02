@@ -99,6 +99,12 @@ export function AppSidebar(
               url: '/referals',
               icon: Workflow,
               isActive: segments[0] === 'referals'
+            },
+            {
+              title: translate('menu.workflows'),
+              url: '/workflows',
+              icon: Workflow,
+              isActive: segments[0] === 'workflows'
             }
           ]
         : [])
