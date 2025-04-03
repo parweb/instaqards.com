@@ -1,7 +1,5 @@
 import * as feature from './features';
 
-const x = feature.get('reservation');
-
 export const all = [
   {
     id: 'pizzamaker',

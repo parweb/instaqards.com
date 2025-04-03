@@ -33,6 +33,7 @@ import Maps from 'components/editor/blocks/other/maps';
 import Profile from 'components/editor/blocks/other/profile';
 import Reservation from 'components/editor/blocks/other/reservation';
 import Socials from 'components/editor/blocks/other/socials';
+import AppleWatch from 'components/editor/blocks/picture/apple-watch';
 import Gallery from 'components/editor/blocks/picture/gallery';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
@@ -65,7 +66,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     'logo-circle': LogoCircle,
     'logo-square': LogoSquare,
     'picture-16-9': Picture169,
-    gallery: Gallery
+    gallery: Gallery,
+    'apple-watch': AppleWatch
   },
   text: {
     normal: Normal,

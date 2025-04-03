@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     ppr: true,
     viewTransition: true,
     serverActions: {
+      bodySizeLimit: '20mb',
       allowedOrigins: ['app.localhost:11000']
     }
   },
