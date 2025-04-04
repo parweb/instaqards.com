@@ -1,3 +1,5 @@
+import { Metadata } from 'next';
+
 import { Personas } from 'app/(marketing)/pro/personas';
 import { Separator } from 'components/ui/separator';
 import * as featureService from 'data/features';
@@ -6,6 +8,42 @@ import { getLang } from 'helpers/translate';
 
 interface Props {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata(props: Props): Promise<Metadata | null> {
+  const params = await props.params;
+
+  const id = params.id.replace('.qards.link', '');
+
+  const lang = 'fr';
+
+  const title = featureService.get(id as featureService.Feature['id']).title[
+    lang
+  ];
+  const description = featureService.get(id as featureService.Feature['id'])
+    .description[lang];
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description
+      // images: [image]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      // images: [image],
+      creator: '@qards_link'
+    },
+    // icons: [image],
+    metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`),
+    alternates: {
+      canonical: `/feature/${id}`
+    }
+  };
 }
 
 export default async function ProPage({ params }: Props) {

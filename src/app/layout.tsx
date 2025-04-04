@@ -32,7 +32,10 @@ export const metadata: Metadata = {
     images: [image],
     creator: '@vercel'
   },
-  metadataBase: new URL('https://qards.link')
+  metadataBase: new URL('https://qards.link'),
+  alternates: {
+    canonical: '/'
+  }
 };
 
 const Html = async ({ children }: { children: React.ReactNode }) => {

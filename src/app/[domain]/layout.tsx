@@ -43,7 +43,10 @@ export async function generateMetadata(props: {
       creator: '@qards_link'
     },
     icons: [logo],
-    metadataBase: new URL(`https://${domain}`)
+    metadataBase: new URL(`https://${domain}`),
+    alternates: {
+      canonical: '/'
+    }
   };
 }
 

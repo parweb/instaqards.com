@@ -1,6 +1,5 @@
-import { cn } from 'lib/utils';
-
 import { ArrowRight, MapPin } from 'lucide-react';
+import { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Persona } from 'components/marketing/Persona';
@@ -9,10 +8,56 @@ import { Card, CardContent } from 'components/ui/card';
 import { Separator } from 'components/ui/separator';
 import * as job from 'data/job';
 import { getLang } from 'helpers/translate';
+import { cn } from 'lib/utils';
 import { boldonse } from 'styles/fonts';
 
 interface Props {
   params: Promise<{ profession: string }>;
+}
+
+export async function generateMetadata(props: Props): Promise<Metadata | null> {
+  const params = await props.params;
+
+  const [id, city, postal] = params.profession
+    .replace('.qards.link', '')
+    .split('-');
+
+  const lang = 'fr';
+
+  const professionLabel = job.get(id as job.Job['id']).profession[lang];
+  const hasLocation = city && postal;
+
+  const title = hasLocation
+    ? `${professionLabel}s à ${city} (${postal}) – Solutions professionnelles sur mesure`
+    : `Solutions professionnelles sur mesure pour les ${professionLabel}s`;
+
+  const description = hasLocation
+    ? `Découvrez des solutions professionnelles conçues pour les ${professionLabel}s à ${city} (${postal}). Optimisez votre activité avec des services adaptés à vos besoins locaux.`
+    : `Des services professionnels pensés pour accompagner les ${professionLabel}s dans le développement de leur activité.`;
+
+  const image = `/assets/personas/${id}.png`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [image]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [image],
+      creator: '@qards_link'
+    },
+    icons: [image],
+    metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`),
+    alternates: {
+      canonical: `/pro/${params.profession.replace('.qards.link', '')}`
+    }
+  };
 }
 
 export default async function ProPage({ params }: Props) {
