@@ -50,6 +50,7 @@ export const BlockTypesItem = ({
     { id: 'picture-16-9', label: 'Picture 16:9', type: 'picture' },
     { id: 'gallery', label: 'Gallery', type: 'picture' },
     { id: 'apple-watch', label: 'Apple watch', type: 'picture' },
+    { id: 'bento', label: 'Bento', type: 'picture' },
 
     { id: 'normal', label: 'Normal', type: 'text' },
     { id: 'ghibli', label: 'Ghibli', type: 'text' },
