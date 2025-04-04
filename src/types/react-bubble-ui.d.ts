@@ -24,4 +24,4 @@ declare module 'react-bubble-ui' {
 
   const BubbleUI: FC<BubbleUIProps>;
   export default BubbleUI;
-} 
+}

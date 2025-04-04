@@ -2,7 +2,7 @@
 
 import { CSS } from '@dnd-kit/utilities';
 import { nanoid } from 'nanoid';
-import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
+import { RefObject, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { LuMove, LuTrash } from 'react-icons/lu';
 
@@ -127,162 +127,159 @@ export const UploaderItem = ({
   );
 };
 
-export const Uploader = forwardRef(
-  ({
-    setValue,
-    ...props
-  }: {
-    name: string;
-    shape: Extract<BlockType, { kind: 'upload' }>;
-    data: Record<string, unknown>;
-    setValue: (name: string, value: Media[]) => void; // eslint-disable-line no-unused-vars
-  }) => {
-    const isMultiple = props.shape.multiple;
+export const Uploader = ({
+  setValue,
+  ref,
+  ...props
+}: {
+  name: string;
+  shape: Extract<BlockType, { kind: 'upload' }>;
+  data: Record<string, unknown>;
+  ref: RefObject<HTMLDivElement>;
+  setValue: (name: string, value: Media[]) => void; // eslint-disable-line no-unused-vars
+}) => {
+  const isMultiple = props.shape.multiple;
 
-    const medias = useMemo(
-      () => (props?.data?.[props.name] ?? []) as Media[],
-      [name] // eslint-disable-line react-hooks/exhaustive-deps
-    );
+  const medias = useMemo(
+    () => (props?.data?.[props.name] ?? []) as Media[],
+    [name] // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
-    const [items, setItems] = useState(medias);
-    const [activeId, setActiveId] = useState<string>();
+  const [items, setItems] = useState(medias);
+  const [activeId, setActiveId] = useState<string>();
 
-    useEffect(() => {
-      setItems(medias);
-    }, [medias]);
+  useEffect(() => {
+    setItems(medias);
+  }, [medias]);
 
-    const sensors = useSensors(
-      useSensor(MouseSensor, { activationConstraint: undefined }),
-      useSensor(TouchSensor, { activationConstraint: undefined }),
-      useSensor(KeyboardSensor)
-    );
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: undefined }),
+    useSensor(TouchSensor, { activationConstraint: undefined }),
+    useSensor(KeyboardSensor)
+  );
 
-    const handleDragEnd = useCallback(
-      ({ active, over }: DragEndEvent) => {
-        setActiveId(undefined);
+  const handleDragEnd = useCallback(
+    ({ active, over }: DragEndEvent) => {
+      setActiveId(undefined);
 
-        if (active.id !== over?.id) {
-          setItems(items => {
-            const oldIndex = items.findIndex(item => item.id === active.id);
-            const newIndex = items.findIndex(item => item.id === over?.id);
+      if (active.id !== over?.id) {
+        setItems(items => {
+          const oldIndex = items.findIndex(item => item.id === active.id);
+          const newIndex = items.findIndex(item => item.id === over?.id);
 
-            const result = arrayMove(items, oldIndex, newIndex);
-
-            setValue(props.name, result);
-
-            return result;
-          });
-        }
-      },
-      [props.name, setValue]
-    );
-
-    const handleDragStart = useCallback(({ active }: DragStartEvent) => {
-      setActiveId(active.id as string);
-    }, []);
-
-    const onDrop = useCallback(
-      (files: File[]) => {
-        if (files.length === 0) return;
-
-        setItems(state => {
-          const result = [
-            ...(isMultiple ? state : []),
-            ...files.map(file => ({
-              id: nanoid(),
-              kind: 'local' as const,
-              file
-            }))
-          ];
+          const result = arrayMove(items, oldIndex, newIndex);
 
           setValue(props.name, result);
 
           return result;
         });
-      },
-      [isMultiple, props.name, setValue]
-    );
+      }
+    },
+    [props.name, setValue]
+  );
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-      onDrop,
-      multiple: props.shape.multiple,
-      accept: props.shape.accept ?? {}
-    });
+  const handleDragStart = useCallback(({ active }: DragStartEvent) => {
+    setActiveId(active.id as string);
+  }, []);
 
-    return (
-      <div className="relative flex flex-col gap-5">
-        <div
-          className={cn(
-            'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
-            'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
-            isDragActive && 'border-slate-900 text-slate-900'
-          )}
-        >
-          <div {...getRootProps()} className="text-center">
-            <input {...getInputProps({ ...props })} />
+  const onDrop = useCallback(
+    (files: File[]) => {
+      if (files.length === 0) return;
 
-            {isDragActive ? (
-              <>
-                <p>Drop the files here</p>
-                <p>Image or Video</p>
-              </>
-            ) : (
-              <>
-                <p>{"Drag 'n' drop some files here,"}</p>
-                <p>or click to select files</p>
-              </>
-            )}
-          </div>
-        </div>
+      setItems(state => {
+        const result = [
+          ...(isMultiple ? state : []),
+          ...files.map(file => ({
+            id: nanoid(),
+            kind: 'local' as const,
+            file
+          }))
+        ];
 
-        {props.shape.preview === true && (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
-          >
-            <SortableContext
-              items={items}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="flex flex-col gap-2">
-                {items?.map((item, index, list) => (
-                  <UploaderItem
-                    key={item.id}
-                    isActive={activeId === item.id}
-                    item={item}
-                    list={list}
-                    onLinkChange={(id, link) =>
-                      setItems(items => {
-                        const result = items.map(item =>
-                          item.id === id ? { ...item, link } : item
-                        );
+        setValue(props.name, result);
 
-                        setValue(props.name, result);
+        return result;
+      });
+    },
+    [isMultiple, props.name, setValue]
+  );
 
-                        return result;
-                      })
-                    }
-                    onDelete={id =>
-                      setItems(items => {
-                        const result = items.filter(item => item.id !== id);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: props.shape.multiple,
+    accept: props.shape.accept ?? {}
+  });
 
-                        setValue(props.name, result);
-
-                        return result;
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
+  return (
+    <div className="relative flex flex-col gap-5">
+      <div
+        className={cn(
+          'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
+          'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
+          isDragActive && 'border-slate-900 text-slate-900'
         )}
+      >
+        <div {...getRootProps()} className="text-center">
+          <input {...getInputProps({ ...props })} />
+
+          {isDragActive ? (
+            <>
+              <p>Drop the files here</p>
+              <p>Image or Video</p>
+            </>
+          ) : (
+            <>
+              <p>{"Drag 'n' drop some files here,"}</p>
+              <p>or click to select files</p>
+            </>
+          )}
+        </div>
       </div>
-    );
-  }
-);
+
+      {props.shape.preview === true && (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+        >
+          <SortableContext items={items} strategy={verticalListSortingStrategy}>
+            <div className="flex flex-col gap-2">
+              {items?.map((item, index, list) => (
+                <UploaderItem
+                  key={item.id}
+                  isActive={activeId === item.id}
+                  item={item}
+                  list={list}
+                  onLinkChange={(id, link) =>
+                    setItems(items => {
+                      const result = items.map(item =>
+                        item.id === id ? { ...item, link } : item
+                      );
+
+                      setValue(props.name, result);
+
+                      return result;
+                    })
+                  }
+                  onDelete={id =>
+                    setItems(items => {
+                      const result = items.filter(item => item.id !== id);
+
+                      setValue(props.name, result);
+
+                      return result;
+                    })
+                  }
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+      )}
+    </div>
+  );
+};
 
 Uploader.displayName = 'Uploader';
