@@ -68,7 +68,8 @@ export const BlockTypesItem = ({
     { id: 'reservation', label: 'Reservation', type: 'other' },
     { id: 'maps', label: 'Maps', type: 'other' },
 
-    { id: 'simple', label: 'Simple', type: 'social' }
+    { id: 'simple', label: 'Simple', type: 'social' },
+    { id: 'arc', label: 'Arc', type: 'social' }
   ];
 
   const collection = variants.filter(v => v.type === type);

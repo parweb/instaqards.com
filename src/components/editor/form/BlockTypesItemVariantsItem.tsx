@@ -32,12 +32,13 @@ import Email from 'components/editor/blocks/other/email';
 import Maps from 'components/editor/blocks/other/maps';
 import Profile from 'components/editor/blocks/other/profile';
 import Reservation from 'components/editor/blocks/other/reservation';
-import Simple from 'components/editor/blocks/social/simple';
 import AppleWatch from 'components/editor/blocks/picture/apple-watch';
 import Gallery from 'components/editor/blocks/picture/gallery';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
 import LogoSquare from 'components/editor/blocks/picture/logo-square';
 import Picture169 from 'components/editor/blocks/picture/picture-16-9';
+import Arc from 'components/editor/blocks/social/arc';
+import Simple from 'components/editor/blocks/social/simple';
 import Ghibli from 'components/editor/blocks/text/ghibli';
 import Normal from 'components/editor/blocks/text/normal';
 import { Button } from 'components/ui/button';
@@ -90,7 +91,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     maps: Maps
   },
   social: {
-    simple: Simple
+    simple: Simple,
+    arc: Arc
   }
 };
 
