@@ -3,6 +3,7 @@ import {
   Container,
   Head,
   Html,
+  Img,
   Preview,
   Tailwind
 } from '@react-email/components';
@@ -10,17 +11,21 @@ import {
 import { Content } from './content';
 import { Footer } from './footer';
 import { Header } from './header';
-import { Lang } from './settings';
+import { base, Lang } from './settings';
 
 export const Main = ({
   children,
   title,
-  lang
+  lang,
+  id
 }: {
   children: React.ReactNode;
   title: string;
   lang: Lang;
+  id: string;
 }) => {
+  const pixelUrl = `${base}/api/email/track/open?id=${encodeURIComponent(id)}`;
+
   return (
     <Tailwind>
       <Html>
@@ -34,6 +39,14 @@ export const Main = ({
             <Content lang={lang}>{children}</Content>
             <Footer lang={lang} />
           </Container>
+
+          <Img
+            src={pixelUrl}
+            alt=""
+            width={1}
+            height={1}
+            style={{ display: 'none' }}
+          />
         </Body>
       </Html>
     </Tailwind>

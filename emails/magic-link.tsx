@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import {
   Body,
   Container,
@@ -9,7 +11,13 @@ import {
   Preview,
   Text
 } from '@react-email/components';
-import * as React from 'react';
+
+const subject = {
+  en: 'Activate your account',
+  fr: 'Activer votre compte',
+  es: 'Activar tu cuenta',
+  it: 'Attiva il tuo account'
+};
 
 const translations = {
   en: {
@@ -102,6 +110,8 @@ const MagicLink = ({ magicLink, lang = 'en' }: MagicLinkProps) => {
     </Html>
   );
 };
+
+MagicLink.subject = subject;
 
 MagicLink.PreviewProps = {
   magicLink: 'sparo-ndigo-amurt-secan'

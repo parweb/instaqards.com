@@ -1,4 +1,4 @@
-import { Column, Section, Img, Row } from '@react-email/components';
+import { Column, Img, Row, Section } from '@react-email/components';
 
 import { base, Lang } from './settings';
 

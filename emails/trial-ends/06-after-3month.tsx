@@ -1,17 +1,36 @@
+/*
+
+Email : Dernier Jour d'Essai
+
+  Timing : Jour 30 (matin).
+  Objectif : Dernière chance, clarté maximale sur l'action à faire.
+  Contenu Clé :
+    "C'est le dernier jour de votre essai gratuit [Nom de l'application]."
+    Message très direct et concis.
+    Que se passe-t-il à minuit ?
+    CTA Principal : "Mettre à niveau mon compte" ou "Conserver mon accès".
+  Sujet : Dernier jour pour activer votre compte [Nom de l'application], [Prénom] !
+
+*/
+
 import {
   Button,
   Column,
-  Container,
   Heading,
-  Img,
-  Link,
   Row,
   Section,
   Text
 } from '@react-email/components';
 
-import { base } from './layout/settings';
-import { Main } from './layout/main';
+import { Main } from '../layout/main';
+import { base } from '../layout/settings';
+
+const subject = {
+  en: 'Welcome to Qards',
+  fr: 'Bienvenue chez Qards',
+  es: 'Bienvenido a Qards',
+  it: 'Benvenuto in Qards'
+};
 
 const translations = {
   en: {
@@ -70,13 +89,14 @@ const translations = {
 
 interface WelcomeEmailProps {
   lang?: keyof typeof translations;
+  id: string;
 }
 
-const WelcomeEmail = ({ lang = 'en' }: WelcomeEmailProps) => {
+const Welcome = ({ lang = 'en', id }: WelcomeEmailProps) => {
   const t = translations[lang];
 
   return (
-    <Main title={t.title} lang={lang}>
+    <Main title={t.title} lang={lang} id={id}>
       <Heading className="text-3xl font-bold text-center text-gray-800 mb-4">
         {t.title}
       </Heading>
@@ -109,8 +129,9 @@ const WelcomeEmail = ({ lang = 'en' }: WelcomeEmailProps) => {
   );
 };
 
-WelcomeEmail.PreviewProps = {
+Welcome.subject = subject;
+Welcome.PreviewProps = {
   lang: 'fr'
 } as WelcomeEmailProps;
 
-export default WelcomeEmail;
+export default Welcome;

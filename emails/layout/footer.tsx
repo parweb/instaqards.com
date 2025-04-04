@@ -1,7 +1,7 @@
 import { Column, Link, Row, Section, Text } from '@react-email/components';
 
-import { base, Lang } from './settings';
 import * as job from 'data/job';
+import { base, Lang } from './settings';
 
 const title = {
   fr: "Nos cas d'utilisation",

@@ -1,4 +1,4 @@
-export const base = process.env?.NEXTAUTH_URL ?? 'https://qards.link';
+export const base = process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000';
 
 export const langs = ['fr', 'en', 'it', 'es'] as const;
 

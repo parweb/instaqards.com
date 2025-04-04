@@ -12,6 +12,13 @@ import {
   Text
 } from '@react-email/components';
 
+const subject = {
+  en: 'Confirm your email',
+  fr: 'Confirmer votre email',
+  es: 'Confirmar tu email',
+  it: 'Conferma il tuo email'
+};
+
 const translations = {
   en: {
     title: 'Confirm your email',
@@ -103,6 +110,8 @@ const ConfirmAccount = ({ confirmLink, lang = 'en' }: ConfirmAccountProps) => {
     </Html>
   );
 };
+
+ConfirmAccount.subject = subject;
 
 ConfirmAccount.PreviewProps = {
   confirmLink: 'sparo-ndigo-amurt-secan'

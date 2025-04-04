@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import {
   Body,
   Container,
@@ -9,7 +11,13 @@ import {
   Preview,
   Text
 } from '@react-email/components';
-import * as React from 'react';
+
+const subject = {
+  en: 'Reset your password',
+  fr: 'Réinitialiser votre mot de passe',
+  es: 'Restablecer tu contraseña',
+  it: 'Reimposta la tua password'
+};
 
 const translations = {
   en: {
@@ -100,6 +108,8 @@ const ResetPassword = ({ resetLink, lang = 'en' }: ResetPasswordProps) => (
     </Body>
   </Html>
 );
+
+ResetPassword.subject = subject;
 
 ResetPassword.PreviewProps = {
   resetLink: 'sparo-ndigo-amurt-secan'

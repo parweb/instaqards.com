@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import {
   Body,
   Container,
@@ -9,7 +11,13 @@ import {
   Preview,
   Text
 } from '@react-email/components';
-import * as React from 'react';
+
+const subject = {
+  en: '2FA Code',
+  fr: 'Code 2FA',
+  es: 'Código 2FA',
+  it: 'Codice 2FA'
+};
 
 const translations = {
   en: {
@@ -98,6 +106,8 @@ const TwoFactorToken = ({ token, lang = 'en' }: TwoFactorTokenProps) => (
     </Body>
   </Html>
 );
+
+TwoFactorToken.subject = subject;
 
 TwoFactorToken.PreviewProps = {
   token: '319083'

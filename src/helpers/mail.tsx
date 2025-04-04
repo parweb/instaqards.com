@@ -1,14 +1,18 @@
 import 'server-only';
 
+import { render } from '@react-email/render';
 import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { Resend } from 'resend';
+import { ulid } from 'ulid';
 
+import { db } from 'helpers/db';
+import { sender } from 'settings';
+import { DEFAULT_LANG, type Lang } from 'translations';
 import ConfirmAccountEmail from '../../emails/confirm-account';
 import MagicLinkEmail from '../../emails/magic-link';
+import WelcomeEmail from '../../emails/onboarding/01-welcome';
 import ResetPasswordEmail from '../../emails/reset-password';
 import TwoFactorTokenEmail from '../../emails/two-factor-token';
-import WelcomeEmail from '../../emails/welcome';
-import { DEFAULT_LANG, type Lang } from 'translations';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -44,95 +48,63 @@ const getLang = async () => {
   return lang;
 };
 
-export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+const send = async (
+  to: string,
+  Template: React.FunctionComponent<
+    { lang: Lang; id: string; subject: string } & Record<string, string>
+  > & { subject: Record<Lang, string> },
+  variables: Record<string, string> = {},
+  from: string = sender
+) => {
+  const id = ulid();
+
   const lang = await getLang();
 
-  const subject = {
-    en: '2FA Code',
-    fr: 'Code 2FA',
-    es: 'Código 2FA',
-    it: 'Codice 2FA'
-  }[lang];
+  const subject = Template.subject[lang];
+  const react = (
+    <Template lang={lang} subject={subject} id={id} {...variables} />
+  );
 
-  await resend.emails.send({
-    from: 'contact@qards.link',
-    to: email,
-    subject,
-    react: <TwoFactorTokenEmail lang={lang} token={token} />
-  });
+  await resend.emails.send({ from, to, subject, react });
+
+  render(react, { pretty: true }).then(html =>
+    db.outbox.create({
+      data: {
+        id,
+        email: to,
+        subject,
+        body: html,
+        metadata: {
+          lang,
+          variables
+        }
+      }
+    })
+  );
+};
+
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+  await send(email, TwoFactorTokenEmail, { token });
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const lang = await getLang();
   const resetLink = `${domain}/new-password?token=${token}`;
 
-  const subject = {
-    en: 'Reset your password',
-    fr: 'Réinitialiser votre mot de passe',
-    es: 'Restablecer tu contraseña',
-    it: 'Reimposta la tua password'
-  }[lang];
-
-  await resend.emails.send({
-    from: 'contact@qards.link',
-    to: email,
-    subject,
-    react: <ResetPasswordEmail lang={lang} resetLink={resetLink} />
-  });
+  await send(email, ResetPasswordEmail, { resetLink });
 };
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const lang = await getLang();
   const confirmLink = `${domain}/new-verification?token=${token}`;
 
-  const subject = {
-    en: 'Confirm your email',
-    fr: 'Confirmer votre email',
-    es: 'Confirmar tu email',
-    it: 'Conferma il tuo email'
-  }[lang];
-
-  await resend.emails.send({
-    from: 'contact@qards.link',
-    to: email,
-    subject,
-    react: <ConfirmAccountEmail lang={lang} confirmLink={confirmLink} />
-  });
+  await send(email, ConfirmAccountEmail, { confirmLink });
 };
 
 export const sendMagicLinkEmail = async (email: string, magicLink: string) => {
-  const lang = await getLang();
-
-  const subject = {
-    en: 'Activate your account',
-    fr: 'Activer votre compte',
-    es: 'Activar tu cuenta',
-    it: 'Attiva il tuo account'
-  }[lang];
-
-  await resend.emails.send({
-    from: 'contact@qards.link',
-    to: email,
-    subject,
-    react: <MagicLinkEmail lang={lang} magicLink={magicLink} />
-  });
+  await send(email, MagicLinkEmail, { magicLink });
 };
 
 export const sendWelcomeEmail = async (email: string) => {
   console.info('email::sendWelcomeEmail', { email });
-  const lang = await getLang();
 
-  const subject = {
-    en: 'Welcome to Qards',
-    fr: 'Bienvenue chez Qards',
-    es: 'Bienvenido a Qards',
-    it: 'Benvenuto in Qards'
-  }[lang];
-
-  await resend.emails.send({
-    from: 'contact@qards.link',
-    to: email,
-    subject,
-    react: <WelcomeEmail lang={lang} />
-  });
+  await send(email, WelcomeEmail);
 };

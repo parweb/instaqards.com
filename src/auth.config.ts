@@ -9,9 +9,10 @@ import Resend from 'next-auth/providers/resend';
 // import Tiktok from '@auth/core/providers/tiktok';
 
 import { getUserByEmail } from 'data/user';
-import { LoginSchema } from 'schemas';
 import { getVerificationTokenByEmail } from 'data/verificiation-token';
 import { sendMagicLinkEmail } from 'helpers/mail';
+import { LoginSchema } from 'schemas';
+import { sender } from 'settings';
 
 export default {
   pages: {
@@ -56,7 +57,7 @@ export default {
     }),
     Resend({
       apiKey: process.env.RESEND_API_KEY,
-      from: 'contact@qards.link',
+      from: sender,
       async sendVerificationRequest({ identifier, url }) {
         try {
           await sendMagicLinkEmail(identifier, url);
