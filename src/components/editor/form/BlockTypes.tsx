@@ -18,7 +18,8 @@ export const BlockTypes = ({
             { type: 'picture', label: 'Images' },
             { type: 'text', label: 'Textes' },
             { type: 'external', label: 'Externes' },
-            { type: 'other', label: 'Autres' }
+            { type: 'other', label: 'Autres' },
+            { type: 'social', label: 'Socials' }
           ] as const
         ).map(block => (
           <BlockTypesItem key={block.type} {...block} onClick={onClick} />

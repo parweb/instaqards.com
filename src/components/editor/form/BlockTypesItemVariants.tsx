@@ -18,7 +18,7 @@ export const BlockTypesItemVariants = ({
   variants: {
     id: string;
     label: string;
-    type: 'button' | 'picture' | 'text' | 'external' | 'other';
+    type: 'button' | 'picture' | 'text' | 'external' | 'other' | 'social';
   }[];
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;

@@ -32,7 +32,7 @@ import {
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
 
-import { input } from 'components/editor/blocks/other/socials';
+import { input } from 'components/editor/blocks/social/simple';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { cn, type Block as BlockType } from 'lib/utils';

@@ -32,7 +32,7 @@ import Email from 'components/editor/blocks/other/email';
 import Maps from 'components/editor/blocks/other/maps';
 import Profile from 'components/editor/blocks/other/profile';
 import Reservation from 'components/editor/blocks/other/reservation';
-import Socials from 'components/editor/blocks/other/socials';
+import Simple from 'components/editor/blocks/social/simple';
 import AppleWatch from 'components/editor/blocks/picture/apple-watch';
 import Gallery from 'components/editor/blocks/picture/gallery';
 import LogoCircle from 'components/editor/blocks/picture/logo-circle';
@@ -87,8 +87,10 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     email: Email,
     profile: Profile,
     reservation: Reservation,
-    maps: Maps,
-    socials: Socials
+    maps: Maps
+  },
+  social: {
+    simple: Simple
   }
 };
 
@@ -101,7 +103,7 @@ export const BlockTypesItemVariantsItem = ({
 }: {
   id: string;
   label: string;
-  type: 'button' | 'picture' | 'text' | 'external' | 'other';
+  type: 'button' | 'picture' | 'text' | 'external' | 'other' | 'social';
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
   value?: { type: string; id: string };

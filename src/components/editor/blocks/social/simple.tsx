@@ -1,13 +1,13 @@
 'use client';
 
 import type { Block } from '@prisma/client';
+import Link from 'next/link';
+import { LuLink } from 'react-icons/lu';
+import { SocialIcon } from 'react-social-icons';
 import * as z from 'zod';
 
 import { cn, json } from 'lib/utils';
 
-import { SocialIcon } from 'react-social-icons';
-import Link from 'next/link';
-import { LuLink } from 'react-icons/lu';
 export const input = z.object({
   socials: z
     .array(
@@ -25,7 +25,7 @@ export const input = z.object({
     )
 });
 
-export default function Socials({
+export default function Simple({
   block,
   socials = [
     { id: '1', href: 'https://www.instagram.com', logo: 'instagram' },

@@ -18,7 +18,7 @@ export const BlockTypesItem = ({
   value
 }: {
   label: string;
-  type: 'button' | 'picture' | 'text' | 'external' | 'other';
+  type: 'button' | 'picture' | 'text' | 'external' | 'other' | 'social';
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
   value?: { type: string; id: string };
@@ -26,7 +26,7 @@ export const BlockTypesItem = ({
   const variants: {
     id: string;
     label: string;
-    type: 'button' | 'picture' | 'text' | 'external' | 'other';
+    type: 'button' | 'picture' | 'text' | 'external' | 'other' | 'social';
   }[] = [
     { id: 'glow-up-001', label: 'Glow up 1', type: 'button' },
     { id: 'glow-up-002', label: 'Glow up 2', type: 'button' },
@@ -67,7 +67,8 @@ export const BlockTypesItem = ({
     { id: 'profile', label: 'Profile', type: 'other' },
     { id: 'reservation', label: 'Reservation', type: 'other' },
     { id: 'maps', label: 'Maps', type: 'other' },
-    { id: 'socials', label: 'Socials', type: 'other' }
+
+    { id: 'simple', label: 'Simple', type: 'social' }
   ];
 
   const collection = variants.filter(v => v.type === type);

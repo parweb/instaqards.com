@@ -70,6 +70,8 @@ export function BlockPreview({
   const block_widget_id = block_widget?.id ?? null;
 
   useEffect(() => {
+    if (block_widget_type === null || block_widget_id === null) return;
+
     let mounted = true;
 
     import(

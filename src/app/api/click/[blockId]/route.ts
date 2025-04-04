@@ -31,7 +31,7 @@ type PictureWidgetType =
   | 'logo-square'
   | 'picture-16-9';
 
-type OtherWidgetType = 'socials';
+type SocialWidgetType = 'simple' | 'arc';
 
 type ButtonWidgetType = 'direction' | 'default';
 
@@ -53,9 +53,9 @@ type PictureWidgetMapper = {
   ) => string | undefined;
 };
 
-type OtherWidgetMapper = {
+type SocialWidgetMapper = {
   // eslint-disable-next-line no-unused-vars
-  [K in OtherWidgetType]: (
+  [K in SocialWidgetType]: (
     // eslint-disable-next-line no-unused-vars
     data: WidgetData['data'],
     // eslint-disable-next-line no-unused-vars
@@ -69,7 +69,7 @@ type WidgetMapper = {
   // eslint-disable-next-line no-unused-vars
   picture: (widget: WidgetData, id: string) => string | undefined;
   // eslint-disable-next-line no-unused-vars
-  other: (widget: WidgetData, id: string) => string | undefined;
+  social: (widget: WidgetData, id: string) => string | undefined;
 };
 
 const buttonWidgetMapper: ButtonWidgetMapper = {
@@ -88,8 +88,9 @@ const pictureWidgetMapper: PictureWidgetMapper = {
     data.medias?.find(media => media.id === id)?.link
 };
 
-const otherWidgetMapper: OtherWidgetMapper = {
-  socials: (data, id) => data.socials?.find(social => social.id === id)?.href
+const socialWidgetMapper: SocialWidgetMapper = {
+  simple: (data, id) => data.socials?.find(social => social.id === id)?.href,
+  arc: (data, id) => data.socials?.find(social => social.id === id)?.href
 };
 
 const widgetMapper: WidgetMapper = {
@@ -101,8 +102,8 @@ const widgetMapper: WidgetMapper = {
     )?.(widget.data),
   picture: (widget, id) =>
     pictureWidgetMapper[widget.id as PictureWidgetType]?.(widget.data, id),
-  other: (widget, id) =>
-    otherWidgetMapper[widget.id as OtherWidgetType]?.(widget.data, id)
+  social: (widget, id) =>
+    socialWidgetMapper[widget.id as SocialWidgetType]?.(widget.data, id)
 };
 
 export async function GET(
@@ -122,6 +123,8 @@ export async function GET(
       include: { block: true },
       data: { blockId, part: query.id }
     });
+
+    console.info({ click });
 
     if (!click.block) {
       console.error('api::click::[blockId] Block not found', { blockId });
