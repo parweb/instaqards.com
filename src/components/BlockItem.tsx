@@ -38,6 +38,7 @@ import DuplicateBlockButton from 'components/duplicate-block-button';
 import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
+import { useIsMobile } from 'hooks/use-mobile';
 
 const BlockWidget = dynamic(() => import('./BlockWidget'), { ssr: false });
 
@@ -64,6 +65,8 @@ const BlockItem = ({
   block: Block;
   editor?: boolean;
 }) => {
+  const isMobile = useIsMobile();
+
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: block.id });
 
@@ -144,7 +147,7 @@ const BlockItem = ({
         <div
           className={cn(
             'absolute left-3/4 z-50 flex flex-col items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100',
-            editor === true && 'opacity-100 left-full'
+            isMobile === true && 'opacity-100 left-full'
           )}
         >
           <BlockUpdate block={block} />
