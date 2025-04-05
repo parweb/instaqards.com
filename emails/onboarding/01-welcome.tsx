@@ -20,6 +20,8 @@ import {
   Button,
   Column,
   Heading,
+  Link as LinkComponent,
+  LinkProps,
   Row,
   Section,
   Text
@@ -95,8 +97,15 @@ interface WelcomeEmailProps {
   id: string;
 }
 
+const link =
+  (id: string, { lang }: { lang: keyof typeof translations }) =>
+  (href: string, name: string = '') =>
+    `${base}/api/email/track/click?url=${encodeURI(String(href))}&id=${id}&name=${name}`;
+
 const Welcome = ({ lang = 'en', id }: WelcomeEmailProps) => {
   const t = translations[lang];
+
+  const track = link(id, { lang });
 
   return (
     <Main title={t.title} lang={lang} id={id}>
@@ -123,7 +132,7 @@ const Welcome = ({ lang = 'en', id }: WelcomeEmailProps) => {
       <Section className="text-center mb-8">
         <Button
           className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition-colors"
-          href={base}
+          href={track(base, 'cta')}
         >
           {t.cta}
         </Button>

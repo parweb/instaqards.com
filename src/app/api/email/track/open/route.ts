@@ -1,6 +1,8 @@
-import { type NextRequest, NextResponse } from 'next/server';
-import { db } from 'helpers/db';
+import { Outbox } from '@prisma/client';
+import { after, type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+
+import { db } from 'helpers/db';
 
 const QuerySchema = z.object({
   id: z.string().min(1)
@@ -11,7 +13,7 @@ const PIXEL_BUFFER = Buffer.from(
   'base64'
 );
 
-export async function GET(request: NextRequest, response: NextResponse) {
+export async function GET(request: NextRequest) {
   try {
     const query = Object.fromEntries(new URL(request.url).searchParams);
 
@@ -24,30 +26,31 @@ export async function GET(request: NextRequest, response: NextResponse) {
 
     const { id } = validation.data;
 
-    console.log({ headers: Object.fromEntries(request.headers.entries()) });
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+    const agent = request.headers.get('user-agent') ?? 'unknown';
 
-    db.$transaction([
-      db.outbox.update({ where: { id }, data: { status: 'OPEN' } }),
-      db.$queryRaw`
-      UPDATE "Outbox"      
-      SET "metadata" = jsonb_set(
-        jsonb_set(
-            jsonb_set(
-                COALESCE("metadata", '{}'::jsonb),
-                '{ip}',
-                to_jsonb(${request.headers.get('x-forwarded-for')}::text),
-                true
+    after(
+      db.$queryRaw<Outbox[]>`
+        UPDATE "Outbox"      
+        SET status = 'opened', "metadata" = jsonb_set(
+          COALESCE("metadata", '{}'::jsonb),
+          ARRAY['events'],
+          COALESCE("metadata"->'events', '[]'::jsonb) ||
+            jsonb_build_object(
+              'type', 'open',
+              'ip', ${ip}::text,
+              'agent', ${agent}::text,
+              'createdAt', to_jsonb(NOW() at time zone 'utc')
             ),
-            '{agent}',
-            to_jsonb(${request.headers.get('user-agent')}::text),
-            true
-        ),
-        '{openAt}',
-        to_jsonb(NOW() at time zone 'utc'),
-        true
-      )
-      WHERE id = ${id}`
-    ]);
+          true
+        )
+        WHERE id = ${id}
+        RETURNING "metadata";
+      `
+        .then(([{ metadata }]) => console.log(id, metadata))
+        .catch(console.error)
+    );
 
     return sendPixel();
   } catch (error) {

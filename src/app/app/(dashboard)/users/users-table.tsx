@@ -9,17 +9,9 @@ import { Label } from 'components/ui/label';
 import { RadioGroup, RadioGroupItem } from 'components/ui/radio-group';
 import { Switch } from 'components/ui/switch';
 import { Subscription } from 'lib/Subscription';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from 'components/ui/dialog';
-import { Button } from 'components/ui/button';
 import Link from 'next/link';
-import UserSiteModalButton from './user-site-modal-button';
 import UserSiteModal from './user-site-modal';
+import UserSiteModalButton from './user-site-modal-button';
 
 interface UsersTableProps {
   initialUsers: Prisma.UserGetPayload<{
@@ -139,21 +131,28 @@ export const UsersTable = ({ initialUsers }: UsersTableProps) => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
-                          <Avatar className="h-8 w-8 rounded-lg">
-                            <AvatarImage src={avatar} alt={user?.name ?? ''} />
-                            <AvatarFallback className="rounded-lg">
-                              {(user.name?.[0] || user.email[0]).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
+                          <Link href={`/user/${user.id}`}>
+                            <Avatar className="h-8 w-8 rounded-lg">
+                              <AvatarImage
+                                src={avatar}
+                                alt={user?.name ?? ''}
+                              />
+                              <AvatarFallback className="rounded-lg">
+                                {(
+                                  user.name?.[0] || user.email[0]
+                                ).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                          </Link>
                         </div>
 
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            {user.name}
+                            <Link href={`/user/${user.id}`}>{user.name}</Link>
                           </div>
 
                           <div className="text-sm text-gray-500">
-                            {user.email}
+                            <Link href={`/user/${user.id}`}>{user.email}</Link>
                           </div>
                         </div>
                       </div>

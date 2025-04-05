@@ -56,6 +56,7 @@
     "@stripe/stripe-js": "6.1.0",
     "@tremor/react": "3.18.7",
     "@vercel/analytics": "1.5.0",
+    "@vercel/functions": "^2.0.0",
     "@vercel/speed-insights": "1.2.0",
     "array-grouping-polyfill": "0.0.3",
     "babel-plugin-react-compiler": "19.0.0-beta-aeaed83-20250323",

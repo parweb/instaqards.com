@@ -4,6 +4,7 @@ import { render } from '@react-email/render';
 import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { Resend } from 'resend';
 import { ulid } from 'ulid';
+import { waitUntil } from '@vercel/functions';
 
 import { db } from 'helpers/db';
 import { sender } from 'settings';
@@ -67,19 +68,32 @@ const send = async (
 
   await resend.emails.send({ from, to, subject, react });
 
-  render(react, { pretty: true }).then(html =>
-    db.outbox.create({
-      data: {
-        id,
-        email: to,
-        subject,
-        body: html,
-        metadata: {
-          lang,
-          variables
-        }
-      }
-    })
+  waitUntil(
+    render(react, { pretty: true }).then(
+      async html =>
+        await db.outbox
+          .create({
+            data: {
+              id,
+              email: to,
+              subject,
+              body: html,
+              status: 'sent',
+              metadata: {
+                lang,
+                variables,
+                events: [
+                  {
+                    type: 'sent',
+                    createdAt: new Date().toISOString()
+                  }
+                ]
+              }
+            }
+          })
+          .then(({ metadata }) => console.log(id, metadata))
+          .catch(console.error)
+    )
   );
 };
 
