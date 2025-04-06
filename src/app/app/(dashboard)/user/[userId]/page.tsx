@@ -527,7 +527,7 @@ export default async function UserPage(props: {
                       {user.executions.map(exec => (
                         <TableRow key={exec.id}>
                           <TableCell className="font-medium">
-                            {exec.action?.internalName ?? exec.actionId}
+                            {exec.action?.code ?? exec.actionId}
                           </TableCell>
 
                           <TableCell>

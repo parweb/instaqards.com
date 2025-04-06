@@ -66,7 +66,7 @@ export default async function UserPage(props: {
   const avatar = user.image ?? `https://avatar.vercel.sh/${user.email}?size=40`;
 
   return (
-    <div className="container mx-auto p-4 md:p-8 space-y-8 max-w-7xl">
+    <div className="container mx-auto p-8 space-y-8">
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/users" className="p-2 rounded-md hover:bg-muted">

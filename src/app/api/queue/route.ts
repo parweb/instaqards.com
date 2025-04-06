@@ -209,7 +209,7 @@ async function processJob(job: Queue): Promise<void> {
 
     if (conditionsMet) {
       console.info(
-        `Conditions MET for rule ${rule.id}. Executing action ${rule.action.internalName}...`
+        `Conditions MET for rule ${rule.id}. Executing action ${rule.action.code}...`
       );
       executionStatus = ExecutionStatus.PROCESSING;
 

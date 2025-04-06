@@ -6,7 +6,7 @@ export default async function WorkflowsActions() {
   // // Récupérer toutes les actions et les grouper par type
   // const actions = await db.action.findMany({
   //   orderBy: {
-  //     internalName: 'asc'
+  //     code: 'asc'
   //   }
   // });
 

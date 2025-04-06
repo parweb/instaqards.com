@@ -31,7 +31,7 @@ const ActionNode = ({ data }: { data: any }) => (
   <div className="rounded-lg border border-gray-200 bg-green-50 p-4 shadow-sm dark:border-gray-700 dark:bg-green-900">
     <Handle type="target" position={Position.Left} />
     <Handle type="source" position={Position.Right} />
-    <div className="text-sm font-medium">{data.internalName}</div>
+    <div className="text-sm font-medium">{data.code}</div>
     <div className="text-xs text-gray-500">{data.description}</div>
     <div className="mt-2 text-xs">
       <span className="rounded bg-green-200 px-2 py-1 dark:bg-green-800">

@@ -52,10 +52,10 @@ const prisma = new PrismaClient();
 
   // 3. Actions (ActionTemplates) - Plusieurs types !
   const welcomeEmailAction = await prisma.action.upsert({
-    where: { internalName: 'onboarding_welcome_email' },
+    where: { code: 'onboarding_welcome_email' },
     update: {},
     create: {
-      internalName: 'onboarding_welcome_email',
+      code: 'onboarding_welcome_email',
       type: 'SEND_EMAIL',
       version: 1,
       description: 'Envoie un email de bienvenue aux nouveaux utilisateurs',
@@ -67,10 +67,10 @@ const prisma = new PrismaClient();
   });
 
   const addCreatorTagAction = await prisma.action.upsert({
-    where: { internalName: 'tag_user_creator' },
+    where: { code: 'tag_user_creator' },
     update: {},
     create: {
-      internalName: 'tag_user_creator',
+      code: 'tag_user_creator',
       type: 'ADD_USER_TAG',
       version: 1,
       description: 'Ajoute le tag "creator" à un utilisateur',
@@ -79,10 +79,10 @@ const prisma = new PrismaClient();
   });
 
   const notifyCsWebhookAction = await prisma.action.upsert({
-    where: { internalName: 'webhook_cs_new_creator' },
+    where: { code: 'webhook_cs_new_creator' },
     update: {},
     create: {
-      internalName: 'webhook_cs_new_creator',
+      code: 'webhook_cs_new_creator',
       type: 'CALL_WEBHOOK',
       version: 1,
       description: "Notifie le service client de la création d'un nouveau site",
@@ -97,10 +97,10 @@ const prisma = new PrismaClient();
   });
 
   const reengagementEmailAction = await prisma.action.upsert({
-    where: { internalName: 'reengagement_inactive_trial' },
+    where: { code: 'reengagement_inactive_trial' },
     update: {},
     create: {
-      internalName: 'reengagement_inactive_trial',
+      code: 'reengagement_inactive_trial',
       type: 'SEND_EMAIL',
       version: 1,
       description:
@@ -114,10 +114,10 @@ const prisma = new PrismaClient();
   });
 
   const trialReminderEmailAction = await prisma.action.upsert({
-    where: { internalName: 'email_trial_reminder_3d' },
+    where: { code: 'email_trial_reminder_3d' },
     update: {},
     create: {
-      internalName: 'email_trial_reminder_3d',
+      code: 'email_trial_reminder_3d',
       type: 'SEND_EMAIL',
       version: 1,
       description:
@@ -131,10 +131,10 @@ const prisma = new PrismaClient();
   });
 
   const notifySalesWebhookAction = await prisma.action.upsert({
-    where: { internalName: 'webhook_sales_trial_ending' },
+    where: { code: 'webhook_sales_trial_ending' },
     update: {},
     create: {
-      internalName: 'webhook_sales_trial_ending',
+      code: 'webhook_sales_trial_ending',
       type: 'CALL_WEBHOOK',
       version: 1,
       description: "Notifie l'équipe commerciale des fins de période d'essai",
