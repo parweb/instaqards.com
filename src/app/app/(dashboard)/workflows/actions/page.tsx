@@ -1,26 +1,86 @@
 import { db } from 'helpers/db';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from 'components/ui/table'; // Assurez-vous que le chemin d'importation est correct
+import { Badge } from 'components/ui/badge'; // Assurez-vous que le chemin d'importation est correct
+import { format } from 'date-fns'; // Ou une autre bibliothèque de formatage de date
+import { Button } from 'components/ui/button';
+import { Pencil } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import { Switch } from 'components/ui/switch';
+import Form from 'next/form';
 
 export default async function WorkflowsActions() {
-  const actions = await db.action.findMany();
+  const actions = await db.action.findMany({
+    orderBy: {
+      createdAt: 'desc' // Trier par date de création par exemple
+    }
+  });
 
-  // // Récupérer toutes les actions et les grouper par type
-  // const actions = await db.action.findMany({
-  //   orderBy: {
-  //     code: 'asc'
-  //   }
-  // });
+  return (
+    <div className="container mx-auto py-10">
+      <h1 className="text-2xl font-bold mb-6">Liste des Actions</h1>
+      <Table>
+        <TableCaption>
+          Liste des actions configurées dans le système.
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Code</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Statut</TableHead>
+            <TableHead></TableHead>
+            {/* Ajoutez d'autres en-têtes si nécessaire, par ex. pour des boutons d'action */}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {actions.map(action => (
+            <TableRow key={action.id}>
+              <TableCell className="font-medium">{action.code}</TableCell>
+              <TableCell>{action.description || '-'}</TableCell>
+              <TableCell>{action.type}</TableCell>
+              <TableCell>
+                <Form
+                  action={async () => {
+                    'use server';
 
-  // const actionsByType = types.reduce<Record<Action['type'], Action[]>>(
-  //   (acc, { type }) => {
-  //     acc[type] = actions.filter(
-  //       action => action.type === type
-  //     );
-  //     return acc;
-  //   },
-  //   {} as Record<Action['type'], Action[]>
-  // );
+                    await db.action.update({
+                      where: { id: action.id },
+                      data: {
+                        isPublished: !action.isPublished
+                      }
+                    });
 
-  return actions.map(action => (
-    <pre key={action.id}>{JSON.stringify(action, null, 2)}</pre>
-  ));
+                    redirect(`/workflows/actions`);
+                  }}
+                >
+                  <Button variant="ghost" size="icon" type="submit">
+                    <input type="hidden" name="id" value={action.id} />
+                    <Switch checked={action.isPublished} name="isPublished" />
+                  </Button>
+                </Form>
+              </TableCell>
+              <TableCell>
+                <Button variant="ghost" size="icon">
+                  <Pencil />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {actions.length === 0 && (
+        <p className="text-center text-muted-foreground mt-6">
+          Aucune action trouvée.
+        </p>
+      )}
+    </div>
+  );
 }
