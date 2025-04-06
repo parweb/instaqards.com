@@ -6,7 +6,6 @@ import { FlagPicker } from 'components/flag-picker';
 import { Button } from 'components/ui/button';
 import { translate } from 'helpers/translate';
 import { cn } from 'lib/utils';
-import { boldonse } from 'styles/fonts';
 import { DEFAULT_LANG } from 'translations';
 
 export const Header = async () => {

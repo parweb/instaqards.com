@@ -1,4 +1,4 @@
-import type { Prisma, Site } from '@prisma/client';
+import type { Site } from '@prisma/client';
 
 import { auth } from 'auth';
 import { db } from 'helpers/db';

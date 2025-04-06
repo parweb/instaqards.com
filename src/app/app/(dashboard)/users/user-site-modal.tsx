@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
-import { Badge } from 'components/ui/badge';
 import Link from 'next/link';
+
+import { Badge } from 'components/ui/badge';
 
 export default function UserSiteModal({
   user

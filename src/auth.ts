@@ -1,5 +1,6 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import type { UserRole } from '@prisma/client';
+import { nanoid } from 'nanoid';
 import NextAuth from 'next-auth';
 
 import authConfig from 'auth.config';
@@ -7,7 +8,6 @@ import { getAccountByUserId } from 'data/account';
 import { getTwoFactorConfirmationByUserId } from 'data/two-factor-confirmation';
 import { getUserById } from 'data/user';
 import { db } from 'helpers/db';
-import { nanoid } from 'nanoid';
 
 export const {
   handlers: { GET, POST },
@@ -73,10 +73,10 @@ export const {
     },
     signOut: async message => {
       console.info('events::signOut', message);
-    },
-    session: async message => {
-      // console.info('events::session', message);
     }
+    // ,session: async message => {
+    //   console.info('events::session', message);
+    // }
   },
   callbacks: {
     async signIn({ user, account }) {

@@ -1,3 +1,6 @@
+import { ExecutionStatus, WorkflowStateStatus } from '@prisma/client';
+import { type NextRequest, NextResponse } from 'next/server';
+
 import type {
   Action,
   Condition,
@@ -8,12 +11,10 @@ import type {
   Subscription,
   User
 } from '@prisma/client';
-import { ExecutionStatus, WorkflowStateStatus } from '@prisma/client'; // Importez vos enums
-import { db } from 'helpers/db'; // Assurez-vous que ce chemin est correct
-import * as template from 'helpers/mail';
-import { type NextRequest, NextResponse } from 'next/server';
 
-// --- Interfaces pour la clarté du Payload ---
+import { db } from 'helpers/db';
+import * as template from 'helpers/mail';
+
 interface ExecuteWorkflowActionPayload {
   ruleId: string;
   triggeringEventId: string;
@@ -21,34 +22,21 @@ interface ExecuteWorkflowActionPayload {
   correlationId?: string;
 }
 
-// --- Moteur de Conditions (Placeholder) ---
-// Dans une vraie app, ceci serait un service/classe complexe
 const conditionEngine = {
   evaluate: async (
     ruleConditions: (RuleCondition & { condition: Condition })[],
-    user: User,
-    triggeringEvent: Event,
-    subscription: Subscription | null // Peut être null si l'utilisateur n'a pas d'abonnement
-    // Potentiellement d'autres contextes si nécessaire
+    _user: User,
+    _triggeringEvent: Event,
+    _subscription: Subscription | null
   ): Promise<boolean> => {
-    console.info(`[Condition Engine] Evaluating conditions for rule...`); // Simuler l'évaluation
+    console.info(`[Condition Engine] Evaluating conditions for rule...`);
     if (!ruleConditions || ruleConditions.length === 0) {
       console.info(
         '[Condition Engine] No conditions to evaluate, returning true.'
       );
-      return true; // Pas de conditions = toujours vrai
+      return true;
     }
 
-    // --- LOGIQUE D'ÉVALUATION RÉELLE ICI ---
-    // 1. Grouper les conditions par `group`
-    // 2. Évaluer chaque condition basée sur `condition.checkType` et `condition.parameters`
-    //    en utilisant les données `user`, `triggeringEvent`, `subscription` et potentiellement
-    //    des requêtes sur l'historique `Event`.
-    // 3. Combiner les résultats par groupe en utilisant `logic` (AND/OR).
-    // 4. Combiner les résultats des groupes (souvent implicitement AND entre groupes).
-    // --- Fin de la logique d'évaluation ---
-
-    // Pour l'exemple, on retourne toujours true
     const conditionsMet = true;
     console.info(
       `[Condition Engine] Conditions evaluated. Result: ${conditionsMet}`
@@ -57,16 +45,13 @@ const conditionEngine = {
   }
 };
 
-// --- Exécuteur d'Actions (Placeholder) ---
-// Dans une vraie app, ceci serait un service/classe complexe
 const actionExecutor = {
   execute: async (
     type: Action['type'],
     config: Prisma.JsonValue,
     user: User,
-    triggeringEvent: Event,
+    _triggeringEvent: Event,
     job: Queue
-    // Potentiellement d'autres contextes
   ): Promise<{
     success: boolean;
     resultPayload?: any;
@@ -116,7 +101,6 @@ const actionExecutor = {
   }
 };
 
-// --- Fonction Principale de Traitement du Job ---
 async function processJob(job: Queue): Promise<void> {
   console.info(`Processing job ${job.id} (Type: ${job.job})`);
 
@@ -124,7 +108,6 @@ async function processJob(job: Queue): Promise<void> {
     throw new Error(`Unsupported job type: ${job.job}`);
   }
 
-  // 1. Extraire et valider le payload
   const payload = job?.payload as unknown as ExecuteWorkflowActionPayload;
 
   if (
@@ -139,22 +122,19 @@ async function processJob(job: Queue): Promise<void> {
   }
 
   const { ruleId, triggeringEventId, userId, correlationId } = payload;
-  let executionStatus: ExecutionStatus = ExecutionStatus.PENDING; // Statut final du log Execution
+  let executionStatus: ExecutionStatus = ExecutionStatus.PENDING;
   let executionResultPayload: Prisma.JsonValue | null = null;
   let executionErrorMessage: string | null = null;
-  let actionToExecute: Action | null = null; // Pour logguer l'actionId même si conditions non remplies
+  let actionToExecute: Action | null = null;
 
   try {
-    // 2. Charger les données nécessaires (dans une transaction pour la cohérence ?)
-    // Pour la simplicité, pas de transaction explicite ici, mais pourrait être pertinent.
     const rule = await db.rule.findUnique({
       where: { id: ruleId },
       include: {
-        action: true, // Inclure l'ActionTemplate
+        action: true,
         trigger: true,
         workflow: true,
         ruleConditions: {
-          // Inclure les conditions liées et la définition de la condition
           include: {
             condition: true
           }
@@ -172,15 +152,15 @@ async function processJob(job: Queue): Promise<void> {
       console.info(
         `Rule ${ruleId} not found, inactive, or workflow inactive. Skipping job ${job.id}.`
       );
-      // Marquer comme complété car il n'y a rien à faire
+
       await db.queue.update({
         where: { id: job.id },
         data: { status: 'completed' }
       });
-      // Optionnel : logguer un 'SKIPPED' execution log
+
       return;
     }
-    actionToExecute = rule.action; // Sauvegarde pour le log final
+    actionToExecute = rule.action;
 
     const user = await db.user.findUnique({ where: { id: userId } });
     const triggeringEvent = await db.event.findUnique({
@@ -193,13 +173,11 @@ async function processJob(job: Queue): Promise<void> {
       );
     }
 
-    // Charger l'état de l'abonnement pertinent (exemple simple : le dernier créé)
     const subscription = await db.subscription.findFirst({
       where: { userId: userId },
       orderBy: { created: 'desc' }
     });
 
-    // 3. Vérifier WorkflowState
     const workflowState = await db.workflowState.findUnique({
       where: {
         userId_workflowId: { userId: userId, workflowId: rule.workflowId }
@@ -214,7 +192,7 @@ async function processJob(job: Queue): Promise<void> {
         where: { id: job.id },
         data: { status: 'completed' }
       });
-      // Optionnel : logguer un 'SKIPPED' execution log
+
       return;
     }
 
@@ -222,7 +200,6 @@ async function processJob(job: Queue): Promise<void> {
       `Data loaded for job ${job.id}. User: ${user.email}, Rule: ${rule.id}, Trigger: ${triggeringEvent.eventType}`
     );
 
-    // 4. Évaluer les Conditions
     const conditionsMet = await conditionEngine.evaluate(
       rule.ruleConditions,
       user,
@@ -230,12 +207,11 @@ async function processJob(job: Queue): Promise<void> {
       subscription
     );
 
-    // 5. Exécuter l'Action (si conditions remplies)
     if (conditionsMet) {
       console.info(
         `Conditions MET for rule ${rule.id}. Executing action ${rule.action.internalName}...`
       );
-      executionStatus = ExecutionStatus.PROCESSING; // Avant l'exécution
+      executionStatus = ExecutionStatus.PROCESSING;
 
       const executionResult = await actionExecutor.execute(
         rule.action.type,
@@ -256,23 +232,18 @@ async function processJob(job: Queue): Promise<void> {
       );
     } else {
       console.info(`Conditions NOT MET for rule ${rule.id}. Skipping action.`);
-      // On considère que le job est terminé, l'action est juste skipée
-      executionStatus = ExecutionStatus.SUCCESS; // Ou un nouveau statut SKIPPED? Pour l'instant SUCCESS=rien n'a échoué.
-    }
 
-    // Si l'action était de type CREATE_QUEUE_TASK, elle aurait créé une nouvelle entrée Queue ici.
+      executionStatus = ExecutionStatus.SUCCESS;
+    }
   } catch (error: unknown) {
-    // Gérer les erreurs durant le chargement ou l'évaluation/exécution
     console.error(`Error processing job ${job.id}:`, error);
     executionStatus = ExecutionStatus.FAILED;
     executionErrorMessage =
       error instanceof Error ? error.message : String(error);
-    // Rethrow pour que le handler externe mette la Queue à 'failed'
+
     throw error;
   } finally {
-    // 6. Logguer l'exécution (même si skipé ou échoué)
     if (actionToExecute) {
-      // S'assurer qu'on a pu charger la règle et l'action
       await db.execution.create({
         data: {
           userId: userId,
@@ -296,7 +267,6 @@ async function processJob(job: Queue): Promise<void> {
   }
 }
 
-// --- Handler GET (Worker Endpoint) ---
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
 
@@ -341,11 +311,6 @@ export async function GET(request: NextRequest) {
   } catch (error: unknown) {
     console.error(`Failed to process job ${job?.id ?? 'unknown'}:`, error);
 
-    // --- Logique de Retry (Simplifiée) ---
-    // Ici, on pourrait vérifier si l'erreur est récupérable et si attempts < max
-    // Si oui, remettre status='pending', augmenter runAt (backoff), et ne pas retourner 500.
-    // Pour l'instant, on marque juste comme failed.
-    // ------------------------------------
     await db.queue.update({
       where: { id: job.id },
       data: {
@@ -362,12 +327,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// --- Handler POST (Création de Job - Simplifié) ---
-// Note: La création de job devrait idéalement se faire via le processeur d'événements,
-// mais cet endpoint peut être utile pour des tests ou des insertions manuelles.
 export async function POST(request: Request) {
   try {
-    // ATTENTION: Sécuriser cet endpoint dans une vraie application !
     const { job, payload, runAt, priority, userId, correlationId } =
       await request.json();
 

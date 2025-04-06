@@ -129,7 +129,7 @@ export const UploaderItem = ({
 
 export const Uploader = ({
   setValue,
-  ref,
+  ref: _ref,
   ...props
 }: {
   name: string;

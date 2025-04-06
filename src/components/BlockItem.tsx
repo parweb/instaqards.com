@@ -58,13 +58,7 @@ const BlockDuplicate = ({ block }: { block: Block }) => {
   return <DuplicateBlockButton {...block} />;
 };
 
-const BlockItem = ({
-  block,
-  editor = false
-}: {
-  block: Block;
-  editor?: boolean;
-}) => {
+const BlockItem = ({ block }: { block: Block }) => {
   const isMobile = useIsMobile();
 
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -232,13 +226,11 @@ const BlockItem = ({
 export const BlockList = ({
   blocks,
   site,
-  type,
-  editor = false
+  type
 }: {
   blocks: Block[];
   site: Site;
   type: 'main' | 'social';
-  editor?: boolean;
 }) => {
   const [items, setItems] = useState(blocks);
 
@@ -306,11 +298,7 @@ export const BlockList = ({
           }
         >
           {items.map(props => (
-            <BlockItem
-              editor={editor}
-              key={`BlockItem-${props.id}`}
-              block={props}
-            />
+            <BlockItem key={`BlockItem-${props.id}`} block={props} />
           ))}
         </SortableContext>
       </DndContext>

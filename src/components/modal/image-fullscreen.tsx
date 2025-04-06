@@ -1,8 +1,8 @@
 'use client';
 
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import { LuX, LuZoomIn, LuZoomOut } from 'react-icons/lu';
 
 export default function ImageFullscreen({
@@ -14,30 +14,25 @@ export default function ImageFullscreen({
   onClose: () => void;
   initialPosition?: { x: number; y: number; width: number; height: number };
 }) {
-  // État pour gérer l'animation de fermeture
   const [isClosing, setIsClosing] = useState(false);
 
-  // Fonction pour fermer avec animation
   const handleClose = () => {
     setIsClosing(true);
-    // Délai pour permettre à l'animation de se terminer avant de fermer réellement
+
     setTimeout(() => {
       onClose();
-    }, 500); // Durée de l'animation
+    }, 500);
   };
   const [scale, setScale] = useState(1);
 
-  // Fonction pour zoomer
   const zoomIn = () => {
     setScale(prev => Math.min(prev + 0.2, 3));
   };
 
-  // Fonction pour dézoomer
   const zoomOut = () => {
     setScale(prev => Math.max(prev - 0.2, 0.5));
   };
 
-  // Fermer avec la touche Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -49,8 +44,6 @@ export default function ImageFullscreen({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Utiliser un portail React pour rendre le composant directement au niveau du body
-  // Cela garantit qu'il n'est pas limité par les conteneurs parents
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -58,7 +51,6 @@ export default function ImageFullscreen({
     return () => setMounted(false);
   }, []);
 
-  // Calcul des dimensions finales pour l'animation
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 0,
     height: typeof window !== 'undefined' ? window.innerHeight : 0
@@ -78,7 +70,6 @@ export default function ImageFullscreen({
     }
   }, []);
 
-  // Calcul de la position centrale pour l'animation finale
   const centerX = windowSize.width / 2 - (windowSize.width * 0.8) / 2;
   const centerY = windowSize.height / 2 - (windowSize.height * 0.8) / 2;
   const finalWidth = Math.min(windowSize.width * 0.8, 1200);
@@ -86,7 +77,6 @@ export default function ImageFullscreen({
 
   const modalContent = (
     <div className="fixed inset-0 z-[9999] bg-black/0 pointer-events-auto">
-      {/* Fond qui s'assombrit progressivement */}
       <motion.div
         className="absolute inset-0 bg-black"
         initial={{ opacity: 0 }}
@@ -96,7 +86,6 @@ export default function ImageFullscreen({
         onClick={handleClose}
       />
 
-      {/* Bouton de fermeture */}
       <motion.button
         type="button"
         onClick={handleClose}
@@ -110,7 +99,6 @@ export default function ImageFullscreen({
         <LuX size={24} />
       </motion.button>
 
-      {/* Contrôles de zoom */}
       <motion.div
         className="absolute bottom-4 right-4 z-[10000] flex gap-2"
         initial={{ opacity: 0 }}
@@ -136,7 +124,6 @@ export default function ImageFullscreen({
         </button>
       </motion.div>
 
-      {/* Conteneur de l'image avec animation */}
       <motion.div
         className="absolute overflow-hidden"
         initial={{
@@ -177,7 +164,6 @@ export default function ImageFullscreen({
     </div>
   );
 
-  // Ne rendre le portail que côté client après le montage du composant
   return mounted && typeof document !== 'undefined'
     ? createPortal(
         <AnimatePresence mode="wait">{modalContent}</AnimatePresence>,

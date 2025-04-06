@@ -1,4 +1,4 @@
-import { eachDayOfInterval, format } from 'date-fns';
+import { eachDayOfInterval } from 'date-fns';
 
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';

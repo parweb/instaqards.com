@@ -43,10 +43,12 @@ import {
 
 const formatDate = (date: Date | string | null | undefined): string => {
   if (!date) return 'N/A';
+
   try {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return format(dateObj, 'PPP p');
   } catch (error) {
+    console.error(error);
     return 'Invalid Date';
   }
 };
@@ -57,6 +59,7 @@ const formatRelativeTime = (date: Date | string | null | undefined): string => {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return formatDistanceToNow(dateObj, { addSuffix: true });
   } catch (error) {
+    console.error(error);
     return 'Invalid Date';
   }
 };

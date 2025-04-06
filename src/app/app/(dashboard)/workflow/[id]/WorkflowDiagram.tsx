@@ -62,7 +62,7 @@ export const WorkflowDiagram = ({ workflow }: WorkflowDiagramProps) => {
     const edges: Edge[] = [];
     let yOffset = 0;
 
-    workflow.rules.forEach((rule: any, index: number) => {
+    workflow.rules.forEach((rule: any) => {
       // Add trigger node
       const triggerId = `trigger-${rule.id}`;
       nodes.push({
@@ -117,8 +117,8 @@ export const WorkflowDiagram = ({ workflow }: WorkflowDiagramProps) => {
     return { nodes, edges };
   }, [workflow]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(createNodes().nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(createNodes().edges);
+  const [nodes, _setNodes, onNodesChange] = useNodesState(createNodes().nodes);
+  const [edges, _setEdges, onEdgesChange] = useEdgesState(createNodes().edges);
 
   return (
     <div className="h-[800px] w-full">

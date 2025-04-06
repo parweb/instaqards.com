@@ -47,13 +47,13 @@ export const WebSite = ({
 
       <Content>
         <Main editor>
-          <BlockList editor blocks={data.main} site={site} type="main" />
+          <BlockList blocks={data.main} site={site} type="main" />
           <BlockCreate type="main" siteId={site.id} />
         </Main>
 
         <Footer>
           <div className="flex gap-3 items-center justify-center">
-            <BlockList editor blocks={data.social} site={site} type="social" />
+            <BlockList blocks={data.social} site={site} type="social" />
             <BlockCreate type="social" siteId={site.id} />
           </div>
         </Footer>
