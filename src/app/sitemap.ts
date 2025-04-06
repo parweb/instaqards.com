@@ -15,11 +15,11 @@ export default async function Sitemap() {
     ...sites.flatMap(site => [
       {
         url: `https://${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
-        lastModified: site.updatedAt
+        lastModified: new Date() // site.updatedAt
       },
       {
         url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/${site.subdomain}`,
-        lastModified: site.updatedAt
+        lastModified: new Date() // site.updatedAt
       }
     ]),
     ...job.all.flatMap(job => [
