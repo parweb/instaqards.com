@@ -1,16 +1,7 @@
-import * as React from 'react';
+import { Column, Img, Link, Row, Section, Text } from '@react-email/components';
 
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Html,
-  Img,
-  Link,
-  Preview,
-  Text
-} from '@react-email/components';
+import { Main } from './layout/main';
+import { base } from './layout/settings';
 
 const subject = {
   en: '2FA Code',
@@ -21,30 +12,30 @@ const subject = {
 
 const translations = {
   en: {
-    preview_text: '2FA Code',
-    title: 'Login',
-    activation_text: 'Here is your account activation code:',
+    title: 'Security code',
+    description:
+      'Here is your account activation code. Use it to complete your sign-in and secure your access.',
     message_not_my_action:
       "If you didn't try to login, you can safely ignore this email."
   },
   fr: {
-    preview_text: '2FA Code',
-    title: 'Login',
-    activation_text: "Voici votre code d'activation:",
+    title: 'Code de sécurité',
+    description:
+      'Voici votre code de sécurité. Utilisez-le pour finaliser votre connexion et protéger l’accès à votre compte.',
     message_not_my_action:
       "Si vous n'avez pas tenté de vous connecter, vous pouvez ignorer cet e-mail en toute sécurité."
   },
   it: {
-    preview_text: '2FA Code',
-    title: 'Login',
-    activation_text: 'Ecco il tuo codice di attivazione:',
+    title: 'Codice di sicurezza',
+    description:
+      'Ecco il tuo codice di sicurezza. Utilizzalo per completare l’accesso e proteggere il tuo account.',
     message_not_my_action:
       'Se non hai provato a fare il login, puoi ignorare questo e-mail in modo sicuro.'
   },
   es: {
-    preview_text: '2FA Code',
-    title: 'Login',
-    activation_text: 'Aquí está tu código de activación:',
+    title: 'Código de seguridad',
+    description:
+      'Aquí tienes tu código de activación. Úsalo para completar tu acceso y mantener tu cuenta segura.',
     message_not_my_action:
       'Si no has intentado hacer el inicio de sesión, puedes ignorar este correo electrónico en modo seguro.'
   }
@@ -53,58 +44,54 @@ const translations = {
 interface TwoFactorTokenProps {
   token?: string;
   lang: keyof typeof translations;
+  id: string;
 }
 
 const baseUrl = (
   process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
 ).replace('app.', '');
 
-const TwoFactorToken = ({ token, lang = 'en' }: TwoFactorTokenProps) => (
-  <Html>
-    <Head />
+const TwoFactorToken = ({ token, lang = 'en', id }: TwoFactorTokenProps) => (
+  <Main title={translations[lang].title} lang={lang} id={id}>
+    <Section className="my-[16px]">
+      <Section>
+        <Row>
+          <Text className="m-0 text-[24px] font-semibold leading-[32px] text-gray-900">
+            {translations[lang].title}
+          </Text>
 
-    <Preview>{translations[lang].preview_text}</Preview>
+          <Section className="py-3 bg-stone-100 rounded-md my-4">
+            <Row>
+              <Column className="px-3 w-4">
+                <Img
+                  src={`${base}/assets/email/shield.png`}
+                  className="w-4 h-4"
+                  alt="link"
+                />
+              </Column>
 
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={h1}>{translations[lang].title}</Heading>
+              <Column className="text-left">
+                <Text
+                  style={{ fontSize: '16px' }}
+                  className="p-0 m-0 text-stone-700"
+                >
+                  {token}
+                </Text>
+              </Column>
+            </Row>
+          </Section>
 
-        <Text style={{ ...text, marginBottom: '14px' }}>
-          {translations[lang].activation_text}
-        </Text>
+          <Text className="mt-[8px] text-[16px] leading-[24px] text-gray-500">
+            {translations[lang].description}
+          </Text>
 
-        <code style={code}>{token}</code>
-
-        <Text
-          style={{
-            ...text,
-            color: '#ababab',
-            marginTop: '14px',
-            marginBottom: '16px'
-          }}
-        >
-          {translations[lang].message_not_my_action}
-        </Text>
-
-        <Img
-          src={`${baseUrl}/logo.png`}
-          width="32"
-          height="32"
-          alt="Instaqards's Logo"
-        />
-
-        <Text style={footer}>
-          <Link
-            href={baseUrl}
-            target="_blank"
-            style={{ ...link, color: '#898989' }}
-          >
-            {baseUrl.replace('https://', '').replace('http://', '')}
-          </Link>
-        </Text>
-      </Container>
-    </Body>
-  </Html>
+          <Text className="mt-[14px] mb-[16px] text-[14px] text-gray-400 italic">
+            {translations[lang].message_not_my_action}
+          </Text>
+        </Row>
+      </Section>
+    </Section>
+  </Main>
 );
 
 TwoFactorToken.subject = subject;

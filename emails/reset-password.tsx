@@ -1,16 +1,7 @@
-import * as React from 'react';
+import { Column, Img, Link, Row, Section, Text } from '@react-email/components';
 
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Html,
-  Img,
-  Link,
-  Preview,
-  Text
-} from '@react-email/components';
+import { Main } from './layout/main';
+import { base } from './layout/settings';
 
 const subject = {
   en: 'Reset your password',
@@ -20,145 +11,95 @@ const subject = {
 };
 
 const translations = {
-  en: {
-    title: 'Reset your password',
-    reset_text: 'Click here to reset your password',
-    message_not_my_action:
-      "If you didn't try to reset your password, you can safely ignore this email."
-  },
   fr: {
-    title: 'Changez votre mot de passe',
-    reset_text: 'Clickez ici pour changez votre email',
+    title: 'Modification de votre mot de passe',
+    description:
+      'Afin de modifier votre mot de passe, nous vous invitons à cliquer sur le lien ci-dessous. Cela vous permettra de choisir un nouveau mot de passe en toute sécurité et de continuer à accéder à votre compte sans interruption.',
+    reset_text: 'Clickez ici pour modifier votre mot de passe',
     message_not_my_action:
       "Si vous n'avez pas tenté de réinitialiser votre mot de passe, vous pouvez ignorer cet e-mail en toute sécurité."
   },
-  it: {
-    title: 'Cambia la tua password',
-    reset_text: 'Clicca qui per cambiare la tua password',
+  en: {
+    title: 'Password Reset',
+    description:
+      'To reset your password, please click on the link below. This will allow you to securely choose a new password and continue accessing your account without interruption.',
+    reset_text: 'Click here to reset your password',
     message_not_my_action:
-      'Se non hai provato a fare il login, puoi ignorare questo e-mail in modo sicuro.'
+      'If you did not request a password reset, you can safely ignore this email.'
+  },
+  it: {
+    title: 'Modifica della tua password',
+    description:
+      'Per modificare la tua password, ti invitiamo a cliccare sul link qui sotto. Potrai così scegliere una nuova password in modo sicuro e continuare ad accedere al tuo account senza interruzioni.',
+    reset_text: 'Clicca qui per modificare la tua password',
+    message_not_my_action:
+      'Se non hai richiesto la reimpostazione della password, puoi ignorare tranquillamente questa email.'
   },
   es: {
-    title: 'Cambia tu contraseña',
+    title: 'Cambio de contraseña',
+    description:
+      'Para cambiar tu contraseña, haz clic en el enlace a continuación. Esto te permitirá elegir una nueva contraseña de forma segura y seguir accediendo a tu cuenta sin interrupciones.',
     reset_text: 'Haz clic aquí para cambiar tu contraseña',
     message_not_my_action:
-      'Si no has intentado hacer el inicio de sesión, puedes ignorar este correo electrónico en modo seguro.'
+      'Si no has solicitado restablecer tu contraseña, puedes ignorar este correo electrónico de forma segura.'
   }
 };
 
 interface ResetPasswordProps {
   resetLink?: string;
   lang: keyof typeof translations;
+  id: string;
 }
 
-const baseUrl = (
-  process.env?.NEXTAUTH_URL ?? 'http://app.localhost:11000'
-).replace('app.', '');
+const ResetPassword = ({ resetLink, lang = 'en', id }: ResetPasswordProps) => (
+  <Main title={translations[lang].title} lang={lang} id={id}>
+    <Section className="my-[16px]">
+      <Section>
+        <Row>
+          <Text className="m-0 text-[24px] font-semibold leading-[32px] text-gray-900">
+            {translations[lang].title}
+          </Text>
 
-const ResetPassword = ({ resetLink, lang = 'en' }: ResetPasswordProps) => (
-  <Html>
-    <Head />
+          <Section className="py-3 bg-stone-100 rounded-md my-4">
+            <Row>
+              <Column className="px-3 w-4">
+                <Img
+                  src={`${base}/assets/email/link.png`}
+                  className="w-4 h-4"
+                  alt="link"
+                />
+              </Column>
 
-    <Preview>{translations[lang].title}</Preview>
+              <Column className="text-left">
+                <Link href={resetLink} target="_blank">
+                  <Text
+                    style={{ fontSize: '16px' }}
+                    className="p-0 m-0 text-stone-700 underline"
+                  >
+                    {translations[lang].reset_text}
+                  </Text>
+                </Link>
+              </Column>
+            </Row>
+          </Section>
 
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={h1}>{translations[lang].title}</Heading>
+          <Text className="mt-[8px] text-[16px] leading-[24px] text-gray-500">
+            {translations[lang].description}
+          </Text>
 
-        <Link
-          href={resetLink}
-          target="_blank"
-          style={{
-            ...link,
-            display: 'block',
-            marginBottom: '16px'
-          }}
-        >
-          {translations[lang].reset_text}
-        </Link>
-
-        <Text
-          style={{
-            ...text,
-            color: '#ababab',
-            marginTop: '14px',
-            marginBottom: '16px'
-          }}
-        >
-          {translations[lang].message_not_my_action}
-        </Text>
-
-        <Img
-          src={`${baseUrl}/logo.png`}
-          width="32"
-          height="32"
-          alt="Instaqards's Logo"
-        />
-
-        <Text style={footer}>
-          <Link
-            href={baseUrl}
-            target="_blank"
-            style={{ ...link, color: '#898989' }}
-          >
-            {baseUrl.replace('https://', '').replace('http://', '')}
-          </Link>
-        </Text>
-      </Container>
-    </Body>
-  </Html>
+          <Text className="mt-[14px] mb-[16px] text-[14px] text-gray-400 italic">
+            {translations[lang].message_not_my_action}
+          </Text>
+        </Row>
+      </Section>
+    </Section>
+  </Main>
 );
 
 ResetPassword.subject = subject;
 
 ResetPassword.PreviewProps = {
-  resetLink: 'sparo-ndigo-amurt-secan'
+  resetLink: '/reset-password'
 } as ResetPasswordProps;
 
 export default ResetPassword;
-
-const main = {
-  backgroundColor: '#ffffff'
-};
-
-const container = {
-  paddingLeft: '12px',
-  paddingRight: '12px',
-  margin: '0 auto'
-};
-
-const h1 = {
-  color: '#333',
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: '24px',
-  fontWeight: 'bold',
-  margin: '40px 0',
-  padding: '0'
-};
-
-const link = {
-  color: '#2754C5',
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: '14px',
-  textDecoration: 'underline'
-};
-
-const text = {
-  color: '#333',
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: '14px',
-  margin: '24px 0'
-};
-
-const footer = {
-  color: '#898989',
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: '12px',
-  lineHeight: '22px',
-  marginTop: '12px',
-  marginBottom: '24px'
-};

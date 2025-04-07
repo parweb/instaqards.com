@@ -9,5 +9,5 @@ export const Content = ({
   children: React.ReactNode;
   lang: Lang;
 }) => {
-  return <Container className="p-8">{children}</Container>;
+  return <Container className="p-4">{children}</Container>;
 };
