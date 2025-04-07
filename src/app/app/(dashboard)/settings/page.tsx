@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation';
 
+import { Price } from 'app/(marketing)/home/section/price';
 import Form from 'components/form';
 import { PortalButton } from 'components/portal-button';
-import { PriceTable } from 'components/price-table';
 import { db } from 'helpers/db';
+import { getLang } from 'helpers/translate';
 import { editUser } from 'lib/actions';
 import { getSession, getSubscription } from 'lib/auth';
 
@@ -14,19 +15,17 @@ export default async function SettingsPage() {
     redirect('/login');
   }
 
-  const subscription = await getSubscription();
+  const lang = await getLang();
 
-  const products = await db.product.findMany({
-    where: { active: { equals: true } },
-    include: {
-      prices: {
-        where: {
-          active: { equals: true },
-          interval_count: { equals: 1 }
-        }
+  const prices = await db.price.findMany({
+    where: {
+      product: {
+        active: true
       }
     }
   });
+
+  const subscription = await getSubscription();
 
   return (
     <div className="flex flex-col space-y-12 p-8">
@@ -45,8 +44,14 @@ export default async function SettingsPage() {
           </div>
 
           <div className="w-full overflow-scroll">
-            {/* @ts-ignore */}
-            <PriceTable products={products} subscription={subscription} />
+            <Price
+              lang={lang}
+              prices={prices}
+              standalone
+              begin={false}
+              trial={false}
+              border={false}
+            />
           </div>
 
           {subscription.valid() && (

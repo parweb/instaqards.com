@@ -6,6 +6,8 @@ import { AppSidebar } from 'components/app-sidebar';
 import { PriceTable } from 'components/price-table';
 import Profile from 'components/profile';
 // import { Separator } from 'components/ui/separator';
+import UpgradeAccountModal from 'components/modal/upgrade-account';
+import UpgradeAccountButton from 'components/upgrade-account-button';
 import { db } from 'helpers/db';
 import { getSession, getSubscription } from 'lib/auth';
 
@@ -23,6 +25,7 @@ import {
   SidebarProvider,
   SidebarTrigger
 } from 'components/ui/sidebar';
+import { getLang } from 'helpers/translate';
 
 export default async function DashboardLayout({
   children
@@ -58,6 +61,16 @@ export default async function DashboardLayout({
     orderBy: { updatedAt: 'desc' },
     where: {
       userId: session.user.id
+    }
+  });
+
+  const lang = await getLang();
+
+  const prices = await db.price.findMany({
+    where: {
+      product: {
+        active: true
+      }
     }
   });
 
@@ -111,8 +124,16 @@ export default async function DashboardLayout({
           )}
 
           {subscription.hasTrial() && subscription.customerSinceDays() && (
-            <div className="p-6 bg-lime-700 text-white sticky top-0">
-              {30 - subscription.customerSinceDays()} days left in your trial
+            <div className="sticky top-0 flex items-center justify-between gap-4 bg-lime-700 p-4 pl-9 text-white">
+              <div>
+                {31 - subscription.customerSinceDays()} days left in your trial
+              </div>
+
+              <div>
+                <UpgradeAccountButton>
+                  <UpgradeAccountModal lang={lang} prices={prices} />
+                </UpgradeAccountButton>
+              </div>
             </div>
           )}
 

@@ -17,6 +17,12 @@ const translations = {
     it: 'Azione del server vietata!',
     es: '¡Acción de servidor prohibida!'
   },
+  'components.account.upgrade': {
+    fr: 'Mettre à niveau',
+    en: 'Upgrade',
+    it: 'Aggiorna',
+    es: 'Actualizar'
+  },
   'actions.login.validation.error': {
     fr: 'Champs invalide !',
     en: 'Invalid fields!',
@@ -856,6 +862,12 @@ const translations = {
     en: 'Claim my qards',
     it: 'Riserva la mia qards',
     es: 'Reserva mi qards'
+  },
+  'page.home.pricing.cta': {
+    fr: 'Je souscris',
+    en: 'I want to subscribe',
+    it: 'Voglio iscrivermi',
+    es: 'Quiero suscribirme'
   },
   'page.home.pricing.start.placeholder': {
     fr: 'mon-business',

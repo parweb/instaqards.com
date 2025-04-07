@@ -23,7 +23,14 @@ export default async function HomePage(props: {
       <Hero bg={searchParams?.bg as string} />
       <Gallery />
       {/*<Features />*/}
-      <Price lang={lang} prices={prices} />
+      <Price
+        lang={lang}
+        prices={prices}
+        standalone={false}
+        begin
+        trial
+        border
+      />
       {/* <Testimonial /> */}
     </>
   );

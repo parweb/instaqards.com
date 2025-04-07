@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import { useState } from 'react';
 
 import { Badge } from 'components/ui/badge';
+import { Button } from 'components/ui/button';
 import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
 import type { Lang } from 'translations';
@@ -78,10 +79,14 @@ const features = [
   }
 ];
 
-export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
-  lang,
-  prices
-}) => {
+export const Price: React.FC<{
+  lang: Lang;
+  prices: PriceType[];
+  standalone: boolean;
+  begin: boolean;
+  trial: boolean;
+  border: boolean;
+}> = ({ lang, prices, standalone, begin, trial, border }) => {
   const translate = useTranslation();
 
   const [billingCycle, setBillingCycle] = useState<'year' | 'month'>('year');
@@ -92,28 +97,38 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
   );
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-6 py-12">
-      <motion.div
-        className="text-center mb-16"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="inline-block mb-2 px-3 py-1 rounded-full bg-black/5 text-xs font-medium tracking-wide uppercase">
-          {translate('page.home.pricing.header.badge')}
-        </div>
+    <div className="flex flex-col gap-10 px-4">
+      {standalone === false && (
+        <motion.div
+          className="text-center flex flex-col gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <div>
+            <div className="inline-block px-3 py-1 rounded-full bg-black/5 text-xs font-medium tracking-wide uppercase">
+              {translate('page.home.pricing.header.badge')}
+            </div>
+          </div>
 
-        <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight mt-2 mb-4">
-          {translate('page.home.pricing.header.title')}
-        </h2>
+          <div className="flex flex-col gap-2">
+            <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight">
+              {translate('page.home.pricing.header.title')}
+            </h2>
 
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          {translate('page.home.pricing.header.description.one')}
-          {translate('page.home.pricing.header.description.two')}
-        </p>
-      </motion.div>
+            <p className="text-lg text-gray-600 flex flex-col gap-1">
+              <span>
+                {translate('page.home.pricing.header.description.one')}
+              </span>
+              <span>
+                {translate('page.home.pricing.header.description.two')}
+              </span>
+            </p>
+          </div>
+        </motion.div>
+      )}
 
-      <div className="mb-12 flex justify-center">
+      <div className="flex justify-center">
         <div className="relative flex gap-2 p-1 rounded-full bg-black/5 ">
           <button
             type="button"
@@ -159,23 +174,33 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
       </div>
 
       <motion.div
-        className="max-w-lg mx-auto"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        className={cn(
+          'relative md:w-4xl mx-auto flex flex-col lg:flex-row gap-4',
+          'transition duration-400 ease-in-out -translate-y-1',
+          'shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_10px_10px_-5px_rgba(0,0,0,0.02)]',
+          'bg-white rounded-2xl border border-gray-100 pt-10 md:p-10',
+          border === false && 'shadow-none border-none md:p-0'
+        )}
+        initial={{ opacity: 0, y: 20, scale: 0.8 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <div className="max-w-sm mx-auto transition duration-400 ease-in-out -translate-y-1 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_10px_10px_-5px_rgba(0,0,0,0.02)] bg-white rounded-2xl border border-gray-100">
+        {trial === true && (
           <div className="absolute -top-3 right-0 left-0 flex justify-center">
-            <div className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-4 py-1 rounded-full font-medium text-sm shadow-md">
-              {translate('page.home.pricing.trial')}
+            <div className="flex flex-col gap-1">
+              <div className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-4 py-1 rounded-full font-medium text-sm shadow-md">
+                {translate('page.home.pricing.trial')}
+              </div>
+
+              <div className="text-center text-xs text-gray-500">
+                {translate('page.home.pricing.trial.description')}
+              </div>
             </div>
           </div>
+        )}
 
-          <div className="text-center mt-6 text-xs text-gray-500">
-            {translate('page.home.pricing.trial.description')}
-          </div>
-
-          <div className="p-4 flex flex-col gap-4 text-center border-b">
+        <div className="flex-1 flex flex-col gap-4 p-4 justify-center">
+          <div className="flex flex-col gap-4 text-center">
             <div className="uppercase text-sm font-medium tracking-wider text-gray-500 mb-2">
               {translate('page.home.pricing.premium')}
             </div>
@@ -193,7 +218,13 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
             </div>
 
             {billingCycle === 'year' && (
-              <div className="flex flex-col">
+              <motion.div
+                className="flex flex-col"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+              >
                 <div className="mt-2 text-sm text-gray-500">
                   {translate('page.home.pricing.annual.total').replace(
                     '{number}',
@@ -211,39 +242,45 @@ export const Price: React.FC<{ lang: Lang; prices: PriceType[] }> = ({
                     )
                   )}
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            <div className="p-3 rounded-md shadow-md border border-gray-100">
-              <Begin />
-            </div>
+            {begin === true ? (
+              <div className="p-3 rounded-md shadow-md border border-gray-100">
+                <Begin />
+              </div>
+            ) : (
+              <div>
+                <Button>{translate('page.home.pricing.cta')}</Button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex-1 flex flex-col gap-2 justify-center p-4 border-t pt-8 md:border-t-0 md:pt-4">
+          <div className="text-sm font-medium mb-4">
+            {translate('page.home.pricing.included')}
           </div>
 
-          <div className="px-8 py-8">
-            <div className="text-sm font-medium mb-4">
-              {translate('page.home.pricing.included')}
-            </div>
+          <ul className="space-y-3">
+            {features.map((feature, index) => (
+              <motion.li
+                key={feature.id}
+                className="flex items-start"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+              >
+                <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-linear-to-br from-green-300/20 to-green-500/20 mr-2 mt-0.5">
+                  <Check size={12} className="text-green-600" />
+                </div>
 
-            <ul className="space-y-3">
-              {features.map((feature, index) => (
-                <motion.li
-                  key={feature.id}
-                  className="flex items-start"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
-                >
-                  <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-linear-to-br from-green-300/20 to-green-500/20 mr-2 mt-0.5">
-                    <Check size={12} className="text-green-600" />
-                  </div>
-
-                  <span className="text-sm text-gray-700">
-                    {feature.label[lang]}
-                  </span>
-                </motion.li>
-              ))}
-            </ul>
-          </div>
+                <span className="text-sm text-gray-700">
+                  {feature.label[lang]}
+                </span>
+              </motion.li>
+            ))}
+          </ul>
         </div>
       </motion.div>
     </div>
