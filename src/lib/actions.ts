@@ -3,6 +3,7 @@
 import type { Block, Link, Site } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
+import { after } from 'next/server';
 import { z } from 'zod';
 
 import { db } from 'helpers/db';
@@ -70,21 +71,23 @@ export const createSite = async (
       }
     });
 
-    db.event
-      .create({
-        data: {
-          userId: session.user.id,
-          eventType: 'SITE_CREATED',
-          payload: response,
-          correlationId: nanoid()
-        }
-      })
-      .then(event => {
-        console.info('events::createSite', event);
-      })
-      .catch(error => {
-        console.error('events::createSite', error);
-      });
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(session.user.id),
+            eventType: 'SITE_CREATED',
+            payload: response,
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::createSite', event);
+        })
+        .catch(error => {
+          console.error('events::createSite', error);
+        });
+    });
 
     revalidateTag(
       `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
@@ -152,6 +155,24 @@ export const mutateLink = async (
       }
     });
 
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(session.user.id),
+            eventType: 'LINK_MUTATED',
+            payload: response,
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::mutateLink', event);
+        })
+        .catch(error => {
+          console.error('events::mutateLink', error);
+        });
+    });
+
     return response;
   } catch (error: unknown) {
     console.error(error);
@@ -209,6 +230,18 @@ const filterEntriesWithFiles = <T extends Record<string, unknown>>(
 export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
   if (!blockId) {
     return { error: 'Block ID is required' };
+  }
+
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  if (session.user.role !== 'ADMIN') {
+    await db.block.findFirstOrThrow({
+      where: { id: blockId, site: { userId: session.user.id } }
+    });
   }
 
   const entries = transformArrayToObject(
@@ -281,6 +314,24 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
       }
     });
 
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(session.user.id),
+            eventType: 'BLOCK_UPDATED',
+            payload: response,
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::updateBlock', event);
+        })
+        .catch(error => {
+          console.error('events::updateBlock', error);
+        });
+    });
+
     revalidateTag(
       `${response?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
     );
@@ -313,6 +364,18 @@ export const createBlock = async (
   site: Site['id'],
   type: Block['type']
 ): Promise<{ error: string } | Block> => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  if (session.user.role !== 'ADMIN') {
+    await db.site.findFirstOrThrow({
+      where: { id: site, userId: session.user.id }
+    });
+  }
+
   const entries = transformArrayToObject(
     [...form.entries()]
       .map(([key, value]) => [...key.split(/\[|\]/).filter(Boolean), value])
@@ -390,6 +453,24 @@ export const createBlock = async (
     response?.site?.customDomain &&
       revalidateTag(`${response?.site?.customDomain}-metadata`);
 
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(session.user.id),
+            eventType: 'BLOCK_CREATED',
+            payload: response,
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::createBlock', event);
+        })
+        .catch(error => {
+          console.error('events::createBlock', error);
+        });
+    });
+
     return response;
   } catch (error: unknown) {
     return {
@@ -461,6 +542,18 @@ export const deleteBlock = async (blockId: Block['id']) => {
 };
 
 export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  if (session.user.role !== 'ADMIN') {
+    await db.site.findFirstOrThrow({
+      where: { id: site.id, userId: session.user.id }
+    });
+  }
+
   if (!key) {
     return { error: await translate('lib.actions.update-site.error') };
   }
@@ -502,6 +595,24 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
           background: value
         }
       });
+
+      after(() => {
+        db.event
+          .create({
+            data: {
+              userId: String(session.user.id),
+              eventType: 'BACKGROUND_UPDATED',
+              payload: response,
+              correlationId: nanoid()
+            }
+          })
+          .then(event => {
+            console.info('events::updateSite', event);
+          })
+          .catch(error => {
+            console.error('events::updateSite', error);
+          });
+      });
     } else if (['image', 'logo', 'background'].includes(key)) {
       const file = formData.get(key) as File;
       const filename = `${nanoid()}.${file.type.split('/')[1]}`;
@@ -516,6 +627,24 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
           [key]: url,
           ...(blurhash && { imageBlurhash: blurhash })
         }
+      });
+
+      after(() => {
+        db.event
+          .create({
+            data: {
+              userId: String(session.user.id),
+              eventType: 'BACKGROUND_UPDATED',
+              payload: response,
+              correlationId: nanoid()
+            }
+          })
+          .then(event => {
+            console.info('events::updateSite', event);
+          })
+          .catch(error => {
+            console.error('events::updateSite', error);
+          });
       });
     } else {
       response = await db.site.update({

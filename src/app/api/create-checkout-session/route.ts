@@ -1,9 +1,13 @@
+import { nanoid } from 'nanoid';
+import { after } from 'next/server';
+import type Stripe from 'stripe';
+
 import { auth } from 'auth';
 import { createOrRetrieveCustomer } from 'data/customer';
+import { db } from 'helpers/db';
 import { getURL } from 'helpers/getURL';
 import { stripe } from 'helpers/stripe';
 import { translate } from 'helpers/translate';
-import type Stripe from 'stripe';
 
 export async function POST(req: Request) {
   // 1. Destructure the price and quantity from the POST body
@@ -58,6 +62,24 @@ export async function POST(req: Request) {
         cancel_url: `${getURL()}/`
       });
     }
+
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(user?.id),
+            eventType: 'CHECKOUT_SESSION_CREATED',
+            payload: JSON.parse(JSON.stringify(session)),
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::createCheckoutSession', event);
+        })
+        .catch(error => {
+          console.error('events::createCheckoutSession', error);
+        });
+    });
 
     if (session) {
       return new Response(JSON.stringify({ sessionId: session.id }), {
