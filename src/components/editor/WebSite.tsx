@@ -51,12 +51,12 @@ export const WebSite = ({
           <BlockCreate type="main" siteId={site.id} />
         </Main>
 
-        <Footer>
+        {/* <Footer>
           <div className="flex gap-3 items-center justify-center">
             <BlockList blocks={data.social} site={site} type="social" />
             <BlockCreate type="social" siteId={site.id} />
           </div>
-        </Footer>
+        </Footer> */}
       </Content>
 
       <div className="absolute left-0 right-0 flex items-center justify-center p-4">
