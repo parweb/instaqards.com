@@ -14,7 +14,7 @@ export default async function SiteSettingsAppearance(props: {
 
   return (
     <div className="flex flex-col space-y-6">
-      {/*<Form
+      <Form
         title="Thumbnail image"
         description="The thumbnail image for your site. Accepted formats: .png, .jpg, .jpeg"
         helpText="Max file size 50MB. Recommended size 1200x630."
@@ -23,8 +23,14 @@ export default async function SiteSettingsAppearance(props: {
           type: 'file',
           defaultValue: data?.image!
         }}
-        handleSubmit={updateSite}
-      />*/}
+        handleSubmit={
+          updateSite as <T>(
+            data: FormData, // eslint-disable-line no-unused-vars
+            id: string, // eslint-disable-line no-unused-vars
+            name: string // eslint-disable-line no-unused-vars
+          ) => Promise<T | { error?: string }>
+        }
+      />
 
       <Form
         title="Logo"
