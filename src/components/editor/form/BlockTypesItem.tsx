@@ -15,13 +15,17 @@ export const BlockTypesItem = ({
   label,
   type,
   onClick,
-  value
+  value,
+  color = ['#743ad5', '#d53a9d', '#d53a9d'],
+  Icon
 }: {
   label: string;
   type: 'button' | 'picture' | 'text' | 'external' | 'other' | 'social';
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
   value?: { type: string; id: string };
+  color?: [string, string, string];
+  Icon?: React.ElementType;
 }) => {
   const variants: {
     id: string;
@@ -93,17 +97,32 @@ export const BlockTypesItem = ({
     >
       <AccordionItem
         value={type}
-        className="border border-stone-200 rounded-md px-2 cursor-pointer hover:bg-stone-100 shadow-sm"
+        className="border-1 rounded-md px-0 cursor-pointer shadow-sm"
+        style={{ borderColor: color[1] }}
       >
         <div className="flex flex-col gap-0">
-          <AccordionTrigger>
-            <hgroup className="flex gap-2 items-center justify-between">
-              <Badge variant="outline">{collection.length}</Badge>
-              <label>{label}</label>
+          <AccordionTrigger className="p-2" style={{ color: color[2] }}>
+            <hgroup className="flex gap-2 items-center justify-between flex-1 pr-2">
+              {Icon && <Icon className="w-4 h-4" />}
+
+              <label className="flex-1 text-left" style={{ color: color[2] }}>
+                {label}
+              </label>
+
+              <Badge
+                variant="outline"
+                style={{
+                  background: `linear-gradient(to bottom, ${color[0]}, ${color[1]})`,
+                  color: color[2],
+                  borderColor: color[2]
+                }}
+              >
+                {collection.length}
+              </Badge>
             </hgroup>
           </AccordionTrigger>
 
-          <AccordionContent>
+          <AccordionContent className="p-2">
             <BlockTypesItemVariants
               onClick={onClick}
               value={value}
