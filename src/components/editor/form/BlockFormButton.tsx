@@ -6,7 +6,7 @@ import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
 
-export function BlockFormButton() {
+export function BlockFormButton({ isLoading }: { isLoading: boolean }) {
   const { pending } = useFormStatus();
 
   return (
@@ -14,13 +14,13 @@ export function BlockFormButton() {
       type="submit"
       className={cn(
         'w-full',
-        pending
+        isLoading || pending
           ? 'cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400'
           : 'border-black bg-black text-white hover:bg-white hover:text-black'
       )}
-      disabled={pending}
+      disabled={isLoading || pending}
     >
-      {pending ? <LoadingDots color="#808080" /> : <p>Save</p>}
+      {isLoading || pending ? <LoadingDots color="#808080" /> : <p>Save</p>}
     </Button>
   );
 }

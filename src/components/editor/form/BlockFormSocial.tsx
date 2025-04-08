@@ -85,7 +85,7 @@ export function BlockFormSocial({
       </div>
 
       <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10">
-        <BlockFormButton />
+        <BlockFormButton isLoading={false} />
       </div>
     </form>
   );

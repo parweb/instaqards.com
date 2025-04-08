@@ -52,6 +52,7 @@ export function BlockPreview({
 
   const setLastSelected = useSetAtom($lastSelected);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState(z.object({}));
 
   const [Component, setComponent] = useState<React.ComponentType<unknown>>(
@@ -111,7 +112,6 @@ export function BlockPreview({
   });
 
   const { widget, ...data } = useWatch({ control });
-  console.info({ widget });
 
   const widgetString = JSON.stringify({ ...block_widget, data });
 
@@ -119,10 +119,14 @@ export function BlockPreview({
     setValue('widget', widgetString);
   }, [widgetString, setValue]);
 
+  console.log({ isLoading });
+
   return (
     <form
       className="flex-1 flex flex-col gap-4 h-full"
       onSubmit={handleSubmit(data => {
+        setIsLoading(true);
+
         const form = new FormData();
 
         for (const [key, value] of Object.entries(data)) {
@@ -151,6 +155,8 @@ export function BlockPreview({
               modal?.hide();
               toast.success('Block saved!');
             }
+
+            setIsLoading(false);
           }
         );
 
@@ -387,7 +393,7 @@ export function BlockPreview({
         </Button>
 
         <div className="flex-1">
-          <BlockFormButton />
+          <BlockFormButton isLoading={isLoading} />
         </div>
       </div>
     </form>
