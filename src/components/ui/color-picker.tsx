@@ -21,12 +21,19 @@ export const ColorPicker = ({
     <Popover modal>
       <PopoverTrigger asChild>
         <div
-          style={{ backgroundColor: value }}
-          className={cn(
-            'aspect-square h-9 border rounded-sm cursor-pointer',
-            className
-          )}
-        />
+          className="border rounded-sm overflow-hidden"
+          style={{
+            backgroundImage:
+              'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)',
+            backgroundSize: '20px 20px',
+            backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'
+          }}
+        >
+          <div
+            style={{ backgroundColor: value }}
+            className={cn('aspect-square h-9 cursor-pointer', className)}
+          />
+        </div>
       </PopoverTrigger>
 
       <input name={name} type="hidden" value={value} />
