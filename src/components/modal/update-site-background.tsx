@@ -59,7 +59,7 @@ export default function UpdateSiteBackgroundModal({
 }: {
   siteId: Site['id'];
 }) {
-  const selected = useAtomValue($selected);
+  const [selected, setSelected] = useAtom($selected);
 
   const [pending, setPending] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
@@ -81,6 +81,7 @@ export default function UpdateSiteBackgroundModal({
 
       setPreview(file.result);
       setPending(false);
+      setSelected(null);
     };
 
     file.readAsDataURL(acceptedFiles[0]);
