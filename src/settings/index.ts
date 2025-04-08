@@ -32,3 +32,11 @@ export const prices = {
 };
 
 export const sender = 'contact@qards.link';
+
+export const options = {
+  dashboard: {
+    editor: {
+      saveLastSelectedBlock: false
+    }
+  }
+} as const;

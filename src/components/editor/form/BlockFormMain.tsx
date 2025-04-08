@@ -9,6 +9,7 @@ import { $lastSelected } from 'components/editor/form/BlockForm';
 import { BlockPicker } from 'components/editor/form/BlockPicker';
 import { BlockPreview } from 'components/editor/form/BlockPreview';
 import { cn } from 'lib/utils';
+import { options } from 'settings';
 
 export function BlockFormMain({
   mode,
@@ -39,7 +40,11 @@ export function BlockFormMain({
   );
 
   useEffect(() => {
-    if (mode.mode === 'create' && mode.type === 'main') {
+    if (
+      mode.mode === 'create' &&
+      mode.type === 'main' &&
+      options.dashboard.editor.saveLastSelectedBlock
+    ) {
       setSelectedBlock(lastSelected);
     }
   }, [mode.mode, lastSelected, mode.type]);
