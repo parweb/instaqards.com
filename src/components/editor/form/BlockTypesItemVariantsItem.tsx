@@ -41,6 +41,7 @@ import Picture169 from 'components/editor/blocks/picture/picture-16-9';
 import Arc from 'components/editor/blocks/social/arc';
 import Simple from 'components/editor/blocks/social/simple';
 import Ghibli from 'components/editor/blocks/text/ghibli';
+import Gradiant from 'components/editor/blocks/text/gradiant';
 import Normal from 'components/editor/blocks/text/normal';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
@@ -74,7 +75,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
   },
   text: {
     normal: Normal,
-    ghibli: Ghibli
+    ghibli: Ghibli,
+    gradiant: Gradiant
   },
   external: {
     spotify: Spotify,
