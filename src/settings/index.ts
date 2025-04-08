@@ -12,7 +12,8 @@ export const marketingRoutes = [
   '/terms',
   '/privacy',
   '/pro',
-  '/qards/top'
+  '/qards/top',
+  '/identity'
 ];
 
 export const authRoutes = [
