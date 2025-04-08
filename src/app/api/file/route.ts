@@ -9,6 +9,17 @@ export async function GET(req: Request) {
   try {
     const data = await get(id, { Range });
 
+    if (data.ContentType?.startsWith('image/')) {
+      // @ts-ignore
+      return new Response(data.Body, {
+        status: 200,
+        headers: {
+          'Content-Type': data.ContentType,
+          'Content-Length': data.ContentLength
+        }
+      });
+    }
+
     // @ts-ignore
     const response = new Response(data.Body, {
       status: 206,
