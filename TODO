@@ -1,11 +1,39 @@
 TODO
 
-DONE -> page identity branding (logo)
+     -> un menu pour la landing page
+     -> i want to subscribe (finir le payment)
+     -> google map hard coded value
+     -> background color-picker libre
+     -> qards par default préremplis stylé / neutre
+     -> feed
+     -> la barre vert trial z-index a revoir
+     -> qards dropshiping / affiliation 
+          -> flippa 
+          -> ferme de blog
+     -> ecommerce
+     -> block snapchat (https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMPwAAYaGJha29qbW1iAZXAH6n8AZXABicRAAAAAQ)
+     -> share my qard on (iphone, android)
+     -> améliore edit text (margin, padding, ...)
+     -> font-picker z-index problem
+     -> ajouter dans social link: telephone & email
+     -> role commercial
+     -> button glow 1 shadow carré
+     -> recadrage photo circle & square
+     -> scale in/out picture circle & square
+     -> menu button faire mieux
+     -> lien update, delete move align on the top and add a toggle preview / editing (dotted border)
+     -> activé le carousel apartir de 2 elements media
+     -> armoniser les youtubes block (titre par dessus)
+     -> youtube réduire la hauteur des videos (pour le carousel)
+     -> description des inputs field possible (ex: youtube tu peux metre une url channel ou video)
+     -> tiktok garder que le lecteur (+ bug sur ilias)
      -> avis google
+     -> tiktok prend en compte les url mobile
+     -> fichier client dans le backoffice
+     -> statistiques plus avancé sur les qards
+
+DONE -> page identity branding (logo)
 DONE -> loading state on block mutation
-     -> 
-     -> 
-     -> 
      -> 
      -> 
      -> 
@@ -64,7 +92,7 @@ DONE -> prix trial a mettre en avant
 DONE -> Mettre le logo officiel
 DONE -> Admin -> creer et transférer les Qards / voir toute les Qards
 DONE -> bouton -> Créer votre QARDS (call to action)
-     -> Overview - > Petit carré avec les news et update a coté du truc de statistique
+DONE -> Overview - > Petit carré avec les news et update a coté du truc de statistique
 DONE -> Stats -> Range de date modifiable
 
         Page «All Sites & Qards»
@@ -78,7 +106,7 @@ DONE -> Lien Notorious -> suppression
      -> Modifier les couleurs ?
 DONE -> Label footer -> Menu déroulant avec logo présélectionné ou -> customize
 
-        Settings
+DONE    Settings
 DONE -> Paiement -> rendre dispo les paiement
 DONE -> Mot de passe -> modifier ?
 DONE -> rediriger apres: login confirm
@@ -87,9 +115,9 @@ DONE -> checks pk lien bio insta marche pas
 DONE -> qards unavailable meme apres paiement (cache)
 DONE -> lien public marche pas -> https://app.qards.link/site/cltps29wl0000e0g01sw1fiyu
 DONE -> logo par default des site mettre logo qards au lieu de vercel
-     -> image OG par default des site changer l'image par default
+DONE -> image OG par default des site changer l'image par default
 DONE -> multi-langue
-     -> compte email contact@qards.link
+DONE -> compte email contact@qards.link
 
 compte email
 
