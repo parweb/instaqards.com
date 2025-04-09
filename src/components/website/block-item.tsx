@@ -160,7 +160,7 @@ const BlockItem = ({ block }: { block: Block }) => {
           </Suspense>
         )}
 
-        <div className="absolute left-3/4 z-50 flex flex-col items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100">
+        <div className="absolute left-3/4 flex flex-col items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100">
           <BlockUpdate block={block} />
           <BlockDuplicate block={block} />
           <BlockDelete block={block} />

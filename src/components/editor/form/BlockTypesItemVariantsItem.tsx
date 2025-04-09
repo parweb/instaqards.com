@@ -132,7 +132,7 @@ export const BlockTypesItemVariantsItem = ({
             <Component label="Press Me" />
           </div>
 
-          <div className="absolute inset-0 flex items-start justify-end z-60 cursor-pointer">
+          <div className="absolute inset-0 flex items-start justify-end cursor-pointer">
             <Button
               type="button"
               onClick={() => {
@@ -177,7 +177,7 @@ export const BlockTypesItemVariantsItem = ({
         className={cn(
           'touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px] border border-stone-200 rounded-md p-2',
           {
-            'fixed inset-0 z-50 bg-white w-auto h-auto aspect-auto rounded-none':
+            'fixed inset-0 bg-white w-auto h-auto aspect-auto rounded-none':
               expanded
           }
         )}

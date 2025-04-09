@@ -29,15 +29,15 @@ export const PriceTable = ({
           <div
             key={`PriceTableItem-${product.id}`}
             className={cn(
-              'relative flex-1 flex flex-col gap-4 bg-white scale-95 z-1',
+              'relative flex-1 flex flex-col gap-4 bg-white scale-95',
               'border-4 border-black rounded-xl p-5 sm:p-10',
 
               // @ts-ignore
               product?.metadata?.feature === 'true' &&
                 !subscription?.valid() &&
-                'scale-105 -mx-7 z-10 bg-yellow-50',
+                'scale-105 -mx-7 bg-yellow-50',
               subscription?.priceId === product?.prices?.[0]?.id &&
-                'z-10 bg-green-100 border-4 border-green-500'
+                'bg-green-100 border-4 border-green-500'
             )}
           >
             <div className="flex flex-col gap-2">

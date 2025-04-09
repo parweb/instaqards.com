@@ -140,7 +140,7 @@ const BlockItem = ({ block }: { block: Block }) => {
 
         <div
           className={cn(
-            'absolute left-3/4 z-50 flex flex-col items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100',
+            'absolute left-3/4 flex flex-col items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100',
             isMobile === true && 'opacity-100 left-full'
           )}
         >

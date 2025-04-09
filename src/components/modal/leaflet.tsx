@@ -48,9 +48,18 @@ export const Leaflet = ({
   return (
     <AnimatePresence>
       <motion.div
+        key="leaflet-backdrop"
+        className="fixed inset-0 bg-gray-100/10 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={() => setShow(false)}
+      />
+
+      <motion.div
         ref={leafletRef}
         key="leaflet"
-        className="fixed inset-x-0 bottom-0 z-240 w-screen bg-white pb-5 sm:hidden"
+        className="fixed inset-x-0 bottom-0 w-screen bg-white pb-5 sm:hidden"
         initial={{ y: '100%' }}
         animate={controls}
         exit={{ y: '100%' }}
@@ -76,15 +85,6 @@ export const Leaflet = ({
 
         {children}
       </motion.div>
-
-      <motion.div
-        key="leaflet-backdrop"
-        className="fixed inset-0 z-230 bg-gray-100/10 backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={() => setShow(false)}
-      />
     </AnimatePresence>
   );
 };

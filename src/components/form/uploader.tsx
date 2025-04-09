@@ -42,7 +42,7 @@ export default function Uploader({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="isolate flex flex-col gap-2">
       <label
         htmlFor={`${name}-upload`}
         className={cn(
@@ -55,7 +55,7 @@ export default function Uploader({
         )}
       >
         <div
-          className="absolute z-5 h-full w-full rounded-md"
+          className="absolute h-full w-full rounded-md"
           onDragOver={e => {
             e.preventDefault();
             e.stopPropagation();
@@ -83,19 +83,21 @@ export default function Uploader({
             handleUpload(e.dataTransfer.files?.[0]);
           }}
         />
+
         <div
-          className={`${
-            dragActive ? 'border-2 border-black' : ''
-          } absolute z-3 flex h-full w-full flex-col items-center justify-center rounded-md px-10 transition-all ${
+          className={cn(
+            'absolute flex h-full w-full flex-col items-center justify-center rounded-md px-10 transition-all',
+            { 'border-2 border-black': dragActive },
             data[name]
               ? 'bg-white/80 opacity-0 hover:opacity-100 hover:backdrop-blur-md'
               : 'bg-white opacity-100 hover:bg-gray-50'
-          }`}
+          )}
         >
           <svg
-            className={`${
+            className={cn(
+              'h-7 w-7 text-gray-500 transition-all duration-75 group-hover:scale-110 group-active:scale-95',
               dragActive ? 'scale-110' : 'scale-100'
-            } h-7 w-7 text-gray-500 transition-all duration-75 group-hover:scale-110 group-active:scale-95`}
+            )}
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -110,14 +112,18 @@ export default function Uploader({
             <path d="M12 12v9" />
             <path d="m16 16-4-4-4 4" />
           </svg>
+
           <p className="mt-2 text-center text-sm text-gray-500">
             Drag and drop or click to upload.
           </p>
+
           <p className="mt-2 text-center text-sm text-gray-500">
             Max file size: 50MB
           </p>
+
           <span className="sr-only">Photo upload</span>
         </div>
+
         {data[name] && (
           // eslint-disable-next-line @next/next/no-img-element
           <img

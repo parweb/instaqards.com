@@ -50,16 +50,25 @@ export default function Modal({
   return (
     <AnimatePresence>
       {showModal && (
-        <div className="pointer-events-auto z-200">
+        <div className="pointer-events-auto z-20">
           {isMobile && <Leaflet setShow={setShowModal}>{children}</Leaflet>}
 
           {isDesktop && (
             <>
+              <motion.div
+                key="desktop-backdrop"
+                className="fixed inset-0 bg-gray-100/10 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowModal(false)}
+              />
+
               <FocusTrap focusTrapOptions={{ initialFocus: false }}>
                 <motion.div
                   ref={desktopModalRef}
                   key="desktop-modal"
-                  className="fixed inset-0 z-240 hidden min-h-screen items-center justify-center md:flex"
+                  className="fixed inset-0 hidden min-h-screen items-center justify-center md:flex"
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.95 }}
@@ -72,15 +81,6 @@ export default function Modal({
                   {children}
                 </motion.div>
               </FocusTrap>
-
-              <motion.div
-                key="desktop-backdrop"
-                className="fixed inset-0 z-230 bg-gray-100/10 backdrop-blur-sm"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowModal(false)}
-              />
             </>
           )}
         </div>

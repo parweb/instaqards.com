@@ -146,10 +146,11 @@ export default function Form({
               onChange={e => {
                 e.target.value = e.target.value.toLowerCase();
               }}
-              className="z-10 flex-1 rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-hidden focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
+              className="flex-1 rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-hidden focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
             />
+
             {inputAttrs.defaultValue && (
-              <div className="absolute right-3 z-10 flex h-full items-center">
+              <div className="absolute right-3 flex h-full items-center">
                 <DomainStatus domain={inputAttrs.defaultValue as string} />
               </div>
             )}
