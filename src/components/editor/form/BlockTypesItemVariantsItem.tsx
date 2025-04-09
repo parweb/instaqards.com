@@ -23,6 +23,7 @@ import SlideFromLeft001 from 'components/editor/blocks/button/slide-from-left-00
 import AppleMusic from 'components/editor/blocks/external/apple-music';
 import Facebook from 'components/editor/blocks/external/facebook';
 import Instagram from 'components/editor/blocks/external/instagram';
+import Snapchat from 'components/editor/blocks/external/snapchat';
 import Soundcloud from 'components/editor/blocks/external/soundcloud';
 import Spotify from 'components/editor/blocks/external/spotify';
 import Tiktok from 'components/editor/blocks/external/tiktok';
@@ -86,7 +87,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     facebook: Facebook,
     soundcloud: Soundcloud,
     twitter: Twitter,
-    'apple-music': AppleMusic
+    'apple-music': AppleMusic,
+    snapchat: Snapchat
   },
   other: {
     email: Email,
