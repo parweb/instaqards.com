@@ -1,12 +1,12 @@
 'use client';
 
 import type { RefObject } from 'react';
-import { Suspense, useRef, useState, useActionState } from 'react';
+import { Suspense, useActionState, useRef, useState } from 'react';
+import { LuLoader } from 'react-icons/lu';
 import { useOnClickOutside } from 'usehooks-ts';
 
 import { setLang } from 'actions/lang-chooser';
-import { getAlphaTwoCode } from 'lib/utils';
-import { LuLoader } from 'react-icons/lu';
+import { cn, getAlphaTwoCode } from 'lib/utils';
 
 interface FlagProps {
   code: string;
@@ -76,7 +76,10 @@ export const FlagPicker = ({
   return (
     <div
       ref={ref}
-      className="relative"
+      className={cn(
+        'relative p-1 bg-white/80 backdrop-blur-sm rounded-md flex flex-col items-center',
+        isOpen && 'rounded-b-none'
+      )}
       onClick={() => setIsOpen(state => !state)}
       onKeyDown={() => {}}
     >
@@ -94,7 +97,10 @@ export const FlagPicker = ({
       )}
 
       {isOpen && (
-        <form action={action} className="absolute flex flex-col gap-2 py-2">
+        <form
+          action={action}
+          className="absolute p-1 top-full flex flex-col gap-2 bg-white/80 backdrop-blur-sm rounded-b-md"
+        >
           {otherFlags.map(code => (
             <button
               onClick={e => e.stopPropagation()}

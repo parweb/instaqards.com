@@ -557,6 +557,24 @@ const translations = {
     it: 'È richiesto un sottodominio!',
     es: '¡Se requiere un subdominio!'
   },
+  'menu.landing.name': {
+    fr: 'Menu',
+    en: 'Menu',
+    it: 'Menu',
+    es: 'Menú'
+  },
+  'menu.landing.language': {
+    fr: 'Langue',
+    en: 'Language',
+    it: 'Lingua',
+    es: 'Idioma'
+  },
+  'menu.landing.label': {
+    fr: 'Menu de navigation',
+    en: 'Navigation menu',
+    it: 'Menu di navigazione',
+    es: 'Menú de navegación'
+  },
   'menu.help': {
     fr: 'Aide',
     en: 'Help',
