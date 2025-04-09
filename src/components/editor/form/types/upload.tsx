@@ -31,7 +31,7 @@ import {
 } from '@dnd-kit/sortable';
 
 import { Button } from 'components/ui/button';
-import { Input } from 'components/ui/input';
+import { InputLink } from 'components/ui/input-link';
 import { cn, type Block as BlockType } from 'lib/utils';
 
 type Media = {
@@ -105,10 +105,9 @@ export const UploaderItem = ({
       </div>
 
       <div className="flex-1">
-        <Input
+        <InputLink
           type="text"
           value={item.link}
-          placeholder="Link"
           onChange={e => onLinkChange(item.id, e.target.value)}
         />
       </div>

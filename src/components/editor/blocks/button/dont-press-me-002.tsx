@@ -17,7 +17,7 @@ const $label = z
 const $href = z.string().describe(
   json({
     label: 'Link',
-    kind: 'string'
+    kind: 'link'
   })
 );
 const BaseButtonProps = z.object({ label: $label });

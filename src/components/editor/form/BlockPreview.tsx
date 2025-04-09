@@ -17,13 +17,14 @@ import { $lastSelected } from 'components/editor/form/BlockForm';
 import { BlockFormButton } from 'components/editor/form/BlockFormButton';
 import { Address } from 'components/editor/form/types/address';
 import { Color } from 'components/editor/form/types/color';
-import { Socials } from 'components/editor/form/types/socials';
 import { Container } from 'components/editor/form/types/container';
 import { Font } from 'components/editor/form/types/font';
+import { Socials } from 'components/editor/form/types/socials';
 import { Uploader } from 'components/editor/form/types/upload';
 import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
+import { InputLink } from 'components/ui/input-link';
 import { createBlock, updateBlock } from 'lib/actions';
 import { text, type Block as BlockType } from 'lib/utils';
 
@@ -119,8 +120,6 @@ export function BlockPreview({
     setValue('widget', widgetString);
   }, [widgetString, setValue]);
 
-  console.log({ isLoading });
-
   return (
     <form
       className="flex-1 flex flex-col gap-4 h-full"
@@ -166,9 +165,9 @@ export function BlockPreview({
       <div className="flex-1 self-stretch overflow-y-scroll">
         <div className="flex flex-col gap-4">
           <div className="px-10 py-5 overflow-hidden relative flex flex-col gap-4">
-            <div className="absolute z-10 inset-0 bg-black/30 pointer-events-auto" />
+            <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
 
-            <div className="z-20 ">
+            <div className="">
               <Suspense fallback={null}>
                 <Component {...data} />
               </Suspense>
@@ -325,6 +324,7 @@ export function BlockPreview({
                         )}
                       </>
                     )}
+
                     {property.shape.kind === 'number' && (
                       <>
                         <label
@@ -365,6 +365,37 @@ export function BlockPreview({
                           {...register(key)}
                           placeholder={property.shape.label}
                         />
+
+                        {errors[key] && (
+                          <p style={{ color: 'red' }}>
+                            {/* @ts-ignore */}
+                            {errors[key]?.message?.toString()}
+                          </p>
+                        )}
+                      </>
+                    )}
+
+                    {property.shape.kind === 'link' && (
+                      <>
+                        <label
+                          htmlFor={key}
+                          className="text-sm font-medium text-stone-500"
+                        >
+                          {property.shape.label}
+                        </label>
+
+                        <Controller
+                          control={control}
+                          name={key}
+                          render={({ field }) => (
+                            <InputLink id={key} {...field} />
+                          )}
+                        />
+
+                        {/* <InputLink
+                          {...register(key)}
+                          placeholder={property.shape.label}
+                        /> */}
 
                         {errors[key] && (
                           <p style={{ color: 'red' }}>

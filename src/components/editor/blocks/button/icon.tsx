@@ -18,7 +18,7 @@ const $label = z
 const $href = z.string().describe(
   json({
     label: 'Link',
-    kind: 'string'
+    kind: 'link'
   })
 );
 
