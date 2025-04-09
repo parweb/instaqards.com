@@ -7,6 +7,8 @@ import { db } from 'helpers/db';
 import { getLang } from 'helpers/translate';
 import { editUser } from 'lib/actions';
 import { getSession, getSubscription } from 'lib/auth';
+import { Button } from 'components/ui/button';
+import Link from 'next/link';
 
 export default async function SettingsPage() {
   const session = await getSession();
@@ -65,6 +67,18 @@ export default async function SettingsPage() {
               </PortalButton>
             </div>
           )}
+        </div>
+
+        <div className="rounded-lg border border-stone-200 bg-white dark:border-stone-700 dark:bg-black">
+          <div className="relative flex flex-col space-y-4 p-5 sm:p-10">
+            <h2 className="font-cal text-xl dark:text-white">Receive money</h2>
+
+            <div>
+              <Button asChild>
+                <Link href="/api/stripe/connect">Connect Stripe</Link>
+              </Button>
+            </div>
+          </div>
         </div>
 
         <Form
