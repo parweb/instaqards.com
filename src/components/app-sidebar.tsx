@@ -81,7 +81,7 @@ export function AppSidebar(
         icon: DollarSign,
         isActive: segments[0] === 'affiliation'
       },
-      ...(props.role === UserRole.ADMIN
+      ...(([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(props.role)
         ? [
             {
               title: translate('menu.generator'),
@@ -100,7 +100,11 @@ export function AppSidebar(
               url: '/referals',
               icon: Workflow,
               isActive: segments[0] === 'referals'
-            },
+            }
+          ]
+        : []),
+      ...(props.role === UserRole.ADMIN
+        ? [
             {
               title: translate('menu.workflows'),
               url: '/workflows',
