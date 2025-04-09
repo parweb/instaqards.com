@@ -1,12 +1,16 @@
 'use client';
 
 import type { Price as PriceType } from '@prisma/client';
-import { Check } from 'lucide-react';
+import { AlertCircle, Check, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { Alert, AlertTitle } from 'components/ui/alert';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
+import { postData } from 'helpers/api';
+import { getStripe } from 'helpers/getStripe';
 import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
 import type { Lang } from 'translations';
@@ -88,8 +92,13 @@ export const Price: React.FC<{
   border: boolean;
 }> = ({ lang, prices, standalone, begin, trial, border }) => {
   const translate = useTranslation();
+  const router = useRouter();
 
   const [billingCycle, setBillingCycle] = useState<'year' | 'month'>('year');
+  const [message, setMessage] = useState<string | null>(null);
+  const [state, setState] = useState<'loading' | 'error' | 'success' | 'idle'>(
+    'idle'
+  );
 
   const offer: Partial<Record<typeof billingCycle, PriceType>> = prices.reduce(
     (carry, price) => ({ ...carry, [String(price.interval)]: price }),
@@ -245,13 +254,55 @@ export const Price: React.FC<{
               </motion.div>
             )}
 
+            {state === 'error' && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>{message}</AlertTitle>
+              </Alert>
+            )}
+
             {begin === true ? (
               <div className="p-3 rounded-md shadow-md border border-gray-100">
                 <Begin />
               </div>
             ) : (
               <div>
-                <Button>{translate('page.home.pricing.cta')}</Button>
+                <Button
+                  disabled={['loading', 'success'].includes(state)}
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      setState('loading');
+
+                      const response = await postData({
+                        url: '/api/create-checkout-session',
+                        data: {
+                          priceId: offer[billingCycle]?.id
+                        }
+                      });
+
+                      (await getStripe())?.redirectToCheckout({
+                        sessionId: response.sessionId
+                      });
+
+                      setState('success');
+                    } catch (error: unknown) {
+                      console.error({ error });
+
+                      setState('error');
+                      setMessage(
+                        error instanceof Error ? error.message : 'Unknown error'
+                      );
+                      // router.refresh();
+                    }
+                  }}
+                >
+                  {state === 'loading' ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    translate('page.home.pricing.cta')
+                  )}
+                </Button>
               </div>
             )}
           </div>
@@ -286,58 +337,3 @@ export const Price: React.FC<{
     </div>
   );
 };
-
-// const Prices = async () => {
-//   const products = await db.product.findMany({
-//     where: { active: { equals: true } },
-//     include: {
-//       prices: {
-//         where: { active: { equals: true }, interval_count: { equals: 1 } }
-//       }
-//     }
-//   });
-
-//   return (
-//     <div
-//       id="Prices"
-//       className="flex flex-col p-10 gap-20 overflow-hidden max-w-[1200px] justify-center items-center justify-self-center"
-//     >
-//       <hgroup className="text-center flex flex-col gap-4">
-//         <h2 className="text-4xl sm:text-5xl font-[900]">
-//           {translate('page.home.price.title')}
-//         </h2>
-//         <p className="text-gray-600 text-2xl">
-//           {translate('page.home.price.description')}
-//         </p>
-//       </hgroup>
-
-//       <section className="text-center p-4 border-2 border-green-500 bg-green-50 rounded-lg max-w-[1200px] text-green-900">
-//         <div className="flex flex-col gap-2">
-//           <div className="font-bold text-2xl">
-//             {translate('page.home.price.trial.primary')}
-//           </div>
-
-//           <div className="text-xl flex items-center gap-6">
-//             <div className="flex items-center">
-//               <LuArrowBigDown />
-//               <LuArrowBigDown />
-//               <LuArrowBigDown />
-//             </div>
-
-//             {translate('page.home.price.trial.secondary')}
-
-//             <div className="flex items-center">
-//               <LuArrowBigDown />
-//               <LuArrowBigDown />
-//               <LuArrowBigDown />
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-
-//       <div className="flex items-center justify-center">
-//         <PriceTable products={products} className="flex-col sm:flex-row" />
-//       </div>
-//     </div>
-//   );
-// };

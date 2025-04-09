@@ -11,18 +11,16 @@ export default async function HomePage(props: {
   const lang = await getLang();
 
   const prices = await db.price.findMany({
-    where: {
-      product: {
-        active: true
-      }
-    }
+    where: { product: { active: true } }
   });
 
   return (
     <>
       <Hero bg={searchParams?.bg as string} />
       <Gallery />
+
       {/*<Features />*/}
+
       <Price
         lang={lang}
         prices={prices}
@@ -31,6 +29,7 @@ export default async function HomePage(props: {
         trial
         border
       />
+
       {/* <Testimonial /> */}
     </>
   );
