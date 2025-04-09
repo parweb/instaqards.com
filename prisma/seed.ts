@@ -1,5 +1,11 @@
-import { ConditionType, Operator, PrismaClient } from '@prisma/client';
 import { nanoid } from 'nanoid';
+
+import {
+  ConditionType,
+  Operator,
+  PrismaClient,
+  UserRole
+} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -341,7 +347,7 @@ const prisma = new PrismaClient();
       id: 'cm8zwbi0y0001spa09s9s7eat',
       email: 'parweb@gmail.com',
       emailVerified: new Date(),
-      role: 'ADMIN',
+      role: UserRole.ADMIN,
       sites: {
         create: {
           name: 'yolo',
@@ -378,7 +384,7 @@ const prisma = new PrismaClient();
               user: {
                 id: 'cm8zwbi0y0001spa09s9s7eat',
                 name: null,
-                role: 'USER',
+                role: UserRole.USER,
                 email: 'parweb@gmail.com',
                 image: null,
                 password: null,

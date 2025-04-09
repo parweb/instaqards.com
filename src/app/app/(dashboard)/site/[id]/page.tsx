@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { LuArrowUpRight } from 'react-icons/lu';
+import { UserRole } from '@prisma/client';
 
 import { WebSite } from 'components/editor/WebSite';
 import { db } from 'helpers/db';
@@ -26,7 +27,7 @@ export default async function SitePosts(props: {
 
   if (
     !site ||
-    (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
+    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
   ) {
     notFound();
   }

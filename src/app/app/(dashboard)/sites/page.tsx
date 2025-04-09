@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -16,7 +17,7 @@ export default async function AllSites() {
   }
 
   const users =
-    session?.user.role === 'ADMIN'
+    session?.user.role === UserRole.ADMIN
       ? await db.user.findMany({
           include: { sites: true },
           where: { id: { not: session.user.id }, sites: { some: {} } }

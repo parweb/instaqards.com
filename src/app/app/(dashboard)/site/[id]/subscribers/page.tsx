@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { notFound, redirect } from 'next/navigation';
 import { LuArrowUpRight } from 'react-icons/lu';
 
@@ -22,7 +23,7 @@ export default async function SiteSubscribers(props: {
 
   if (
     !site ||
-    (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
+    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
   ) {
     notFound();
   }

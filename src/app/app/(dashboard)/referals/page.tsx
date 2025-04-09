@@ -1,3 +1,5 @@
+import { UserRole } from '@prisma/client';
+
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { UserTree } from './user-tree';
@@ -50,7 +52,7 @@ export default async function ReferalsPage() {
                 isTwoFactorEnabled: false,
                 billing_address: null,
                 payment_method: null,
-                role: 'USER',
+                role: UserRole.USER,
                 refererId: null,
                 affiliates: users
               }

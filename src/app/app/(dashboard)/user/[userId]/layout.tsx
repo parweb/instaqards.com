@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { LuArrowLeft } from 'react-icons/lu';
@@ -86,7 +87,9 @@ export default async function UserPage(props: {
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
         </div>
-        <Badge variant={user.role === 'ADMIN' ? 'destructive' : 'secondary'}>
+        <Badge
+          variant={user.role === UserRole.ADMIN ? 'destructive' : 'secondary'}
+        >
           {user.role}
         </Badge>
       </div>

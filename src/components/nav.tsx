@@ -1,5 +1,6 @@
 'use client';
 
+import { UserRole } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useSelectedLayoutSegments } from 'next/navigation';
@@ -101,7 +102,7 @@ export default function Nav({ children }: { children: ReactNode }) {
         isActive: segments[0] === 'links',
         icon: <LinkIcon width={18} />
       },
-      ...(role === 'ADMIN'
+      ...(role === UserRole.ADMIN
         ? [
             {
               name: translate('menu.generator'),

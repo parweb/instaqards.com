@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { notFound, redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { LuArrowUpRight } from 'react-icons/lu';
@@ -26,7 +27,7 @@ export default async function SiteAnalyticsLayout(props: {
 
   if (
     !site ||
-    (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
+    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
   ) {
     notFound();
   }

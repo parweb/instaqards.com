@@ -1,3 +1,5 @@
+import { UserRole } from '@prisma/client';
+
 import Form from 'components/form';
 import DeleteSiteForm from 'components/form/delete-site-form';
 import { db } from 'helpers/db';
@@ -17,7 +19,7 @@ export default async function SiteSettingsIndex(props: {
   });
 
   const users =
-    session?.user.role === 'ADMIN'
+    session?.user.role === UserRole.ADMIN
       ? await db.user.findMany({
           select: {
             id: true,
@@ -29,7 +31,7 @@ export default async function SiteSettingsIndex(props: {
 
   return (
     <div className="flex flex-col space-y-6">
-      {session?.user.role === 'ADMIN' && (
+      {session?.user.role === UserRole.ADMIN && (
         <Form
           title="Change owner"
           description="Change the owner of the site."

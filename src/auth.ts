@@ -1,5 +1,5 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import type { UserRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 import { nanoid } from 'nanoid';
 import NextAuth from 'next-auth';
 
@@ -40,7 +40,7 @@ export const {
           payment_method: {},
           createdAt: 2025-04-01T09:30:31.103Z,
           updatedAt: 2025-04-01T09:30:31.103Z,
-          role: 'USER',
+          role: UserRole.USER,
           refererId: null
         }
       }

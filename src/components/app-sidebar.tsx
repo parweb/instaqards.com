@@ -1,6 +1,6 @@
 'use client';
 
-import type { Prisma, User } from '@prisma/client';
+import { UserRole, type Prisma, type User } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useSelectedLayoutSegments } from 'next/navigation';
@@ -81,7 +81,7 @@ export function AppSidebar(
         icon: DollarSign,
         isActive: segments[0] === 'affiliation'
       },
-      ...(props.role === 'ADMIN'
+      ...(props.role === UserRole.ADMIN
         ? [
             {
               title: translate('menu.generator'),

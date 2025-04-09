@@ -1,6 +1,6 @@
 'use server';
 
-import type { Block, Link, Site } from '@prisma/client';
+import { UserRole, type Block, type Link, type Site } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 import { after } from 'next/server';
@@ -238,7 +238,7 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
     return { error: await translate('auth.error') };
   }
 
-  if (session.user.role !== 'ADMIN') {
+  if (session.user.role !== UserRole.ADMIN) {
     await db.block.findFirstOrThrow({
       where: { id: blockId, site: { userId: session.user.id } }
     });
@@ -370,7 +370,7 @@ export const createBlock = async (
     return { error: await translate('auth.error') };
   }
 
-  if (session.user.role !== 'ADMIN') {
+  if (session.user.role !== UserRole.ADMIN) {
     await db.site.findFirstOrThrow({
       where: { id: site, userId: session.user.id }
     });
@@ -548,7 +548,7 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
     return { error: await translate('auth.error') };
   }
 
-  if (session.user.role !== 'ADMIN') {
+  if (session.user.role !== UserRole.ADMIN) {
     await db.site.findFirstOrThrow({
       where: { id: site.id, userId: session.user.id }
     });
@@ -706,7 +706,7 @@ export const deleteLink = async (linkId: Link['id']) => {
     const response = await db.link.delete({
       where: {
         id: linkId,
-        ...(session.user.role !== 'ADMIN' && { userId: session.user.id })
+        ...(session.user.role !== UserRole.ADMIN && { userId: session.user.id })
       }
     });
 

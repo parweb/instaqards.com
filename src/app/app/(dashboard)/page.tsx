@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { eachDayOfInterval } from 'date-fns';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -20,7 +21,7 @@ export default async function Overview() {
   }
 
   const clicks =
-    session.user.role === 'ADMIN'
+    session.user.role === UserRole.ADMIN
       ? await db.click.findMany({ orderBy: { createdAt: 'asc' } })
       : await db.click.findMany({
           where: {

@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { redirect } from 'next/navigation';
 
 import { db } from 'helpers/db';
@@ -20,7 +21,7 @@ export default async function AllLinks() {
   });
 
   const users =
-    session?.user.role === 'ADMIN'
+    session?.user.role === UserRole.ADMIN
       ? await db.user.findMany({
           include: { links: { include: { clicks: true } } },
           where: { id: { not: session.user.id }, links: { some: {} } }

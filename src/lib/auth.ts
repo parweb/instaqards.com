@@ -1,4 +1,4 @@
-import type { Site } from '@prisma/client';
+import { UserRole, type Site } from '@prisma/client';
 
 import { auth } from 'auth';
 import { db } from 'helpers/db';
@@ -93,7 +93,8 @@ export function withSiteAuth<T>(
 
     if (
       !site ||
-      (site.userId !== session?.user?.id && session.user.role !== 'ADMIN')
+      (site.userId !== session?.user?.id &&
+        session.user.role !== UserRole.ADMIN)
     ) {
       return { error: await translate('auth.authorized.error') };
     }
