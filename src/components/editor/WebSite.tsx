@@ -61,7 +61,10 @@ export const WebSite = ({
 
       <div className="absolute left-0 right-0 flex items-center justify-center p-4">
         <UpdateSiteBackgroundButton>
-          <UpdateSiteBackgroundModal siteId={site.id} />
+          <UpdateSiteBackgroundModal
+            siteId={site.id}
+            background={site.background}
+          />
         </UpdateSiteBackgroundButton>
       </div>
     </Wrapper>

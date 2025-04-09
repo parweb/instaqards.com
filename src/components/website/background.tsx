@@ -20,9 +20,11 @@ export const Background = ({
   state?: 'playing' | 'paused';
   videoRef?: RefObject<HTMLVideoElement>;
 }) => {
-  const media_type = background?.startsWith('component:')
-    ? 'css'
-    : contentType(background?.split('/').pop() ?? '') || '';
+  const media_type = background?.startsWith('color:')
+    ? 'color'
+    : background?.startsWith('component:')
+      ? 'css'
+      : contentType(background?.split('/').pop() ?? '') || '';
 
   return (
     <>
@@ -77,6 +79,13 @@ export const Background = ({
                   <PreviewBackground name={background} />
                 </Suspense>
               </div>
+            )}
+
+            {media_type === 'color' && (
+              <div
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                style={{ backgroundColor: background.replace('color:', '') }}
+              />
             )}
           </>
         )}
