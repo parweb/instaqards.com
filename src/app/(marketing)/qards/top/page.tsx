@@ -19,7 +19,7 @@ const QardsPage = async () => {
       likes: true,
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     },
-    take: 12,
+    // take: 12,
     orderBy: { clicks: { _count: 'desc' } }
     // where: {
     //   user: {
