@@ -113,7 +113,7 @@ export default async function DashboardLayout({
           </div>
         </header>
 
-        <div className="z-10 flex-1 flex flex-col overflow-y-auto">
+        <div className="isolate z-10 flex-1 flex flex-col overflow-y-auto">
           {!subscription.valid() && (
             <div className="px-4 py-8">
               <Suspense fallback={null}>
@@ -124,7 +124,7 @@ export default async function DashboardLayout({
           )}
 
           {subscription.hasTrial() && subscription.customerSinceDays() && (
-            <div className="sticky top-0 flex items-center justify-between gap-4 bg-lime-700 p-4 pl-9 text-white">
+            <div className="z-20 sticky top-0 flex items-center justify-between gap-4 bg-lime-700 p-4 pl-9 text-white">
               <div>
                 {31 - subscription.customerSinceDays()} days left in your trial
               </div>
@@ -137,7 +137,7 @@ export default async function DashboardLayout({
             </div>
           )}
 
-          <div className="flex flex-col flex-1 self-stretch">
+          <div className="z-10 flex flex-col flex-1 self-stretch">
             <Suspense fallback={null}>{children}</Suspense>
           </div>
         </div>
