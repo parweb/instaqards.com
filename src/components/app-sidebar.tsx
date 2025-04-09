@@ -204,8 +204,6 @@ export function AppSidebar(
           className="rounded-lg px-2 flex items-center justify-center gap-3 uppercase"
           style={{
             backgroundImage: 'url("/assets/bg-logo.png")',
-
-            backgroundPosition: '80px 80px',
             backgroundRepeat: 'no-repeat'
           }}
         >
