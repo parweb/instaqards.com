@@ -7,36 +7,68 @@ import MapContainer from 'components/maps/MapContainer';
 import { json } from 'lib/utils';
 
 export const input = z.object({
-  position: z.tuple([z.number(), z.number()]).describe(
+  label: z.string().describe(
     json({
-      kind: 'address',
-      label: 'Adresse',
-      placeholder: 'Entrez une adresse'
+      label: 'Label',
+      kind: 'string'
     })
   ),
-  address: z.string().describe(
-    json({
-      kind: 'hidden',
-      label: 'Adresse'
+  position: z
+    .object({
+      lat: z.number(),
+      lon: z.number(),
+      display_name: z.string(),
+      address: z.object({
+        house_number: z.string(),
+        road: z.string(),
+        postcode: z.string(),
+        municipality: z.string()
+      })
     })
-  )
+    .describe(
+      json({
+        kind: 'address',
+        label: 'Adresse',
+        placeholder: 'Entrez une adresse'
+      })
+    )
 });
 
 export default function Maps({
-  position = [48.8566, 2.3522]
+  position = {
+    lat: 48.8566,
+    lon: 2.3522,
+    display_name: 'Paris',
+    address: {
+      house_number: '1',
+      road: 'rue de la paix',
+      postcode: '75000',
+      municipality: 'Paris'
+    }
+  },
+  label = 'Nom du lieu'
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
+  const display_name = [
+    position.address.house_number,
+    position.address.road,
+    position.address.postcode,
+    position.address.municipality
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <MapContainer
       inputValue={{
-        name: 'Le chateaux',
-        address: '2 Rue des Cévennes, 75015 Paris'
+        name: label,
+        address: display_name
       }}
-      mapPosition={position}
+      mapPosition={[position.lat, position.lon]}
       selectedLocation={{
         id: 'default',
-        display_name: 'default',
-        lat: position.at(0) ?? 0,
-        lon: position.at(1) ?? 0
+        display_name: display_name,
+        lat: position.lat,
+        lon: position.lon
       }}
     />
   );

@@ -13,16 +13,7 @@ import { useMapSearch } from 'components/maps/hooks/useMapSearch';
 import SearchInput from 'components/maps/SearchInput';
 import type { Block as BlockType } from 'lib/utils';
 
-const AddressInput = (
-  props: ControllerRenderProps<FieldValues, string> & {
-    // eslint-disable-next-line no-unused-vars
-    onAddressChange: (location: {
-      display_name: string;
-      lat: number;
-      lon: number;
-    }) => void;
-  }
-) => {
+const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
   const {
     query,
     setQuery,
@@ -36,11 +27,10 @@ const AddressInput = (
     clearSearch,
     debouncedQuery
   } = useMapSearch({
-    query: props.value,
+    query: props?.value?.display_name ?? '',
     onLocationSelect: useCallback(
       (location: { display_name: string; lat: number; lon: number }) => {
-        props.onChange([location.lat, location.lon]);
-        props.onAddressChange(location);
+        props.onChange(location);
       },
       [props]
     )
@@ -63,7 +53,7 @@ const AddressInput = (
 
   return (
     <SearchInput
-      query={query ?? props.value}
+      query={query ?? props?.value?.display_name ?? ''}
       isOpen={isOpen}
       isSearching={isSearching}
       searchResults={searchResults}
@@ -93,14 +83,7 @@ export const Address = ({
         control={control}
         name={name}
         render={({ field }) => {
-          return (
-            <AddressInput
-              {...field}
-              onAddressChange={location =>
-                setValue('address', location.display_name ?? '')
-              }
-            />
-          );
+          return <AddressInput {...field} />;
         }}
       />
     </>

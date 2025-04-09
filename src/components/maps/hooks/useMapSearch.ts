@@ -30,7 +30,7 @@ export const useMapSearch = ({
     updateSearchState
   );
 
-  const debouncedQuery = useDebounce(searchState.query, DEBOUNCE_DELAY);
+  const debouncedQuery = useDebounce(searchState?.query ?? '', DEBOUNCE_DELAY);
 
   const handleSelectResult = useCallback(
     async (result: SearchResult) => {

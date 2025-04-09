@@ -54,17 +54,22 @@ const MapContainer = ({
             'group-hover:opacity-0 group-hover:pointer-events-none'
           )}
         >
-          <div
-            className={cn(
-              'text-white/90 text-2xl uppercase font-black',
-              inter.className
-            )}
-          >
-            {inputValue.name}
-          </div>
-          <div className={cn('text-white/80 text-xl', open.className)}>
-            {inputValue.address}
-          </div>
+          {inputValue.name && (
+            <div
+              className={cn(
+                'text-white/90 text-2xl uppercase font-black',
+                inter.className
+              )}
+            >
+              {inputValue.name}
+            </div>
+          )}
+
+          {inputValue.address && (
+            <div className={cn('text-white/80 text-xl', open.className)}>
+              {inputValue.address}
+            </div>
+          )}
         </div>
       </Suspense>
     </div>

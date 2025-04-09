@@ -13,6 +13,10 @@ export interface SearchResult {
     region: string;
     country: string;
     country_code: string;
+    house_number: string;
+    road: string;
+    postcode: string;
+    municipality: string;
   };
 }
 

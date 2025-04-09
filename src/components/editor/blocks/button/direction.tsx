@@ -1,23 +1,26 @@
 import type { Block } from '@prisma/client';
 import Link from 'next/link';
+import { FaDirections } from 'react-icons/fa';
 import * as z from 'zod';
 
 import { cn, json } from 'lib/utils';
-import { FaDirections } from 'react-icons/fa';
 
-const $label = z
-  .string()
-  .min(1, 'Label is required')
-  .describe(
-    json({
-      label: 'Label',
-      kind: 'string'
-    })
-  );
+const $label = z.string().describe(
+  json({
+    label: 'Label',
+    kind: 'string'
+  })
+);
 
 const $address = z
-  .string()
-  .min(1, 'Address is required')
+  .object({
+    address: z.object({
+      house_number: z.string(),
+      road: z.string(),
+      postcode: z.string(),
+      municipality: z.string()
+    })
+  })
   .describe(
     json({
       label: 'Address',
@@ -31,7 +34,27 @@ export const input = z.object({ label: $label, address: $address });
 
 const BaseButton: React.FC<
   Partial<z.infer<typeof BaseButtonProps>> & { className?: string }
-> = ({ label, address, className }) => {
+> = ({
+  label,
+  address = {
+    address: {
+      house_number: '',
+      road: '',
+      postcode: '',
+      municipality: ''
+    }
+  },
+  className
+}) => {
+  const display_name = [
+    address.address.house_number,
+    address.address.road,
+    address.address.postcode,
+    address.address.municipality
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <button
       className={cn(
@@ -47,8 +70,13 @@ const BaseButton: React.FC<
         </div>
 
         <div className="flex-1 flex flex-col gap-1 items-start">
-          <span className="text-md font-bold text-xl">{label}</span>
-          <span className="text-sm text-stone-500 text-left">{address}</span>
+          {label && <span className="text-md font-bold text-xl">{label}</span>}
+
+          {address && (
+            <span className="text-sm text-stone-500 text-left">
+              {display_name}
+            </span>
+          )}
         </div>
       </div>
 
@@ -62,10 +90,23 @@ const BaseButton: React.FC<
 
 export default function Direction({
   label = 'Nom du lieu',
-  address = 'Adresse du lieu',
+  address = {
+    address: { house_number: '', road: '', postcode: '', municipality: '' }
+  },
   block
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
-  const href = `https://www.google.com/maps/place/${encodeURIComponent(address)}/`;
+  const display_name = [
+    address.address.house_number,
+    address.address.road,
+    address.address.postcode,
+    address.address.municipality
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const href = `https://www.google.com/maps/place/${encodeURIComponent(
+    display_name
+  )}/`;
 
   if (href) {
     return (
