@@ -17,8 +17,11 @@ const INITIAL_STATE: SearchState = {
   isPopoverOpen: false
 };
 
-export const useSearchState = () => {
-  const [searchState, setSearchState] = useState<SearchState>(INITIAL_STATE);
+export const useSearchState = (options: Partial<SearchState>) => {
+  const [searchState, setSearchState] = useState<SearchState>({
+    ...INITIAL_STATE,
+    ...options
+  });
 
   const updateSearchState = useCallback((updates: Partial<SearchState>) => {
     setSearchState(prev => ({ ...prev, ...updates }));

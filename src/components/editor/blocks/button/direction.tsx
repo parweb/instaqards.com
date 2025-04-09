@@ -21,7 +21,8 @@ const $address = z
   .describe(
     json({
       label: 'Address',
-      kind: 'string'
+      kind: 'address',
+      placeholder: 'Entrez une adresse'
     })
   );
 
@@ -44,9 +45,10 @@ const BaseButton: React.FC<
         <div>
           <FaDirections className="text-stone-400 w-14 h-14 group-hover:text-stone-600" />
         </div>
+
         <div className="flex-1 flex flex-col gap-1 items-start">
-          <span className="text-md font-medium">{label}</span>
-          <span className="text-sm text-stone-500">{address}</span>
+          <span className="text-md font-bold text-xl">{label}</span>
+          <span className="text-sm text-stone-500 text-left">{address}</span>
         </div>
       </div>
 

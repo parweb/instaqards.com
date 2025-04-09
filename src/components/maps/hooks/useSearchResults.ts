@@ -78,7 +78,6 @@ export const useSearchResults = (
 
         updateSearchState({
           results: filteredResults,
-          isPopoverOpen: filteredResults.length > 0,
           isSearching: false
         });
       } catch (error) {

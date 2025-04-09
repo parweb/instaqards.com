@@ -13,7 +13,6 @@ import { useMapSearch } from 'components/maps/hooks/useMapSearch';
 import SearchInput from 'components/maps/SearchInput';
 import type { Block as BlockType } from 'lib/utils';
 
-// Composant optimisé pour l'adresse
 const AddressInput = (
   props: ControllerRenderProps<FieldValues, string> & {
     // eslint-disable-next-line no-unused-vars
@@ -24,7 +23,6 @@ const AddressInput = (
     }) => void;
   }
 ) => {
-  // Utilisation du hook useMapSearch avec un callback optimisé
   const {
     query,
     setQuery,
@@ -38,6 +36,7 @@ const AddressInput = (
     clearSearch,
     debouncedQuery
   } = useMapSearch({
+    query: props.value,
     onLocationSelect: useCallback(
       (location: { display_name: string; lat: number; lon: number }) => {
         props.onChange([location.lat, location.lon]);
@@ -47,14 +46,12 @@ const AddressInput = (
     )
   });
 
-  // Déclenchement de la recherche quand la requête change
   useEffect(() => {
     if (debouncedQuery.trim().length > 0) {
       handleSearch(debouncedQuery);
     }
   }, [debouncedQuery, handleSearch]);
 
-  // Handler optimisé pour effacer la recherche
   const handleClearSearch = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
@@ -65,23 +62,20 @@ const AddressInput = (
   );
 
   return (
-    <>
-      <SearchInput
-        query={query}
-        isOpen={isOpen}
-        isSearching={isSearching}
-        searchResults={searchResults}
-        onQueryChange={setQuery}
-        onOpenChange={setIsOpen}
-        onResultSelect={handleSelectResult}
-        onClearSearch={handleClearSearch}
-        isHandlingSelection={isHandlingSelection}
-      />
-    </>
+    <SearchInput
+      query={query ?? props.value}
+      isOpen={isOpen}
+      isSearching={isSearching}
+      searchResults={searchResults}
+      onQueryChange={setQuery}
+      onOpenChange={setIsOpen}
+      onResultSelect={handleSelectResult}
+      onClearSearch={handleClearSearch}
+      isHandlingSelection={isHandlingSelection}
+    />
   );
 };
 
-// Composant Address principal avec memoïzation optimisée
 export const Address = ({
   control,
   name,
@@ -100,14 +94,12 @@ export const Address = ({
         name={name}
         render={({ field }) => {
           return (
-            <>
-              <AddressInput
-                {...field}
-                onAddressChange={location =>
-                  setValue('address', location.display_name ?? '')
-                }
-              />
-            </>
+            <AddressInput
+              {...field}
+              onAddressChange={location =>
+                setValue('address', location.display_name ?? '')
+              }
+            />
           );
         }}
       />

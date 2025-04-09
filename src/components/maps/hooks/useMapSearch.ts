@@ -8,13 +8,17 @@ import { useSearchState } from './useSearchState';
 interface UseMapSearchProps {
   // eslint-disable-next-line no-unused-vars
   onLocationSelect?: (location: SearchResult) => void;
+  query?: string;
 }
 
 const DEBOUNCE_DELAY = 300;
 
-export const useMapSearch = ({ onLocationSelect }: UseMapSearchProps) => {
+export const useMapSearch = ({
+  onLocationSelect,
+  query
+}: UseMapSearchProps) => {
   const { searchState, updateSearchState, setQuery, clearSearch } =
-    useSearchState();
+    useSearchState({ query });
 
   const { mapPosition, handleSelectLocation } = useMapPosition({
     onLocationSelect
