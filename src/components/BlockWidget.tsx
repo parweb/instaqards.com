@@ -14,7 +14,12 @@ export const BlockWidgetComponent = ({ block }: { block: Block }) => {
 
   const Component = dynamic(
     () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`),
-    { ssr: false }
+    {
+      loading: () => (
+        <div className="w-full h-48 animate-pulse bg-stone-200/20 rounded-md" />
+      ),
+      ssr: false
+    }
   );
 
   return (

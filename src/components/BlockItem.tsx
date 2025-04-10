@@ -37,10 +37,15 @@ import DeleteBlockButton from 'components/delete-block-button';
 import DuplicateBlockButton from 'components/duplicate-block-button';
 import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
-import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 import { useIsMobile } from 'hooks/use-mobile';
+import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
-const BlockWidget = dynamic(() => import('./BlockWidget'), { ssr: false });
+const BlockWidget = dynamic(() => import('./BlockWidget'), {
+  loading: () => (
+    <div className="w-full h-48 animate-pulse bg-stone-200/20 rounded-md" />
+  ),
+  ssr: false
+});
 
 const BlockUpdate = ({ block }: { block: Block }) => {
   return (
@@ -61,8 +66,14 @@ const BlockDuplicate = ({ block }: { block: Block }) => {
 const BlockItem = ({ block }: { block: Block }) => {
   const isMobile = useIsMobile();
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: block.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: block.id });
 
   if (transform) {
     transform.scaleX = 1;
@@ -87,66 +98,117 @@ const BlockItem = ({ block }: { block: Block }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="group flex flex-1 items-center gap-2 relative"
+        className={cn(
+          'group relative flex flex-col flex-1 items-center gap-2',
+          isDragging === true && 'z-10'
+        )}
         ref={setNodeRef}
         style={style}
       >
-        <div
-          {...attributes}
-          {...listeners}
-          className="absolute right-full pr-2"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="p-2 flex flex-1 self-stretch gap-2 [&>*]:cursor-pointer [&>*]:transition-all [&>*]:duration-300 [&>*]:scale-90 [&>*:hover]:scale-100"
         >
-          <div className="cursor-move p-2 bg-white rounded-full">
-            <LuMove />
-          </div>
-        </div>
-
-        {hasWidget === false && (
-          <div
-            className={cn(
-              'cursor-pointer',
-              'transition-all',
-              'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
-              'hover:bg-white hover:text-black'
-            )}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.3, delay: 0 * 0.1 }
+            }}
+            exit={{ opacity: 0, y: 10 }}
+            {...attributes}
+            {...listeners}
+            className=""
           >
-            {block.label}
+            <div className="cursor-move p-2 bg-white rounded-full">
+              <LuMove />
+            </div>
+          </motion.div>
 
-            <style jsx>{`
-              div {
-                transition: all 0.3s ease;
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.3, delay: 1 * 0.1 }
+            }}
+            exit={{ opacity: 0, y: 10 }}
+          >
+            <BlockUpdate block={block} />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.3, delay: 2 * 0.1 }
+            }}
+            exit={{ opacity: 0, y: 10 }}
+          >
+            <BlockDuplicate block={block} />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.3, delay: 3 * 0.1 }
+            }}
+            exit={{ opacity: 0, y: 10 }}
+          >
+            <BlockDelete block={block} />
+          </motion.div>
+        </motion.div>
 
-                ${generateCssProperties(css.normal)}
+        <div
+          className={cn(
+            'flex flex-col flex-1 self-stretch items-center gap-2 transition-all duration-300 outline-2 outline-offset-10 outline-dashed outline-stone-200/60 rounded-md',
+            '[&>*]:flex-1 [&>*]:self-stretch'
+          )}
+        >
+          {hasWidget === false && (
+            <div
+              className={cn(
+                'cursor-pointer',
+                'transition-all',
+                'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
+                'hover:bg-white hover:text-black'
+              )}
+            >
+              {block.label}
 
-                ${Object.keys(css || {})
-                  .filter(key => key !== 'normal')
-                  .map(
-                    key => `
+              <style jsx>{`
+                div {
+                  transition: all 0.3s ease;
+
+                  ${generateCssProperties(css.normal)}
+
+                  ${Object.keys(css || {})
+                    .filter(key => key !== 'normal')
+                    .map(
+                      key => `
                     &:${key} {
                       ${generateCssProperties(css[key as keyof BlockStyle])}
                     }
                   `
-                  )}
-              }
-            `}</style>
-          </div>
-        )}
-
-        {hasWidget === true && (
-          <Suspense fallback={null}>
-            <BlockWidget block={block} />
-          </Suspense>
-        )}
-
-        <div
-          className={cn(
-            'absolute left-3/4 flex flex-col items-center gap-2 p-2 opacity-0 transition-all duration-300 group-hover:left-full group-hover:opacity-100',
-            isMobile === true && 'opacity-100 left-full'
+                    )}
+                }
+              `}</style>
+            </div>
           )}
-        >
-          <BlockUpdate block={block} />
-          <BlockDuplicate block={block} />
-          <BlockDelete block={block} />
+
+          {hasWidget === true && (
+            <Suspense
+              fallback={
+                <div className="w-full h-48 animate-pulse bg-stone-200/20 rounded-md" />
+              }
+            >
+              <BlockWidget block={block} />
+            </Suspense>
+          )}
         </div>
       </motion.div>
     );

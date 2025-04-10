@@ -46,7 +46,7 @@ export const WebSite = ({
       <Background background={site.background} />
 
       <Content>
-        <Main editor>
+        <Main editor length={data.main.length}>
           <BlockList blocks={data.main} site={site} type="main" />
           <BlockCreate type="main" siteId={site.id} />
         </Main>
@@ -59,7 +59,7 @@ export const WebSite = ({
         </Footer> */}
       </Content>
 
-      <div className="absolute left-0 right-0 flex items-center justify-center p-4">
+      <div className="absolute left-0 right-0 flex items-center justify-center p-4 pointer-events-none">
         <UpdateSiteBackgroundButton>
           <UpdateSiteBackgroundModal
             siteId={site.id}

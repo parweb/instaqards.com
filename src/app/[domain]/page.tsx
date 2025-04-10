@@ -71,7 +71,7 @@ export default async function SiteHomePage(props: {
       </Suspense>
 
       <Content>
-        <Main>
+        <Main length={data.main.length}>
           <Suspense fallback={null}>
             <BlockList blocks={data.main} />
           </Suspense>

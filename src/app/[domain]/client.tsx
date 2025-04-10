@@ -9,6 +9,7 @@ import { LuLink } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const BlockWidget = dynamic(() => import('components/BlockWidget'), {
   ssr: false
@@ -130,7 +131,7 @@ const BlockListComponent = ({ blocks }: { blocks: Block[] }) => {
     .filter(Boolean) as string[];
 
   return (
-    <>
+    <AnimatePresence>
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?${fontsNeeded
           .map(font => `family=${font.replaceAll(' ', '+')}&display=swap`)
@@ -139,10 +140,17 @@ const BlockListComponent = ({ blocks }: { blocks: Block[] }) => {
 
       {blocks.map(props => (
         <Suspense key={`BlockItem-${props.id}`} fallback={null}>
-          <BlockItem {...props} />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 1 } }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col gap-10 flex-1 self-stretch"
+          >
+            <BlockItem {...props} />
+          </motion.div>
         </Suspense>
       ))}
-    </>
+    </AnimatePresence>
   );
 };
 
