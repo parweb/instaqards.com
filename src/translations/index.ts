@@ -1,4 +1,10 @@
 const translations = {
+  error: {
+    fr: 'Une erreur est survenue',
+    en: 'An error occurred',
+    it: 'Si è verificato un errore',
+    es: 'Se ha producido un error'
+  },
   'auth.return.home': {
     fr: "Retour à la page d'accueil",
     en: 'Back to home',
@@ -149,6 +155,12 @@ const translations = {
     it: 'Utenti',
     es: 'Usuarios'
   },
+  'dashboard.users.create': {
+    fr: 'Créer un utilisateur',
+    en: 'Create User',
+    it: 'Crea un utente',
+    es: 'Crear un usuario'
+  },
   'dashboard.users.description': {
     fr: 'Vous pouvez nous joindre ici',
     en: 'You can reach us here',
@@ -178,6 +190,30 @@ const translations = {
     en: 'Create Link',
     it: 'Crea un link',
     es: 'Crear un enlace'
+  },
+  'components.user.create.title': {
+    fr: 'Créer un utilisateur',
+    en: 'Create User',
+    it: 'Crea un utente',
+    es: 'Crear un usuario'
+  },
+  'components.user.create.button': {
+    fr: 'Enregistrer',
+    en: 'Save',
+    it: 'Salva',
+    es: 'Guardar'
+  },
+  'components.outbox.create.title': {
+    fr: 'Envoyer un email',
+    en: 'Send Email',
+    it: 'Invia un email',
+    es: 'Enviar un email'
+  },
+  'components.outbox.create.button': {
+    fr: 'Envoyer',
+    en: 'Send',
+    it: 'Invia',
+    es: 'Enviar'
   },
   'components.prices.plan.renews': {
     fr: 'Votre abonnement se renouvelle le',
