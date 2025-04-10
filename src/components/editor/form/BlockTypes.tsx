@@ -1,5 +1,6 @@
 'use client';
 
+import { AnimatePresence } from 'framer-motion';
 import { FaRegFileAlt, FaRegImage } from 'react-icons/fa';
 import { IoTextOutline } from 'react-icons/io5';
 import { LuShare2 } from 'react-icons/lu';
@@ -45,24 +46,27 @@ export const BlockTypes = ({
   return (
     <Accordion type="single" collapsible>
       <div className="flex flex-col gap-3" style={{ touchAction: 'pan-y' }}>
-        {(
-          [
-            { type: 'button', label: 'Boutons', icon: RxButton },
-            { type: 'picture', label: 'Images', icon: FaRegImage },
-            { type: 'text', label: 'Textes', icon: IoTextOutline },
-            { type: 'external', label: 'Externes', icon: LuShare2 },
-            { type: 'other', label: 'Autres', icon: FaRegFileAlt },
-            { type: 'social', label: 'Socials', icon: FaRegFileAlt }
-          ] as const
-        ).map((block, i, list) => (
-          <BlockTypesItem
-            key={block.type}
-            {...block}
-            onClick={onClick}
-            Icon={block.icon}
-            color={getRainbowColor((i / list.length) * 100)}
-          />
-        ))}
+        <AnimatePresence>
+          {(
+            [
+              { type: 'button', label: 'Boutons', icon: RxButton },
+              { type: 'picture', label: 'Images', icon: FaRegImage },
+              { type: 'text', label: 'Textes', icon: IoTextOutline },
+              { type: 'external', label: 'Externes', icon: LuShare2 },
+              { type: 'other', label: 'Autres', icon: FaRegFileAlt },
+              { type: 'social', label: 'Socials', icon: FaRegFileAlt }
+            ] as const
+          ).map((block, index, list) => (
+            <BlockTypesItem
+              key={block.type}
+              index={index}
+              {...block}
+              onClick={onClick}
+              Icon={block.icon}
+              color={getRainbowColor((index / list.length) * 100)}
+            />
+          ))}
+        </AnimatePresence>
       </div>
     </Accordion>
   );

@@ -10,16 +10,7 @@ export function BlockFormButton({ isLoading }: { isLoading: boolean }) {
   const { pending } = useFormStatus();
 
   return (
-    <Button
-      type="submit"
-      className={cn(
-        'w-full',
-        isLoading || pending
-          ? 'cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400'
-          : 'border-black bg-black text-white hover:bg-white hover:text-black'
-      )}
-      disabled={isLoading || pending}
-    >
+    <Button type="submit" className="w-full" disabled={isLoading || pending}>
       {isLoading || pending ? <LoadingDots color="#808080" /> : <p>Save</p>}
     </Button>
   );

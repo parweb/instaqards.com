@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { Badge } from 'components/ui/badge';
@@ -17,7 +18,8 @@ export const BlockTypesItem = ({
   onClick,
   value,
   color = ['#743ad5', '#d53a9d', '#d53a9d'],
-  Icon
+  Icon,
+  index
 }: {
   label: string;
   type: 'button' | 'picture' | 'text' | 'external' | 'other' | 'social';
@@ -26,6 +28,7 @@ export const BlockTypesItem = ({
   value?: { type: string; id: string };
   color?: [string, string, string];
   Icon?: React.ElementType;
+  index: number;
 }) => {
   const variants: {
     id: string;
@@ -97,42 +100,53 @@ export const BlockTypesItem = ({
         </div>
       }
     >
-      <AccordionItem
-        value={type}
-        className="border-1 rounded-md px-0 cursor-pointer shadow-sm"
-        style={{ borderColor: color[1] }}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          transition: { delay: index * 0.15 }
+        }}
+        exit={{ opacity: 0, y: -10 }}
+        className="scale-95 hover:scale-100 transition-all duration-300"
       >
-        <div className="flex flex-col gap-0">
-          <AccordionTrigger className="p-2" style={{ color: color[2] }}>
-            <hgroup className="flex gap-2 items-center justify-between flex-1 pr-2">
-              {Icon && <Icon className="w-4 h-4" />}
+        <AccordionItem
+          value={type}
+          className="border-2 rounded-md px-0 cursor-pointer shadow-sm"
+          style={{ borderColor: color[1] }}
+        >
+          <div className="flex flex-col gap-0">
+            <AccordionTrigger className="p-2" style={{ color: color[2] }}>
+              <hgroup className="flex gap-2 items-center justify-between flex-1 pr-2">
+                {Icon && <Icon className="w-4 h-4" />}
 
-              <label className="flex-1 text-left" style={{ color: color[2] }}>
-                {label}
-              </label>
+                <label className="flex-1 text-left" style={{ color: color[2] }}>
+                  {label}
+                </label>
 
-              <Badge
-                variant="outline"
-                style={{
-                  background: `linear-gradient(to bottom, ${color[0]}, ${color[1]})`,
-                  color: color[2],
-                  borderColor: color[2]
-                }}
-              >
-                {collection.length}
-              </Badge>
-            </hgroup>
-          </AccordionTrigger>
+                <Badge
+                  variant="outline"
+                  style={{
+                    background: `linear-gradient(to bottom, ${color[0]}, ${color[1]})`,
+                    color: color[2],
+                    borderColor: color[2]
+                  }}
+                >
+                  {collection.length}
+                </Badge>
+              </hgroup>
+            </AccordionTrigger>
 
-          <AccordionContent className="p-2">
-            <BlockTypesItemVariants
-              onClick={onClick}
-              value={value}
-              variants={collection}
-            />
-          </AccordionContent>
-        </div>
-      </AccordionItem>
+            <AccordionContent className="p-2">
+              <BlockTypesItemVariants
+                onClick={onClick}
+                value={value}
+                variants={collection}
+              />
+            </AccordionContent>
+          </div>
+        </AccordionItem>
+      </motion.div>
     </ErrorBoundary>
   );
 };

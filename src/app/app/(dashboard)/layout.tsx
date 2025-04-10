@@ -9,6 +9,7 @@ import Profile from 'components/profile';
 import UpgradeAccountModal from 'components/modal/upgrade-account';
 import UpgradeAccountButton from 'components/upgrade-account-button';
 import { db } from 'helpers/db';
+import { getLang } from 'helpers/translate';
 import { getSession, getSubscription } from 'lib/auth';
 
 // import {
@@ -25,7 +26,6 @@ import {
   SidebarProvider,
   SidebarTrigger
 } from 'components/ui/sidebar';
-import { getLang } from 'helpers/translate';
 
 export default async function DashboardLayout({
   children

@@ -41,6 +41,7 @@ export function BlockForm({
           siteId={siteId}
         />
       )}
+
       {mode.type === 'social' && (
         <BlockFormSocial
           mode={mode}
