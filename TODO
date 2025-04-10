@@ -1,26 +1,30 @@
 TODO
 
+     -> intégration externe clean url before
+     -> insta reel, possible ?
 DONE -> un menu pour la landing page
 DONE -> i want to subscribe (finir le payment)
 DONE -> google map hard coded value
-     -> generator flingué
+DONE -> generator flingué
 DONE -> background color-picker libre
      -> qards par default préremplis stylé / neutre
      -> feed
+     -> ecommerce
 DONE -> la barre vert trial z-index a revoir
      -> qards dropshiping / affiliation 
           -> flippa 
           -> ferme de blog
-     -> ecommerce
 DONE -> block snapchat (https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMPwAAYaGJha29qbW1iAZXAH6n8AZXABicRAAAAAQ)
      -> share my qard on (iphone, android)
-     -> améliore edit text (margin, padding, ...)
-     -> font-picker z-index problem
+DONE -> améliore edit text (margin, padding, ...)
+DONE -> font-picker z-index problem
      -> ajouter dans social link: telephone & email
-     -> role commercial
-     -> button glow 1 shadow carré
-     -> recadrage photo circle & square
-     -> scale in/out picture circle & square
+DONE -> role commercial
+DONE -> button glow 1 shadow carré
+     -> recadrage photo circle & square 
+          https://github.com/react-cropper/react-cropper/
+          https://github.com/ValentinH/react-easy-crop
+          https://github.com/mosch/react-avatar-editor
      -> menu button faire mieux
      -> lien update, delete move align on the top and add a toggle preview / editing (dotted border)
      -> activé le carousel apartir de 2 elements media
@@ -35,11 +39,6 @@ DONE -> block snapchat (https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMP
 
 DONE -> page identity branding (logo)
 DONE -> loading state on block mutation
-     -> 
-     -> 
-     -> 
-     -> 
-     -> 
      -> generator to email (commercial crée la qard demande un email ca envoi le un lien pour finir linscription)
      -> qards du mois (abonnement offert)
 DONE -> block social
