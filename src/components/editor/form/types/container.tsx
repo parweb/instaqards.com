@@ -9,11 +9,13 @@ import type { Block as BlockType } from 'lib/utils';
 const Size = ({
   name,
   control,
-  defaultValue
+  defaultValue,
+  label
 }: {
   name: string;
   control: Control<FieldValues>;
   defaultValue: string;
+  label: string;
 }) => {
   return (
     <Controller
@@ -22,20 +24,27 @@ const Size = ({
       defaultValue={defaultValue}
       render={({ field }) => {
         return (
-          <div className="w-[80px] relative">
-            <Input
-              name={name}
-              type="number"
-              className="pr-[27px]"
-              value={field.value.replace('px', '')}
-              onChange={e => {
-                field.onChange(`${e.target.value}px`);
-              }}
-            />
+          <div className="flex items-center gap-2">
+            <label htmlFor={name} className="text-sm min-w-18 text-stone-500">
+              {label}
+            </label>
 
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-stone-500">
-              px
-            </span>
+            <div className="w-[80px] relative">
+              <Input
+                id={name}
+                name={name}
+                type="number"
+                className="pr-[27px]"
+                value={field.value.replace('px', '')}
+                onChange={e => {
+                  field.onChange(`${e.target.value}px`);
+                }}
+              />
+
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-stone-500">
+                px
+              </span>
+            </div>
           </div>
         );
       }}
@@ -46,11 +55,13 @@ const Size = ({
 const Color = ({
   name,
   control,
-  defaultValue
+  defaultValue,
+  label
 }: {
   control: Control<FieldValues>;
   name: string;
   defaultValue: string;
+  label: string;
 }) => {
   return (
     <Controller
@@ -59,11 +70,17 @@ const Color = ({
       defaultValue={defaultValue}
       render={({ field }) => {
         return (
-          <ColorPicker
-            name={name}
-            value={field.value}
-            onChange={field.onChange}
-          />
+          <div className="flex items-center gap-2">
+            <label htmlFor={name} className="text-sm min-w-18 text-stone-500">
+              {label}
+            </label>
+
+            <ColorPicker
+              name={name}
+              value={field.value}
+              onChange={field.onChange}
+            />
+          </div>
         );
       }}
     />
@@ -76,56 +93,82 @@ export const Container = (props: {
   data: Record<string, unknown>;
 }) => {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex gap-2 items-center">
-        {props.shape.default.backgroundColor && (
-          <Color
-            name="container[backgroundColor]"
-            control={props.control}
-            defaultValue={props.shape.default.backgroundColor}
-          />
-        )}
+    <div className="flex flex-col gap-4 p-4 border rounded bg-stone-50 shadow-sm">
+      {props.shape.default.backgroundColor && (
+        <Color
+          label="Background"
+          name="container[backgroundColor]"
+          control={props.control}
+          defaultValue={props.shape.default.backgroundColor}
+        />
+      )}
 
-        {props.shape.default.borderColor && (
-          <Color
-            name="container[borderColor]"
-            control={props.control}
-            defaultValue={props.shape.default.borderColor}
-          />
-        )}
+      {(props.shape.default.borderColor ||
+        props.shape.default.borderWidth ||
+        props.shape.default.borderRadius) && (
+        <div className="flex flex-col gap-2 pt-3 border-t border-stone-200">
+          <span className="text-xs font-medium text-stone-600 uppercase tracking-wider">
+            Border
+          </span>
 
-        {props.shape.default.borderWidth && (
-          <Size
-            name="container[borderWidth]"
-            control={props.control}
-            defaultValue={props.shape.default.borderWidth}
-          />
-        )}
+          <div className="flex flex-wrap gap-x-4 gap-y-2 items-center">
+            {props.shape.default.borderColor && (
+              <Color
+                label="Color"
+                name="container[borderColor]"
+                control={props.control}
+                defaultValue={props.shape.default.borderColor}
+              />
+            )}
 
-        {props.shape.default.borderRadius && (
-          <Size
-            name="container[borderRadius]"
-            control={props.control}
-            defaultValue={props.shape.default.borderRadius}
-          />
-        )}
+            {props.shape.default.borderWidth && (
+              <Size
+                label="Width"
+                name="container[borderWidth]"
+                control={props.control}
+                defaultValue={props.shape.default.borderWidth}
+              />
+            )}
 
-        {props.shape.default.padding && (
-          <Size
-            name="container[padding]"
-            control={props.control}
-            defaultValue={props.shape.default.padding}
-          />
-        )}
+            {props.shape.default.borderRadius && (
+              <Size
+                label="Radius"
+                name="container[borderRadius]"
+                control={props.control}
+                defaultValue={props.shape.default.borderRadius}
+              />
+            )}
+          </div>
+        </div>
+      )}
 
-        {props.shape.default.margin && (
-          <Size
-            name="container[margin]"
-            control={props.control}
-            defaultValue={props.shape.default.margin}
-          />
-        )}
-      </div>
+      {(props.shape.default.padding || props.shape.default.margin) && (
+        <div className="flex flex-col gap-2 pt-3 border-t border-stone-200">
+          <span className="text-xs font-medium text-stone-600 uppercase tracking-wider">
+            Spacing
+          </span>
+
+          <div className="flex flex-wrap gap-x-4 gap-y-2 items-center">
+            {props.shape.default.padding && (
+              <Size
+                label="Padding"
+                name="container[padding]"
+                control={props.control}
+                defaultValue={props.shape.default.padding}
+              />
+            )}
+
+            {props.shape.default.margin && (
+              <Size
+                label="Margin"
+                name="container[margin]"
+                control={props.control}
+                defaultValue={props.shape.default.margin}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
