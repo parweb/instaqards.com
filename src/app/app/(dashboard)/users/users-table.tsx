@@ -14,6 +14,7 @@ import UserSiteModal from './user-site-modal';
 import UserSiteModalButton from './user-site-modal-button';
 
 interface UsersTableProps {
+  affiliate?: boolean;
   initialUsers: Prisma.UserGetPayload<{
     include: {
       sites: true;
@@ -24,7 +25,10 @@ interface UsersTableProps {
   }>[];
 }
 
-export const UsersTable = ({ initialUsers }: UsersTableProps) => {
+export const UsersTable = ({
+  initialUsers,
+  affiliate = false
+}: UsersTableProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [hideNoSites, setHideNoSites] = useState(false);
   const [subscriptionFilter, setSubscriptionFilter] = useState('all');
@@ -131,7 +135,9 @@ export const UsersTable = ({ initialUsers }: UsersTableProps) => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
-                          <Link href={`/user/${user.id}`}>
+                          <Link
+                            href={`${affiliate === true ? '/affiliation' : ''}/user/${user.id}`}
+                          >
                             <Avatar className="h-8 w-8 rounded-lg">
                               <AvatarImage
                                 src={avatar}
@@ -148,11 +154,19 @@ export const UsersTable = ({ initialUsers }: UsersTableProps) => {
 
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            <Link href={`/user/${user.id}`}>{user.name}</Link>
+                            <Link
+                              href={`${affiliate === true ? '/affiliation' : ''}/user/${user.id}`}
+                            >
+                              {user.name}
+                            </Link>
                           </div>
 
                           <div className="text-sm text-gray-500">
-                            <Link href={`/user/${user.id}`}>{user.email}</Link>
+                            <Link
+                              href={`${affiliate === true ? '/affiliation' : ''}/user/${user.id}`}
+                            >
+                              {user.email}
+                            </Link>
                           </div>
                         </div>
                       </div>
