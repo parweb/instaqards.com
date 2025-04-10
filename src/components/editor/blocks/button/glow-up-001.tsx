@@ -70,6 +70,7 @@ const BaseButton: React.FC<
           opacity: 1;
           transition: opacity 0.3s ease-in-out;
           border-radius: 10px;
+          transform: translateZ(0);
         }
 
         .glow-on-hover:active {
