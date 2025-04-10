@@ -94,7 +94,7 @@ const send = async (
               }
             }
           })
-          .then(({ metadata }) => console.log(id, metadata))
+          .then(({ metadata }) => console.info(id, metadata))
           .catch(console.error)
     )
   );

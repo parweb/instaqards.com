@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     capabilities: { transfers: { requested: true } }
   });
 
-  console.log({ account });
+  console.info({ account });
 
   const accountLink = await stripe.accountLinks.create({
     account: account.id,
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     type: 'account_onboarding'
   });
 
-  console.log({ accountLink });
+  console.info({ accountLink });
 
   return Response.redirect(accountLink.url, 303);
 }

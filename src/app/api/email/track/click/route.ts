@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     WHERE id = ${id} 
     RETURNING "metadata";
     `
-      .then(([{ metadata }]) => console.log(id, metadata))
+      .then(([{ metadata }]) => console.info(id, metadata))
       .catch(error => {
         console.error(error);
         console.error(error.meta);
