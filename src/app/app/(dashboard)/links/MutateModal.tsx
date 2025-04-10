@@ -49,7 +49,7 @@ export function MutateModal({ link }: MutateModalProps) {
     >
       {link && <input type="hidden" name="id" value={link.id} />}
 
-      <div className="relative flex flex-col space-y-4 p-5 md:p-10">
+      <div className="relative flex flex-col gap-4 p-4">
         <h2 className="font-cal text-2xl">Create a new link</h2>
 
         <div className="flex flex-col space-y-2">

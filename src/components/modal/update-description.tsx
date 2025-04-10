@@ -46,7 +46,7 @@ export default function UpdateSiteDescriptionModal({
       }
       className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700"
     >
-      <div className="relative flex flex-col space-y-4 p-5 md:p-10">
+      <div className="relative flex flex-col gap-4 p-4">
         <h2 className="font-cal text-2xl dark:text-white">
           {translate('components.site.updateDescription.title')}
         </h2>
