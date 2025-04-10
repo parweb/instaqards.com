@@ -125,7 +125,7 @@ export const BlockTypesItemVariantsItem = ({
     return (
       <>
         <div
-          className="relative flex-1 flex items-center justify-center overflow-hidden"
+          className="relative flex-1 flex items-center justify-center overflow-hidden p-2"
           onClick={() => onClick({ type, id })}
           onKeyDown={() => onClick({ type, id })}
         >
@@ -134,19 +134,7 @@ export const BlockTypesItemVariantsItem = ({
             <Component label="Press Me" />
           </div>
 
-          <div className="absolute inset-0 flex items-start justify-end cursor-pointer">
-            <Button
-              type="button"
-              onClick={() => {
-                setExpanded(state => !state);
-              }}
-              size="icon"
-              variant="ghost"
-              className="cursor-pointer"
-            >
-              <LuExpand />
-            </Button>
-          </div>
+          <div className="absolute inset-0 flex items-start justify-end cursor-pointer" />
         </div>
 
         {expanded === false && (
@@ -177,7 +165,7 @@ export const BlockTypesItemVariantsItem = ({
     return createPortal(
       <div
         className={cn(
-          'touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px] border border-stone-200 rounded-md p-2',
+          'z-20 touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px] border border-stone-200 rounded-md p-2',
           {
             'fixed inset-0 bg-white w-auto h-auto aspect-auto rounded-none':
               expanded
