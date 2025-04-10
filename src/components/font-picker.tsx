@@ -154,7 +154,7 @@ const FontPickerList = ({
   return (
     <div
       className={cn(
-        'absolute top-full left-0 right-0 bg-white rounded-b-md border border-gray-300',
+        'z-1 absolute top-full left-0 right-0 bg-white rounded-b-md border border-gray-300',
         'flex flex-col gap-4 p-4',
         !open && 'invisible'
       )}
