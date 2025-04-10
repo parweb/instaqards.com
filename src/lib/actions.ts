@@ -770,3 +770,37 @@ export const editUser = async (
     };
   }
 };
+
+export const createUser = async (form: FormData) => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  const name = String(form.get('name'));
+  const email = String(form.get('email'));
+
+  const response = await db.user.create({
+    data: {
+      name,
+      email,
+      role: UserRole.USER,
+      referer: { connect: { id: session.user.id } }
+    }
+  });
+
+  after(() => {
+    db.event.create({
+      data: {
+        userId: String(session.user.id),
+        eventType: 'USER_CREATED',
+        payload: response,
+        correlationId: nanoid()
+      }
+    });
+  });
+
+  return response;
+};
+
