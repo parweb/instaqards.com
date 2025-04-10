@@ -102,7 +102,9 @@ export default function Nav({ children }: { children: ReactNode }) {
         isActive: segments[0] === 'links',
         icon: <LinkIcon width={18} />
       },
-      ...(role === UserRole.ADMIN
+      ...(([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+        role ?? UserRole.USER
+      )
         ? [
             {
               name: translate('menu.generator'),

@@ -20,18 +20,19 @@ export default async function Overview() {
     redirect('/login');
   }
 
-  const clicks =
-    session.user.role === UserRole.ADMIN
-      ? await db.click.findMany({ orderBy: { createdAt: 'asc' } })
-      : await db.click.findMany({
-          where: {
-            OR: [
-              { site: { user: { id: session.user.id } } },
-              { block: { site: { user: { id: session.user.id } } } }
-            ]
-          },
-          orderBy: { createdAt: 'asc' }
-        });
+  const clicks = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+    session.user.role
+  )
+    ? await db.click.findMany({ orderBy: { createdAt: 'asc' } })
+    : await db.click.findMany({
+        where: {
+          OR: [
+            { site: { user: { id: session.user.id } } },
+            { block: { site: { user: { id: session.user.id } } } }
+          ]
+        },
+        orderBy: { createdAt: 'asc' }
+      });
 
   const splitByDate = clicks.groupBy(({ createdAt }) =>
     createdAt.toDateString()

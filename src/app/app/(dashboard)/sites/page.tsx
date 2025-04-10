@@ -16,13 +16,14 @@ export default async function AllSites() {
     redirect('/login');
   }
 
-  const users =
-    session?.user.role === UserRole.ADMIN
-      ? await db.user.findMany({
-          include: { sites: true },
-          where: { id: { not: session.user.id }, sites: { some: {} } }
-        })
-      : [];
+  const users = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+    session?.user.role
+  )
+    ? await db.user.findMany({
+        include: { sites: true },
+        where: { id: { not: session.user.id }, sites: { some: {} } }
+      })
+    : [];
 
   return (
     <div className="flex flex-col space-y-12 p-8">

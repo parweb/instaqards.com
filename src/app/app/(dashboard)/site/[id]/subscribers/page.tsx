@@ -23,7 +23,10 @@ export default async function SiteSubscribers(props: {
 
   if (
     !site ||
-    (site.userId !== session?.user?.id && session.user.role !== UserRole.ADMIN)
+    (site.userId !== session?.user?.id &&
+      !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+        session?.user.role
+      ))
   ) {
     notFound();
   }

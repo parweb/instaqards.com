@@ -94,7 +94,9 @@ export function withSiteAuth<T>(
     if (
       !site ||
       (site.userId !== session?.user?.id &&
-        session.user.role !== UserRole.ADMIN)
+        !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+          session.user.role
+        ))
     ) {
       return { error: await translate('auth.authorized.error') };
     }

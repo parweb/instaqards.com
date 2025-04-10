@@ -238,7 +238,11 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
     return { error: await translate('auth.error') };
   }
 
-  if (session.user.role !== UserRole.ADMIN) {
+  if (
+    !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+      session.user.role
+    )
+  ) {
     await db.block.findFirstOrThrow({
       where: { id: blockId, site: { userId: session.user.id } }
     });
@@ -370,7 +374,11 @@ export const createBlock = async (
     return { error: await translate('auth.error') };
   }
 
-  if (session.user.role !== UserRole.ADMIN) {
+  if (
+    !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+      session.user.role
+    )
+  ) {
     await db.site.findFirstOrThrow({
       where: { id: site, userId: session.user.id }
     });
@@ -548,7 +556,11 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
     return { error: await translate('auth.error') };
   }
 
-  if (session.user.role !== UserRole.ADMIN) {
+  if (
+    !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+      session.user.role
+    )
+  ) {
     await db.site.findFirstOrThrow({
       where: { id: site.id, userId: session.user.id }
     });
@@ -558,7 +570,7 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
     return { error: await translate('lib.actions.update-site.error') };
   }
 
-  const value = formData.get(key) as string;
+  const value = String(formData.get(key));
 
   try {
     let response: Site = site;
@@ -706,7 +718,9 @@ export const deleteLink = async (linkId: Link['id']) => {
     const response = await db.link.delete({
       where: {
         id: linkId,
-        ...(session.user.role !== UserRole.ADMIN && { userId: session.user.id })
+        ...(!([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+          session.user.role
+        ) && { userId: session.user.id })
       }
     });
 

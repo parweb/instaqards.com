@@ -81,7 +81,7 @@ export function AppSidebar(
         icon: DollarSign,
         isActive: segments[0] === 'affiliation'
       },
-      ...(([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(props.role)
+      ...(([UserRole.ADMIN] as UserRole[]).includes(props.role)
         ? [
             {
               title: translate('menu.generator'),

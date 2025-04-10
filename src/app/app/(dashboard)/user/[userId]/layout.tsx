@@ -88,7 +88,15 @@ export default async function UserPage(props: {
           </div>
         </div>
         <Badge
-          variant={user.role === UserRole.ADMIN ? 'destructive' : 'secondary'}
+          variant={
+            (
+              {
+                [UserRole.ADMIN]: 'destructive',
+                [UserRole.SELLER]: 'secondary',
+                [UserRole.USER]: 'default'
+              } as const
+            )[user.role]
+          }
         >
           {user.role}
         </Badge>

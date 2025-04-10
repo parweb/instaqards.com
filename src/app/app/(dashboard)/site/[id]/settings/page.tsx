@@ -18,20 +18,23 @@ export default async function SiteSettingsIndex(props: {
     }
   });
 
-  const users =
-    session?.user.role === UserRole.ADMIN
-      ? await db.user.findMany({
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        })
-      : [];
+  const users = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+    session?.user.role ?? UserRole.USER
+  )
+    ? await db.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
+      })
+    : [];
 
   return (
     <div className="flex flex-col space-y-6">
-      {session?.user.role === UserRole.ADMIN && (
+      {([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+        session?.user.role ?? UserRole.USER
+      ) && (
         <Form
           title="Change owner"
           description="Change the owner of the site."

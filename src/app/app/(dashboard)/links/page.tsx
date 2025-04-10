@@ -20,13 +20,14 @@ export default async function AllLinks() {
     where: { userId: session.user.id }
   });
 
-  const users =
-    session?.user.role === UserRole.ADMIN
-      ? await db.user.findMany({
-          include: { links: { include: { clicks: true } } },
-          where: { id: { not: session.user.id }, links: { some: {} } }
-        })
-      : [];
+  const users = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+    session?.user.role
+  )
+    ? await db.user.findMany({
+        include: { links: { include: { clicks: true } } },
+        where: { id: { not: session.user.id }, links: { some: {} } }
+      })
+    : [];
 
   return (
     <div className="flex flex-col gap-6 p-8">
