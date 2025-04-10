@@ -15,6 +15,13 @@ const PIXEL_BUFFER = Buffer.from(
 
 export async function GET(request: NextRequest) {
   try {
+    if (
+      request.headers.get('referer')?.includes('localhost') ||
+      request.headers.get('referer')?.includes('qards.link')
+    ) {
+      throw new Error("Don't track internal user");
+    }
+
     const query = Object.fromEntries(new URL(request.url).searchParams);
 
     const validation = QuerySchema.safeParse(query);
