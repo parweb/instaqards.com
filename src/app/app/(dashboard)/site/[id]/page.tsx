@@ -39,7 +39,7 @@ export default async function SitePosts(props: {
 
   return (
     <>
-      <div className="flex flex-col gap-6 p-8">
+      <div className="flex flex-col gap-6 p-2 sm:p-8">
         <div className="flex flex-col items-center sm:flex-row flex-1 justify-between">
           <h1 className="font-cal text-xl font-bold sm:text-3xl">
             {translate('dashboard.site.detail.title', {

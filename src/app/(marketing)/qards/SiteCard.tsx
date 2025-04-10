@@ -3,6 +3,9 @@
 import { Block, Prisma } from '@prisma/client';
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { LuExternalLink } from 'react-icons/lu';
+
 import {
   memo,
   Suspense,
@@ -11,8 +14,6 @@ import {
   useRef,
   useState
 } from 'react';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { LuExternalLink } from 'react-icons/lu';
 
 import { like } from 'actions/like';
 import { BlockList } from 'app/[domain]/client';

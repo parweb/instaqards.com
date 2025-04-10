@@ -1,6 +1,7 @@
 'use client';
 
 import type { Block } from '@prisma/client';
+import { AnimatePresence, motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { memo, Suspense } from 'react';
@@ -9,7 +10,6 @@ import { LuLink } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
-import { AnimatePresence, motion } from 'framer-motion';
 
 const BlockWidget = dynamic(() => import('components/BlockWidget'), {
   ssr: false

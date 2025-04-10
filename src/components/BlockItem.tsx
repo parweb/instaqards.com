@@ -63,7 +63,15 @@ const BlockDuplicate = ({ block }: { block: Block }) => {
   return <DuplicateBlockButton {...block} />;
 };
 
-const BlockItem = ({ block }: { block: Block }) => {
+const BlockItem = ({
+  block,
+  editor = false
+}: {
+  block: Block;
+  editor?: boolean;
+}) => {
+  console.log('BlockItem', { editor });
+
   const isMobile = useIsMobile();
 
   const {
@@ -105,68 +113,76 @@ const BlockItem = ({ block }: { block: Block }) => {
         ref={setNodeRef}
         style={style}
       >
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="p-2 flex flex-1 self-stretch gap-2 [&>*]:cursor-pointer [&>*]:transition-all [&>*]:duration-300 [&>*]:scale-90 [&>*:hover]:scale-100"
-        >
+        {editor === true && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.3, delay: 0 * 0.1 }
-            }}
-            exit={{ opacity: 0, y: 10 }}
-            {...attributes}
-            {...listeners}
-            className=""
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={cn(
+              'p-2 flex flex-1 self-stretch gap-2',
+              '[&>*]:cursor-pointer [&>*]:transition-all [&>*]:duration-300 [&>*]:scale-90 [&>*:hover]:scale-100'
+            )}
           >
-            <div className="cursor-move p-2 bg-white rounded-full">
-              <LuMove />
-            </div>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.3, delay: 0 * 0.1 }
+              }}
+              exit={{ opacity: 0, y: 10 }}
+              {...attributes}
+              {...listeners}
+              className=""
+            >
+              <div className="cursor-move p-2 bg-white rounded-full">
+                <LuMove />
+              </div>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.3, delay: 1 * 0.1 }
-            }}
-            exit={{ opacity: 0, y: 10 }}
-          >
-            <BlockUpdate block={block} />
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.3, delay: 1 * 0.1 }
+              }}
+              exit={{ opacity: 0, y: 10 }}
+            >
+              <BlockUpdate block={block} />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.3, delay: 2 * 0.1 }
+              }}
+              exit={{ opacity: 0, y: 10 }}
+            >
+              <BlockDuplicate block={block} />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.3, delay: 3 * 0.1 }
+              }}
+              exit={{ opacity: 0, y: 10 }}
+            >
+              <BlockDelete block={block} />
+            </motion.div>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.3, delay: 2 * 0.1 }
-            }}
-            exit={{ opacity: 0, y: 10 }}
-          >
-            <BlockDuplicate block={block} />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.3, delay: 3 * 0.1 }
-            }}
-            exit={{ opacity: 0, y: 10 }}
-          >
-            <BlockDelete block={block} />
-          </motion.div>
-        </motion.div>
+        )}
 
         <div
           className={cn(
             'flex flex-col flex-1 self-stretch items-center gap-2 transition-all duration-300 outline-2 outline-offset-10 outline-dashed outline-stone-200/60 rounded-md',
-            '[&>*]:flex-1 [&>*]:self-stretch'
+            '[&>*]:flex-1 [&>*]:self-stretch',
+            editor === false && 'outline-none'
           )}
         >
           {hasWidget === false && (
@@ -288,11 +304,13 @@ const BlockItem = ({ block }: { block: Block }) => {
 export const BlockList = ({
   blocks,
   site,
-  type
+  type,
+  editor = false
 }: {
   blocks: Block[];
   site: Site;
   type: 'main' | 'social';
+  editor?: boolean;
 }) => {
   const [items, setItems] = useState(blocks);
 
@@ -360,7 +378,11 @@ export const BlockList = ({
           }
         >
           {items.map(props => (
-            <BlockItem key={`BlockItem-${props.id}`} block={props} />
+            <BlockItem
+              editor={editor}
+              key={`BlockItem-${props.id}`}
+              block={props}
+            />
           ))}
         </SortableContext>
       </DndContext>

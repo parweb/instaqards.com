@@ -1,24 +1,15 @@
 import { Suspense } from 'react';
-
-import { cn } from 'lib/utils';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export const Main = ({
   children,
-  editor = false,
   length
 }: {
   children: React.ReactNode;
-  editor?: boolean;
   length: number;
 }) => {
   return (
-    <main
-      className={cn(
-        'flex flex-1 self-stretch items-center justify-center',
-        editor === true && 'px-7'
-      )}
-    >
+    <main className="flex flex-1 self-stretch items-center justify-center">
       <div className="flex flex-col gap-10 flex-1 w-full isolate">
         <Suspense
           fallback={

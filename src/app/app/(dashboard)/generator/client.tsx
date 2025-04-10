@@ -230,7 +230,7 @@ https://youtube.com/...
 
         {links && (
           <BlockTypesItem
-            {...{ type: 'button', label: 'Boutons' }}
+            {...{ type: 'button', label: 'Boutons', index: 0 }}
             onClick={data => {
               setButton(data);
               debouncedSubmit();

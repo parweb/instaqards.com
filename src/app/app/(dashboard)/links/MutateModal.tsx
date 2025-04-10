@@ -14,7 +14,6 @@ import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import useTranslation from 'hooks/use-translation';
 import { mutateLink } from 'lib/actions';
-import { cn } from 'lib/utils';
 
 type MutateModalProps = {
   link: Link | null;
@@ -114,15 +113,7 @@ function CreateModalButton() {
   const translate = useTranslation();
 
   return (
-    <Button
-      type="submit"
-      className={cn(
-        pending
-          ? 'cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400'
-          : 'border-black bg-black text-white hover:bg-white hover:text-black'
-      )}
-      disabled={pending}
-    >
+    <Button type="submit" disabled={pending} className="w-full">
       {pending ? (
         <LoadingDots color="#808080" />
       ) : (
