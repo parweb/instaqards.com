@@ -1,10 +1,10 @@
 import 'server-only';
 
 import { render } from '@react-email/render';
+import { waitUntil } from '@vercel/functions';
 import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { Resend } from 'resend';
 import { ulid } from 'ulid';
-import { waitUntil } from '@vercel/functions';
 
 import { db } from 'helpers/db';
 import { sender } from 'settings';
@@ -12,6 +12,7 @@ import { DEFAULT_LANG, type Lang } from 'translations';
 import ConfirmAccountEmail from '../../emails/confirm-account';
 import MagicLinkEmail from '../../emails/magic-link';
 import WelcomeEmail from '../../emails/onboarding/01-welcome';
+import OutboxEmail from '../../emails/outbox';
 import ResetPasswordEmail from '../../emails/reset-password';
 import TwoFactorTokenEmail from '../../emails/two-factor-token';
 
@@ -61,7 +62,9 @@ const send = async (
 
   const lang = await getLang();
 
-  const subject = Template.subject[lang];
+  const subject =
+    'subject' in variables ? variables.subject : Template.subject[lang];
+
   const react = (
     <Template lang={lang} subject={subject} id={id} {...variables} />
   );
@@ -121,4 +124,14 @@ export const sendWelcomeEmail = async (email: string) => {
   console.info('email::sendWelcomeEmail', { email });
 
   await send(email, WelcomeEmail);
+};
+
+export const sendOutboxEmail = async (
+  email: string,
+  subject: string,
+  body: string
+) => {
+  console.info('email::sendOutboxEmail', { email, subject, body });
+
+  await send(email, OutboxEmail, { subject, body });
 };

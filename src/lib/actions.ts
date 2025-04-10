@@ -7,6 +7,7 @@ import { after } from 'next/server';
 import { z } from 'zod';
 
 import { db } from 'helpers/db';
+import { sendOutboxEmail } from 'helpers/mail';
 import { put } from 'helpers/storage';
 import { translate } from 'helpers/translate';
 import { shorten } from 'helpers/url';
@@ -804,3 +805,40 @@ export const createUser = async (form: FormData) => {
   return response;
 };
 
+export const createOutbox = async (form: FormData) => {
+  try {
+    console.info('createOutbox', form);
+
+    const session = await getSession();
+
+    if (!session?.user?.id) {
+      return { error: await translate('auth.error') };
+    }
+
+    const userId = String(form.get('user'));
+    const subject = String(form.get('subject'));
+    const body = String(form.get('body'));
+
+    console.info('createOutbox', { userId, subject, body });
+
+    const user = await db.user.findUnique({
+      select: { email: true },
+      where: { id: userId }
+    });
+
+    if (!user) {
+      return { error: await translate('error') };
+    }
+
+    await sendOutboxEmail(user.email, subject, body);
+
+    return { success: true };
+  } catch (error: unknown) {
+    console.error({ error });
+
+    return {
+      error:
+        error instanceof Error ? error.message : 'An unknown error occurred'
+    };
+  }
+};
