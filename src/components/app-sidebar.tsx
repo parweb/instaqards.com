@@ -220,7 +220,7 @@ export function AppSidebar(
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="isolate">
         {project && <NavMain dark label="Qard" items={[project]} />}
         <NavMain label="Platform" items={data.navMain} />
         <NavProjects projects={data.projects} />

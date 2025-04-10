@@ -51,7 +51,7 @@ export function NavMain({
   return (
     <div
       className={cn({
-        'dark bg-sidebar rounded-md sticky top-2 backdrop-blur-xs mx-1 shadow-lg inset-shadow-md border border-black/80 ring-1 ring-indigo-500/40':
+        'dark z-10 bg-sidebar rounded-md sticky top-2 backdrop-blur-xs mx-1 shadow-lg inset-shadow-md border border-black/80 ring-1 ring-indigo-500/40':
           dark,
         'bg-gradient-to-b from-stone-900/75 via-stone-800/90 to-stone-900/80':
           dark
