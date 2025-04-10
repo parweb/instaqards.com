@@ -1,5 +1,6 @@
 'use client';
 
+import { User } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -11,7 +12,7 @@ import { createSite } from 'lib/actions';
 import { cn } from 'lib/utils';
 import { useModal } from './provider';
 
-export default function CreateSiteModal() {
+export default function CreateSiteModal({ user }: { user?: User }) {
   const router = useRouter();
   const modal = useModal();
 
@@ -33,8 +34,10 @@ export default function CreateSiteModal() {
 
   return (
     <form
-      action={async (data: FormData) =>
-        createSite(data).then(res => {
+      action={async (form: FormData) => {
+        user?.id && form.set('user', user.id);
+
+        createSite(form).then(res => {
           if ('error' in res) {
             toast.error(res.error);
           } else {
@@ -45,12 +48,14 @@ export default function CreateSiteModal() {
             modal?.hide();
             toast.success('Successfully created site!');
           }
-        })
-      }
+        });
+      }}
       className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700"
     >
-      <div className="relative flex flex-col space-y-4 p-5 md:p-10">
+      <div className="relative flex flex-col gap-4 p-4">
         <h2 className="font-cal text-2xl dark:text-white">Create a new site</h2>
+
+        {user?.id && <input type="hidden" name="user" value={user.id} />}
 
         <div className="flex flex-col space-y-2">
           <label

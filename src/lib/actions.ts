@@ -26,7 +26,7 @@ const nanoid = customAlphabet(
 );
 
 export const createSite = async (
-  formData: FormData
+  form: FormData
 ): Promise<{ error: string } | Site> => {
   const session = await getSession();
 
@@ -34,9 +34,10 @@ export const createSite = async (
     return { error: await translate('auth.error') };
   }
 
-  const name = formData.get('name') as string;
-  const description = formData.get('description') as string;
-  const subdomain = String(formData.get('subdomain'))
+  const userId = form.has('user') ? String(form.get('user')) : session.user.id;
+  const name = String(form.get('name'));
+  const description = String(form.get('description'));
+  const subdomain = String(form.get('subdomain'))
     .toLowerCase()
     .trim()
     .replace(/[\W_]+/g, '-');
@@ -47,7 +48,7 @@ export const createSite = async (
         name,
         description,
         subdomain,
-        user: { connect: { id: session.user.id } },
+        user: { connect: { id: userId } },
         blocks: {
           create: {
             type: 'main',
