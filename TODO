@@ -1,7 +1,7 @@
 
 TODO
 
-     -> changer le favicon
+     -> block iframe simple
      -> logo qark dans les socials
      -> philipain social network -> application mobile
      -> prospect ce retrouve partout ou y'a des users 
@@ -35,7 +35,6 @@ TODO
           https://github.com/ValentinH/react-easy-crop
           https://github.com/mosch/react-avatar-editor
      -> menu button faire mieux
-DONE -> lien update, delete move align on the top and add a toggle preview / editing (dotted border)
      -> activé le carousel apartir de 2 elements media
      -> armoniser les youtubes block (titre par dessus)
      -> youtube réduire la hauteur des videos (pour le carousel)
@@ -57,6 +56,8 @@ DONE -> lien update, delete move align on the top and add a toggle preview / edi
      -> univers music, girly (template)
      -> pas claire qu'il faut payer pour que la qards soit public
      
+DONE -> changer le favicon
+DONE -> lien update, delete move align on the top and add a toggle preview / editing (dotted border)
 DONE -> améliore edit text (margin, padding, ...)
 DONE -> i want to subscribe (finir le payment)
 DONE -> block snapchat (https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMPwAAYaGJha29qbW1iAZXAH6n8AZXABicRAAAAAQ)

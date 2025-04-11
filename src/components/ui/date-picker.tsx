@@ -6,6 +6,7 @@ import { RiCalendar2Fill, RiSubtractFill } from '@remixicon/react';
 import { format, type Locale } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import * as React from 'react';
+import { type Matcher } from 'react-day-picker';
 import { tv, type VariantProps } from 'tailwind-variants';
 
 import {
@@ -22,12 +23,8 @@ import {
 } from '@react-stately/datepicker';
 
 import { Button } from 'components/ui/button';
+import { Calendar as CalendarPrimitive } from 'components/ui/calendar';
 import { cn, focusInput, focusRing, hasErrorInput } from 'lib/utils';
-
-import {
-  Calendar as CalendarPrimitive,
-  type Matcher
-} from 'components/ui/calendar';
 
 const isBrowserLocaleClockType24h = () => {
   const language =
@@ -454,7 +451,6 @@ interface PickerProps extends CalendarProps {
   required?: boolean;
   showTimePicker?: boolean;
   placeholder?: string;
-  enableYearNavigation?: boolean;
   disableNavigation?: boolean;
   hasError?: boolean;
   id?: string;
@@ -492,7 +488,6 @@ const SingleDatePicker = ({
   placeholder = 'Select date',
   hasError,
   translations,
-  enableYearNavigation = false,
   locale = enUS,
   align = 'center',
   ...props
@@ -504,6 +499,7 @@ const SingleDatePicker = ({
   const [month, setMonth] = React.useState<Date | undefined>(date);
 
   const [time, setTime] = React.useState<TimeValue | null>(
+    // @ts-ignore
     value
       ? new Time(value.getHours(), value.getMinutes())
       : defaultValue
@@ -656,7 +652,6 @@ const SingleDatePicker = ({
                 onSelect={onDateChange}
                 disabled={disabledDays}
                 locale={locale}
-                enableYearNavigation={enableYearNavigation}
                 disableNavigation={disableNavigation}
                 initialFocus
                 {...props}
@@ -713,7 +708,6 @@ const RangeDatePicker = ({
   disabled,
   disableNavigation,
   disabledDays,
-  enableYearNavigation = false,
   locale = enUS,
   showTimePicker,
   placeholder = 'Select date range',
@@ -957,7 +951,6 @@ const RangeDatePicker = ({
                 numberOfMonths={2}
                 disabled={disabledDays}
                 disableNavigation={disableNavigation}
-                enableYearNavigation={enableYearNavigation}
                 locale={locale}
                 initialFocus
                 classNames={{
