@@ -50,12 +50,29 @@ model User {
   executions     Execution[]     @relation("UserActionLogs")
   jobs           Queue[]         @relation("UserQueueJobs")
   outbox         Outbox[]
+  feed           Feed[]
+  subscriber     Subscriber[]
+  comment        Comment[]
+  sent           Message[]       @relation("Sent")
+  received       Message[]       @relation("Received")
 
   @@index([email])
   @@index([role])
   @@index([refererId])
   @@index([id])
   @@index([emailVerified])
+}
+
+model Message {
+  id String @id @default(cuid())
+
+  content   String
+  createdAt DateTime @default(now())
+
+  sender       User   @relation("Sent", fields: [senderEmail], references: [id])
+  senderEmail  String
+  receiver     User   @relation("Received", fields: [receiveEmail], references: [id])
+  receiveEmail String
 }
 
 model Feedback {
@@ -332,6 +349,8 @@ model Like {
   siteId String
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String?
+  feed   Feed?   @relation(fields: [feedId], references: [id])
+  feedId String?
 
   @@index([userId])
   @@index([siteId])
@@ -363,10 +382,56 @@ model Site {
   clicks      Click[]
   subscribers Subscriber[]
   likes       Like[]
+  feed        Feed[]
 
   @@index([userId])
   @@index([subdomain])
   @@index([customDomain])
+}
+
+enum FeedType {
+  TEXT
+  MEDIA
+  BLOCK
+}
+
+model Feed {
+  id String @id @default(cuid())
+
+  type        FeedType @default(TEXT)
+  content     Json     @default("{}")
+  commentable Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  site     Site      @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  siteId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId   String
+  comments Comment[]
+  likes    Like[]
+
+  @@index([siteId])
+  @@index([userId])
+}
+
+model Comment {
+  id String @id @default(cuid())
+
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  feed   Feed?   @relation(fields: [feedId], references: [id])
+  feedId String?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+
+  @@index([feedId])
+  @@index([userId])
 }
 
 model Subscriber {
@@ -379,6 +444,8 @@ model Subscriber {
 
   site   Site   @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   siteId String
+
+  user User? @relation(fields: [email], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([siteId])
   @@index([email])
