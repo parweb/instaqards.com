@@ -1,26 +1,17 @@
+
 TODO
 
      -> intégration externe clean url before
      -> insta reel, possible ?
-DONE -> un menu pour la landing page
-DONE -> i want to subscribe (finir le payment)
-DONE -> google map hard coded value
-DONE -> generator flingué
-DONE -> background color-picker libre
+     -> generator flingué
      -> qards par default préremplis stylé / neutre
      -> feed
      -> ecommerce
-DONE -> la barre vert trial z-index a revoir
      -> qards dropshiping / affiliation 
           -> flippa 
           -> ferme de blog
-DONE -> block snapchat (https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMPwAAYaGJha29qbW1iAZXAH6n8AZXABicRAAAAAQ)
      -> share my qard on (iphone, android)
-DONE -> améliore edit text (margin, padding, ...)
-DONE -> font-picker z-index problem
      -> ajouter dans social link: telephone & email
-DONE -> role commercial
-DONE -> button glow 1 shadow carré
      -> recadrage photo circle & square 
           https://github.com/react-cropper/react-cropper/
           https://github.com/ValentinH/react-easy-crop
@@ -33,33 +24,39 @@ DONE -> button glow 1 shadow carré
      -> description des inputs field possible (ex: youtube tu peux metre une url channel ou video)
      -> tiktok garder que le lecteur (+ bug sur ilias)
      -> avis google
+     -> Dupliquer Qards
      -> tiktok prend en compte les url mobile
      -> fichier client dans le backoffice
      -> statistiques plus avancé sur les qards
 
-DONE -> page identity branding (logo)
-DONE -> loading state on block mutation
      -> generator to email (commercial crée la qard demande un email ca envoi le un lien pour finir linscription)
      -> qards du mois (abonnement offert)
-DONE -> block social
      -> block Horaires d'ouverture
      -> block qards (qards dans qards)
-DONE -> rendez-vous
-DONE -> inspiration canva
      -> container ?
      -> twitch integration
+     -> email transactional 
+     -> maito & tel:// ui drivé
+     -> univers music, girly (template)
+     -> pas claire qu'il faut payer pour que la qards soit public
+     
+DONE -> améliore edit text (margin, padding, ...)
+DONE -> i want to subscribe (finir le payment)
+DONE -> block snapchat (https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMPwAAYaGJha29qbW1iAZXAH6n8AZXABicRAAAAAQ)
+DONE -> la barre vert trial z-index a revoir
+DONE -> background color-picker libre
+DONE -> google map hard coded value
+DONE -> font-picker z-index problem
+DONE -> un menu pour la landing page
+DONE -> role commercial
+DONE -> button glow 1 shadow carré
+DONE -> page identity branding (logo)
+DONE -> loading state on block mutation
+DONE -> block social
+DONE -> rendez-vous
+DONE -> inspiration canva
 DONE -> integration google map
 DONE -> bug background si css deja select et quon upload un custom
-
-     -> restaurateur (integration uber eat, tripadvisior)
-     -> barber / coiffeur 
-     -> agence immo
-     -> concept store (indépendant)
-     -> boucherie
-     -> boulangerie
-     -> traiteur
-     -> boite nuit -> vente affilliate
-
 DONE -> subdomain apres suffix & préfix
 DONE -> duplicate block
 DONE -> apply style on all
@@ -67,16 +64,10 @@ DONE -> custom font size color ... on text
 DONE -> block header
 DONE -> deeplink headless
 DONE -> generator de qards (ADMIN)
-     -> email transactional 
-     -> maito & tel:// ui drivé
-
+DONE -> social link prepend with http://
 DONE -> biography block under profil picture
-     -> univers music, girly (template)
-     -> social link prepend with http://
 DONE -> apply normal style on hover style if not set
 DONE -> offre 9€ si annuel 12 € si mensuel
-     -> pas claire qu'il faut payer pour que la qards soit public
-
 DONE -> sortable link main & social
 DONE -> style sur les liens (apply on all)
 DONE -> tableaux des prix (one price for all)
@@ -85,7 +76,6 @@ DONE -> menu responsive
 DONE -> date range picker responsive
 DONE -> La landing fonctionne pas bien sur mon iPhone (camille)
 DONE -> Je suis sur la landing US mais je vois du texte en FR (camille)
-
 DONE -> T’avais pas mis en prod pour l’affiliation les stats ?
 DONE -> lien social list de logo
 DONE -> prix trial a mettre en avant
@@ -94,23 +84,15 @@ DONE -> Admin -> creer et transférer les Qards / voir toute les Qards
 DONE -> bouton -> Créer votre QARDS (call to action)
 DONE -> Overview - > Petit carré avec les news et update a coté du truc de statistique
 DONE -> Stats -> Range de date modifiable
-
-        Page «All Sites & Qards»
 DONE -> Stats a coté des Qards a rendre dispo (masqué si donnée fake)
-     -> Dupliquer Qards sous un autre nom (transfert)
 DONE -> Suppression -> ajouter croix + modal de confirmation
-
-        Page «Qards.link»
 DONE -> Ajout d’un logo ou une bulle perso au dessus des link (margin top set par défaut et editable)
 DONE -> Lien Notorious -> suppression
-     -> Modifier les couleurs ?
 DONE -> Label footer -> Menu déroulant avec logo présélectionné ou -> customize
-
 DONE    Settings
 DONE -> Paiement -> rendre dispo les paiement
 DONE -> Mot de passe -> modifier ?
 DONE -> rediriger apres: login confirm
-
 DONE -> checks pk lien bio insta marche pas
 DONE -> qards unavailable meme apres paiement (cache)
 DONE -> lien public marche pas -> https://app.qards.link/site/cltps29wl0000e0g01sw1fiyu
