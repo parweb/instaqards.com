@@ -18,7 +18,12 @@
     "backup-schema": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'pg_dump --exclude-table=_prisma_migrations --clean --schema-only \"$DATABASE_URL_PROD\" | gzip > backup/instaqards_com_schema_$(date +%Y-%m-%d_%H-%M-%S).sql.gz'",
     "backup": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'pg_dump --exclude-table=_prisma_migrations --clean \"$DATABASE_URL_PROD\" | gzip > backup/instaqards_com_$(date +%Y-%m-%d_%H-%M-%S).sql.gz'",
     "restore": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'gunzip -c \"$1\" | psql \"$DATABASE_URL_PROD\"' --",
-    "restore-sql": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'psql \"$DATABASE_URL_PROD\" < \"$1\"' --"
+    "restore-sql": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'psql \"$DATABASE_URL_PROD\" < \"$1\"' --",
+    "dev:backup-data": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'pg_dump --exclude-table=_prisma_migrations --data-only \"$DATABASE_URL\" | gzip > backup/___DEV___instaqards_com_data_$(date +%Y-%m-%d_%H-%M-%S).sql.gz'",
+    "dev:backup-schema": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'pg_dump --exclude-table=_prisma_migrations --clean --schema-only \"$DATABASE_URL\" | gzip > backup/___DEV___instaqards_com_schema_$(date +%Y-%m-%d_%H-%M-%S).sql.gz'",
+    "dev:backup": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'pg_dump --exclude-table=_prisma_migrations --clean \"$DATABASE_URL\" | gzip > backup/___DEV___instaqards_com_$(date +%Y-%m-%d_%H-%M-%S).sql.gz'",
+    "dev:restore": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'gunzip -c \"$1\" | psql \"$DATABASE_URL\"' --",
+    "dev:restore-sql": "env $(grep -v '^#' .env | sed 's/\"//g' | xargs) bash -c 'psql \"$DATABASE_URL\" < \"$1\"' --"
   },
   "dependencies": {
     "@auth/prisma-adapter": "1.2.1",
