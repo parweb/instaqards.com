@@ -63,6 +63,26 @@ model User {
   @@index([emailVerified])
 }
 
+model Prospect {
+  id String @id @default(cuid())
+
+  raison_sociale String?
+  adresse        String?
+  cp             String?
+  ville          String?
+  tel            String?
+  code_naf       String?
+  activite       String?
+  email          String?
+
+  @@index([email])
+  @@index([ville])
+  @@index([cp])
+  @@index([code_naf])
+  @@index([tel])
+  @@index([activite])
+}
+
 model Message {
   id String @id @default(cuid())
 

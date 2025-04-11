@@ -1,4 +1,6 @@
+import { Prisma, SubscriptionStatus } from '@prisma/client';
 import { eachDayOfInterval, eachHourOfInterval } from 'date-fns';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { LuArrowUpRight } from 'react-icons/lu';
 
@@ -12,14 +14,31 @@ import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 
 import 'array-grouping-polyfill';
-import Link from 'next/link';
 
-export default async function AllAffiliation() {
+export default async function AllAffiliation({
+  searchParams
+}: {
+  searchParams: Promise<{
+    page: string;
+    take: string;
+    search: string | undefined;
+    withSite: string;
+    subscription: string;
+  }>;
+}) {
   const session = await getSession();
 
   if (!session || !session?.user) {
     redirect('/login');
   }
+
+  const params = await searchParams;
+
+  const page = parseInt(params.page) || 1;
+  const take = parseInt(params.take) || 25;
+  const search = params.search;
+  const withSite = params.withSite === 'true';
+  const subscription = params.subscription || 'all';
 
   const affiliates = await db.user.findMany({
     where: {
@@ -27,27 +46,49 @@ export default async function AllAffiliation() {
     }
   });
 
-  const splitByDate = affiliates.groupBy(({ createdAt }) => {
-    const when = new Date(createdAt);
-    when.setHours(when.getHours(), 0, 0, 0);
-    return when.toISOString();
-  });
-
-  const start = affiliates.at(0)?.createdAt ?? 0;
-  const end = affiliates.at(-1)?.createdAt ?? 0;
-
-  const chartdata = eachHourOfInterval({ start, end }).map(date => {
-    const when = new Date(date);
-    when.setHours(when.getHours(), 0, 0, 0);
-    const key = when.toISOString();
+  const chartdata = eachDayOfInterval({
+    start: affiliates.at(0)?.createdAt ?? 0,
+    end: affiliates.at(-1)?.createdAt ?? 0
+  }).map(date => {
+    const key = date.toDateString();
 
     return {
       date: key,
-      Clicks: splitByDate?.[key]?.length ?? 0
+      Clicks:
+        affiliates.groupBy(({ createdAt }) => createdAt.toDateString())?.[key]
+          ?.length ?? 0
     };
   });
 
+  const where: Prisma.UserWhereInput = {
+    referer: { id: session.user.id },
+    ...(subscription !== 'all' && {
+      subscriptions: {
+        some: {
+          status: subscription as SubscriptionStatus
+        }
+      }
+    }),
+    ...(search && {
+      OR: [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } }
+      ]
+    }),
+    ...(withSite && {
+      sites: {
+        some: {}
+      }
+    })
+  };
+
   const users = await db.user.findMany({
+    select: { createdAt: true },
+    where,
+    orderBy: { createdAt: 'desc' }
+  });
+
+  const displayUsers = await db.user.findMany({
     include: {
       sites: { orderBy: { createdAt: 'desc' } },
       subscriptions: {
@@ -57,12 +98,10 @@ export default async function AllAffiliation() {
         }
       }
     },
-    orderBy: {
-      createdAt: 'desc'
-    },
-    where: {
-      referer: { id: session.user.id }
-    }
+    where,
+    orderBy: { createdAt: 'desc' },
+    take,
+    skip: (page - 1) * take
   });
 
   const chartUsers = eachDayOfInterval({
@@ -109,9 +148,21 @@ export default async function AllAffiliation() {
           </hgroup>
         </div>
 
-        <NewUsersChart data={chartUsers} total={users.length} dailyGrowth={0} />
+        <NewUsersChart
+          data={chartUsers}
+          total={users.length}
+          dailyGrowth={
+            (chartUsers.at(-2)?.Users ?? 0) === 0
+              ? 0
+              : Number(
+                  ((chartUsers.at(-1)?.Users ?? 0) /
+                    (chartUsers.at(-2)?.Users ?? 0)) *
+                    100
+                )
+          }
+        />
 
-        <UsersTable affiliate initialUsers={users} />
+        <UsersTable affiliate users={displayUsers} total={users.length} />
       </div>
 
       <div className="flex flex-col space-y-6">

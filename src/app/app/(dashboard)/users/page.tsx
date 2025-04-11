@@ -1,3 +1,4 @@
+import { Prisma, SubscriptionStatus } from '@prisma/client';
 import { eachDayOfInterval } from 'date-fns';
 
 import ModalButton from 'components/modal-button';
@@ -9,8 +10,53 @@ import { UsersTable } from './users-table';
 
 import 'array-grouping-polyfill';
 
-export default async function UsersPage() {
+export default async function UsersPage({
+  searchParams
+}: {
+  searchParams: Promise<{
+    page: string;
+    take: string;
+    search: string | undefined;
+    withSite: string;
+    subscription: string;
+  }>;
+}) {
+  const params = await searchParams;
+
+  const page = parseInt(params.page) || 1;
+  const take = parseInt(params.take) || 25;
+  const search = params.search;
+  const withSite = params.withSite === 'true';
+  const subscription = params.subscription || 'all';
+
+  const where: Prisma.UserWhereInput = {
+    ...(subscription !== 'all' && {
+      subscriptions: {
+        some: {
+          status: subscription as SubscriptionStatus
+        }
+      }
+    }),
+    ...(search && {
+      OR: [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } }
+      ]
+    }),
+    ...(withSite && {
+      sites: {
+        some: {}
+      }
+    })
+  };
+
   const users = await db.user.findMany({
+    select: { createdAt: true },
+    where,
+    orderBy: { createdAt: 'desc' }
+  });
+
+  const displayUsers = await db.user.findMany({
     include: {
       sites: { orderBy: { createdAt: 'desc' } },
       subscriptions: {
@@ -20,26 +66,23 @@ export default async function UsersPage() {
         }
       }
     },
-    orderBy: {
-      createdAt: 'desc'
-    }
+    where,
+    orderBy: { createdAt: 'desc' },
+    take,
+    skip: (page - 1) * take
   });
 
-  const splitByDate = users.groupBy(({ createdAt }) =>
-    createdAt.toDateString()
-  );
-
-  const start = users.at(-1)?.createdAt ?? 0;
-  const end = users.at(0)?.createdAt ?? 0;
-
-  const chartdata = eachDayOfInterval({ start, end }).map(date => {
+  const chartdata = eachDayOfInterval({
+    start: users.at(-1)?.createdAt ?? 0,
+    end: users.at(0)?.createdAt ?? 0
+  }).map(date => {
     const key = date.toDateString();
-
-    const users = splitByDate?.[key] || [];
 
     return {
       date: key,
-      Users: users.length
+      Users: (
+        users.groupBy(({ createdAt }) => createdAt.toDateString())?.[key] || []
+      ).length
     };
   });
 
@@ -58,9 +101,21 @@ export default async function UsersPage() {
           </hgroup>
         </div>
 
-        <NewUsersChart data={chartdata} total={users.length} dailyGrowth={0} />
+        <NewUsersChart
+          data={chartdata}
+          total={users.length}
+          dailyGrowth={
+            (chartdata.at(-2)?.Users ?? 0) === 0
+              ? 0
+              : Number(
+                  ((chartdata.at(-1)?.Users ?? 0) /
+                    (chartdata.at(-2)?.Users ?? 0)) *
+                    100
+                )
+          }
+        />
 
-        <UsersTable initialUsers={users} />
+        <UsersTable users={displayUsers} total={users.length} />
       </div>
     </div>
   );
