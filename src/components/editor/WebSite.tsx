@@ -102,8 +102,6 @@ export const WebSite = ({
 }) => {
   const [preview, setPreview] = useState(false);
 
-  console.log('WebSite', { preview });
-
   const data: Record<Block['type'], Block[]> = {
     main: [],
     social: [],

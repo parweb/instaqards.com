@@ -40,28 +40,8 @@ export default async function AllAffiliation({
   const withSite = params.withSite === 'true';
   const subscription = params.subscription || 'all';
 
-  const affiliates = await db.user.findMany({
-    where: {
-      referer: { id: session.user.id }
-    }
-  });
-
-  const chartdata = eachDayOfInterval({
-    start: affiliates.at(0)?.createdAt ?? 0,
-    end: affiliates.at(-1)?.createdAt ?? 0
-  }).map(date => {
-    const key = date.toDateString();
-
-    return {
-      date: key,
-      Clicks:
-        affiliates.groupBy(({ createdAt }) => createdAt.toDateString())?.[key]
-          ?.length ?? 0
-    };
-  });
-
   const where: Prisma.UserWhereInput = {
-    referer: { id: session.user.id },
+    refererId: session.user.id,
     ...(subscription !== 'all' && {
       subscriptions: {
         some: {
@@ -82,41 +62,67 @@ export default async function AllAffiliation({
     })
   };
 
-  const users = await db.user.findMany({
-    select: { createdAt: true },
-    where,
-    orderBy: { createdAt: 'desc' }
-  });
-
-  const displayUsers = await db.user.findMany({
-    include: {
-      sites: { orderBy: { createdAt: 'desc' } },
-      subscriptions: {
-        include: { price: { include: { product: true } } },
-        orderBy: {
-          ended_at: 'desc'
-        }
+  const [affiliates, users, displayUsers] = await db.$transaction([
+    db.user.findMany({
+      where: {
+        referer: { id: session.user.id }
       }
+    }),
+    db.user.findMany({
+      select: { createdAt: true },
+      where,
+      orderBy: { createdAt: 'desc' }
+    }),
+    db.user.findMany({
+      include: {
+        sites: { orderBy: { createdAt: 'desc' } },
+        subscriptions: {
+          include: { price: { include: { product: true } } },
+          orderBy: {
+            ended_at: 'desc'
+          }
+        }
+      },
+      where,
+      orderBy: { createdAt: 'desc' },
+      take,
+      skip: (page - 1) * take
+    })
+  ]);
+
+  const affiliateGroups = affiliates.reduce(
+    (acc, user) => {
+      const key = user.createdAt.toDateString();
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
     },
-    where,
-    orderBy: { createdAt: 'desc' },
-    take,
-    skip: (page - 1) * take
-  });
+    {} as Record<string, number>
+  );
+
+  const chartdata = eachDayOfInterval({
+    start: affiliates.at(0)?.createdAt ?? 0,
+    end: affiliates.at(-1)?.createdAt ?? 0
+  }).map(date => ({
+    date: date.toDateString(),
+    Clicks: affiliateGroups[date.toDateString()] || 0
+  }));
+
+  const usersGroups = users.reduce(
+    (acc, user) => {
+      const key = user.createdAt.toDateString();
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   const chartUsers = eachDayOfInterval({
     start: users.at(-1)?.createdAt ?? 0,
     end: users.at(0)?.createdAt ?? 0
-  }).map(date => {
-    const key = date.toDateString();
-
-    return {
-      date: key,
-      Users: (
-        users.groupBy(({ createdAt }) => createdAt.toDateString())?.[key] || []
-      ).length
-    };
-  });
+  }).map(date => ({
+    date: date.toDateString(),
+    Users: usersGroups[date.toDateString()] || 0
+  }));
 
   return (
     <div className="flex flex-col space-y-12 p-8">

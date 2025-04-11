@@ -70,8 +70,6 @@ const BlockItem = ({
   block: Block;
   editor?: boolean;
 }) => {
-  console.log('BlockItem', { editor });
-
   const isMobile = useIsMobile();
 
   const {

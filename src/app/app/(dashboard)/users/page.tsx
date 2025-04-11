@@ -50,41 +50,45 @@ export default async function UsersPage({
     })
   };
 
-  const users = await db.user.findMany({
-    select: { createdAt: true },
-    where,
-    orderBy: { createdAt: 'desc' }
-  });
-
-  const displayUsers = await db.user.findMany({
-    include: {
-      sites: { orderBy: { createdAt: 'desc' } },
-      subscriptions: {
-        include: { price: { include: { product: true } } },
-        orderBy: {
-          ended_at: 'desc'
+  const [users, displayUsers] = await db.$transaction([
+    db.user.findMany({
+      select: { createdAt: true },
+      where,
+      orderBy: { createdAt: 'desc' }
+    }),
+    db.user.findMany({
+      include: {
+        sites: { orderBy: { createdAt: 'desc' } },
+        subscriptions: {
+          include: { price: { include: { product: true } } },
+          orderBy: {
+            ended_at: 'desc'
+          }
         }
-      }
+      },
+      where,
+      orderBy: { createdAt: 'desc' },
+      take,
+      skip: (page - 1) * take
+    })
+  ]);
+
+  const userGroups = users.reduce(
+    (acc, user) => {
+      const key = user.createdAt.toDateString();
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
     },
-    where,
-    orderBy: { createdAt: 'desc' },
-    take,
-    skip: (page - 1) * take
-  });
+    {} as Record<string, number>
+  );
 
   const chartdata = eachDayOfInterval({
-    start: users.at(-1)?.createdAt ?? 0,
-    end: users.at(0)?.createdAt ?? 0
-  }).map(date => {
-    const key = date.toDateString();
-
-    return {
-      date: key,
-      Users: (
-        users.groupBy(({ createdAt }) => createdAt.toDateString())?.[key] || []
-      ).length
-    };
-  });
+    start: users.at(-1)?.createdAt ?? new Date(),
+    end: users.at(0)?.createdAt ?? new Date()
+  }).map(date => ({
+    date: date.toDateString(),
+    Users: userGroups[date.toDateString()] || 0
+  }));
 
   return (
     <div className="flex flex-col space-y-12 p-8">
