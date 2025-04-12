@@ -82,6 +82,8 @@ model Prospect {
   @@index([code_naf])
   @@index([tel])
   @@index([activite])
+  @@index([activite, code_naf])
+  @@index([ville, cp])
 }
 
 model Message {
@@ -331,6 +333,7 @@ model Link {
   @@index([userId])
   @@index([createdAt])
   @@index([url])
+  @@index([userId, id])
 }
 
 model Block {
