@@ -52,7 +52,7 @@ function YoutubeVideo({
   };
 
   return (
-    <div className="relative rounded-md overflow-hidden min-h-72 w-full aspect-video">
+    <div className="relative rounded-md overflow-hidden min-h-40 sm:min-h-70 w-full aspect-video">
       {playing === true && (
         <>
           <div className="absolute inset-0 flex items-center justify-center bg-white">
@@ -180,6 +180,16 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
       </div>
     );
   }
+
+  if (videos.length === 1) {
+    return (
+      <YoutubeVideo
+        url={`https://www.youtube.com/watch?v=${videos[0].id}`}
+        title={videos[0].title}
+      />
+    );
+  }
+
   return (
     <div className="w-full">
       <Carousel

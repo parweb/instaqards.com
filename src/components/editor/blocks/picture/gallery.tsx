@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import * as z from 'zod';
 
-import { json } from 'lib/utils';
+import { cn, json } from 'lib/utils';
 
 import {
   Carousel,
@@ -71,10 +71,12 @@ const GalleryItemLink = ({
 
 const GalleryItem = ({
   media,
-  blockId
+  blockId,
+  className
 }: {
   media: z.infer<typeof input>['medias'][number];
   blockId: string | undefined;
+  className?: string;
 }) => {
   const [src, setSrc] = useState<string>(
     media.kind === 'remote' ? media.url : ''
@@ -90,7 +92,13 @@ const GalleryItem = ({
   }, [mediaFile]);
 
   // eslint-disable-next-line @next/next/no-img-element
-  const image = <img src={src} alt="" className="max-h-[300px] object-cover" />;
+  const image = (
+    <img
+      src={src}
+      alt=""
+      className={cn('max-h-[300px] object-cover', className)}
+    />
+  );
 
   return (
     <div className="rounded-md overflow-hidden">
@@ -146,6 +154,16 @@ export default function Gallery({
       <div className="rounded-md overflow-hidden bg-white p-4 flex-1 flex items-center justify-center">
         No images
       </div>
+    );
+  }
+
+  if (medias.length === 1) {
+    return (
+      <GalleryItem
+        media={medias[0]}
+        blockId={block?.id}
+        className="max-h-none w-full"
+      />
     );
   }
 
