@@ -1,9 +1,10 @@
 import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
-import { LuArrowUpRight, LuCog, LuMousePointer } from 'react-icons/lu';
+import { LuArrowUpRight, LuCog, LuCopy, LuMousePointer } from 'react-icons/lu';
 
 import DeleteButton from './DeleteButton';
-
+import ModalButton from './modal-button';
+import SiteDuplicateModal from './modal/duplicate-site';
 export default function SiteCard({
   data
 }: {
@@ -23,6 +24,10 @@ export default function SiteCard({
             </Link>
 
             <div className="transition-all opacity-0 group-hover:opacity-100 flex items-center gap-2">
+              <ModalButton variant="ghost" size="icon" label={<LuCopy />}>
+                <SiteDuplicateModal site={data} />
+              </ModalButton>
+
               <Link prefetch href={`/site/${data.id}/settings`} className="">
                 <LuCog />
               </Link>

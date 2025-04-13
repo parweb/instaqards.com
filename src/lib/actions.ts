@@ -885,3 +885,135 @@ export const createOutbox = async (form: FormData) => {
     };
   }
 };
+
+export const duplicateSite = async (
+  form: FormData
+): Promise<{ error: string } | Site> => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  const userId = session.user.id;
+
+  try {
+    const siteId = String(form.get('siteId'));
+    const name = String(form.get('name'));
+    const subdomain = String(form.get('subdomain'));
+    const description = String(form.get('description'));
+
+    // 1. Fetch the original site and its blocks
+    const originalSite = await db.site.findUnique({
+      where: { id: siteId },
+      include: {
+        blocks: true // Include blocks to duplicate them
+      }
+    });
+
+    if (!originalSite) {
+      return { error: await translate('error') }; // Use generic error key
+    }
+
+    // 2. Check user authorization (only owner or admin/seller can duplicate)
+    if (
+      originalSite.userId !== userId &&
+      !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+        session.user.role
+      )
+    ) {
+      return { error: await translate('auth.error') }; // Use existing auth error key
+    }
+
+    // 3. Prepare data for the new site
+    const newName = name || `${originalSite.name || 'Site'} (Copie)`;
+    const newDisplayName = `${originalSite.display_name || 'Site'} (Copie)`;
+
+    // Ensure the base subdomain exists before trying to append '-copie'
+    const baseSubdomain = subdomain || originalSite.subdomain || `site-${nanoid(5)}`; // Generate a base if none exists
+    let newSubdomain = `${baseSubdomain}-copie`;
+    let suffix = 1;
+
+    // Handle potential subdomain conflicts
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const existingSite = await db.site.findUnique({
+        where: { subdomain: newSubdomain }
+      });
+
+      if (!existingSite) break;
+
+      newSubdomain = `${baseSubdomain}-copie-${suffix++}`;
+    }
+
+    // 4. Create the new site (without blocks initially)
+    const newSite = await db.site.create({
+      data: {
+        name: newName,
+        display_name: newDisplayName,
+        description: description || originalSite.description,
+        logo: originalSite.logo,
+        font: originalSite.font,
+        image: originalSite.image,
+        imageBlurhash: originalSite.imageBlurhash,
+        subdomain: newSubdomain,
+        customDomain: null, // Explicitly set to null
+        message404: originalSite.message404,
+        background: originalSite.background,
+        user: { connect: { id: userId } }
+        // Blocks will be added in the next step
+      }
+    });
+
+    // 5. Duplicate the blocks for the new site
+    if (originalSite.blocks.length > 0) {
+      const blocksData = originalSite.blocks.map(block => ({
+        type: block.type,
+        position: block.position,
+        label: block.label,
+        href: block.href,
+        logo: block.logo,
+        style: block.style ?? {}, // Ensure style is not null
+        widget: block.widget ?? {}, // Ensure widget is not null
+        siteId: newSite.id // Link to the newly created site
+      }));
+
+      await db.block.createMany({
+        data: blocksData
+      });
+    }
+
+    // 6. Revalidate tags for the new site
+    revalidateTag(
+      `${newSite.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
+    );
+    // No custom domain to revalidate initially
+
+    // 7. Optional: Add an event log
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(userId),
+            eventType: 'SITE_DUPLICATED',
+            payload: { originalSiteId: siteId, newSite },
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::duplicateSite', event);
+        })
+        .catch(error => {
+          console.error('events::duplicateSite', error);
+        });
+    });
+
+    return newSite;
+  } catch (error: unknown) {
+    console.error('Error duplicating site:', error);
+    return {
+      error:
+        error instanceof Error ? error.message : 'An unknown error occurred'
+    };
+  }
+};
