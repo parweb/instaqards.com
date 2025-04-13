@@ -10,6 +10,7 @@ import { db } from 'helpers/db';
 import { sendOutboxEmail } from 'helpers/mail';
 import { put } from 'helpers/storage';
 import { translate } from 'helpers/translate';
+import { trySafe } from 'helpers/trySafe';
 import { shorten } from 'helpers/url';
 import { getSession, withSiteAuth } from 'lib/auth';
 import { getBlurDataURL } from 'lib/utils';
@@ -352,18 +353,6 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
     };
   }
 });
-
-// generic function to try catch any function
-const trySafe = async <T>(
-  fn: () => Promise<T>,
-  defaultValue: T
-): Promise<[boolean, T, unknown]> => {
-  try {
-    return [true, await fn(), null];
-  } catch (error: unknown) {
-    return [false, defaultValue, error];
-  }
-};
 
 export const createBlock = async (
   form: FormData,
