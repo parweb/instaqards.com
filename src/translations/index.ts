@@ -1000,6 +1000,18 @@ const translations = {
     en: 'Resend verification email',
     it: 'Renviare il link di verifica',
     es: 'Reenviar el enlace de verificación'
+  },
+  'components.user.update.title': {
+    fr: 'Modifier le profil',
+    en: 'Edit profile',
+    it: 'Modifica profilo',
+    es: 'Editar perfil'
+  },
+  'components.user.update.button': {
+    fr: 'Modifier',
+    en: 'Edit',
+    it: 'Modifica',
+    es: 'Editar'
   }
 } as const;
 

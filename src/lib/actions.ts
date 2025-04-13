@@ -1,6 +1,5 @@
 'use server';
 
-import { UserRole, type Block, type Link, type Site } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 import { after } from 'next/server';
@@ -14,6 +13,14 @@ import { trySafe } from 'helpers/trySafe';
 import { shorten } from 'helpers/url';
 import { getSession, withSiteAuth } from 'lib/auth';
 import { getBlurDataURL } from 'lib/utils';
+
+import {
+  type User,
+  UserRole,
+  type Block,
+  type Link,
+  type Site
+} from '@prisma/client';
 
 import {
   addDomainToVercel,
@@ -726,7 +733,7 @@ export const deleteLink = async (linkId: Link['id']) => {
   }
 };
 
-export const editUser = async (
+export const patchUser = async (
   formData: FormData,
   _id: unknown,
   key: string
@@ -758,6 +765,52 @@ export const editUser = async (
           : error instanceof Error
             ? error.message
             : 'An unknown error occurred'
+    };
+  }
+};
+
+export const updateUser = async (form: FormData, userId: User['id']) => {
+  try {
+    const session = await getSession();
+
+    if (!session?.user?.id) {
+      return { error: await translate('auth.error') };
+    }
+
+    const old = await db.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!old) {
+      return { error: await translate('error') };
+    }
+
+    const email = String(form.get('email'));
+    const name = String(form.get('name'));
+
+    console.info({ email, name, userId });
+
+    const response = await db.user.update({
+      where: { id: userId },
+      data: { email, name }
+    });
+
+    after(() => {
+      db.event.create({
+        data: {
+          userId: String(session.user.id),
+          eventType: 'USER_UPDATED',
+          payload: response,
+          correlationId: nanoid()
+        }
+      });
+    });
+
+    return response;
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : 'An unknown error occurred'
     };
   }
 };

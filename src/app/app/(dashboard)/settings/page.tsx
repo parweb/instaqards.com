@@ -5,7 +5,7 @@ import Form from 'components/form';
 import { PortalButton } from 'components/portal-button';
 import { db } from 'helpers/db';
 import { getLang } from 'helpers/translate';
-import { editUser } from 'lib/actions';
+import { patchUser } from 'lib/actions';
 import { getSession, getSubscription } from 'lib/auth';
 import { Button } from 'components/ui/button';
 import Link from 'next/link';
@@ -92,7 +92,7 @@ export default async function SettingsPage() {
             placeholder: 'Your name'
           }}
           handleSubmit={
-            editUser as <T>(
+            patchUser as <T>(
               data: FormData, // eslint-disable-line no-unused-vars
               id: string, // eslint-disable-line no-unused-vars
               name: string // eslint-disable-line no-unused-vars
@@ -112,7 +112,7 @@ export default async function SettingsPage() {
             maxLength: 32
           }}
           handleSubmit={
-            editUser as <T>(
+            patchUser as <T>(
               data: FormData, // eslint-disable-line no-unused-vars
               id: string, // eslint-disable-line no-unused-vars
               name: string // eslint-disable-line no-unused-vars
@@ -131,7 +131,7 @@ export default async function SettingsPage() {
             placeholder: 'Your email'
           }}
           handleSubmit={
-            editUser as <T>(
+            patchUser as <T>(
               data: FormData, // eslint-disable-line no-unused-vars
               id: string, // eslint-disable-line no-unused-vars
               name: string // eslint-disable-line no-unused-vars
