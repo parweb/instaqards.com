@@ -45,6 +45,9 @@ export const Background = ({
                   ref={videoRef}
                   className="absolute top-0 left-0 w-full h-full object-cover"
                   preload="metadata"
+                  controls={false}
+                  disablePictureInPicture
+                  disableRemotePlayback
                   autoPlay={autoPlay}
                   loop
                   muted

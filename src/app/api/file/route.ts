@@ -14,6 +14,7 @@ export async function GET(req: Request) {
       return new Response(data.Body, {
         status: 200,
         headers: {
+          'Access-Control-Allow-Origin': '*',
           'Content-Type': data.ContentType,
           'Content-Length': data.ContentLength
         }
@@ -24,6 +25,7 @@ export async function GET(req: Request) {
     const response = new Response(data.Body, {
       status: 206,
       headers: {
+        'Access-Control-Allow-Origin': '*',
         'Content-Type': data.ContentType,
         'Content-Length': data.ContentLength,
         'Content-Range': data.ContentRange,
