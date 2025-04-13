@@ -58,7 +58,12 @@ export function Combobox({
 
       <PopoverContent className="p-0" side="bottom" align="start">
         <Command>
-          <CommandInput placeholder={searchPlaceholder ?? 'Search ...'} />
+          <CommandInput
+            onValueChange={e => {
+              console.log({ e });
+            }}
+            placeholder={searchPlaceholder ?? 'Search ...'}
+          />
 
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>

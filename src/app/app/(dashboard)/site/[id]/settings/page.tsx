@@ -18,7 +18,9 @@ export default async function SiteSettingsIndex(props: {
     }
   });
 
-  const users = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
+  console.log({ myRole: session?.user.role });
+
+  const users = ([UserRole.ADMIN] as UserRole[]).includes(
     session?.user.role ?? UserRole.USER
   )
     ? await db.user.findMany({
@@ -28,7 +30,16 @@ export default async function SiteSettingsIndex(props: {
           email: true
         }
       })
-    : [];
+    : await db.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          email: true
+        },
+        where: {
+          OR: [{ refererId: session?.user.id }, { id: session?.user.id }]
+        }
+      });
 
   return (
     <div className="flex flex-col space-y-6">
