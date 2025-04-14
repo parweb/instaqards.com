@@ -8,7 +8,6 @@ import { Content } from 'components/website/content';
 import { Footer } from 'components/website/footer';
 import { Main } from 'components/website/main';
 import { Wrapper } from 'components/website/wrapper';
-import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
 import { getSiteData } from 'lib/fetchers';
@@ -54,8 +53,6 @@ export default async function SiteHomePage(props: {
       </div>
     );
   }
-
-  db.click.create({ data: { siteId: site.id } });
 
   const data: Record<Block['type'], Block[]> = {
     main: [],

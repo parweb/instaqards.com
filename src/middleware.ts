@@ -1,7 +1,9 @@
+import { waitUntil } from '@vercel/functions';
 import NextAuth from 'next-auth';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import authConfig from 'auth.config';
+
 import {
   apiAuthPrefix,
   authRoutes,
@@ -19,8 +21,6 @@ const { auth } = NextAuth({
 });
 
 export default async function middleware(req: NextRequest) {
-  console.log(req);
-
   const url = req.nextUrl;
 
   const isApiAuthRoute = url.pathname.startsWith(apiAuthPrefix);
@@ -66,14 +66,40 @@ export default async function middleware(req: NextRequest) {
   }
 
   if (hostname === 'short.qards.link') {
-    return NextResponse.rewrite(
-      new URL(`/api/short${url.pathname}?${searchParams}`, req.url)
+    const search = req.nextUrl.searchParams;
+
+    search.append(
+      'request',
+      Buffer.from(
+        JSON.stringify({
+          url: req.url,
+          method: req.method,
+          headers: Object.fromEntries(req.headers.entries())
+        })
+      ).toString('base64')
+    );
+
+    return NextResponse.redirect(
+      new URL(`/api/short${url.pathname}?${search.toString()}`, req.url)
     );
   }
 
   if (url.pathname.startsWith('/click/')) {
-    return NextResponse.rewrite(
-      new URL(`/api${url.pathname}?${searchParams}`, req.url)
+    const search = req.nextUrl.searchParams;
+
+    search.append(
+      'request',
+      Buffer.from(
+        JSON.stringify({
+          url: req.url,
+          method: req.method,
+          headers: Object.fromEntries(req.headers.entries())
+        })
+      ).toString('base64')
+    );
+
+    return NextResponse.redirect(
+      new URL(`/api${url.pathname}?${search.toString()}`, req.url)
     );
   }
 
@@ -115,17 +141,43 @@ export default async function middleware(req: NextRequest) {
       );
     }
 
+    const subdomain = path.replace('/', '');
+    const domain = `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+
+    waitUntil(
+      fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/site`, {
+        method: 'POST',
+        body: JSON.stringify({
+          domain,
+          url: req.url,
+          method: req.method,
+          headers: Object.fromEntries(req.headers.entries())
+        })
+      })
+    );
+
     return NextResponse.rewrite(
-      new URL(
-        `/${path.replace('/', '')}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/`,
-        req.url.replace(path, '')
-      )
+      new URL(`/${domain}/`, req.url.replace(path, ''))
     );
   }
 
   if (hostname?.startsWith('www.')) {
     return NextResponse.rewrite(new URL('/home', req.url));
   }
+
+  const domain = `${hostname}${path}`.trim().replace(/\/$/, '');
+
+  waitUntil(
+    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/site`, {
+      method: 'POST',
+      body: JSON.stringify({
+        domain,
+        url: req.url,
+        method: req.method,
+        headers: Object.fromEntries(req.headers.entries())
+      })
+    })
+  );
 
   return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }

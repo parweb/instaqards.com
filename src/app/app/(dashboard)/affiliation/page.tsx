@@ -1,5 +1,5 @@
 import { Prisma, SubscriptionStatus } from '@prisma/client';
-import { eachDayOfInterval, eachHourOfInterval } from 'date-fns';
+import { eachDayOfInterval } from 'date-fns';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { LuArrowUpRight } from 'react-icons/lu';
@@ -176,7 +176,7 @@ export default async function AllAffiliation({
           <div className="flex flex-col items-center space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 flex-1 justify-between"></div>
         </div>
 
-        <Analytics chartdata={chartdata} />
+        <Analytics chartdata={chartdata} categories={[]} />
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ import {
 import { DateRangePicker, type DateRange } from 'components/ui/date-picker';
 import useTranslation from 'hooks/use-translation';
 
-type Tuple = { name: string; value: number; code?: string };
+export type Tuple = { name: string; value: number; code?: string };
 
 // Helper function to filter data by date range
 const filterDataByDateRange = (
@@ -38,9 +38,11 @@ const filterDataByDateRange = (
 };
 
 export default function Analytics({
-  chartdata
+  chartdata,
+  categories
 }: {
   chartdata: { date: string; Clicks: number; Visitors?: number }[];
+  categories: { title: string; subtitle: string; data: Tuple[] }[];
 }) {
   const translate = useTranslation();
 
@@ -121,51 +123,6 @@ export default function Analytics({
       setFilteredData(filterDataByDateRange(chartdata, range.from, range.to));
     }
   };
-
-  const links: Tuple[] = [
-    // { name: '/platforms-starter-kit', value: 1230 },
-    // { name: '/vercel-is-now-bercel', value: 751 },
-    // { name: '/nextjs-conf', value: 471 },
-    // { name: '/150m-series-d', value: 280 },
-    // { name: '/about', value: 78 }
-  ];
-
-  const referrers: Tuple[] = [
-    // { name: 't.co', value: 453 },
-    // { name: 'vercel.com', value: 351 },
-    // { name: 'linkedin.com', value: 271 },
-    // { name: 'google.com', value: 191 },
-    // {
-    //   name: 'news.ycombinator.com',
-    //   value: 71
-    // }
-  ];
-
-  const countries: Tuple[] = [
-    // { name: 'United States of America', value: 789, code: 'US' },
-    // { name: 'India', value: 676, code: 'IN' },
-    // { name: 'Germany', value: 564, code: 'DE' },
-    // { name: 'United Kingdom', value: 234, code: 'GB' },
-    // { name: 'Spain', value: 191, code: 'ES' }
-  ];
-
-  const categories = [
-    {
-      title: 'components.analytics.block.title',
-      subtitle: 'components.analytics.block.subtitle',
-      data: links
-    },
-    {
-      title: 'components.analytics.source.title',
-      subtitle: 'components.analytics.source.subtitle',
-      data: referrers
-    },
-    {
-      title: 'components.analytics.country.title',
-      subtitle: 'components.analytics.country.subtitle',
-      data: countries
-    }
-  ];
 
   return (
     <div className="grid gap-6">

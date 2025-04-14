@@ -29,7 +29,9 @@ type PictureWidgetType =
   | 'gallery'
   | 'logo-circle'
   | 'logo-square'
-  | 'picture-16-9';
+  | 'picture-16-9'
+  | 'apple-watch'
+  | 'bento';
 
 type SocialWidgetType = 'simple' | 'arc';
 
@@ -85,7 +87,10 @@ const pictureWidgetMapper: PictureWidgetMapper = {
   'logo-square': (data, id) =>
     data.medias?.find(media => media.id === id)?.link,
   'picture-16-9': (data, id) =>
-    data.medias?.find(media => media.id === id)?.link
+    data.medias?.find(media => media.id === id)?.link,
+  'apple-watch': (data, id) =>
+    data.medias?.find(media => media.id === id)?.link,
+  bento: (data, id) => data.medias?.find(media => media.id === id)?.link
 };
 
 const socialWidgetMapper: SocialWidgetMapper = {
@@ -111,20 +116,21 @@ export async function GET(
   props: { params: Promise<{ blockId: string }> }
 ) {
   const params = await props.params;
-
   const { blockId } = params;
 
   try {
     const query = Object.fromEntries(new URL(request.url).searchParams);
 
-    console.info({ query: query.id });
+    console.info({ query });
+
+    const meta = JSON.parse(
+      Buffer.from(query.request, 'base64').toString('utf-8')
+    );
 
     const click = await db.click.create({
       include: { block: true },
-      data: { blockId, part: query.id }
+      data: { blockId, part: query.id, request: meta }
     });
-
-    console.info({ click });
 
     if (!click.block) {
       console.error('api::click::[blockId] Block not found', { blockId });

@@ -299,7 +299,8 @@ model TwoFactorToken {
 model Click {
   id String @id @default(cuid())
 
-  part String?
+  part    String?
+  request Json?
 
   createdAt DateTime @default(now())
 

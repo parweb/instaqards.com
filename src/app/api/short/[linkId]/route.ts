@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { db } from 'helpers/db';
 
 export async function GET(
-  _: Request,
+  request: Request,
   props: { params: Promise<{ linkId: string }> }
 ) {
   const params = await props.params;
@@ -11,9 +11,15 @@ export async function GET(
   const { linkId } = params;
 
   try {
+    const query = Object.fromEntries(new URL(request.url).searchParams);
+
+    const meta = JSON.parse(
+      Buffer.from(query.request, 'base64').toString('utf-8')
+    );
+
     const click = await db.click.create({
       include: { link: true },
-      data: { linkId }
+      data: { linkId, request: meta }
     });
 
     if (!click.link) {
