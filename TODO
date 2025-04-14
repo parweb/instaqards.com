@@ -1,13 +1,12 @@
 
 TODO
 
-DONE -> block iframe simple
+
+     -> option background vertical double bg avec blur et/ou background secondaire
      -> logo qark dans les socials
      -> philipain social network -> application mobile
      -> prospect ce retrouve partout ou y'a des users 
-     -> seller peut changer le propriétaire dune qards
      -> pré-chargé la qards avec les infos du fichier client
-     -> modifier les infos du users 
 
      -> commercial
           - fait qards avec le calendar
@@ -35,13 +34,11 @@ DONE -> block iframe simple
           https://github.com/ValentinH/react-easy-crop
           https://github.com/mosch/react-avatar-editor
      -> menu button faire mieux
-     -> activé le carousel apartir de 2 elements media
      -> armoniser les youtubes block (titre par dessus)
-     -> youtube réduire la hauteur des videos (pour le carousel)
+
      -> description des inputs field possible (ex: youtube tu peux metre une url channel ou video)
      -> tiktok garder que le lecteur (+ bug sur ilias)
      -> avis google ? peut on les recupéré ?
-     -> Dupliquer Qards
      -> tiktok prend en compte les url mobile
      -> statistiques plus avancé sur les qards
 
@@ -55,7 +52,13 @@ DONE -> block iframe simple
      -> maito & tel:// ui drivé
      -> univers music, girly (template)
      -> pas claire qu'il faut payer pour que la qards soit public
-     
+
+DONE -> block iframe simple
+DONE -> seller peut changer le propriétaire dune qards
+DONE -> modifier les infos du users 
+DONE -> activé le carousel apartir de 2 elements media
+DONE -> youtube réduire la hauteur des videos (pour le carousel)
+DONE -> Dupliquer Qards
 DONE -> changer le favicon
 DONE -> lien update, delete move align on the top and add a toggle preview / editing (dotted border)
 DONE -> améliore edit text (margin, padding, ...)
