@@ -930,7 +930,8 @@ export const duplicateSite = async (
     const newDisplayName = `${originalSite.display_name || 'Site'} (Copie)`;
 
     // Ensure the base subdomain exists before trying to append '-copie'
-    const baseSubdomain = subdomain || originalSite.subdomain || `site-${nanoid(5)}`; // Generate a base if none exists
+    const baseSubdomain =
+      subdomain || originalSite.subdomain || `site-${nanoid(5)}`; // Generate a base if none exists
     let newSubdomain = `${baseSubdomain}-copie`;
     let suffix = 1;
 

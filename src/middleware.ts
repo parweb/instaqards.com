@@ -19,6 +19,8 @@ const { auth } = NextAuth({
 });
 
 export default async function middleware(req: NextRequest) {
+  console.log(req);
+
   const url = req.nextUrl;
 
   const isApiAuthRoute = url.pathname.startsWith(apiAuthPrefix);

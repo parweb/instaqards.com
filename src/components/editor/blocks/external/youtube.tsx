@@ -52,7 +52,7 @@ function YoutubeVideo({
   };
 
   return (
-    <div className="relative rounded-md overflow-hidden min-h-40 sm:min-h-70 w-full aspect-video">
+    <div className="relative rounded-md overflow-hidden min-h-40 w-full aspect-video">
       {playing === true && (
         <>
           <div className="absolute inset-0 flex items-center justify-center bg-white">
@@ -102,7 +102,7 @@ function YoutubeVideo({
 
           {title && (
             <div className="absolute inset-0 flex items-end justify-start bg-gradient-to-t from-black/50 to-transparent p-2">
-              <p className="text-white text-lg font-bold text-left text-balance">
+              <p className="text-white text-md font-bold text-left text-balance">
                 {title}
               </p>
             </div>

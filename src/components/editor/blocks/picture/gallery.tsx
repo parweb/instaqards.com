@@ -96,7 +96,7 @@ const GalleryItem = ({
     <img
       src={src}
       alt=""
-      className={cn('max-h-[300px] object-cover', className)}
+      className={cn('max-h-[200px] object-cover', className)}
     />
   );
 
