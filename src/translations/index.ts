@@ -161,6 +161,12 @@ const translations = {
     it: 'Crea un utente',
     es: 'Crear un usuario'
   },
+  'dashboard.users.import.prospects': {
+    fr: 'Importer des prospects',
+    en: 'Import Prospects',
+    it: 'Importa Prospekti',
+    es: 'Importar Prospectos'
+  },
   'dashboard.users.description': {
     fr: 'Vous pouvez nous joindre ici',
     en: 'You can reach us here',

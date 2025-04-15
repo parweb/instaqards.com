@@ -9,6 +9,7 @@ import { UsersTable } from 'app/app/(dashboard)/users/users-table';
 import Analytics from 'components/analytics';
 import ModalButton from 'components/modal-button';
 import UserCreateModal from 'components/modal/create-user';
+import ProspectsImportModal from 'components/modal/prospects-import';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
@@ -148,9 +149,17 @@ export default async function AllAffiliation({
               {await translate('dashboard.users.title')}
             </h1>
 
-            <ModalButton label={await translate('dashboard.users.create')}>
-              <UserCreateModal />
-            </ModalButton>
+            <div className="flex items-center gap-2">
+              <ModalButton
+                label={await translate('dashboard.users.import.prospects')}
+              >
+                <ProspectsImportModal />
+              </ModalButton>
+
+              <ModalButton label={await translate('dashboard.users.create')}>
+                <UserCreateModal />
+              </ModalButton>
+            </div>
           </hgroup>
         </div>
 

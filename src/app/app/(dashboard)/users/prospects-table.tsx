@@ -1,0 +1,390 @@
+'use client';
+
+import { LucideLoader2 } from 'lucide-react';
+import { Suspense, useEffect, useState, useTransition } from 'react';
+import { z } from 'zod';
+
+import { Atom, PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+
+import { ProspectsSchema } from 'components/modal/prospects-import';
+import { Checkbox } from 'components/ui/checkbox';
+import { Input } from 'components/ui/input';
+import { Label } from 'components/ui/label';
+import { clamp } from 'helpers/clamp';
+import { cn } from 'lib/utils';
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious
+} from 'components/ui/pagination';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from 'components/ui/select';
+
+const Pages = ({
+  $page,
+  $take,
+  $prospects
+}: {
+  $page: PrimitiveAtom<number>;
+  $take: PrimitiveAtom<number>;
+  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+}) => {
+  const [pageAtomValue, setPage] = useAtom($page);
+  const [take, setTake] = useAtom($take);
+  const [pending, startTransition] = useTransition();
+  const [pageInputValue, setPageInputValue] = useState(
+    pageAtomValue.toString()
+  );
+
+  const prospects = useAtomValue($prospects);
+
+  useEffect(() => {
+    setPageInputValue(pageAtomValue.toString());
+  }, [pageAtomValue]);
+
+  const total = prospects.total;
+
+  const pages = Math.ceil(total / take);
+
+  return (
+    <div className="flex items-center justify-between gap-4 px-4">
+      <Pagination>
+        <PaginationContent className="flex gap-4">
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={async () => {
+                startTransition(async () => {
+                  await setPage(clamp(pageAtomValue - 1, 1, pages));
+                });
+              }}
+            />
+          </PaginationItem>
+
+          <PaginationItem className="flex items-center gap-2">
+            <Input
+              type="number"
+              value={pageInputValue}
+              min={1}
+              max={pages}
+              step={1}
+              onChange={e => {
+                const currentInput = e.target.value;
+                setPageInputValue(currentInput);
+
+                const newPage = Number(currentInput);
+                if (!isNaN(newPage) && newPage >= 1 && newPage <= pages) {
+                  startTransition(async () => {
+                    await setPage(newPage);
+                  });
+                }
+              }}
+            />
+
+            <span>/</span>
+
+            <span>{pages}</span>
+          </PaginationItem>
+
+          <PaginationItem>
+            <PaginationNext
+              onClick={async () => {
+                startTransition(async () => {
+                  await setPage(clamp(pageAtomValue + 1, 1, pages));
+                });
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+
+      <Select
+        value={take.toString()}
+        onValueChange={async value => {
+          const newTake = Number(value);
+          startTransition(async () => {
+            await setTake(newTake);
+          });
+        }}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Résultats" />
+        </SelectTrigger>
+
+        <SelectContent>
+          <SelectItem value="5">5</SelectItem>
+          <SelectItem value="10">10</SelectItem>
+          <SelectItem value="25">25</SelectItem>
+          <SelectItem value="50">50</SelectItem>
+          <SelectItem value="100">100</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
+const Tbody = ({
+  $prospects,
+  $selection
+}: {
+  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+  $selection: PrimitiveAtom<
+    z.infer<typeof ProspectsSchema>['data'][number]['id'][]
+  >;
+}) => {
+  const prospects = useAtomValue($prospects);
+  const [selection, setSelection] = useAtom($selection);
+
+  console.log({ selection });
+
+  return (
+    <tbody className="bg-white divide-y divide-gray-200">
+      {prospects.data.map(prospect => {
+        return (
+          <tr
+            key={prospect.id}
+            // onClick={() => {
+            //   setSelection(prev => {
+            //     if (prev?.includes(prospect.id)) {
+            //       return prev.filter(id => id !== prospect.id);
+            //     }
+            //     return [...(prev || []), prospect.id];
+            //   });
+            // }}
+            className={cn(
+              selection?.includes(prospect.id) && 'bg-gray-200',
+              'hover:bg-gray-100'
+            )}
+          >
+            <td className="p-2 w-12 text-center">
+              <Checkbox
+                checked={selection?.includes(prospect.id)}
+                onCheckedChange={() => {
+                  setSelection(prev => {
+                    if (prev?.includes(prospect.id)) {
+                      return prev.filter(id => id !== prospect.id);
+                    }
+                    return [...(prev || []), prospect.id];
+                  });
+                }}
+              />
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap">
+              <div className="text-sm text-gray-500">
+                {prospect.raison_sociale}
+              </div>
+              <div className="text-sm text-gray-500">{prospect.adresse}</div>
+            </td>
+
+            <td className="px-6 py-4 whitespace-nowrap">
+              <div className="text-sm text-gray-500">{prospect.cp}</div>
+              <div className="text-sm text-gray-500">{prospect.ville}</div>
+            </td>
+
+            <td className="px-6 py-4 whitespace-nowrap">
+              <div className="text-sm text-gray-500">{prospect.email}</div>
+              <div className="text-sm text-gray-500">{prospect.tel}</div>
+            </td>
+
+            <td className="px-6 py-4 whitespace-nowrap">
+              <div className="text-sm text-gray-500">{prospect.activite}</div>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  );
+};
+
+const SelectAll = ({
+  $selection,
+  $prospects
+}: {
+  $selection: PrimitiveAtom<
+    z.infer<typeof ProspectsSchema>['data'][number]['id'][]
+  >;
+  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+}) => {
+  const prospects = useAtomValue($prospects);
+  const [selection, setSelection] = useAtom($selection);
+
+  return (
+    <Checkbox
+      checked={
+        selection?.length === prospects.total
+          ? true
+          : selection?.length > 0
+            ? 'indeterminate'
+            : false
+      }
+      onCheckedChange={() => {
+        setSelection(prev => {
+          const currentPageIds = prospects.data.map(prospect => prospect.id);
+          const areAllCurrentPageSelected = currentPageIds.every(id =>
+            prev.includes(id)
+          );
+          return areAllCurrentPageSelected
+            ? prev.filter(id => !currentPageIds.includes(id))
+            : [...new Set([...prev, ...currentPageIds])];
+        });
+      }}
+    />
+  );
+};
+
+const Thead = ({
+  $selection,
+  $prospects
+}: {
+  $selection: PrimitiveAtom<
+    z.infer<typeof ProspectsSchema>['data'][number]['id'][]
+  >;
+  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+}) => {
+  const prospects = useAtomValue($prospects);
+  const [selection, setSelection] = useAtom($selection);
+
+  return (
+    <thead className="bg-gray-50 sticky top-0">
+      <tr>
+        <th className="p-2">
+          <Suspense fallback={<LucideLoader2 className="animate-spin" />}>
+            <SelectAll $selection={$selection} $prospects={$prospects} />
+
+            <div className="whitespace-nowrap">
+              {selection.length} / {prospects.total}
+            </div>
+          </Suspense>
+        </th>
+        <th
+          scope="col"
+          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div className="flex flex-col gap-1 whitespace-nowrap">
+            <span>Raison sociale</span>
+            <span>Adresse</span>
+          </div>
+        </th>
+
+        <th
+          scope="col"
+          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div className="flex flex-col gap-1 whitespace-nowrap">
+            <span>Code postal</span>
+            <span>Ville</span>
+          </div>
+        </th>
+
+        <th
+          scope="col"
+          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div className="flex flex-col gap-1 whitespace-nowrap">
+            <span>Email</span>
+            <span>Téléphone</span>
+          </div>
+        </th>
+
+        <th
+          scope="col"
+          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Activité
+        </th>
+      </tr>
+    </thead>
+  );
+};
+
+interface ProspectsTableProps {
+  $selection: PrimitiveAtom<
+    z.infer<typeof ProspectsSchema>['data'][number]['id'][]
+  >;
+  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+  total?: number;
+  $page: PrimitiveAtom<number>;
+  $take: PrimitiveAtom<number>;
+  $search: PrimitiveAtom<string>;
+}
+
+export const ProspectsTable = ({
+  $selection,
+  $prospects,
+  $page,
+  $take,
+  $search
+}: ProspectsTableProps) => {
+  const [isPending, startTransition] = useTransition();
+
+  const setPage = useSetAtom($page);
+  const [searchAtomValue, setSearchQuery] = useAtom($search);
+  const [inputValue, setInputValue] = useState(searchAtomValue);
+
+  useEffect(() => {
+    setInputValue(searchAtomValue);
+  }, [searchAtomValue]);
+
+  return (
+    <>
+      <div className="p-4 rounded-md border border-gray-200 m-2">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="search">Rechercher {isPending ? '...' : ''}</Label>
+
+          <Input
+            id="search"
+            type="text"
+            placeholder="Rechercher par nom ou email..."
+            value={inputValue}
+            onChange={e => {
+              const newSearch = e.target.value;
+              setInputValue(newSearch);
+              startTransition(() => {
+                setSearchQuery(newSearch);
+                setPage(1);
+              });
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <Suspense fallback={<div className="bg-gray-400 h-10 animate-pulse" />}>
+          <Pages $page={$page} $take={$take} $prospects={$prospects} />
+        </Suspense>
+
+        <div className="flex flex-col gap-4 rounded-lg border border-gray-200">
+          <div className="overflow-x-auto max-h-60">
+            <table className="w-full divide-y divide-gray-200">
+              <Thead $selection={$selection} $prospects={$prospects} />
+
+              <Suspense
+                fallback={
+                  <tbody>
+                    <tr>
+                      <td colSpan={5} className="text-left p-4">
+                        <div className="flex items-center justify-center p-4">
+                          <LucideLoader2 className="animate-spin" />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                }
+              >
+                <Tbody $prospects={$prospects} $selection={$selection} />
+              </Suspense>
+            </table>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
