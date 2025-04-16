@@ -39,7 +39,7 @@ export default async function Overview() {
   );
 
   const start = clicks.at(0)?.createdAt ?? 0;
-  const end = clicks.at(-1)?.createdAt ?? 0;
+  const end = new Date();
 
   const chartdata = eachDayOfInterval({ start, end }).map(date => {
     const key = date.toDateString();

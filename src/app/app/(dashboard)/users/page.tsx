@@ -84,7 +84,7 @@ export default async function UsersPage({
 
   const chartdata = eachDayOfInterval({
     start: users.at(-1)?.createdAt ?? new Date(),
-    end: users.at(0)?.createdAt ?? new Date()
+    end: new Date()
   }).map(date => ({
     date: date.toDateString(),
     Users: userGroups[date.toDateString()] || 0

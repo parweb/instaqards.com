@@ -49,7 +49,7 @@ export default async function SiteAnalytics(props: {
   );
 
   const start = clicks.at(0)?.createdAt ?? 0;
-  const end = clicks.at(-1)?.createdAt ?? 0;
+  const end = new Date();
 
   const chartdata = eachDayOfInterval({ start, end }).map(date => {
     const key = new Date(date).toDateString();

@@ -102,7 +102,7 @@ export default async function AllAffiliation({
 
   const chartdata = eachDayOfInterval({
     start: affiliates.at(0)?.createdAt ?? 0,
-    end: affiliates.at(-1)?.createdAt ?? 0
+    end: new Date()
   }).map(date => ({
     date: date.toDateString(),
     Clicks: affiliateGroups[date.toDateString()] || 0
@@ -119,7 +119,7 @@ export default async function AllAffiliation({
 
   const chartUsers = eachDayOfInterval({
     start: users.at(-1)?.createdAt ?? 0,
-    end: users.at(0)?.createdAt ?? 0
+    end: new Date()
   }).map(date => ({
     date: date.toDateString(),
     Users: usersGroups[date.toDateString()] || 0
