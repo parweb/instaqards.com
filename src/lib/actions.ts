@@ -1018,3 +1018,34 @@ export const duplicateSite = async (
     };
   }
 };
+
+export const assignProspect = async (form: FormData) => {
+  try {
+    const session = await getSession();
+    const user = session?.user;
+
+    if (!user?.id) {
+      return { data: null, error: await translate('auth.error') };
+    }
+
+    const userId = user.id;
+    const prospectIds = form.getAll('selected[]') as string[]; // Ensure IDs are strings
+
+    console.info('assignProspect', { userId, prospectIds });
+
+    const response = await db.prospect.updateMany({
+      where: { id: { in: prospectIds } },
+      data: { assigneeId: userId }
+    });
+
+    return { data: response, error: null };
+  } catch (error: unknown) {
+    console.error('Error assigning prospects:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'An unknown error occurred';
+    return {
+      data: null,
+      error: await translate('error')
+    };
+  }
+};

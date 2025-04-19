@@ -92,7 +92,23 @@ export const ProspectScalarFieldEnumSchema = z.enum([
   'tel',
   'code_naf',
   'activite',
-  'email'
+  'email',
+  'status',
+  'position',
+  'assigneeId',
+  'convertedId',
+  'createdAt',
+  'updatedAt'
+]);
+
+export const ProspectStatusHistoryScalarFieldEnumSchema = z.enum([
+  'id',
+  'prospectId',
+  'previousStatus',
+  'newStatus',
+  'position',
+  'createdAt',
+  'updatedBy'
 ]);
 
 export const MessageScalarFieldEnumSchema = z.enum([
@@ -437,6 +453,36 @@ export const OutboxScalarFieldEnumSchema = z.enum([
   'createdAt'
 ]);
 
+export const CityScalarFieldEnumSchema = z.enum([
+  'id',
+  'departement',
+  'slug',
+  'nom',
+  'nomSimple',
+  'nomReel',
+  'nomSoundex',
+  'nomMetaphone',
+  'codePostal',
+  'commune',
+  'codeCommune',
+  'arrondissement',
+  'canton',
+  'amdi',
+  'population2010',
+  'population1999',
+  'population2012',
+  'densite2010',
+  'surface',
+  'longitudeDeg',
+  'latitudeDeg',
+  'longitudeGrd',
+  'latitudeGrd',
+  'longitudeDms',
+  'latitudeDms',
+  'zmin',
+  'zmax'
+]);
+
 export const SortOrderSchema = z.enum(['asc', 'desc']);
 
 export const JsonNullValueInputSchema = z
@@ -576,10 +622,32 @@ export const ProspectSchema = z.object({
   tel: z.string().nullable(),
   code_naf: z.string().nullable(),
   activite: z.string().nullable(),
-  email: z.string().nullable()
+  email: z.string().nullable(),
+  status: z.string(),
+  position: z.number().nullable(),
+  assigneeId: z.string().nullable(),
+  convertedId: z.string().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 
 export type Prospect = z.infer<typeof ProspectSchema>;
+
+/////////////////////////////////////////
+// PROSPECT STATUS HISTORY SCHEMA
+/////////////////////////////////////////
+
+export const ProspectStatusHistorySchema = z.object({
+  id: z.string().cuid(),
+  prospectId: z.string(),
+  previousStatus: z.string(),
+  newStatus: z.string(),
+  position: z.number().nullable(),
+  createdAt: z.coerce.date(),
+  updatedBy: z.string().nullable()
+});
+
+export type ProspectStatusHistory = z.infer<typeof ProspectStatusHistorySchema>;
 
 /////////////////////////////////////////
 // MESSAGE SCHEMA
@@ -1122,6 +1190,42 @@ export const OutboxSchema = z.object({
 export type Outbox = z.infer<typeof OutboxSchema>;
 
 /////////////////////////////////////////
+// CITY SCHEMA
+/////////////////////////////////////////
+
+export const CitySchema = z.object({
+  id: z.number().int(),
+  departement: z.string().nullable(),
+  slug: z.string().nullable(),
+  nom: z.string().nullable(),
+  nomSimple: z.string().nullable(),
+  nomReel: z.string().nullable(),
+  nomSoundex: z.string().nullable(),
+  nomMetaphone: z.string().nullable(),
+  codePostal: z.string().nullable(),
+  commune: z.string().nullable(),
+  codeCommune: z.string(),
+  arrondissement: z.number().int().nullable(),
+  canton: z.string().nullable(),
+  amdi: z.number().int().nullable(),
+  population2010: z.number().int().nullable(),
+  population1999: z.number().int().nullable(),
+  population2012: z.number().int().nullable(),
+  densite2010: z.number().int().nullable(),
+  surface: z.number().nullable(),
+  longitudeDeg: z.number().nullable(),
+  latitudeDeg: z.number().nullable(),
+  longitudeGrd: z.string().nullable(),
+  latitudeGrd: z.string().nullable(),
+  longitudeDms: z.string().nullable(),
+  latitudeDms: z.string().nullable(),
+  zmin: z.number().int().nullable(),
+  zmax: z.number().int().nullable()
+});
+
+export type City = z.infer<typeof CitySchema>;
+
+/////////////////////////////////////////
 // SELECT & INCLUDE
 /////////////////////////////////////////
 
@@ -1194,6 +1298,18 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z
     received: z
       .union([z.boolean(), z.lazy(() => MessageFindManyArgsSchema)])
       .optional(),
+    assigned: z
+      .union([z.boolean(), z.lazy(() => ProspectFindManyArgsSchema)])
+      .optional(),
+    converted: z
+      .union([z.boolean(), z.lazy(() => ProspectArgsSchema)])
+      .optional(),
+    ProspectStatusHistory: z
+      .union([
+        z.boolean(),
+        z.lazy(() => ProspectStatusHistoryFindManyArgsSchema)
+      ])
+      .optional(),
     _count: z
       .union([z.boolean(), z.lazy(() => UserCountOutputTypeArgsSchema)])
       .optional()
@@ -1235,7 +1351,9 @@ export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTy
       subscriber: z.boolean().optional(),
       comment: z.boolean().optional(),
       sent: z.boolean().optional(),
-      received: z.boolean().optional()
+      received: z.boolean().optional(),
+      assigned: z.boolean().optional(),
+      ProspectStatusHistory: z.boolean().optional()
     })
     .strict();
 
@@ -1318,6 +1436,18 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     received: z
       .union([z.boolean(), z.lazy(() => MessageFindManyArgsSchema)])
       .optional(),
+    assigned: z
+      .union([z.boolean(), z.lazy(() => ProspectFindManyArgsSchema)])
+      .optional(),
+    converted: z
+      .union([z.boolean(), z.lazy(() => ProspectArgsSchema)])
+      .optional(),
+    ProspectStatusHistory: z
+      .union([
+        z.boolean(),
+        z.lazy(() => ProspectStatusHistoryFindManyArgsSchema)
+      ])
+      .optional(),
     _count: z
       .union([z.boolean(), z.lazy(() => UserCountOutputTypeArgsSchema)])
       .optional()
@@ -1326,6 +1456,43 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
 
 // PROSPECT
 //------------------------------------------------------
+
+export const ProspectIncludeSchema: z.ZodType<Prisma.ProspectInclude> = z
+  .object({
+    assignee: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
+    converted: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
+    statusHistory: z
+      .union([
+        z.boolean(),
+        z.lazy(() => ProspectStatusHistoryFindManyArgsSchema)
+      ])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => ProspectCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+export const ProspectArgsSchema: z.ZodType<Prisma.ProspectDefaultArgs> = z
+  .object({
+    select: z.lazy(() => ProspectSelectSchema).optional(),
+    include: z.lazy(() => ProspectIncludeSchema).optional()
+  })
+  .strict();
+
+export const ProspectCountOutputTypeArgsSchema: z.ZodType<Prisma.ProspectCountOutputTypeDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => ProspectCountOutputTypeSelectSchema).nullish()
+    })
+    .strict();
+
+export const ProspectCountOutputTypeSelectSchema: z.ZodType<Prisma.ProspectCountOutputTypeSelect> =
+  z
+    .object({
+      statusHistory: z.boolean().optional()
+    })
+    .strict();
 
 export const ProspectSelectSchema: z.ZodType<Prisma.ProspectSelect> = z
   .object({
@@ -1337,9 +1504,68 @@ export const ProspectSelectSchema: z.ZodType<Prisma.ProspectSelect> = z
     tel: z.boolean().optional(),
     code_naf: z.boolean().optional(),
     activite: z.boolean().optional(),
-    email: z.boolean().optional()
+    email: z.boolean().optional(),
+    status: z.boolean().optional(),
+    position: z.boolean().optional(),
+    assigneeId: z.boolean().optional(),
+    convertedId: z.boolean().optional(),
+    createdAt: z.boolean().optional(),
+    updatedAt: z.boolean().optional(),
+    assignee: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
+    converted: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
+    statusHistory: z
+      .union([
+        z.boolean(),
+        z.lazy(() => ProspectStatusHistoryFindManyArgsSchema)
+      ])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => ProspectCountOutputTypeArgsSchema)])
+      .optional()
   })
   .strict();
+
+// PROSPECT STATUS HISTORY
+//------------------------------------------------------
+
+export const ProspectStatusHistoryIncludeSchema: z.ZodType<Prisma.ProspectStatusHistoryInclude> =
+  z
+    .object({
+      prospect: z
+        .union([z.boolean(), z.lazy(() => ProspectArgsSchema)])
+        .optional(),
+      updatedByUser: z
+        .union([z.boolean(), z.lazy(() => UserArgsSchema)])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => ProspectStatusHistorySelectSchema).optional(),
+      include: z.lazy(() => ProspectStatusHistoryIncludeSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistorySelectSchema: z.ZodType<Prisma.ProspectStatusHistorySelect> =
+  z
+    .object({
+      id: z.boolean().optional(),
+      prospectId: z.boolean().optional(),
+      previousStatus: z.boolean().optional(),
+      newStatus: z.boolean().optional(),
+      position: z.boolean().optional(),
+      createdAt: z.boolean().optional(),
+      updatedBy: z.boolean().optional(),
+      prospect: z
+        .union([z.boolean(), z.lazy(() => ProspectArgsSchema)])
+        .optional(),
+      updatedByUser: z
+        .union([z.boolean(), z.lazy(() => UserArgsSchema)])
+        .optional()
+    })
+    .strict();
 
 // MESSAGE
 //------------------------------------------------------
@@ -2666,6 +2892,41 @@ export const OutboxSelectSchema: z.ZodType<Prisma.OutboxSelect> = z
   })
   .strict();
 
+// CITY
+//------------------------------------------------------
+
+export const CitySelectSchema: z.ZodType<Prisma.CitySelect> = z
+  .object({
+    id: z.boolean().optional(),
+    departement: z.boolean().optional(),
+    slug: z.boolean().optional(),
+    nom: z.boolean().optional(),
+    nomSimple: z.boolean().optional(),
+    nomReel: z.boolean().optional(),
+    nomSoundex: z.boolean().optional(),
+    nomMetaphone: z.boolean().optional(),
+    codePostal: z.boolean().optional(),
+    commune: z.boolean().optional(),
+    codeCommune: z.boolean().optional(),
+    arrondissement: z.boolean().optional(),
+    canton: z.boolean().optional(),
+    amdi: z.boolean().optional(),
+    population2010: z.boolean().optional(),
+    population1999: z.boolean().optional(),
+    population2012: z.boolean().optional(),
+    densite2010: z.boolean().optional(),
+    surface: z.boolean().optional(),
+    longitudeDeg: z.boolean().optional(),
+    latitudeDeg: z.boolean().optional(),
+    longitudeGrd: z.boolean().optional(),
+    latitudeGrd: z.boolean().optional(),
+    longitudeDms: z.boolean().optional(),
+    latitudeDms: z.boolean().optional(),
+    zmin: z.boolean().optional(),
+    zmax: z.boolean().optional()
+  })
+  .strict();
+
 /////////////////////////////////////////
 // INPUT TYPES
 /////////////////////////////////////////
@@ -2772,7 +3033,18 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
     subscriber: z.lazy(() => SubscriberListRelationFilterSchema).optional(),
     comment: z.lazy(() => CommentListRelationFilterSchema).optional(),
     sent: z.lazy(() => MessageListRelationFilterSchema).optional(),
-    received: z.lazy(() => MessageListRelationFilterSchema).optional()
+    received: z.lazy(() => MessageListRelationFilterSchema).optional(),
+    assigned: z.lazy(() => ProspectListRelationFilterSchema).optional(),
+    converted: z
+      .union([
+        z.lazy(() => ProspectNullableScalarRelationFilterSchema),
+        z.lazy(() => ProspectWhereInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    ProspectStatusHistory: z
+      .lazy(() => ProspectStatusHistoryListRelationFilterSchema)
+      .optional()
   })
   .strict();
 
@@ -2864,6 +3136,15 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
       sent: z.lazy(() => MessageOrderByRelationAggregateInputSchema).optional(),
       received: z
         .lazy(() => MessageOrderByRelationAggregateInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectOrderByRelationAggregateInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectOrderByWithRelationInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(() => ProspectStatusHistoryOrderByRelationAggregateInputSchema)
         .optional()
     })
     .strict();
@@ -2994,7 +3275,18 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
             .optional(),
           comment: z.lazy(() => CommentListRelationFilterSchema).optional(),
           sent: z.lazy(() => MessageListRelationFilterSchema).optional(),
-          received: z.lazy(() => MessageListRelationFilterSchema).optional()
+          received: z.lazy(() => MessageListRelationFilterSchema).optional(),
+          assigned: z.lazy(() => ProspectListRelationFilterSchema).optional(),
+          converted: z
+            .union([
+              z.lazy(() => ProspectNullableScalarRelationFilterSchema),
+              z.lazy(() => ProspectWhereInputSchema)
+            ])
+            .optional()
+            .nullable(),
+          ProspectStatusHistory: z
+            .lazy(() => ProspectStatusHistoryListRelationFilterSchema)
+            .optional()
         })
         .strict()
     );
@@ -3182,7 +3474,43 @@ export const ProspectWhereInputSchema: z.ZodType<Prisma.ProspectWhereInput> = z
     email: z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
       .optional()
-      .nullable()
+      .nullable(),
+    status: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    position: z
+      .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    assigneeId: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    convertedId: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    createdAt: z
+      .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+      .optional(),
+    updatedAt: z
+      .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+      .optional(),
+    assignee: z
+      .union([
+        z.lazy(() => UserNullableScalarRelationFilterSchema),
+        z.lazy(() => UserWhereInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    converted: z
+      .union([
+        z.lazy(() => UserNullableScalarRelationFilterSchema),
+        z.lazy(() => UserWhereInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    statusHistory: z
+      .lazy(() => ProspectStatusHistoryListRelationFilterSchema)
+      .optional()
   })
   .strict();
 
@@ -3237,19 +3565,55 @@ export const ProspectOrderByWithRelationInputSchema: z.ZodType<Prisma.ProspectOr
           z.lazy(() => SortOrderSchema),
           z.lazy(() => SortOrderInputSchema)
         ])
+        .optional(),
+      status: z.lazy(() => SortOrderSchema).optional(),
+      position: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      assigneeId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      convertedId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      assignee: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+      converted: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+      statusHistory: z
+        .lazy(() => ProspectStatusHistoryOrderByRelationAggregateInputSchema)
         .optional()
     })
     .strict();
 
 export const ProspectWhereUniqueInputSchema: z.ZodType<Prisma.ProspectWhereUniqueInput> =
   z
-    .object({
-      id: z.string().cuid()
-    })
+    .union([
+      z.object({
+        id: z.string().cuid(),
+        convertedId: z.string()
+      }),
+      z.object({
+        id: z.string().cuid()
+      }),
+      z.object({
+        convertedId: z.string()
+      })
+    ])
     .and(
       z
         .object({
           id: z.string().cuid().optional(),
+          convertedId: z.string().optional(),
           AND: z
             .union([
               z.lazy(() => ProspectWhereInputSchema),
@@ -3297,7 +3661,41 @@ export const ProspectWhereUniqueInputSchema: z.ZodType<Prisma.ProspectWhereUniqu
           email: z
             .union([z.lazy(() => StringNullableFilterSchema), z.string()])
             .optional()
-            .nullable()
+            .nullable(),
+          status: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          position: z
+            .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+            .optional()
+            .nullable(),
+          assigneeId: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          createdAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          updatedAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          assignee: z
+            .union([
+              z.lazy(() => UserNullableScalarRelationFilterSchema),
+              z.lazy(() => UserWhereInputSchema)
+            ])
+            .optional()
+            .nullable(),
+          converted: z
+            .union([
+              z.lazy(() => UserNullableScalarRelationFilterSchema),
+              z.lazy(() => UserWhereInputSchema)
+            ])
+            .optional()
+            .nullable(),
+          statusHistory: z
+            .lazy(() => ProspectStatusHistoryListRelationFilterSchema)
+            .optional()
         })
         .strict()
     );
@@ -3354,9 +3752,32 @@ export const ProspectOrderByWithAggregationInputSchema: z.ZodType<Prisma.Prospec
           z.lazy(() => SortOrderInputSchema)
         ])
         .optional(),
+      status: z.lazy(() => SortOrderSchema).optional(),
+      position: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      assigneeId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      convertedId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
       _count: z.lazy(() => ProspectCountOrderByAggregateInputSchema).optional(),
+      _avg: z.lazy(() => ProspectAvgOrderByAggregateInputSchema).optional(),
       _max: z.lazy(() => ProspectMaxOrderByAggregateInputSchema).optional(),
-      _min: z.lazy(() => ProspectMinOrderByAggregateInputSchema).optional()
+      _min: z.lazy(() => ProspectMinOrderByAggregateInputSchema).optional(),
+      _sum: z.lazy(() => ProspectSumOrderByAggregateInputSchema).optional()
     })
     .strict();
 
@@ -3432,6 +3853,289 @@ export const ProspectScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Pros
         .optional()
         .nullable(),
       email: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      position: z
+        .union([
+          z.lazy(() => FloatNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      assigneeId: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      convertedId: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryWhereInputSchema: z.ZodType<Prisma.ProspectStatusHistoryWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => ProspectStatusHistoryWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      prospectId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      previousStatus: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      newStatus: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      position: z
+        .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedBy: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      prospect: z
+        .union([
+          z.lazy(() => ProspectScalarRelationFilterSchema),
+          z.lazy(() => ProspectWhereInputSchema)
+        ])
+        .optional(),
+      updatedByUser: z
+        .union([
+          z.lazy(() => UserNullableScalarRelationFilterSchema),
+          z.lazy(() => UserWhereInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const ProspectStatusHistoryOrderByWithRelationInputSchema: z.ZodType<Prisma.ProspectStatusHistoryOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      prospectId: z.lazy(() => SortOrderSchema).optional(),
+      previousStatus: z.lazy(() => SortOrderSchema).optional(),
+      newStatus: z.lazy(() => SortOrderSchema).optional(),
+      position: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedBy: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      prospect: z.lazy(() => ProspectOrderByWithRelationInputSchema).optional(),
+      updatedByUser: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryWhereUniqueInputSchema: z.ZodType<Prisma.ProspectStatusHistoryWhereUniqueInput> =
+  z
+    .object({
+      id: z.string().cuid()
+    })
+    .and(
+      z
+        .object({
+          id: z.string().cuid().optional(),
+          AND: z
+            .union([
+              z.lazy(() => ProspectStatusHistoryWhereInputSchema),
+              z.lazy(() => ProspectStatusHistoryWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => ProspectStatusHistoryWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => ProspectStatusHistoryWhereInputSchema),
+              z.lazy(() => ProspectStatusHistoryWhereInputSchema).array()
+            ])
+            .optional(),
+          prospectId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          previousStatus: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          newStatus: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          position: z
+            .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+            .optional()
+            .nullable(),
+          createdAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          updatedBy: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          prospect: z
+            .union([
+              z.lazy(() => ProspectScalarRelationFilterSchema),
+              z.lazy(() => ProspectWhereInputSchema)
+            ])
+            .optional(),
+          updatedByUser: z
+            .union([
+              z.lazy(() => UserNullableScalarRelationFilterSchema),
+              z.lazy(() => UserWhereInputSchema)
+            ])
+            .optional()
+            .nullable()
+        })
+        .strict()
+    );
+
+export const ProspectStatusHistoryOrderByWithAggregationInputSchema: z.ZodType<Prisma.ProspectStatusHistoryOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      prospectId: z.lazy(() => SortOrderSchema).optional(),
+      previousStatus: z.lazy(() => SortOrderSchema).optional(),
+      newStatus: z.lazy(() => SortOrderSchema).optional(),
+      position: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedBy: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      _count: z
+        .lazy(() => ProspectStatusHistoryCountOrderByAggregateInputSchema)
+        .optional(),
+      _avg: z
+        .lazy(() => ProspectStatusHistoryAvgOrderByAggregateInputSchema)
+        .optional(),
+      _max: z
+        .lazy(() => ProspectStatusHistoryMaxOrderByAggregateInputSchema)
+        .optional(),
+      _min: z
+        .lazy(() => ProspectStatusHistoryMinOrderByAggregateInputSchema)
+        .optional(),
+      _sum: z
+        .lazy(() => ProspectStatusHistorySumOrderByAggregateInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.ProspectStatusHistoryScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryScalarWhereWithAggregatesInputSchema
+          ),
+          z
+            .lazy(
+              () => ProspectStatusHistoryScalarWhereWithAggregatesInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => ProspectStatusHistoryScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryScalarWhereWithAggregatesInputSchema
+          ),
+          z
+            .lazy(
+              () => ProspectStatusHistoryScalarWhereWithAggregatesInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      prospectId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      previousStatus: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      newStatus: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      position: z
+        .union([
+          z.lazy(() => FloatNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      updatedBy: z
         .union([
           z.lazy(() => StringNullableWithAggregatesFilterSchema),
           z.string()
@@ -10918,6 +11622,807 @@ export const OutboxScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Outbox
     })
     .strict();
 
+export const CityWhereInputSchema: z.ZodType<Prisma.CityWhereInput> = z
+  .object({
+    AND: z
+      .union([
+        z.lazy(() => CityWhereInputSchema),
+        z.lazy(() => CityWhereInputSchema).array()
+      ])
+      .optional(),
+    OR: z
+      .lazy(() => CityWhereInputSchema)
+      .array()
+      .optional(),
+    NOT: z
+      .union([
+        z.lazy(() => CityWhereInputSchema),
+        z.lazy(() => CityWhereInputSchema).array()
+      ])
+      .optional(),
+    id: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+    departement: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    slug: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    nom: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    nomSimple: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    nomReel: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    nomSoundex: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    nomMetaphone: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    codePostal: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    commune: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    codeCommune: z
+      .union([z.lazy(() => StringFilterSchema), z.string()])
+      .optional(),
+    arrondissement: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    canton: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    amdi: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    population2010: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    population1999: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    population2012: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    densite2010: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    surface: z
+      .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    longitudeDeg: z
+      .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    latitudeDeg: z
+      .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    longitudeGrd: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    latitudeGrd: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    longitudeDms: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    latitudeDms: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    zmin: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    zmax: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable()
+  })
+  .strict();
+
+export const CityOrderByWithRelationInputSchema: z.ZodType<Prisma.CityOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      departement: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      slug: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nom: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nomSimple: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nomReel: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nomSoundex: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nomMetaphone: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      codePostal: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      commune: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      codeCommune: z.lazy(() => SortOrderSchema).optional(),
+      arrondissement: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      canton: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      amdi: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      population2010: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      population1999: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      population2012: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      densite2010: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      surface: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      longitudeDeg: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      latitudeDeg: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      longitudeGrd: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      latitudeGrd: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      longitudeDms: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      latitudeDms: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      zmin: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      zmax: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CityWhereUniqueInputSchema: z.ZodType<Prisma.CityWhereUniqueInput> =
+  z
+    .union([
+      z.object({
+        id: z.number().int(),
+        slug: z.string(),
+        codeCommune: z.string()
+      }),
+      z.object({
+        id: z.number().int(),
+        slug: z.string()
+      }),
+      z.object({
+        id: z.number().int(),
+        codeCommune: z.string()
+      }),
+      z.object({
+        id: z.number().int()
+      }),
+      z.object({
+        slug: z.string(),
+        codeCommune: z.string()
+      }),
+      z.object({
+        slug: z.string()
+      }),
+      z.object({
+        codeCommune: z.string()
+      })
+    ])
+    .and(
+      z
+        .object({
+          id: z.number().int().optional(),
+          slug: z.string().optional(),
+          codeCommune: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => CityWhereInputSchema),
+              z.lazy(() => CityWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => CityWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => CityWhereInputSchema),
+              z.lazy(() => CityWhereInputSchema).array()
+            ])
+            .optional(),
+          departement: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          nom: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          nomSimple: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          nomReel: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          nomSoundex: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          nomMetaphone: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          codePostal: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          commune: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          arrondissement: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable(),
+          canton: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          amdi: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable(),
+          population2010: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable(),
+          population1999: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable(),
+          population2012: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable(),
+          densite2010: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable(),
+          surface: z
+            .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+            .optional()
+            .nullable(),
+          longitudeDeg: z
+            .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+            .optional()
+            .nullable(),
+          latitudeDeg: z
+            .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+            .optional()
+            .nullable(),
+          longitudeGrd: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          latitudeGrd: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          longitudeDms: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          latitudeDms: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          zmin: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable(),
+          zmax: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable()
+        })
+        .strict()
+    );
+
+export const CityOrderByWithAggregationInputSchema: z.ZodType<Prisma.CityOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      departement: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      slug: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nom: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nomSimple: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nomReel: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nomSoundex: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      nomMetaphone: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      codePostal: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      commune: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      codeCommune: z.lazy(() => SortOrderSchema).optional(),
+      arrondissement: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      canton: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      amdi: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      population2010: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      population1999: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      population2012: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      densite2010: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      surface: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      longitudeDeg: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      latitudeDeg: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      longitudeGrd: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      latitudeGrd: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      longitudeDms: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      latitudeDms: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      zmin: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      zmax: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => CityCountOrderByAggregateInputSchema).optional(),
+      _avg: z.lazy(() => CityAvgOrderByAggregateInputSchema).optional(),
+      _max: z.lazy(() => CityMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => CityMinOrderByAggregateInputSchema).optional(),
+      _sum: z.lazy(() => CitySumOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const CityScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CityScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => CityScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => CityScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => CityScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => CityScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => CityScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => IntWithAggregatesFilterSchema), z.number()])
+        .optional(),
+      departement: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      nom: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      nomSimple: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      nomReel: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      nomSoundex: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      nomMetaphone: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      codePostal: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      commune: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      codeCommune: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      arrondissement: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      canton: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      amdi: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      population2010: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      population1999: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      population2012: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      densite2010: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      surface: z
+        .union([
+          z.lazy(() => FloatNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      longitudeDeg: z
+        .union([
+          z.lazy(() => FloatNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      latitudeDeg: z
+        .union([
+          z.lazy(() => FloatNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      longitudeGrd: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      latitudeGrd: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      longitudeDms: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      latitudeDms: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      zmin: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      zmax: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
 export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
   .object({
     id: z.string().cuid().optional(),
@@ -10991,6 +12496,18 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
       .optional(),
     received: z
       .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+      .optional(),
+    assigned: z
+      .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+      .optional(),
+    converted: z
+      .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+      .optional(),
+    ProspectStatusHistory: z
+      .lazy(
+        () =>
+          ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+      )
       .optional()
   })
   .strict();
@@ -11084,6 +12601,18 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -11209,6 +12738,18 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
       .optional(),
     received: z
       .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+      .optional(),
+    assigned: z
+      .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+      .optional(),
+    converted: z
+      .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+      .optional(),
+    ProspectStatusHistory: z
+      .lazy(
+        () =>
+          ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+      )
       .optional()
   })
   .strict();
@@ -11362,6 +12903,18 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -11559,7 +13112,22 @@ export const ProspectCreateInputSchema: z.ZodType<Prisma.ProspectCreateInput> =
       tel: z.string().optional().nullable(),
       code_naf: z.string().optional().nullable(),
       activite: z.string().optional().nullable(),
-      email: z.string().optional().nullable()
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      assignee: z
+        .lazy(() => UserCreateNestedOneWithoutAssignedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => UserCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () => ProspectStatusHistoryCreateNestedManyWithoutProspectInputSchema
+        )
+        .optional()
     })
     .strict();
 
@@ -11574,7 +13142,19 @@ export const ProspectUncheckedCreateInputSchema: z.ZodType<Prisma.ProspectUnchec
       tel: z.string().optional().nullable(),
       code_naf: z.string().optional().nullable(),
       activite: z.string().optional().nullable(),
-      email: z.string().optional().nullable()
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      assigneeId: z.string().optional().nullable(),
+      convertedId: z.string().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      statusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutProspectInputSchema
+        )
+        .optional()
     })
     .strict();
 
@@ -11642,7 +13222,43 @@ export const ProspectUpdateInputSchema: z.ZodType<Prisma.ProspectUpdateInput> =
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
         ])
         .optional()
-        .nullable()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      assignee: z
+        .lazy(() => UserUpdateOneWithoutAssignedNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => UserUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () => ProspectStatusHistoryUpdateManyWithoutProspectNestedInputSchema
+        )
+        .optional()
     })
     .strict();
 
@@ -11710,7 +13326,52 @@ export const ProspectUncheckedUpdateInputSchema: z.ZodType<Prisma.ProspectUnchec
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
         ])
         .optional()
-        .nullable()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      assigneeId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      convertedId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutProspectNestedInputSchema
+        )
+        .optional()
     })
     .strict();
 
@@ -11725,7 +13386,13 @@ export const ProspectCreateManyInputSchema: z.ZodType<Prisma.ProspectCreateManyI
       tel: z.string().optional().nullable(),
       code_naf: z.string().optional().nullable(),
       activite: z.string().optional().nullable(),
-      email: z.string().optional().nullable()
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      assigneeId: z.string().optional().nullable(),
+      convertedId: z.string().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
     })
     .strict();
 
@@ -11793,7 +13460,32 @@ export const ProspectUpdateManyMutationInputSchema: z.ZodType<Prisma.ProspectUpd
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
         ])
         .optional()
-        .nullable()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
     })
     .strict();
 
@@ -11856,6 +13548,270 @@ export const ProspectUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ProspectUn
         .optional()
         .nullable(),
       email: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      assigneeId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      convertedId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      prospect: z.lazy(
+        () => ProspectCreateNestedOneWithoutStatusHistoryInputSchema
+      ),
+      updatedByUser: z
+        .lazy(() => UserCreateNestedOneWithoutProspectStatusHistoryInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedCreateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      prospectId: z.string(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedBy: z.string().optional().nullable()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      prospect: z
+        .lazy(
+          () => ProspectUpdateOneRequiredWithoutStatusHistoryNestedInputSchema
+        )
+        .optional(),
+      updatedByUser: z
+        .lazy(() => UserUpdateOneWithoutProspectStatusHistoryNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedUpdateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      prospectId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedBy: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateManyInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateManyInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      prospectId: z.string(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedBy: z.string().optional().nullable()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateManyMutationInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      prospectId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedBy: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -19858,6 +21814,859 @@ export const OutboxUncheckedUpdateManyInputSchema: z.ZodType<Prisma.OutboxUnchec
     })
     .strict();
 
+export const CityCreateInputSchema: z.ZodType<Prisma.CityCreateInput> = z
+  .object({
+    departement: z.string().optional().nullable(),
+    slug: z.string().optional().nullable(),
+    nom: z.string().optional().nullable(),
+    nomSimple: z.string().optional().nullable(),
+    nomReel: z.string().optional().nullable(),
+    nomSoundex: z.string().optional().nullable(),
+    nomMetaphone: z.string().optional().nullable(),
+    codePostal: z.string().optional().nullable(),
+    commune: z.string().optional().nullable(),
+    codeCommune: z.string(),
+    arrondissement: z.number().int().optional().nullable(),
+    canton: z.string().optional().nullable(),
+    amdi: z.number().int().optional().nullable(),
+    population2010: z.number().int().optional().nullable(),
+    population1999: z.number().int().optional().nullable(),
+    population2012: z.number().int().optional().nullable(),
+    densite2010: z.number().int().optional().nullable(),
+    surface: z.number().optional().nullable(),
+    longitudeDeg: z.number().optional().nullable(),
+    latitudeDeg: z.number().optional().nullable(),
+    longitudeGrd: z.string().optional().nullable(),
+    latitudeGrd: z.string().optional().nullable(),
+    longitudeDms: z.string().optional().nullable(),
+    latitudeDms: z.string().optional().nullable(),
+    zmin: z.number().int().optional().nullable(),
+    zmax: z.number().int().optional().nullable()
+  })
+  .strict();
+
+export const CityUncheckedCreateInputSchema: z.ZodType<Prisma.CityUncheckedCreateInput> =
+  z
+    .object({
+      id: z.number().int().optional(),
+      departement: z.string().optional().nullable(),
+      slug: z.string().optional().nullable(),
+      nom: z.string().optional().nullable(),
+      nomSimple: z.string().optional().nullable(),
+      nomReel: z.string().optional().nullable(),
+      nomSoundex: z.string().optional().nullable(),
+      nomMetaphone: z.string().optional().nullable(),
+      codePostal: z.string().optional().nullable(),
+      commune: z.string().optional().nullable(),
+      codeCommune: z.string(),
+      arrondissement: z.number().int().optional().nullable(),
+      canton: z.string().optional().nullable(),
+      amdi: z.number().int().optional().nullable(),
+      population2010: z.number().int().optional().nullable(),
+      population1999: z.number().int().optional().nullable(),
+      population2012: z.number().int().optional().nullable(),
+      densite2010: z.number().int().optional().nullable(),
+      surface: z.number().optional().nullable(),
+      longitudeDeg: z.number().optional().nullable(),
+      latitudeDeg: z.number().optional().nullable(),
+      longitudeGrd: z.string().optional().nullable(),
+      latitudeGrd: z.string().optional().nullable(),
+      longitudeDms: z.string().optional().nullable(),
+      latitudeDms: z.string().optional().nullable(),
+      zmin: z.number().int().optional().nullable(),
+      zmax: z.number().int().optional().nullable()
+    })
+    .strict();
+
+export const CityUpdateInputSchema: z.ZodType<Prisma.CityUpdateInput> = z
+  .object({
+    departement: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    slug: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    nom: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    nomSimple: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    nomReel: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    nomSoundex: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    nomMetaphone: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    codePostal: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    commune: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    codeCommune: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    arrondissement: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    canton: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    amdi: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    population2010: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    population1999: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    population2012: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    densite2010: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    surface: z
+      .union([
+        z.number(),
+        z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    longitudeDeg: z
+      .union([
+        z.number(),
+        z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    latitudeDeg: z
+      .union([
+        z.number(),
+        z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    longitudeGrd: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    latitudeGrd: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    longitudeDms: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    latitudeDms: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    zmin: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    zmax: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable()
+  })
+  .strict();
+
+export const CityUncheckedUpdateInputSchema: z.ZodType<Prisma.CityUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      departement: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nom: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomSimple: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomReel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomSoundex: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomMetaphone: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codePostal: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      commune: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeCommune: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      arrondissement: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      canton: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      amdi: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population2010: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population1999: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population2012: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      densite2010: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      surface: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeDeg: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeDeg: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeGrd: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeGrd: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeDms: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeDms: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      zmin: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      zmax: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const CityCreateManyInputSchema: z.ZodType<Prisma.CityCreateManyInput> =
+  z
+    .object({
+      id: z.number().int().optional(),
+      departement: z.string().optional().nullable(),
+      slug: z.string().optional().nullable(),
+      nom: z.string().optional().nullable(),
+      nomSimple: z.string().optional().nullable(),
+      nomReel: z.string().optional().nullable(),
+      nomSoundex: z.string().optional().nullable(),
+      nomMetaphone: z.string().optional().nullable(),
+      codePostal: z.string().optional().nullable(),
+      commune: z.string().optional().nullable(),
+      codeCommune: z.string(),
+      arrondissement: z.number().int().optional().nullable(),
+      canton: z.string().optional().nullable(),
+      amdi: z.number().int().optional().nullable(),
+      population2010: z.number().int().optional().nullable(),
+      population1999: z.number().int().optional().nullable(),
+      population2012: z.number().int().optional().nullable(),
+      densite2010: z.number().int().optional().nullable(),
+      surface: z.number().optional().nullable(),
+      longitudeDeg: z.number().optional().nullable(),
+      latitudeDeg: z.number().optional().nullable(),
+      longitudeGrd: z.string().optional().nullable(),
+      latitudeGrd: z.string().optional().nullable(),
+      longitudeDms: z.string().optional().nullable(),
+      latitudeDms: z.string().optional().nullable(),
+      zmin: z.number().int().optional().nullable(),
+      zmax: z.number().int().optional().nullable()
+    })
+    .strict();
+
+export const CityUpdateManyMutationInputSchema: z.ZodType<Prisma.CityUpdateManyMutationInput> =
+  z
+    .object({
+      departement: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nom: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomSimple: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomReel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomSoundex: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomMetaphone: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codePostal: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      commune: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeCommune: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      arrondissement: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      canton: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      amdi: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population2010: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population1999: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population2012: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      densite2010: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      surface: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeDeg: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeDeg: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeGrd: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeGrd: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeDms: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeDms: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      zmin: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      zmax: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const CityUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CityUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      departement: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nom: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomSimple: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomReel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomSoundex: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      nomMetaphone: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codePostal: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      commune: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeCommune: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      arrondissement: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      canton: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      amdi: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population2010: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population1999: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      population2012: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      densite2010: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      surface: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeDeg: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeDeg: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeGrd: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeGrd: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      longitudeDms: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      latitudeDms: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      zmin: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      zmax: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
 export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z
   .object({
     equals: z.string().optional(),
@@ -20183,6 +22992,38 @@ export const MessageListRelationFilterSchema: z.ZodType<Prisma.MessageListRelati
     })
     .strict();
 
+export const ProspectListRelationFilterSchema: z.ZodType<Prisma.ProspectListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => ProspectWhereInputSchema).optional(),
+      some: z.lazy(() => ProspectWhereInputSchema).optional(),
+      none: z.lazy(() => ProspectWhereInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectNullableScalarRelationFilterSchema: z.ZodType<Prisma.ProspectNullableScalarRelationFilter> =
+  z
+    .object({
+      is: z
+        .lazy(() => ProspectWhereInputSchema)
+        .optional()
+        .nullable(),
+      isNot: z
+        .lazy(() => ProspectWhereInputSchema)
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const ProspectStatusHistoryListRelationFilterSchema: z.ZodType<Prisma.ProspectStatusHistoryListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => ProspectStatusHistoryWhereInputSchema).optional(),
+      some: z.lazy(() => ProspectStatusHistoryWhereInputSchema).optional(),
+      none: z.lazy(() => ProspectStatusHistoryWhereInputSchema).optional()
+    })
+    .strict();
+
 export const SortOrderInputSchema: z.ZodType<Prisma.SortOrderInput> = z
   .object({
     sort: z.lazy(() => SortOrderSchema),
@@ -20310,6 +23151,20 @@ export const CommentOrderByRelationAggregateInputSchema: z.ZodType<Prisma.Commen
     .strict();
 
 export const MessageOrderByRelationAggregateInputSchema: z.ZodType<Prisma.MessageOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const ProspectOrderByRelationAggregateInputSchema: z.ZodType<Prisma.ProspectOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryOrderByRelationAggregateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryOrderByRelationAggregateInput> =
   z
     .object({
       _count: z.lazy(() => SortOrderSchema).optional()
@@ -20530,6 +23385,23 @@ export const EnumUserRoleWithAggregatesFilterSchema: z.ZodType<Prisma.EnumUserRo
     })
     .strict();
 
+export const FloatNullableFilterSchema: z.ZodType<Prisma.FloatNullableFilter> =
+  z
+    .object({
+      equals: z.number().optional().nullable(),
+      in: z.number().array().optional().nullable(),
+      notIn: z.number().array().optional().nullable(),
+      lt: z.number().optional(),
+      lte: z.number().optional(),
+      gt: z.number().optional(),
+      gte: z.number().optional(),
+      not: z
+        .union([z.number(), z.lazy(() => NestedFloatNullableFilterSchema)])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
 export const ProspectCountOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectCountOrderByAggregateInput> =
   z
     .object({
@@ -20541,7 +23413,20 @@ export const ProspectCountOrderByAggregateInputSchema: z.ZodType<Prisma.Prospect
       tel: z.lazy(() => SortOrderSchema).optional(),
       code_naf: z.lazy(() => SortOrderSchema).optional(),
       activite: z.lazy(() => SortOrderSchema).optional(),
-      email: z.lazy(() => SortOrderSchema).optional()
+      email: z.lazy(() => SortOrderSchema).optional(),
+      status: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      assigneeId: z.lazy(() => SortOrderSchema).optional(),
+      convertedId: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const ProspectAvgOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectAvgOrderByAggregateInput> =
+  z
+    .object({
+      position: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -20556,7 +23441,13 @@ export const ProspectMaxOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectMa
       tel: z.lazy(() => SortOrderSchema).optional(),
       code_naf: z.lazy(() => SortOrderSchema).optional(),
       activite: z.lazy(() => SortOrderSchema).optional(),
-      email: z.lazy(() => SortOrderSchema).optional()
+      email: z.lazy(() => SortOrderSchema).optional(),
+      status: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      assigneeId: z.lazy(() => SortOrderSchema).optional(),
+      convertedId: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -20571,7 +23462,106 @@ export const ProspectMinOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectMi
       tel: z.lazy(() => SortOrderSchema).optional(),
       code_naf: z.lazy(() => SortOrderSchema).optional(),
       activite: z.lazy(() => SortOrderSchema).optional(),
-      email: z.lazy(() => SortOrderSchema).optional()
+      email: z.lazy(() => SortOrderSchema).optional(),
+      status: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      assigneeId: z.lazy(() => SortOrderSchema).optional(),
+      convertedId: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const ProspectSumOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectSumOrderByAggregateInput> =
+  z
+    .object({
+      position: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const FloatNullableWithAggregatesFilterSchema: z.ZodType<Prisma.FloatNullableWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.number().optional().nullable(),
+      in: z.number().array().optional().nullable(),
+      notIn: z.number().array().optional().nullable(),
+      lt: z.number().optional(),
+      lte: z.number().optional(),
+      gt: z.number().optional(),
+      gte: z.number().optional(),
+      not: z
+        .union([
+          z.number(),
+          z.lazy(() => NestedFloatNullableWithAggregatesFilterSchema)
+        ])
+        .optional()
+        .nullable(),
+      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+      _avg: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
+      _sum: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
+      _min: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
+      _max: z.lazy(() => NestedFloatNullableFilterSchema).optional()
+    })
+    .strict();
+
+export const ProspectScalarRelationFilterSchema: z.ZodType<Prisma.ProspectScalarRelationFilter> =
+  z
+    .object({
+      is: z.lazy(() => ProspectWhereInputSchema).optional(),
+      isNot: z.lazy(() => ProspectWhereInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCountOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      prospectId: z.lazy(() => SortOrderSchema).optional(),
+      previousStatus: z.lazy(() => SortOrderSchema).optional(),
+      newStatus: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedBy: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryAvgOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryAvgOrderByAggregateInput> =
+  z
+    .object({
+      position: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryMaxOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      prospectId: z.lazy(() => SortOrderSchema).optional(),
+      previousStatus: z.lazy(() => SortOrderSchema).optional(),
+      newStatus: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedBy: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryMinOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectStatusHistoryMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      prospectId: z.lazy(() => SortOrderSchema).optional(),
+      previousStatus: z.lazy(() => SortOrderSchema).optional(),
+      newStatus: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedBy: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistorySumOrderByAggregateInputSchema: z.ZodType<Prisma.ProspectStatusHistorySumOrderByAggregateInput> =
+  z
+    .object({
+      position: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -22810,6 +25800,141 @@ export const OutboxMinOrderByAggregateInputSchema: z.ZodType<Prisma.OutboxMinOrd
     })
     .strict();
 
+export const CityCountOrderByAggregateInputSchema: z.ZodType<Prisma.CityCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      departement: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      nom: z.lazy(() => SortOrderSchema).optional(),
+      nomSimple: z.lazy(() => SortOrderSchema).optional(),
+      nomReel: z.lazy(() => SortOrderSchema).optional(),
+      nomSoundex: z.lazy(() => SortOrderSchema).optional(),
+      nomMetaphone: z.lazy(() => SortOrderSchema).optional(),
+      codePostal: z.lazy(() => SortOrderSchema).optional(),
+      commune: z.lazy(() => SortOrderSchema).optional(),
+      codeCommune: z.lazy(() => SortOrderSchema).optional(),
+      arrondissement: z.lazy(() => SortOrderSchema).optional(),
+      canton: z.lazy(() => SortOrderSchema).optional(),
+      amdi: z.lazy(() => SortOrderSchema).optional(),
+      population2010: z.lazy(() => SortOrderSchema).optional(),
+      population1999: z.lazy(() => SortOrderSchema).optional(),
+      population2012: z.lazy(() => SortOrderSchema).optional(),
+      densite2010: z.lazy(() => SortOrderSchema).optional(),
+      surface: z.lazy(() => SortOrderSchema).optional(),
+      longitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      latitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      longitudeGrd: z.lazy(() => SortOrderSchema).optional(),
+      latitudeGrd: z.lazy(() => SortOrderSchema).optional(),
+      longitudeDms: z.lazy(() => SortOrderSchema).optional(),
+      latitudeDms: z.lazy(() => SortOrderSchema).optional(),
+      zmin: z.lazy(() => SortOrderSchema).optional(),
+      zmax: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CityAvgOrderByAggregateInputSchema: z.ZodType<Prisma.CityAvgOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      arrondissement: z.lazy(() => SortOrderSchema).optional(),
+      amdi: z.lazy(() => SortOrderSchema).optional(),
+      population2010: z.lazy(() => SortOrderSchema).optional(),
+      population1999: z.lazy(() => SortOrderSchema).optional(),
+      population2012: z.lazy(() => SortOrderSchema).optional(),
+      densite2010: z.lazy(() => SortOrderSchema).optional(),
+      surface: z.lazy(() => SortOrderSchema).optional(),
+      longitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      latitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      zmin: z.lazy(() => SortOrderSchema).optional(),
+      zmax: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CityMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CityMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      departement: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      nom: z.lazy(() => SortOrderSchema).optional(),
+      nomSimple: z.lazy(() => SortOrderSchema).optional(),
+      nomReel: z.lazy(() => SortOrderSchema).optional(),
+      nomSoundex: z.lazy(() => SortOrderSchema).optional(),
+      nomMetaphone: z.lazy(() => SortOrderSchema).optional(),
+      codePostal: z.lazy(() => SortOrderSchema).optional(),
+      commune: z.lazy(() => SortOrderSchema).optional(),
+      codeCommune: z.lazy(() => SortOrderSchema).optional(),
+      arrondissement: z.lazy(() => SortOrderSchema).optional(),
+      canton: z.lazy(() => SortOrderSchema).optional(),
+      amdi: z.lazy(() => SortOrderSchema).optional(),
+      population2010: z.lazy(() => SortOrderSchema).optional(),
+      population1999: z.lazy(() => SortOrderSchema).optional(),
+      population2012: z.lazy(() => SortOrderSchema).optional(),
+      densite2010: z.lazy(() => SortOrderSchema).optional(),
+      surface: z.lazy(() => SortOrderSchema).optional(),
+      longitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      latitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      longitudeGrd: z.lazy(() => SortOrderSchema).optional(),
+      latitudeGrd: z.lazy(() => SortOrderSchema).optional(),
+      longitudeDms: z.lazy(() => SortOrderSchema).optional(),
+      latitudeDms: z.lazy(() => SortOrderSchema).optional(),
+      zmin: z.lazy(() => SortOrderSchema).optional(),
+      zmax: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CityMinOrderByAggregateInputSchema: z.ZodType<Prisma.CityMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      departement: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      nom: z.lazy(() => SortOrderSchema).optional(),
+      nomSimple: z.lazy(() => SortOrderSchema).optional(),
+      nomReel: z.lazy(() => SortOrderSchema).optional(),
+      nomSoundex: z.lazy(() => SortOrderSchema).optional(),
+      nomMetaphone: z.lazy(() => SortOrderSchema).optional(),
+      codePostal: z.lazy(() => SortOrderSchema).optional(),
+      commune: z.lazy(() => SortOrderSchema).optional(),
+      codeCommune: z.lazy(() => SortOrderSchema).optional(),
+      arrondissement: z.lazy(() => SortOrderSchema).optional(),
+      canton: z.lazy(() => SortOrderSchema).optional(),
+      amdi: z.lazy(() => SortOrderSchema).optional(),
+      population2010: z.lazy(() => SortOrderSchema).optional(),
+      population1999: z.lazy(() => SortOrderSchema).optional(),
+      population2012: z.lazy(() => SortOrderSchema).optional(),
+      densite2010: z.lazy(() => SortOrderSchema).optional(),
+      surface: z.lazy(() => SortOrderSchema).optional(),
+      longitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      latitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      longitudeGrd: z.lazy(() => SortOrderSchema).optional(),
+      latitudeGrd: z.lazy(() => SortOrderSchema).optional(),
+      longitudeDms: z.lazy(() => SortOrderSchema).optional(),
+      latitudeDms: z.lazy(() => SortOrderSchema).optional(),
+      zmin: z.lazy(() => SortOrderSchema).optional(),
+      zmax: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CitySumOrderByAggregateInputSchema: z.ZodType<Prisma.CitySumOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      arrondissement: z.lazy(() => SortOrderSchema).optional(),
+      amdi: z.lazy(() => SortOrderSchema).optional(),
+      population2010: z.lazy(() => SortOrderSchema).optional(),
+      population1999: z.lazy(() => SortOrderSchema).optional(),
+      population2012: z.lazy(() => SortOrderSchema).optional(),
+      densite2010: z.lazy(() => SortOrderSchema).optional(),
+      surface: z.lazy(() => SortOrderSchema).optional(),
+      longitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      latitudeDeg: z.lazy(() => SortOrderSchema).optional(),
+      zmin: z.lazy(() => SortOrderSchema).optional(),
+      zmax: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
 export const AccountCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.AccountCreateNestedManyWithoutUserInput> =
   z
     .object({
@@ -23425,6 +26550,108 @@ export const MessageCreateNestedManyWithoutReceiverInputSchema: z.ZodType<Prisma
     })
     .strict();
 
+export const ProspectCreateNestedManyWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectCreateNestedManyWithoutAssigneeInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutAssigneeInputSchema),
+          z.lazy(() => ProspectCreateWithoutAssigneeInputSchema).array(),
+          z.lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => ProspectCreateOrConnectWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectCreateOrConnectWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => ProspectCreateManyAssigneeInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectCreateNestedOneWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectCreateNestedOneWithoutConvertedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutConvertedInputSchema),
+          z.lazy(() => ProspectUncheckedCreateWithoutConvertedInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => ProspectCreateOrConnectWithoutConvertedInputSchema)
+        .optional(),
+      connect: z.lazy(() => ProspectWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+            )
+            .array(),
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(
+          () => ProspectStatusHistoryCreateManyUpdatedByUserInputEnvelopeSchema
+        )
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
 export const AccountUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.AccountUncheckedCreateNestedManyWithoutUserInput> =
   z
     .object({
@@ -24019,6 +27246,108 @@ export const MessageUncheckedCreateNestedManyWithoutReceiverInputSchema: z.ZodTy
         .union([
           z.lazy(() => MessageWhereUniqueInputSchema),
           z.lazy(() => MessageWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectUncheckedCreateNestedManyWithoutAssigneeInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutAssigneeInputSchema),
+          z.lazy(() => ProspectCreateWithoutAssigneeInputSchema).array(),
+          z.lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => ProspectCreateOrConnectWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectCreateOrConnectWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => ProspectCreateManyAssigneeInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectUncheckedCreateNestedOneWithoutConvertedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutConvertedInputSchema),
+          z.lazy(() => ProspectUncheckedCreateWithoutConvertedInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => ProspectCreateOrConnectWithoutConvertedInputSchema)
+        .optional(),
+      connect: z.lazy(() => ProspectWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+            )
+            .array(),
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(
+          () => ProspectStatusHistoryCreateManyUpdatedByUserInputEnvelopeSchema
+        )
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
         ])
         .optional()
     })
@@ -25618,6 +28947,238 @@ export const MessageUpdateManyWithoutReceiverNestedInputSchema: z.ZodType<Prisma
     })
     .strict();
 
+export const ProspectUpdateManyWithoutAssigneeNestedInputSchema: z.ZodType<Prisma.ProspectUpdateManyWithoutAssigneeNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutAssigneeInputSchema),
+          z.lazy(() => ProspectCreateWithoutAssigneeInputSchema).array(),
+          z.lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => ProspectCreateOrConnectWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectCreateOrConnectWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => ProspectUpsertWithWhereUniqueWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUpsertWithWhereUniqueWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => ProspectCreateManyAssigneeInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => ProspectUpdateWithWhereUniqueWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUpdateWithWhereUniqueWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => ProspectUpdateManyWithWhereWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUpdateManyWithWhereWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => ProspectScalarWhereInputSchema),
+          z.lazy(() => ProspectScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectUpdateOneWithoutConvertedNestedInputSchema: z.ZodType<Prisma.ProspectUpdateOneWithoutConvertedNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutConvertedInputSchema),
+          z.lazy(() => ProspectUncheckedCreateWithoutConvertedInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => ProspectCreateOrConnectWithoutConvertedInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => ProspectUpsertWithoutConvertedInputSchema)
+        .optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => ProspectWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => ProspectWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => ProspectWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => ProspectUpdateToOneWithWhereWithoutConvertedInputSchema),
+          z.lazy(() => ProspectUpdateWithoutConvertedInputSchema),
+          z.lazy(() => ProspectUncheckedUpdateWithoutConvertedInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+            )
+            .array(),
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpsertWithWhereUniqueWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpsertWithWhereUniqueWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(
+          () => ProspectStatusHistoryCreateManyUpdatedByUserInputEnvelopeSchema
+        )
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpdateWithWhereUniqueWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpdateWithWhereUniqueWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpdateManyWithWhereWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpdateManyWithWhereWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema),
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
 export const AccountUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput> =
   z
     .object({
@@ -27135,6 +30696,754 @@ export const MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema: z.ZodTy
         .union([
           z.lazy(() => MessageScalarWhereInputSchema),
           z.lazy(() => MessageScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema: z.ZodType<Prisma.ProspectUncheckedUpdateManyWithoutAssigneeNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutAssigneeInputSchema),
+          z.lazy(() => ProspectCreateWithoutAssigneeInputSchema).array(),
+          z.lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => ProspectCreateOrConnectWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectCreateOrConnectWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => ProspectUpsertWithWhereUniqueWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUpsertWithWhereUniqueWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => ProspectCreateManyAssigneeInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectWhereUniqueInputSchema),
+          z.lazy(() => ProspectWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => ProspectUpdateWithWhereUniqueWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUpdateWithWhereUniqueWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => ProspectUpdateManyWithWhereWithoutAssigneeInputSchema),
+          z
+            .lazy(() => ProspectUpdateManyWithWhereWithoutAssigneeInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => ProspectScalarWhereInputSchema),
+          z.lazy(() => ProspectScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema: z.ZodType<Prisma.ProspectUncheckedUpdateOneWithoutConvertedNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutConvertedInputSchema),
+          z.lazy(() => ProspectUncheckedCreateWithoutConvertedInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => ProspectCreateOrConnectWithoutConvertedInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => ProspectUpsertWithoutConvertedInputSchema)
+        .optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => ProspectWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => ProspectWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => ProspectWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => ProspectUpdateToOneWithWhereWithoutConvertedInputSchema),
+          z.lazy(() => ProspectUpdateWithoutConvertedInputSchema),
+          z.lazy(() => ProspectUncheckedUpdateWithoutConvertedInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+            )
+            .array(),
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpsertWithWhereUniqueWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpsertWithWhereUniqueWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(
+          () => ProspectStatusHistoryCreateManyUpdatedByUserInputEnvelopeSchema
+        )
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpdateWithWhereUniqueWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpdateWithWhereUniqueWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpdateManyWithWhereWithoutUpdatedByUserInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpdateManyWithWhereWithoutUpdatedByUserInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema),
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserCreateNestedOneWithoutAssignedInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutAssignedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutAssignedInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutAssignedInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => UserCreateOrConnectWithoutAssignedInputSchema)
+        .optional(),
+      connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const UserCreateNestedOneWithoutConvertedInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutConvertedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutConvertedInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutConvertedInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => UserCreateOrConnectWithoutConvertedInputSchema)
+        .optional(),
+      connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateNestedManyWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateNestedManyWithoutProspectInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema),
+          z
+            .lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema)
+            .array(),
+          z.lazy(
+            () => ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => ProspectStatusHistoryCreateManyProspectInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedCreateNestedManyWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedCreateNestedManyWithoutProspectInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema),
+          z
+            .lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema)
+            .array(),
+          z.lazy(
+            () => ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => ProspectStatusHistoryCreateManyProspectInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NullableFloatFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableFloatFieldUpdateOperationsInput> =
+  z
+    .object({
+      set: z.number().optional().nullable(),
+      increment: z.number().optional(),
+      decrement: z.number().optional(),
+      multiply: z.number().optional(),
+      divide: z.number().optional()
+    })
+    .strict();
+
+export const UserUpdateOneWithoutAssignedNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutAssignedNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutAssignedInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutAssignedInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => UserCreateOrConnectWithoutAssignedInputSchema)
+        .optional(),
+      upsert: z.lazy(() => UserUpsertWithoutAssignedInputSchema).optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => UserUpdateToOneWithWhereWithoutAssignedInputSchema),
+          z.lazy(() => UserUpdateWithoutAssignedInputSchema),
+          z.lazy(() => UserUncheckedUpdateWithoutAssignedInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserUpdateOneWithoutConvertedNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutConvertedNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutConvertedInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutConvertedInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => UserCreateOrConnectWithoutConvertedInputSchema)
+        .optional(),
+      upsert: z.lazy(() => UserUpsertWithoutConvertedInputSchema).optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => UserUpdateToOneWithWhereWithoutConvertedInputSchema),
+          z.lazy(() => UserUpdateWithoutConvertedInputSchema),
+          z.lazy(() => UserUncheckedUpdateWithoutConvertedInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateManyWithoutProspectNestedInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateManyWithoutProspectNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema),
+          z
+            .lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema)
+            .array(),
+          z.lazy(
+            () => ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpsertWithWhereUniqueWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpsertWithWhereUniqueWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => ProspectStatusHistoryCreateManyProspectInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpdateWithWhereUniqueWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpdateWithWhereUniqueWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpdateManyWithWhereWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpdateManyWithWhereWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema),
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedUpdateManyWithoutProspectNestedInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedUpdateManyWithoutProspectNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema),
+          z
+            .lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema)
+            .array(),
+          z.lazy(
+            () => ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () => ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpsertWithWhereUniqueWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpsertWithWhereUniqueWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => ProspectStatusHistoryCreateManyProspectInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+          z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpdateWithWhereUniqueWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpdateWithWhereUniqueWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(
+            () =>
+              ProspectStatusHistoryUpdateManyWithWhereWithoutProspectInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                ProspectStatusHistoryUpdateManyWithWhereWithoutProspectInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema),
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectCreateNestedOneWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ProspectCreateNestedOneWithoutStatusHistoryInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutStatusHistoryInputSchema),
+          z.lazy(() => ProspectUncheckedCreateWithoutStatusHistoryInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => ProspectCreateOrConnectWithoutStatusHistoryInputSchema)
+        .optional(),
+      connect: z.lazy(() => ProspectWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const UserCreateNestedOneWithoutProspectStatusHistoryInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutProspectStatusHistoryInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutProspectStatusHistoryInputSchema),
+          z.lazy(
+            () => UserUncheckedCreateWithoutProspectStatusHistoryInputSchema
+          )
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => UserCreateOrConnectWithoutProspectStatusHistoryInputSchema)
+        .optional(),
+      connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectUpdateOneRequiredWithoutStatusHistoryNestedInputSchema: z.ZodType<Prisma.ProspectUpdateOneRequiredWithoutStatusHistoryNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => ProspectCreateWithoutStatusHistoryInputSchema),
+          z.lazy(() => ProspectUncheckedCreateWithoutStatusHistoryInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => ProspectCreateOrConnectWithoutStatusHistoryInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => ProspectUpsertWithoutStatusHistoryInputSchema)
+        .optional(),
+      connect: z.lazy(() => ProspectWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(
+            () => ProspectUpdateToOneWithWhereWithoutStatusHistoryInputSchema
+          ),
+          z.lazy(() => ProspectUpdateWithoutStatusHistoryInputSchema),
+          z.lazy(() => ProspectUncheckedUpdateWithoutStatusHistoryInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserUpdateOneWithoutProspectStatusHistoryNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutProspectStatusHistoryNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutProspectStatusHistoryInputSchema),
+          z.lazy(
+            () => UserUncheckedCreateWithoutProspectStatusHistoryInputSchema
+          )
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => UserCreateOrConnectWithoutProspectStatusHistoryInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => UserUpsertWithoutProspectStatusHistoryInputSchema)
+        .optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(
+            () =>
+              UserUpdateToOneWithWhereWithoutProspectStatusHistoryInputSchema
+          ),
+          z.lazy(() => UserUpdateWithoutProspectStatusHistoryInputSchema),
+          z.lazy(
+            () => UserUncheckedUpdateWithoutProspectStatusHistoryInputSchema
+          )
         ])
         .optional()
     })
@@ -33537,6 +37846,48 @@ export const NestedEnumUserRoleWithAggregatesFilterSchema: z.ZodType<Prisma.Nest
     })
     .strict();
 
+export const NestedFloatNullableFilterSchema: z.ZodType<Prisma.NestedFloatNullableFilter> =
+  z
+    .object({
+      equals: z.number().optional().nullable(),
+      in: z.number().array().optional().nullable(),
+      notIn: z.number().array().optional().nullable(),
+      lt: z.number().optional(),
+      lte: z.number().optional(),
+      gt: z.number().optional(),
+      gte: z.number().optional(),
+      not: z
+        .union([z.number(), z.lazy(() => NestedFloatNullableFilterSchema)])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const NestedFloatNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloatNullableWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.number().optional().nullable(),
+      in: z.number().array().optional().nullable(),
+      notIn: z.number().array().optional().nullable(),
+      lt: z.number().optional(),
+      lte: z.number().optional(),
+      gt: z.number().optional(),
+      gte: z.number().optional(),
+      not: z
+        .union([
+          z.number(),
+          z.lazy(() => NestedFloatNullableWithAggregatesFilterSchema)
+        ])
+        .optional()
+        .nullable(),
+      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+      _avg: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
+      _sum: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
+      _min: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
+      _max: z.lazy(() => NestedFloatNullableFilterSchema).optional()
+    })
+    .strict();
+
 export const NestedEnumPricingTypeFilterSchema: z.ZodType<Prisma.NestedEnumPricingTypeFilter> =
   z
     .object({
@@ -33607,23 +37958,6 @@ export const NestedIntNullableWithAggregatesFilterSchema: z.ZodType<Prisma.Neste
       _sum: z.lazy(() => NestedIntNullableFilterSchema).optional(),
       _min: z.lazy(() => NestedIntNullableFilterSchema).optional(),
       _max: z.lazy(() => NestedIntNullableFilterSchema).optional()
-    })
-    .strict();
-
-export const NestedFloatNullableFilterSchema: z.ZodType<Prisma.NestedFloatNullableFilter> =
-  z
-    .object({
-      equals: z.number().optional().nullable(),
-      in: z.number().array().optional().nullable(),
-      notIn: z.number().array().optional().nullable(),
-      lt: z.number().optional(),
-      lte: z.number().optional(),
-      gt: z.number().optional(),
-      gte: z.number().optional(),
-      not: z
-        .union([z.number(), z.lazy(() => NestedFloatNullableFilterSchema)])
-        .optional()
-        .nullable()
     })
     .strict();
 
@@ -34589,6 +38923,18 @@ export const UserCreateWithoutRefererInputSchema: z.ZodType<Prisma.UserCreateWit
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -34681,6 +39027,18 @@ export const UserUncheckedCreateWithoutRefererInputSchema: z.ZodType<Prisma.User
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -34786,6 +39144,18 @@ export const UserCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreate
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -34876,6 +39246,18 @@ export const UserUncheckedCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -35404,6 +39786,200 @@ export const MessageCreateManyReceiverInputEnvelopeSchema: z.ZodType<Prisma.Mess
       data: z.union([
         z.lazy(() => MessageCreateManyReceiverInputSchema),
         z.lazy(() => MessageCreateManyReceiverInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const ProspectCreateWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectCreateWithoutAssigneeInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      raison_sociale: z.string().optional().nullable(),
+      adresse: z.string().optional().nullable(),
+      cp: z.string().optional().nullable(),
+      ville: z.string().optional().nullable(),
+      tel: z.string().optional().nullable(),
+      code_naf: z.string().optional().nullable(),
+      activite: z.string().optional().nullable(),
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      converted: z
+        .lazy(() => UserCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () => ProspectStatusHistoryCreateNestedManyWithoutProspectInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedCreateWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectUncheckedCreateWithoutAssigneeInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      raison_sociale: z.string().optional().nullable(),
+      adresse: z.string().optional().nullable(),
+      cp: z.string().optional().nullable(),
+      ville: z.string().optional().nullable(),
+      tel: z.string().optional().nullable(),
+      code_naf: z.string().optional().nullable(),
+      activite: z.string().optional().nullable(),
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      convertedId: z.string().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      statusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutProspectInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectCreateOrConnectWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectCreateOrConnectWithoutAssigneeInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => ProspectCreateWithoutAssigneeInputSchema),
+        z.lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectCreateManyAssigneeInputEnvelopeSchema: z.ZodType<Prisma.ProspectCreateManyAssigneeInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => ProspectCreateManyAssigneeInputSchema),
+        z.lazy(() => ProspectCreateManyAssigneeInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const ProspectCreateWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectCreateWithoutConvertedInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      raison_sociale: z.string().optional().nullable(),
+      adresse: z.string().optional().nullable(),
+      cp: z.string().optional().nullable(),
+      ville: z.string().optional().nullable(),
+      tel: z.string().optional().nullable(),
+      code_naf: z.string().optional().nullable(),
+      activite: z.string().optional().nullable(),
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      assignee: z
+        .lazy(() => UserCreateNestedOneWithoutAssignedInputSchema)
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () => ProspectStatusHistoryCreateNestedManyWithoutProspectInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedCreateWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectUncheckedCreateWithoutConvertedInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      raison_sociale: z.string().optional().nullable(),
+      adresse: z.string().optional().nullable(),
+      cp: z.string().optional().nullable(),
+      ville: z.string().optional().nullable(),
+      tel: z.string().optional().nullable(),
+      code_naf: z.string().optional().nullable(),
+      activite: z.string().optional().nullable(),
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      assigneeId: z.string().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      statusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutProspectInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectCreateOrConnectWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectCreateOrConnectWithoutConvertedInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => ProspectCreateWithoutConvertedInputSchema),
+        z.lazy(() => ProspectUncheckedCreateWithoutConvertedInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateWithoutUpdatedByUserInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      prospect: z.lazy(
+        () => ProspectCreateNestedOneWithoutStatusHistoryInputSchema
+      )
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      prospectId: z.string(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateOrConnectWithoutUpdatedByUserInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(
+          () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+        ),
+        z.lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateManyUpdatedByUserInputEnvelopeSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateManyUpdatedByUserInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => ProspectStatusHistoryCreateManyUpdatedByUserInputSchema),
+        z
+          .lazy(() => ProspectStatusHistoryCreateManyUpdatedByUserInputSchema)
+          .array()
       ]),
       skipDuplicates: z.boolean().optional()
     })
@@ -36464,6 +41040,18 @@ export const UserUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdate
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -36614,6 +41202,18 @@ export const UserUncheckedUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -37362,6 +41962,2458 @@ export const MessageUpdateManyWithWhereWithoutReceiverInputSchema: z.ZodType<Pri
     })
     .strict();
 
+export const ProspectUpsertWithWhereUniqueWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectUpsertWithWhereUniqueWithoutAssigneeInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => ProspectUpdateWithoutAssigneeInputSchema),
+        z.lazy(() => ProspectUncheckedUpdateWithoutAssigneeInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => ProspectCreateWithoutAssigneeInputSchema),
+        z.lazy(() => ProspectUncheckedCreateWithoutAssigneeInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectUpdateWithWhereUniqueWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectUpdateWithWhereUniqueWithoutAssigneeInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => ProspectUpdateWithoutAssigneeInputSchema),
+        z.lazy(() => ProspectUncheckedUpdateWithoutAssigneeInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectUpdateManyWithWhereWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectUpdateManyWithWhereWithoutAssigneeInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => ProspectUpdateManyMutationInputSchema),
+        z.lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectScalarWhereInputSchema: z.ZodType<Prisma.ProspectScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => ProspectScalarWhereInputSchema),
+          z.lazy(() => ProspectScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => ProspectScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => ProspectScalarWhereInputSchema),
+          z.lazy(() => ProspectScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      raison_sociale: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      adresse: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      cp: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      ville: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      tel: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      code_naf: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      activite: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      email: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      status: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      position: z
+        .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+        .optional()
+        .nullable(),
+      assigneeId: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      convertedId: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional()
+    })
+    .strict();
+
+export const ProspectUpsertWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectUpsertWithoutConvertedInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => ProspectUpdateWithoutConvertedInputSchema),
+        z.lazy(() => ProspectUncheckedUpdateWithoutConvertedInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => ProspectCreateWithoutConvertedInputSchema),
+        z.lazy(() => ProspectUncheckedCreateWithoutConvertedInputSchema)
+      ]),
+      where: z.lazy(() => ProspectWhereInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectUpdateToOneWithWhereWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectUpdateToOneWithWhereWithoutConvertedInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => ProspectUpdateWithoutConvertedInputSchema),
+        z.lazy(() => ProspectUncheckedUpdateWithoutConvertedInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectUpdateWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectUpdateWithoutConvertedInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      raison_sociale: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      adresse: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      cp: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      ville: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      code_naf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activite: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      assignee: z
+        .lazy(() => UserUpdateOneWithoutAssignedNestedInputSchema)
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () => ProspectStatusHistoryUpdateManyWithoutProspectNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedUpdateWithoutConvertedInputSchema: z.ZodType<Prisma.ProspectUncheckedUpdateWithoutConvertedInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      raison_sociale: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      adresse: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      cp: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      ville: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      code_naf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activite: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      assigneeId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutProspectNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpsertWithWhereUniqueWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpsertWithWhereUniqueWithoutUpdatedByUserInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(
+          () => ProspectStatusHistoryUpdateWithoutUpdatedByUserInputSchema
+        ),
+        z.lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateWithoutUpdatedByUserInputSchema
+        )
+      ]),
+      create: z.union([
+        z.lazy(
+          () => ProspectStatusHistoryCreateWithoutUpdatedByUserInputSchema
+        ),
+        z.lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateWithoutUpdatedByUserInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateWithWhereUniqueWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateWithWhereUniqueWithoutUpdatedByUserInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(
+          () => ProspectStatusHistoryUpdateWithoutUpdatedByUserInputSchema
+        ),
+        z.lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateWithoutUpdatedByUserInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateManyWithWhereWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateManyWithWhereWithoutUpdatedByUserInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => ProspectStatusHistoryUpdateManyMutationInputSchema),
+        z.lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryScalarWhereInputSchema: z.ZodType<Prisma.ProspectStatusHistoryScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema),
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => ProspectStatusHistoryScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema),
+          z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      prospectId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      previousStatus: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      newStatus: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      position: z
+        .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedBy: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const UserCreateWithoutAssignedInputSchema: z.ZodType<Prisma.UserCreateWithoutAssignedInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.coerce.date().optional().nullable(),
+      image: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      accounts: z
+        .lazy(() => AccountCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
+      subscriber: z
+        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedCreateWithoutAssignedInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutAssignedInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.coerce.date().optional().nullable(),
+      image: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      refererId: z.string().optional().nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedCreateNestedOneWithoutUserInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUncheckedCreateNestedManyWithoutRefererInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriber: z
+        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const UserCreateOrConnectWithoutAssignedInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutAssignedInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutAssignedInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutAssignedInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserCreateWithoutConvertedInputSchema: z.ZodType<Prisma.UserCreateWithoutConvertedInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.coerce.date().optional().nullable(),
+      image: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      accounts: z
+        .lazy(() => AccountCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
+      subscriber: z
+        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedCreateWithoutConvertedInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutConvertedInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.coerce.date().optional().nullable(),
+      image: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      refererId: z.string().optional().nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedCreateNestedOneWithoutUserInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUncheckedCreateNestedManyWithoutRefererInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriber: z
+        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const UserCreateOrConnectWithoutConvertedInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutConvertedInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutConvertedInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutConvertedInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateWithoutProspectInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedByUser: z
+        .lazy(() => UserCreateNestedOneWithoutProspectStatusHistoryInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedCreateWithoutProspectInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedBy: z.string().optional().nullable()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateOrConnectWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateOrConnectWithoutProspectInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema),
+        z.lazy(
+          () => ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateManyProspectInputEnvelopeSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateManyProspectInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => ProspectStatusHistoryCreateManyProspectInputSchema),
+        z.lazy(() => ProspectStatusHistoryCreateManyProspectInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const UserUpsertWithoutAssignedInputSchema: z.ZodType<Prisma.UserUpsertWithoutAssignedInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => UserUpdateWithoutAssignedInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutAssignedInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutAssignedInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutAssignedInputSchema)
+      ]),
+      where: z.lazy(() => UserWhereInputSchema).optional()
+    })
+    .strict();
+
+export const UserUpdateToOneWithWhereWithoutAssignedInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutAssignedInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => UserUpdateWithoutAssignedInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutAssignedInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserUpdateWithoutAssignedInputSchema: z.ZodType<Prisma.UserUpdateWithoutAssignedInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      password: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      accounts: z
+        .lazy(() => AccountUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
+      subscriber: z
+        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedUpdateWithoutAssignedInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutAssignedInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      password: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedUpdateOneWithoutUserNestedInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUncheckedUpdateManyWithoutRefererNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriber: z
+        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const UserUpsertWithoutConvertedInputSchema: z.ZodType<Prisma.UserUpsertWithoutConvertedInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => UserUpdateWithoutConvertedInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutConvertedInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutConvertedInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutConvertedInputSchema)
+      ]),
+      where: z.lazy(() => UserWhereInputSchema).optional()
+    })
+    .strict();
+
+export const UserUpdateToOneWithWhereWithoutConvertedInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutConvertedInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => UserUpdateWithoutConvertedInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutConvertedInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserUpdateWithoutConvertedInputSchema: z.ZodType<Prisma.UserUpdateWithoutConvertedInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      password: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      accounts: z
+        .lazy(() => AccountUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
+      subscriber: z
+        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedUpdateWithoutConvertedInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutConvertedInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      password: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedUpdateOneWithoutUserNestedInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUncheckedUpdateManyWithoutRefererNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriber: z
+        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpsertWithWhereUniqueWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpsertWithWhereUniqueWithoutProspectInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => ProspectStatusHistoryUpdateWithoutProspectInputSchema),
+        z.lazy(
+          () => ProspectStatusHistoryUncheckedUpdateWithoutProspectInputSchema
+        )
+      ]),
+      create: z.union([
+        z.lazy(() => ProspectStatusHistoryCreateWithoutProspectInputSchema),
+        z.lazy(
+          () => ProspectStatusHistoryUncheckedCreateWithoutProspectInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateWithWhereUniqueWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateWithWhereUniqueWithoutProspectInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectStatusHistoryWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => ProspectStatusHistoryUpdateWithoutProspectInputSchema),
+        z.lazy(
+          () => ProspectStatusHistoryUncheckedUpdateWithoutProspectInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateManyWithWhereWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateManyWithWhereWithoutProspectInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectStatusHistoryScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => ProspectStatusHistoryUpdateManyMutationInputSchema),
+        z.lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutProspectInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const ProspectCreateWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ProspectCreateWithoutStatusHistoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      raison_sociale: z.string().optional().nullable(),
+      adresse: z.string().optional().nullable(),
+      cp: z.string().optional().nullable(),
+      ville: z.string().optional().nullable(),
+      tel: z.string().optional().nullable(),
+      code_naf: z.string().optional().nullable(),
+      activite: z.string().optional().nullable(),
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      assignee: z
+        .lazy(() => UserCreateNestedOneWithoutAssignedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => UserCreateNestedOneWithoutConvertedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedCreateWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ProspectUncheckedCreateWithoutStatusHistoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      raison_sociale: z.string().optional().nullable(),
+      adresse: z.string().optional().nullable(),
+      cp: z.string().optional().nullable(),
+      ville: z.string().optional().nullable(),
+      tel: z.string().optional().nullable(),
+      code_naf: z.string().optional().nullable(),
+      activite: z.string().optional().nullable(),
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      assigneeId: z.string().optional().nullable(),
+      convertedId: z.string().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const ProspectCreateOrConnectWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ProspectCreateOrConnectWithoutStatusHistoryInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => ProspectCreateWithoutStatusHistoryInputSchema),
+        z.lazy(() => ProspectUncheckedCreateWithoutStatusHistoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserCreateWithoutProspectStatusHistoryInputSchema: z.ZodType<Prisma.UserCreateWithoutProspectStatusHistoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.coerce.date().optional().nullable(),
+      image: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      accounts: z
+        .lazy(() => AccountCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
+      subscriber: z
+        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedCreateWithoutProspectStatusHistoryInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutProspectStatusHistoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.coerce.date().optional().nullable(),
+      image: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      refererId: z.string().optional().nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedCreateNestedOneWithoutUserInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUncheckedCreateNestedManyWithoutRefererInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriber: z
+        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserCreateOrConnectWithoutProspectStatusHistoryInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutProspectStatusHistoryInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutProspectStatusHistoryInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutProspectStatusHistoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectUpsertWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ProspectUpsertWithoutStatusHistoryInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => ProspectUpdateWithoutStatusHistoryInputSchema),
+        z.lazy(() => ProspectUncheckedUpdateWithoutStatusHistoryInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => ProspectCreateWithoutStatusHistoryInputSchema),
+        z.lazy(() => ProspectUncheckedCreateWithoutStatusHistoryInputSchema)
+      ]),
+      where: z.lazy(() => ProspectWhereInputSchema).optional()
+    })
+    .strict();
+
+export const ProspectUpdateToOneWithWhereWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ProspectUpdateToOneWithWhereWithoutStatusHistoryInput> =
+  z
+    .object({
+      where: z.lazy(() => ProspectWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => ProspectUpdateWithoutStatusHistoryInputSchema),
+        z.lazy(() => ProspectUncheckedUpdateWithoutStatusHistoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const ProspectUpdateWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ProspectUpdateWithoutStatusHistoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      raison_sociale: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      adresse: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      cp: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      ville: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      code_naf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activite: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      assignee: z
+        .lazy(() => UserUpdateOneWithoutAssignedNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => UserUpdateOneWithoutConvertedNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedUpdateWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ProspectUncheckedUpdateWithoutStatusHistoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      raison_sociale: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      adresse: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      cp: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      ville: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      code_naf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activite: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      assigneeId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      convertedId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserUpsertWithoutProspectStatusHistoryInputSchema: z.ZodType<Prisma.UserUpsertWithoutProspectStatusHistoryInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => UserUpdateWithoutProspectStatusHistoryInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutProspectStatusHistoryInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutProspectStatusHistoryInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutProspectStatusHistoryInputSchema)
+      ]),
+      where: z.lazy(() => UserWhereInputSchema).optional()
+    })
+    .strict();
+
+export const UserUpdateToOneWithWhereWithoutProspectStatusHistoryInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutProspectStatusHistoryInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => UserUpdateWithoutProspectStatusHistoryInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutProspectStatusHistoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserUpdateWithoutProspectStatusHistoryInputSchema: z.ZodType<Prisma.UserUpdateWithoutProspectStatusHistoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      password: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      accounts: z
+        .lazy(() => AccountUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
+      subscriber: z
+        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedUpdateWithoutProspectStatusHistoryInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutProspectStatusHistoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      password: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedUpdateOneWithoutUserNestedInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUncheckedUpdateManyWithoutRefererNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriber: z
+        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      comment: z
+        .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
 export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithoutSentInput> =
   z
     .object({
@@ -37441,6 +44493,18 @@ export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -37531,6 +44595,18 @@ export const UserUncheckedCreateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -37625,6 +44701,18 @@ export const UserCreateWithoutReceivedInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       sent: z
         .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -37715,6 +44803,18 @@ export const UserUncheckedCreateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
         .optional(),
       sent: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -37889,6 +44989,18 @@ export const UserUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUpdateWithou
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -38039,6 +45151,18 @@ export const UserUncheckedUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -38202,6 +45326,18 @@ export const UserUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       sent: z
         .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -38352,6 +45488,18 @@ export const UserUncheckedUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
         .optional(),
       sent: z
         .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -38435,6 +45583,18 @@ export const UserCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -38525,6 +45685,18 @@ export const UserUncheckedCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -38699,6 +45871,18 @@ export const UserUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -38849,6 +46033,18 @@ export const UserUncheckedUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -38932,6 +46128,18 @@ export const UserCreateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -39019,6 +46227,18 @@ export const UserUncheckedCreateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -39193,6 +46413,18 @@ export const UserUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -39340,6 +46572,18 @@ export const UserUncheckedUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -39423,6 +46667,18 @@ export const UserCreateWithoutCustomerInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -39513,6 +46769,18 @@ export const UserUncheckedCreateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -39687,6 +46955,18 @@ export const UserUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -39837,6 +47117,18 @@ export const UserUncheckedUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -40389,6 +47681,18 @@ export const UserCreateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserCre
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -40479,6 +47783,18 @@ export const UserUncheckedCreateWithoutSubscriptionsInputSchema: z.ZodType<Prism
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -40828,6 +48144,18 @@ export const UserUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserUpd
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -40978,6 +48306,18 @@ export const UserUncheckedUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prism
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -41061,6 +48401,18 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -41151,6 +48503,18 @@ export const UserUncheckedCreateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -41325,6 +48689,18 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -41475,6 +48851,18 @@ export const UserUncheckedUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -41558,6 +48946,18 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -41648,6 +49048,18 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -41822,6 +49234,18 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -41972,6 +49396,18 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -42055,6 +49491,18 @@ export const UserCreateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserCre
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -42143,6 +49591,18 @@ export const UserUncheckedCreateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -42317,6 +49777,18 @@ export const UserUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserUpd
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -42465,6 +49937,18 @@ export const UserUncheckedUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -43346,6 +50830,18 @@ export const UserCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -43436,6 +50932,18 @@ export const UserUncheckedCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -43690,6 +51198,18 @@ export const UserUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -43840,6 +51360,18 @@ export const UserUncheckedUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -44560,6 +52092,18 @@ export const UserCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -44650,6 +52194,18 @@ export const UserUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -45129,6 +52685,18 @@ export const UserUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -45279,6 +52847,18 @@ export const UserUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -45490,6 +53070,18 @@ export const UserCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -45580,6 +53172,18 @@ export const UserUncheckedCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -46048,6 +53652,18 @@ export const UserUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -46198,6 +53814,18 @@ export const UserUncheckedUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -46589,6 +54217,18 @@ export const UserCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -46679,6 +54319,18 @@ export const UserUncheckedCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -47199,6 +54851,18 @@ export const UserUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUpdateWithou
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -47349,6 +55013,18 @@ export const UserUncheckedUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -47553,6 +55229,18 @@ export const UserCreateWithoutCommentInputSchema: z.ZodType<Prisma.UserCreateWit
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -47643,6 +55331,18 @@ export const UserUncheckedCreateWithoutCommentInputSchema: z.ZodType<Prisma.User
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -47943,6 +55643,18 @@ export const UserUpdateWithoutCommentInputSchema: z.ZodType<Prisma.UserUpdateWit
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -48093,6 +55805,18 @@ export const UserUncheckedUpdateWithoutCommentInputSchema: z.ZodType<Prisma.User
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -48251,6 +55975,18 @@ export const UserCreateWithoutSubscriberInputSchema: z.ZodType<Prisma.UserCreate
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -48341,6 +56077,18 @@ export const UserUncheckedCreateWithoutSubscriberInputSchema: z.ZodType<Prisma.U
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -48771,6 +56519,18 @@ export const UserUpdateWithoutSubscriberInputSchema: z.ZodType<Prisma.UserUpdate
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -48921,6 +56681,18 @@ export const UserUncheckedUpdateWithoutSubscriberInputSchema: z.ZodType<Prisma.U
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -49254,6 +57026,18 @@ export const UserCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -49344,6 +57128,18 @@ export const UserUncheckedCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -49518,6 +57314,18 @@ export const UserUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUpdateWithou
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -49668,6 +57476,18 @@ export const UserUncheckedUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -51376,6 +59196,18 @@ export const UserCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -51466,6 +59298,18 @@ export const UserUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -51640,6 +59484,18 @@ export const UserUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserUpdateWith
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -51790,6 +59646,18 @@ export const UserUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -51873,6 +59741,18 @@ export const UserCreateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserCr
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -51961,6 +59841,18 @@ export const UserUncheckedCreateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -52178,6 +60070,18 @@ export const UserUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserUp
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -52326,6 +60230,18 @@ export const UserUncheckedUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -52539,6 +60455,18 @@ export const UserCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserCreate
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -52629,6 +60557,18 @@ export const UserUncheckedCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -52903,6 +60843,18 @@ export const UserUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserUpdate
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -53053,6 +61005,18 @@ export const UserUncheckedUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -53417,6 +61381,18 @@ export const UserCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       received: z
         .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -53507,6 +61483,18 @@ export const UserUncheckedCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       received: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedCreateNestedManyWithoutAssigneeInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedCreateNestedOneWithoutConvertedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedCreateNestedManyWithoutUpdatedByUserInputSchema
+        )
         .optional()
     })
     .strict();
@@ -53681,6 +61669,18 @@ export const UserUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserUpdateWith
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -53831,6 +61831,18 @@ export const UserUncheckedUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -54115,6 +62127,38 @@ export const MessageCreateManyReceiverInputSchema: z.ZodType<Prisma.MessageCreat
       content: z.string(),
       createdAt: z.coerce.date().optional(),
       senderEmail: z.string()
+    })
+    .strict();
+
+export const ProspectCreateManyAssigneeInputSchema: z.ZodType<Prisma.ProspectCreateManyAssigneeInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      raison_sociale: z.string().optional().nullable(),
+      adresse: z.string().optional().nullable(),
+      cp: z.string().optional().nullable(),
+      ville: z.string().optional().nullable(),
+      tel: z.string().optional().nullable(),
+      code_naf: z.string().optional().nullable(),
+      activite: z.string().optional().nullable(),
+      email: z.string().optional().nullable(),
+      status: z.string().optional(),
+      position: z.number().optional().nullable(),
+      convertedId: z.string().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateManyUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateManyUpdatedByUserInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      prospectId: z.string(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional()
     })
     .strict();
 
@@ -55728,6 +63772,18 @@ export const UserUpdateWithoutRefererInputSchema: z.ZodType<Prisma.UserUpdateWit
         .optional(),
       received: z
         .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -55874,6 +63930,18 @@ export const UserUncheckedUpdateWithoutRefererInputSchema: z.ZodType<Prisma.User
         .optional(),
       received: z
         .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      assigned: z
+        .lazy(() => ProspectUncheckedUpdateManyWithoutAssigneeNestedInputSchema)
+        .optional(),
+      converted: z
+        .lazy(() => ProspectUncheckedUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      ProspectStatusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserNestedInputSchema
+        )
         .optional()
     })
     .strict();
@@ -57261,6 +65329,581 @@ export const MessageUncheckedUpdateManyWithoutReceiverInputSchema: z.ZodType<Pri
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional()
+    })
+    .strict();
+
+export const ProspectUpdateWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectUpdateWithoutAssigneeInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      raison_sociale: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      adresse: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      cp: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      ville: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      code_naf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activite: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      converted: z
+        .lazy(() => UserUpdateOneWithoutConvertedNestedInputSchema)
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () => ProspectStatusHistoryUpdateManyWithoutProspectNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedUpdateWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectUncheckedUpdateWithoutAssigneeInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      raison_sociale: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      adresse: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      cp: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      ville: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      code_naf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activite: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      convertedId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      statusHistory: z
+        .lazy(
+          () =>
+            ProspectStatusHistoryUncheckedUpdateManyWithoutProspectNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectUncheckedUpdateManyWithoutAssigneeInputSchema: z.ZodType<Prisma.ProspectUncheckedUpdateManyWithoutAssigneeInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      raison_sociale: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      adresse: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      cp: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      ville: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tel: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      code_naf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activite: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      status: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      convertedId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateWithoutUpdatedByUserInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      prospect: z
+        .lazy(
+          () => ProspectUpdateOneRequiredWithoutStatusHistoryNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedUpdateWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedUpdateWithoutUpdatedByUserInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      prospectId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedUpdateManyWithoutUpdatedByUserInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      prospectId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateManyProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateManyProspectInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      previousStatus: z.string(),
+      newStatus: z.string(),
+      position: z.number().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedBy: z.string().optional().nullable()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateWithoutProspectInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedByUser: z
+        .lazy(() => UserUpdateOneWithoutProspectStatusHistoryNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedUpdateWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedUpdateWithoutProspectInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedBy: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUncheckedUpdateManyWithoutProspectInputSchema: z.ZodType<Prisma.ProspectStatusHistoryUncheckedUpdateManyWithoutProspectInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      previousStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      newStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedBy: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
     })
     .strict();
 
@@ -60504,6 +69147,7 @@ export const ProspectFindFirstArgsSchema: z.ZodType<Prisma.ProspectFindFirstArgs
   z
     .object({
       select: ProspectSelectSchema.optional(),
+      include: ProspectIncludeSchema.optional(),
       where: ProspectWhereInputSchema.optional(),
       orderBy: z
         .union([
@@ -60527,6 +69171,7 @@ export const ProspectFindFirstOrThrowArgsSchema: z.ZodType<Prisma.ProspectFindFi
   z
     .object({
       select: ProspectSelectSchema.optional(),
+      include: ProspectIncludeSchema.optional(),
       where: ProspectWhereInputSchema.optional(),
       orderBy: z
         .union([
@@ -60550,6 +69195,7 @@ export const ProspectFindManyArgsSchema: z.ZodType<Prisma.ProspectFindManyArgs> 
   z
     .object({
       select: ProspectSelectSchema.optional(),
+      include: ProspectIncludeSchema.optional(),
       where: ProspectWhereInputSchema.optional(),
       orderBy: z
         .union([
@@ -60606,6 +69252,7 @@ export const ProspectFindUniqueArgsSchema: z.ZodType<Prisma.ProspectFindUniqueAr
   z
     .object({
       select: ProspectSelectSchema.optional(),
+      include: ProspectIncludeSchema.optional(),
       where: ProspectWhereUniqueInputSchema
     })
     .strict();
@@ -60614,7 +69261,132 @@ export const ProspectFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.ProspectFindU
   z
     .object({
       select: ProspectSelectSchema.optional(),
+      include: ProspectIncludeSchema.optional(),
       where: ProspectWhereUniqueInputSchema
+    })
+    .strict();
+
+export const ProspectStatusHistoryFindFirstArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryFindFirstArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      where: ProspectStatusHistoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          ProspectStatusHistoryOrderByWithRelationInputSchema.array(),
+          ProspectStatusHistoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: ProspectStatusHistoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          ProspectStatusHistoryScalarFieldEnumSchema,
+          ProspectStatusHistoryScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryFindFirstOrThrowArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      where: ProspectStatusHistoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          ProspectStatusHistoryOrderByWithRelationInputSchema.array(),
+          ProspectStatusHistoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: ProspectStatusHistoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          ProspectStatusHistoryScalarFieldEnumSchema,
+          ProspectStatusHistoryScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryFindManyArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryFindManyArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      where: ProspectStatusHistoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          ProspectStatusHistoryOrderByWithRelationInputSchema.array(),
+          ProspectStatusHistoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: ProspectStatusHistoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          ProspectStatusHistoryScalarFieldEnumSchema,
+          ProspectStatusHistoryScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryAggregateArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryAggregateArgs> =
+  z
+    .object({
+      where: ProspectStatusHistoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          ProspectStatusHistoryOrderByWithRelationInputSchema.array(),
+          ProspectStatusHistoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: ProspectStatusHistoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryGroupByArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryGroupByArgs> =
+  z
+    .object({
+      where: ProspectStatusHistoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          ProspectStatusHistoryOrderByWithAggregationInputSchema.array(),
+          ProspectStatusHistoryOrderByWithAggregationInputSchema
+        ])
+        .optional(),
+      by: ProspectStatusHistoryScalarFieldEnumSchema.array(),
+      having:
+        ProspectStatusHistoryScalarWhereWithAggregatesInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryFindUniqueArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryFindUniqueArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      where: ProspectStatusHistoryWhereUniqueInputSchema
+    })
+    .strict();
+
+export const ProspectStatusHistoryFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      where: ProspectStatusHistoryWhereUniqueInputSchema
     })
     .strict();
 
@@ -64512,6 +73284,110 @@ export const OutboxFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.OutboxFindUniqu
     })
     .strict();
 
+export const CityFindFirstArgsSchema: z.ZodType<Prisma.CityFindFirstArgs> = z
+  .object({
+    select: CitySelectSchema.optional(),
+    where: CityWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        CityOrderByWithRelationInputSchema.array(),
+        CityOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: CityWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional(),
+    distinct: z
+      .union([CityScalarFieldEnumSchema, CityScalarFieldEnumSchema.array()])
+      .optional()
+  })
+  .strict();
+
+export const CityFindFirstOrThrowArgsSchema: z.ZodType<Prisma.CityFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: CitySelectSchema.optional(),
+      where: CityWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          CityOrderByWithRelationInputSchema.array(),
+          CityOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: CityWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([CityScalarFieldEnumSchema, CityScalarFieldEnumSchema.array()])
+        .optional()
+    })
+    .strict();
+
+export const CityFindManyArgsSchema: z.ZodType<Prisma.CityFindManyArgs> = z
+  .object({
+    select: CitySelectSchema.optional(),
+    where: CityWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        CityOrderByWithRelationInputSchema.array(),
+        CityOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: CityWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional(),
+    distinct: z
+      .union([CityScalarFieldEnumSchema, CityScalarFieldEnumSchema.array()])
+      .optional()
+  })
+  .strict();
+
+export const CityAggregateArgsSchema: z.ZodType<Prisma.CityAggregateArgs> = z
+  .object({
+    where: CityWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        CityOrderByWithRelationInputSchema.array(),
+        CityOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: CityWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional()
+  })
+  .strict();
+
+export const CityGroupByArgsSchema: z.ZodType<Prisma.CityGroupByArgs> = z
+  .object({
+    where: CityWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        CityOrderByWithAggregationInputSchema.array(),
+        CityOrderByWithAggregationInputSchema
+      ])
+      .optional(),
+    by: CityScalarFieldEnumSchema.array(),
+    having: CityScalarWhereWithAggregatesInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional()
+  })
+  .strict();
+
+export const CityFindUniqueArgsSchema: z.ZodType<Prisma.CityFindUniqueArgs> = z
+  .object({
+    select: CitySelectSchema.optional(),
+    where: CityWhereUniqueInputSchema
+  })
+  .strict();
+
+export const CityFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CityFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: CitySelectSchema.optional(),
+      where: CityWhereUniqueInputSchema
+    })
+    .strict();
+
 export const UserCreateArgsSchema: z.ZodType<Prisma.UserCreateArgs> = z
   .object({
     select: UserSelectSchema.optional(),
@@ -64601,6 +73477,7 @@ export const UserDeleteManyArgsSchema: z.ZodType<Prisma.UserDeleteManyArgs> = z
 export const ProspectCreateArgsSchema: z.ZodType<Prisma.ProspectCreateArgs> = z
   .object({
     select: ProspectSelectSchema.optional(),
+    include: ProspectIncludeSchema.optional(),
     data: z
       .union([ProspectCreateInputSchema, ProspectUncheckedCreateInputSchema])
       .optional()
@@ -64610,6 +73487,7 @@ export const ProspectCreateArgsSchema: z.ZodType<Prisma.ProspectCreateArgs> = z
 export const ProspectUpsertArgsSchema: z.ZodType<Prisma.ProspectUpsertArgs> = z
   .object({
     select: ProspectSelectSchema.optional(),
+    include: ProspectIncludeSchema.optional(),
     where: ProspectWhereUniqueInputSchema,
     create: z.union([
       ProspectCreateInputSchema,
@@ -64647,6 +73525,7 @@ export const ProspectCreateManyAndReturnArgsSchema: z.ZodType<Prisma.ProspectCre
 export const ProspectDeleteArgsSchema: z.ZodType<Prisma.ProspectDeleteArgs> = z
   .object({
     select: ProspectSelectSchema.optional(),
+    include: ProspectIncludeSchema.optional(),
     where: ProspectWhereUniqueInputSchema
   })
   .strict();
@@ -64654,6 +73533,7 @@ export const ProspectDeleteArgsSchema: z.ZodType<Prisma.ProspectDeleteArgs> = z
 export const ProspectUpdateArgsSchema: z.ZodType<Prisma.ProspectUpdateArgs> = z
   .object({
     select: ProspectSelectSchema.optional(),
+    include: ProspectIncludeSchema.optional(),
     data: z.union([
       ProspectUpdateInputSchema,
       ProspectUncheckedUpdateInputSchema
@@ -64690,6 +73570,111 @@ export const ProspectDeleteManyArgsSchema: z.ZodType<Prisma.ProspectDeleteManyAr
   z
     .object({
       where: ProspectWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      data: z.union([
+        ProspectStatusHistoryCreateInputSchema,
+        ProspectStatusHistoryUncheckedCreateInputSchema
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpsertArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryUpsertArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      where: ProspectStatusHistoryWhereUniqueInputSchema,
+      create: z.union([
+        ProspectStatusHistoryCreateInputSchema,
+        ProspectStatusHistoryUncheckedCreateInputSchema
+      ]),
+      update: z.union([
+        ProspectStatusHistoryUpdateInputSchema,
+        ProspectStatusHistoryUncheckedUpdateInputSchema
+      ])
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateManyArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        ProspectStatusHistoryCreateManyInputSchema,
+        ProspectStatusHistoryCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryCreateManyAndReturnArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        ProspectStatusHistoryCreateManyInputSchema,
+        ProspectStatusHistoryCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryDeleteArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryDeleteArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      where: ProspectStatusHistoryWhereUniqueInputSchema
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateArgs> =
+  z
+    .object({
+      select: ProspectStatusHistorySelectSchema.optional(),
+      include: ProspectStatusHistoryIncludeSchema.optional(),
+      data: z.union([
+        ProspectStatusHistoryUpdateInputSchema,
+        ProspectStatusHistoryUncheckedUpdateInputSchema
+      ]),
+      where: ProspectStatusHistoryWhereUniqueInputSchema
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateManyArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        ProspectStatusHistoryUpdateManyMutationInputSchema,
+        ProspectStatusHistoryUncheckedUpdateManyInputSchema
+      ]),
+      where: ProspectStatusHistoryWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        ProspectStatusHistoryUpdateManyMutationInputSchema,
+        ProspectStatusHistoryUncheckedUpdateManyInputSchema
+      ]),
+      where: ProspectStatusHistoryWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const ProspectStatusHistoryDeleteManyArgsSchema: z.ZodType<Prisma.ProspectStatusHistoryDeleteManyArgs> =
+  z
+    .object({
+      where: ProspectStatusHistoryWhereInputSchema.optional(),
       limit: z.number().optional()
     })
     .strict();
@@ -67893,3 +76878,85 @@ export const OutboxDeleteManyArgsSchema: z.ZodType<Prisma.OutboxDeleteManyArgs> 
       limit: z.number().optional()
     })
     .strict();
+
+export const CityCreateArgsSchema: z.ZodType<Prisma.CityCreateArgs> = z
+  .object({
+    select: CitySelectSchema.optional(),
+    data: z.union([CityCreateInputSchema, CityUncheckedCreateInputSchema])
+  })
+  .strict();
+
+export const CityUpsertArgsSchema: z.ZodType<Prisma.CityUpsertArgs> = z
+  .object({
+    select: CitySelectSchema.optional(),
+    where: CityWhereUniqueInputSchema,
+    create: z.union([CityCreateInputSchema, CityUncheckedCreateInputSchema]),
+    update: z.union([CityUpdateInputSchema, CityUncheckedUpdateInputSchema])
+  })
+  .strict();
+
+export const CityCreateManyArgsSchema: z.ZodType<Prisma.CityCreateManyArgs> = z
+  .object({
+    data: z.union([
+      CityCreateManyInputSchema,
+      CityCreateManyInputSchema.array()
+    ]),
+    skipDuplicates: z.boolean().optional()
+  })
+  .strict();
+
+export const CityCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CityCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        CityCreateManyInputSchema,
+        CityCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const CityDeleteArgsSchema: z.ZodType<Prisma.CityDeleteArgs> = z
+  .object({
+    select: CitySelectSchema.optional(),
+    where: CityWhereUniqueInputSchema
+  })
+  .strict();
+
+export const CityUpdateArgsSchema: z.ZodType<Prisma.CityUpdateArgs> = z
+  .object({
+    select: CitySelectSchema.optional(),
+    data: z.union([CityUpdateInputSchema, CityUncheckedUpdateInputSchema]),
+    where: CityWhereUniqueInputSchema
+  })
+  .strict();
+
+export const CityUpdateManyArgsSchema: z.ZodType<Prisma.CityUpdateManyArgs> = z
+  .object({
+    data: z.union([
+      CityUpdateManyMutationInputSchema,
+      CityUncheckedUpdateManyInputSchema
+    ]),
+    where: CityWhereInputSchema.optional(),
+    limit: z.number().optional()
+  })
+  .strict();
+
+export const CityUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CityUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        CityUpdateManyMutationInputSchema,
+        CityUncheckedUpdateManyInputSchema
+      ]),
+      where: CityWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const CityDeleteManyArgsSchema: z.ZodType<Prisma.CityDeleteManyArgs> = z
+  .object({
+    where: CityWhereInputSchema.optional(),
+    limit: z.number().optional()
+  })
+  .strict();

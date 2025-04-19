@@ -1,4 +1,4 @@
-import { Prisma, SubscriptionStatus } from '@prisma/client';
+import { Prisma, SubscriptionStatus, Prospect } from '@prisma/client';
 import { eachDayOfInterval } from 'date-fns';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -10,6 +10,7 @@ import Analytics from 'components/analytics';
 import ModalButton from 'components/modal-button';
 import UserCreateModal from 'components/modal/create-user';
 import ProspectsImportModal from 'components/modal/prospects-import';
+import ProspectsKanbanWrapper from 'components/kanban/ProspectsKanbanWrapper';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
@@ -63,33 +64,38 @@ export default async function AllAffiliation({
     })
   };
 
-  const [affiliates, users, displayUsers] = await db.$transaction([
-    db.user.findMany({
-      where: {
-        referer: { id: session.user.id }
-      }
-    }),
-    db.user.findMany({
-      select: { createdAt: true },
-      where,
-      orderBy: { createdAt: 'desc' }
-    }),
-    db.user.findMany({
-      include: {
-        sites: { orderBy: { createdAt: 'desc' } },
-        subscriptions: {
-          include: { price: { include: { product: true } } },
-          orderBy: {
-            ended_at: 'desc'
-          }
+  const [affiliates, users, displayUsers, prospectsList] =
+    await db.$transaction([
+      db.user.findMany({
+        where: {
+          referer: { id: session.user.id }
         }
-      },
-      where,
-      orderBy: { createdAt: 'desc' },
-      take,
-      skip: (page - 1) * take
-    })
-  ]);
+      }),
+      db.user.findMany({
+        select: { createdAt: true },
+        where,
+        orderBy: { createdAt: 'desc' }
+      }),
+      db.user.findMany({
+        include: {
+          sites: { orderBy: { createdAt: 'desc' } },
+          subscriptions: {
+            include: { price: { include: { product: true } } },
+            orderBy: {
+              ended_at: 'desc'
+            }
+          }
+        },
+        where,
+        orderBy: { createdAt: 'desc' },
+        take,
+        skip: (page - 1) * take
+      }),
+      db.prospect.findMany({
+        where: { assigneeId: session.user.id },
+        orderBy: { position: 'asc' }
+      })
+    ]);
 
   const affiliateGroups = affiliates.reduce(
     (acc, user) => {
@@ -124,6 +130,20 @@ export default async function AllAffiliation({
     date: date.toDateString(),
     Users: usersGroups[date.toDateString()] || 0
   }));
+
+  // Group prospects by status
+  const prospectsByStatus: Record<string, Prospect[]> = {};
+  prospectsList.forEach(p => {
+    if (!prospectsByStatus[p.status]) prospectsByStatus[p.status] = [];
+    prospectsByStatus[p.status].push(p);
+  });
+  const statuses = ['NEW', 'IN_PROGRESS', 'WON', 'LOST'];
+  const statusLabels: Record<string, string> = {
+    NEW: 'Nouveau',
+    IN_PROGRESS: 'En cours',
+    WON: 'Gagné',
+    LOST: 'Perdu'
+  };
 
   return (
     <div className="flex flex-col space-y-12 p-8">
@@ -162,6 +182,12 @@ export default async function AllAffiliation({
             </div>
           </hgroup>
         </div>
+
+        <ProspectsKanbanWrapper
+          initialColumns={prospectsByStatus}
+          statuses={statuses}
+          statusLabels={statusLabels}
+        />
 
         <NewUsersChart
           data={chartUsers}

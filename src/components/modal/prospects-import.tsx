@@ -14,7 +14,7 @@ import { ProspectsTable } from 'app/app/(dashboard)/users/prospects-table';
 import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
 import useTranslation from 'hooks/use-translation';
-import { createUser } from 'lib/actions';
+import { assignProspect, createUser } from 'lib/actions';
 import { z } from 'zod';
 import { ProspectSchema } from '../../../prisma/generated/zod';
 import { useModal } from './provider';
@@ -77,6 +77,7 @@ const Prospects = () => {
       $selection={$selection}
       $prospects={$prospects({
         where: {
+          assigneeId: { equals: null },
           ...(search !== '' && {
             OR: [
               { adresse: { contains: search } },
@@ -112,8 +113,17 @@ export default function ProspectsImportModal() {
     <form
       className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700 flex flex-col gap-4"
       action={async (data: FormData) => {
-        console.log(data.getAll('selected'));
-        alert('Pas encore terminé 😉 !');
+        assignProspect(data).then(res => {
+          if (res.error) {
+            toast.error(res.error);
+            console.error(res.error);
+          } else {
+            modal?.hide();
+            router.refresh();
+            toast.success('Prospects assigned!');
+            va.track('Prospects assigned');
+          }
+        });
       }}
     >
       <Suspense fallback={null}>

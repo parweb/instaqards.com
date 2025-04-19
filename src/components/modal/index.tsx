@@ -1,6 +1,5 @@
 'use client';
 
-import FocusTrap from 'focus-trap-react';
 import { AnimatePresence, motion } from 'motion/react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
@@ -64,23 +63,21 @@ export default function Modal({
                 onClick={() => setShowModal(false)}
               />
 
-              <FocusTrap focusTrapOptions={{ initialFocus: false }}>
-                <motion.div
-                  ref={desktopModalRef}
-                  key="desktop-modal"
-                  className="fixed inset-0 hidden min-h-screen items-center justify-center md:flex"
-                  initial={{ scale: 0.95 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0.95 }}
-                  onMouseDown={e => {
-                    if (desktopModalRef.current === e.target) {
-                      setShowModal(false);
-                    }
-                  }}
-                >
-                  {children}
-                </motion.div>
-              </FocusTrap>
+              <motion.div
+                ref={desktopModalRef}
+                key="desktop-modal"
+                className="fixed inset-0 hidden min-h-screen items-center justify-center md:flex"
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.95 }}
+                onMouseDown={e => {
+                  if (desktopModalRef.current === e.target) {
+                    setShowModal(false);
+                  }
+                }}
+              >
+                {children}
+              </motion.div>
             </>
           )}
         </div>

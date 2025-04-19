@@ -60,6 +60,10 @@ model User {
   sent           Message[]       @relation("Sent")
   received       Message[]       @relation("Received")
 
+  assigned              Prospect[]              @relation("AssignedProspects")
+  converted             Prospect?               @relation("ConvertedProspects")
+  ProspectStatusHistory ProspectStatusHistory[]
+
   @@index([email])
   @@index([role])
   @@index([refererId])
@@ -80,6 +84,20 @@ model Prospect {
   activite       String?
   email          String?
 
+  status   String @default("NEW")
+  position Float? @default(0)
+
+  assignee   User?   @relation("AssignedProspects", fields: [assigneeId], references: [id])
+  assigneeId String?
+
+  converted   User?   @relation("ConvertedProspects", fields: [convertedId], references: [id])
+  convertedId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  statusHistory ProspectStatusHistory[]
+
   @@index([email])
   @@index([ville])
   @@index([cp])
@@ -88,6 +106,29 @@ model Prospect {
   @@index([activite])
   @@index([activite, code_naf])
   @@index([ville, cp])
+  @@index([status])
+  @@index([assigneeId])
+  @@index([convertedId])
+  @@index([status, position])
+}
+
+model ProspectStatusHistory {
+  id String @id @default(cuid())
+
+  prospect   Prospect @relation(fields: [prospectId], references: [id], onDelete: Cascade)
+  prospectId String
+
+  previousStatus String
+  newStatus      String
+  position       Float?
+
+  createdAt     DateTime @default(now())
+  updatedBy     String?
+  updatedByUser User?    @relation(fields: [updatedBy], references: [id])
+
+  @@index([prospectId])
+  @@index([createdAt])
+  @@index([updatedBy])
 }
 
 model Message {
@@ -711,4 +752,44 @@ model Outbox {
   @@index([createdAt])
   @@index([status])
   @@index([email])
+}
+
+model City {
+  id             Int     @id @default(autoincrement())
+  departement    String?
+  slug           String? @unique
+  nom            String?
+  nomSimple      String?
+  nomReel        String?
+  nomSoundex     String?
+  nomMetaphone   String?
+  codePostal     String?
+  commune        String?
+  codeCommune    String  @unique
+  arrondissement Int?
+  canton         String?
+  amdi           Int?
+  population2010 Int?
+  population1999 Int?
+  population2012 Int?
+  densite2010    Int?
+  surface        Float?
+  longitudeDeg   Float?
+  latitudeDeg    Float?
+  longitudeGrd   String?
+  latitudeGrd    String?
+  longitudeDms   String?
+  latitudeDms    String?
+  zmin           Int?
+  zmax           Int?
+
+  @@index([departement])
+  @@index([nom])
+  @@index([nomReel])
+  @@index([codePostal])
+  @@index([longitudeDeg, latitudeDeg])
+  @@index([nomSoundex])
+  @@index([nomMetaphone])
+  @@index([population2010])
+  @@index([nomSimple])
 }

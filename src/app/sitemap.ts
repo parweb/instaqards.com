@@ -5,36 +5,42 @@ import * as feature from 'data/features';
 import * as city from 'data/city';
 
 export default async function Sitemap() {
-  const sites = await db.site.findMany({ orderBy: { updatedAt: 'desc' } });
+  const [sites, allCities] = await Promise.all([
+    db.site.findMany({ orderBy: { updatedAt: 'desc' } }),
+    city.all()
+  ]);
 
-  return [
-    ...marketingRoutes.map(route => ({
-      url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}${route}`,
+  const marketingUrls = marketingRoutes.map(route => ({
+    url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}${route}`,
+    lastModified: new Date()
+  }));
+
+  const siteUrls = sites.flatMap(site => [
+    {
+      url: `https://${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
       lastModified: new Date()
-    })),
-    ...sites.flatMap(site => [
-      {
-        url: `https://${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
-        lastModified: new Date() // site.updatedAt
-      },
-      {
-        url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/${site.subdomain}`,
-        lastModified: new Date() // site.updatedAt
-      }
-    ]),
-    ...job.all.flatMap(job => [
-      {
-        url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/pro/${job.id}`,
-        lastModified: new Date()
-      },
-      ...city.all.map(city => ({
-        url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/pro/${job.id}-${city.name}-${city.postal}`,
-        lastModified: new Date()
-      }))
-    ]),
-    ...feature.all.map(feature => ({
-      url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/feature/${feature.id}`,
+    },
+    {
+      url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/${site.subdomain}`,
+      lastModified: new Date()
+    }
+  ]);
+
+  const jobUrls = job.all.flatMap(job => [
+    {
+      url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/pro/${job.id}`,
+      lastModified: new Date()
+    },
+    ...allCities.map(city => ({
+      url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/pro/${job.id}-${city.slug?.replaceAll('-', '_')}`,
       lastModified: new Date()
     }))
-  ];
+  ]);
+
+  const featureUrls = feature.all.map(feature => ({
+    url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/feature/${feature.id}`,
+    lastModified: new Date()
+  }));
+
+  return [...marketingUrls, ...siteUrls, ...jobUrls, ...featureUrls];
 }
