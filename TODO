@@ -1,11 +1,9 @@
 
 TODO
 
-
      -> option background vertical double bg avec blur et/ou background secondaire
-     -> logo qark dans les socials
+     -> logo qards dans les socials
      -> philipain social network -> application mobile
-     -> prospect ce retrouve partout ou y'a des users 
      -> pré-chargé la qards avec les infos du fichier client
 
      -> commercial
@@ -40,7 +38,6 @@ TODO
      -> tiktok garder que le lecteur (+ bug sur ilias)
      -> avis google ? peut on les recupéré ?
      -> tiktok prend en compte les url mobile
-     -> statistiques plus avancé sur les qards
 
      -> generator to email (commercial crée la qard demande un email ca envoi le un lien pour finir linscription)
      -> qards du mois (abonnement offert)
@@ -53,6 +50,8 @@ TODO
      -> univers music, girly (template)
      -> pas claire qu'il faut payer pour que la qards soit public
 
+DONE -> prospect ce retrouve partout ou y'a des users 
+DONE -> statistiques plus avancé sur les qards
 DONE -> block iframe simple
 DONE -> seller peut changer le propriétaire dune qards
 DONE -> modifier les infos du users 
