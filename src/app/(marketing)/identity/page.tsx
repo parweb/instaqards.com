@@ -1,11 +1,12 @@
-import { Button } from 'components/ui/button';
-import { cn } from 'lib/utils';
-import { DownloadIcon } from 'lucide-react';
+'use cache';
+
 import Image from 'next/image';
+
+import { cn } from 'lib/utils';
 import { boldonse } from 'styles/fonts';
 import { DownloadButton } from './client';
 
-export default function Identity() {
+export default async function Identity() {
   return (
     <div className="p-10 flex flex-col gap-10 max-w-screen-lg mx-auto">
       <div className="flex flex-col gap-4">

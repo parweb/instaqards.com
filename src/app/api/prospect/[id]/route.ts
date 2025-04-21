@@ -2,15 +2,16 @@ import { NextResponse } from 'next/server';
 import { db } from 'helpers/db';
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export async function GET(request: Request, { params }: Props) {
   try {
+    const { id } = await params;
     const prospect = await db.prospect.findUnique({
-      where: { id: params.id }
+      where: { id }
     });
 
     if (!prospect) {

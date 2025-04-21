@@ -3,7 +3,6 @@
 import type { Price as PriceType } from '@prisma/client';
 import { AlertCircle, Check, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Alert, AlertTitle } from 'components/ui/alert';
@@ -92,7 +91,6 @@ export const Price: React.FC<{
   border: boolean;
 }> = ({ lang, prices, standalone, begin, trial, border }) => {
   const translate = useTranslation();
-  const router = useRouter();
 
   const [billingCycle, setBillingCycle] = useState<'year' | 'month'>('year');
   const [message, setMessage] = useState<string | null>(null);

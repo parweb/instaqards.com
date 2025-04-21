@@ -3,6 +3,7 @@ import { getLang } from 'helpers/translate';
 import { Gallery } from './section/gallery';
 import { Hero } from './section/hero';
 import { Price } from './section/price';
+import { Suspense } from 'react';
 
 export default async function HomePage(props: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -21,14 +22,16 @@ export default async function HomePage(props: {
 
       {/*<Features />*/}
 
-      <Price
-        lang={lang}
-        prices={prices}
-        standalone={false}
-        begin
-        trial
-        border
-      />
+      <Suspense fallback={null}>
+        <Price
+          lang={lang}
+          prices={prices}
+          standalone={false}
+          begin
+          trial
+          border
+        />
+      </Suspense>
 
       {/* <Testimonial /> */}
     </>
