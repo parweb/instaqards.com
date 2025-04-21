@@ -2,11 +2,18 @@ import 'server-only';
 
 import { PrismaClient } from '@prisma/client';
 
-declare global {
-  // eslint-disable-next-line no-unused-vars
-  var prisma: PrismaClient | undefined;
-}
+const createPrismaClient = () =>
+  new PrismaClient({
+    log:
+      process.env.NODE_ENV === 'development'
+        ? ['query', 'error', 'warn']
+        : ['error']
+  });
 
-export const db = globalThis.prisma || new PrismaClient();
+const globalForPrisma = globalThis as unknown as {
+  prisma: ReturnType<typeof createPrismaClient> | undefined;
+};
 
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = db;
+export const db = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db;

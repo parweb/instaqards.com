@@ -2,6 +2,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import { UserRole } from '@prisma/client';
 import { nanoid } from 'nanoid';
 import NextAuth from 'next-auth';
+import { cache } from 'react';
 
 import authConfig from 'auth.config';
 import { getAccountByUserId } from 'data/account';
@@ -9,9 +10,9 @@ import { getTwoFactorConfirmationByUserId } from 'data/two-factor-confirmation';
 import { getUserById } from 'data/user';
 import { db } from 'helpers/db';
 
-export const {
+const {
   handlers: { GET, POST },
-  auth,
+  auth: uncachedAuth,
   signIn,
   signOut,
   unstable_update: update
@@ -147,8 +148,12 @@ export const {
       return token;
     }
   },
-
+  // @ts-ignore
   adapter: PrismaAdapter(db),
   session: { strategy: 'jwt' },
   ...authConfig
 });
+
+const auth = cache(uncachedAuth);
+
+export { auth, GET, POST, signIn, signOut, update };
