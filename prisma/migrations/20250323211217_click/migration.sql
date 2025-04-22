@@ -9,3 +9,6 @@ ALTER TABLE "Block" ALTER COLUMN "siteId" SET NOT NULL;
 
 -- AlterTable
 ALTER TABLE "Click" ADD COLUMN     "part" TEXT;
+
+-- AlterTable
+ALTER TABLE "Click" ADD COLUMN     "request" JSONB;

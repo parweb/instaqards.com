@@ -264,3 +264,54 @@ ALTER TABLE "Execution" ADD CONSTRAINT "Execution_actionId_fkey" FOREIGN KEY ("a
 
 -- AddForeignKey
 ALTER TABLE "Execution" ADD CONSTRAINT "Execution_ruleId_fkey" FOREIGN KEY ("ruleId") REFERENCES "Rule"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AlterTable
+ALTER TABLE "Event" ADD COLUMN     "attempts" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "lastError" TEXT,
+ADD COLUMN     "status" VARCHAR(20) NOT NULL DEFAULT 'pending';
+
+/*
+  Warnings:
+
+  - You are about to drop the column `workerId` on the `Queue` table. All the data in the column will be lost.
+  - Changed the type of `actionType` on the `Action` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
+
+*/
+-- AlterTable
+ALTER TABLE "Action" DROP COLUMN "actionType",
+ADD COLUMN     "actionType" TEXT NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Queue" DROP COLUMN "workerId";
+
+-- DropEnum
+DROP TYPE "ActionType";
+
+/*
+  Warnings:
+
+  - You are about to drop the column `actionType` on the `Action` table. All the data in the column will be lost.
+  - Added the required column `type` to the `Action` table without a default value. This is not possible if the table is not empty.
+
+*/
+-- AlterTable
+ALTER TABLE "Action" DROP COLUMN "actionType",
+ADD COLUMN     "type" TEXT NOT NULL;
+
+
+/*
+  Warnings:
+
+  - You are about to drop the column `internalName` on the `Action` table. All the data in the column will be lost.
+  - A unique constraint covering the columns `[code]` on the table `Action` will be added. If there are existing duplicate values, this will fail.
+  - Added the required column `code` to the `Action` table without a default value. This is not possible if the table is not empty.
+
+*/
+-- DropIndex
+DROP INDEX "Action_internalName_key";
+
+-- AlterTable
+ALTER TABLE "public"."Action" RENAME COLUMN "internalName" TO "code";
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Action_code_key" ON "Action"("code");

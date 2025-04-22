@@ -18,3 +18,10 @@ CREATE INDEX "Outbox_status_idx" ON "Outbox"("status");
 
 -- CreateIndex
 CREATE INDEX "Outbox_email_idx" ON "Outbox"("email");
+
+-- AlterTable
+ALTER TABLE "Outbox" ADD COLUMN     "metadata" JSONB DEFAULT '{}';
+
+
+-- AddForeignKey
+ALTER TABLE "Outbox" ADD CONSTRAINT "Outbox_email_fkey" FOREIGN KEY ("email") REFERENCES "User"("email") ON DELETE CASCADE ON UPDATE CASCADE;

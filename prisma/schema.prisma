@@ -17,6 +17,7 @@ enum UserRole {
   USER
   ADMIN
   SELLER
+  LEAD
 }
 
 model User {
@@ -29,6 +30,13 @@ model User {
   isTwoFactorEnabled Boolean   @default(false)
   billing_address    Json      @default("{}")
   payment_method     Json      @default("{}")
+  company            String?
+  address            String?
+  postcode           String?
+  city               String?
+  phone              String?
+  codeNaf            String?
+  activity           String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -60,75 +68,20 @@ model User {
   sent           Message[]       @relation("Sent")
   received       Message[]       @relation("Received")
 
-  assigned              Prospect[]              @relation("AssignedProspects")
-  converted             Prospect?               @relation("ConvertedProspects")
-  ProspectStatusHistory ProspectStatusHistory[]
-
   @@index([email])
   @@index([role])
   @@index([refererId])
   @@index([emailVerified])
   @@index([createdAt, id])
   @@index([refererId, createdAt])
-}
-
-model Prospect {
-  id String @id @default(cuid())
-
-  raison_sociale String?
-  adresse        String?
-  cp             String?
-  ville          String?
-  tel            String?
-  code_naf       String?
-  activite       String?
-  email          String?
-
-  status   String @default("NEW")
-  position Float? @default(0)
-
-  assignee   User?   @relation("AssignedProspects", fields: [assigneeId], references: [id])
-  assigneeId String?
-
-  converted   User?   @relation("ConvertedProspects", fields: [convertedId], references: [id])
-  convertedId String? @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  statusHistory ProspectStatusHistory[]
-
-  @@index([email])
-  @@index([ville])
-  @@index([cp])
-  @@index([code_naf])
-  @@index([tel])
-  @@index([activite])
-  @@index([activite, code_naf])
-  @@index([ville, cp])
-  @@index([status])
-  @@index([assigneeId])
-  @@index([convertedId])
-  @@index([status, position])
-}
-
-model ProspectStatusHistory {
-  id String @id @default(cuid())
-
-  prospect   Prospect @relation(fields: [prospectId], references: [id], onDelete: Cascade)
-  prospectId String
-
-  previousStatus String
-  newStatus      String
-  position       Float?
-
-  createdAt     DateTime @default(now())
-  updatedBy     String?
-  updatedByUser User?    @relation(fields: [updatedBy], references: [id])
-
-  @@index([prospectId])
-  @@index([createdAt])
-  @@index([updatedBy])
+  @@index([city])
+  @@index([postcode])
+  @@index([codeNaf])
+  @@index([company])
+  @@index([phone])
+  @@index([activity])
+  @@index([activity, codeNaf])
+  @@index([city, postcode])
 }
 
 model Message {
