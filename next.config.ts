@@ -8,16 +8,11 @@ const nextConfig: NextConfig = {
     dynamicIO: true,
     ppr: true,
     viewTransition: true,
+    optimizePackageImports: ['framer-motion', 'lucide-react', 'react-icons'],
     serverActions: {
       bodySizeLimit: '20mb',
       allowedOrigins: ['app.localhost:11000']
-    },
-    optimizePackageImports: [
-      'framer-motion',
-      'lucide-react',
-      'react-icons',
-      'react-social-icons'
-    ]
+    }
   },
   images: {
     remotePatterns: [

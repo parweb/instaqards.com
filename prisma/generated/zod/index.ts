@@ -1236,9 +1236,6 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z
     feed: z
       .union([z.boolean(), z.lazy(() => FeedFindManyArgsSchema)])
       .optional(),
-    subscribers: z
-      .union([z.boolean(), z.lazy(() => SubscriberFindManyArgsSchema)])
-      .optional(),
     comments: z
       .union([z.boolean(), z.lazy(() => CommentFindManyArgsSchema)])
       .optional(),
@@ -1289,7 +1286,6 @@ export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTy
       jobs: z.boolean().optional(),
       outbox: z.boolean().optional(),
       feed: z.boolean().optional(),
-      subscribers: z.boolean().optional(),
       comments: z.boolean().optional(),
       sent: z.boolean().optional(),
       received: z.boolean().optional(),
@@ -1370,9 +1366,6 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
       .optional(),
     feed: z
       .union([z.boolean(), z.lazy(() => FeedFindManyArgsSchema)])
-      .optional(),
-    subscribers: z
-      .union([z.boolean(), z.lazy(() => SubscriberFindManyArgsSchema)])
       .optional(),
     comments: z
       .union([z.boolean(), z.lazy(() => CommentFindManyArgsSchema)])
@@ -2165,8 +2158,7 @@ export const CommentSelectSchema: z.ZodType<Prisma.CommentSelect> = z
 
 export const SubscriberIncludeSchema: z.ZodType<Prisma.SubscriberInclude> = z
   .object({
-    site: z.union([z.boolean(), z.lazy(() => SiteArgsSchema)]).optional(),
-    user: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional()
+    site: z.union([z.boolean(), z.lazy(() => SiteArgsSchema)]).optional()
   })
   .strict();
 
@@ -2184,8 +2176,7 @@ export const SubscriberSelectSchema: z.ZodType<Prisma.SubscriberSelect> = z
     createdAt: z.boolean().optional(),
     updatedAt: z.boolean().optional(),
     siteId: z.boolean().optional(),
-    site: z.union([z.boolean(), z.lazy(() => SiteArgsSchema)]).optional(),
-    user: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional()
+    site: z.union([z.boolean(), z.lazy(() => SiteArgsSchema)]).optional()
   })
   .strict();
 
@@ -2887,7 +2878,6 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
     jobs: z.lazy(() => QueueListRelationFilterSchema).optional(),
     outbox: z.lazy(() => OutboxListRelationFilterSchema).optional(),
     feed: z.lazy(() => FeedListRelationFilterSchema).optional(),
-    subscribers: z.lazy(() => SubscriberListRelationFilterSchema).optional(),
     comments: z.lazy(() => CommentListRelationFilterSchema).optional(),
     sent: z.lazy(() => MessageListRelationFilterSchema).optional(),
     received: z.lazy(() => MessageListRelationFilterSchema).optional(),
@@ -3016,9 +3006,6 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
         .lazy(() => OutboxOrderByRelationAggregateInputSchema)
         .optional(),
       feed: z.lazy(() => FeedOrderByRelationAggregateInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberOrderByRelationAggregateInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentOrderByRelationAggregateInputSchema)
         .optional(),
@@ -3181,9 +3168,6 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
           jobs: z.lazy(() => QueueListRelationFilterSchema).optional(),
           outbox: z.lazy(() => OutboxListRelationFilterSchema).optional(),
           feed: z.lazy(() => FeedListRelationFilterSchema).optional(),
-          subscribers: z
-            .lazy(() => SubscriberListRelationFilterSchema)
-            .optional(),
           comments: z.lazy(() => CommentListRelationFilterSchema).optional(),
           sent: z.lazy(() => MessageListRelationFilterSchema).optional(),
           received: z.lazy(() => MessageListRelationFilterSchema).optional(),
@@ -8118,14 +8102,7 @@ export const SubscriberWhereInputSchema: z.ZodType<Prisma.SubscriberWhereInput> 
           z.lazy(() => SiteScalarRelationFilterSchema),
           z.lazy(() => SiteWhereInputSchema)
         ])
-        .optional(),
-      user: z
-        .union([
-          z.lazy(() => UserNullableScalarRelationFilterSchema),
-          z.lazy(() => UserWhereInputSchema)
-        ])
         .optional()
-        .nullable()
     })
     .strict();
 
@@ -8137,8 +8114,7 @@ export const SubscriberOrderByWithRelationInputSchema: z.ZodType<Prisma.Subscrib
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       siteId: z.lazy(() => SortOrderSchema).optional(),
-      site: z.lazy(() => SiteOrderByWithRelationInputSchema).optional(),
-      user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
+      site: z.lazy(() => SiteOrderByWithRelationInputSchema).optional()
     })
     .strict();
 
@@ -8184,14 +8160,7 @@ export const SubscriberWhereUniqueInputSchema: z.ZodType<Prisma.SubscriberWhereU
               z.lazy(() => SiteScalarRelationFilterSchema),
               z.lazy(() => SiteWhereInputSchema)
             ])
-            .optional(),
-          user: z
-            .union([
-              z.lazy(() => UserNullableScalarRelationFilterSchema),
-              z.lazy(() => UserWhereInputSchema)
-            ])
             .optional()
-            .nullable()
         })
         .strict()
     );
@@ -11834,9 +11803,6 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
       .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
       .optional(),
     feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-    subscribers: z
-      .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-      .optional(),
     comments: z
       .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
       .optional(),
@@ -11936,9 +11902,6 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -12116,9 +12079,6 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
       .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
       .optional(),
     feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-    subscribers: z
-      .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-      .optional(),
     comments: z
       .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
       .optional(),
@@ -12320,9 +12280,6 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -17468,12 +17425,10 @@ export const SubscriberCreateInputSchema: z.ZodType<Prisma.SubscriberCreateInput
   z
     .object({
       id: z.string().cuid().optional(),
+      email: z.string(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      site: z.lazy(() => SiteCreateNestedOneWithoutSubscribersInputSchema),
-      user: z
-        .lazy(() => UserCreateNestedOneWithoutSubscribersInputSchema)
-        .optional()
+      site: z.lazy(() => SiteCreateNestedOneWithoutSubscribersInputSchema)
     })
     .strict();
 
@@ -17497,6 +17452,12 @@ export const SubscriberUpdateInputSchema: z.ZodType<Prisma.SubscriberUpdateInput
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -17511,9 +17472,6 @@ export const SubscriberUpdateInputSchema: z.ZodType<Prisma.SubscriberUpdateInput
         .optional(),
       site: z
         .lazy(() => SiteUpdateOneRequiredWithoutSubscribersNestedInputSchema)
-        .optional(),
-      user: z
-        .lazy(() => UserUpdateOneWithoutSubscribersNestedInputSchema)
         .optional()
     })
     .strict();
@@ -17571,6 +17529,12 @@ export const SubscriberUpdateManyMutationInputSchema: z.ZodType<Prisma.Subscribe
       id: z
         .union([
           z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      email: z
+        .union([
+          z.string(),
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
@@ -21825,15 +21789,6 @@ export const FeedListRelationFilterSchema: z.ZodType<Prisma.FeedListRelationFilt
     })
     .strict();
 
-export const SubscriberListRelationFilterSchema: z.ZodType<Prisma.SubscriberListRelationFilter> =
-  z
-    .object({
-      every: z.lazy(() => SubscriberWhereInputSchema).optional(),
-      some: z.lazy(() => SubscriberWhereInputSchema).optional(),
-      none: z.lazy(() => SubscriberWhereInputSchema).optional()
-    })
-    .strict();
-
 export const CommentListRelationFilterSchema: z.ZodType<Prisma.CommentListRelationFilter> =
   z
     .object({
@@ -21967,13 +21922,6 @@ export const OutboxOrderByRelationAggregateInputSchema: z.ZodType<Prisma.OutboxO
     .strict();
 
 export const FeedOrderByRelationAggregateInputSchema: z.ZodType<Prisma.FeedOrderByRelationAggregateInput> =
-  z
-    .object({
-      _count: z.lazy(() => SortOrderSchema).optional()
-    })
-    .strict();
-
-export const SubscriberOrderByRelationAggregateInputSchema: z.ZodType<Prisma.SubscriberOrderByRelationAggregateInput> =
   z
     .object({
       _count: z.lazy(() => SortOrderSchema).optional()
@@ -23398,7 +23346,23 @@ export const BlockListRelationFilterSchema: z.ZodType<Prisma.BlockListRelationFi
     })
     .strict();
 
+export const SubscriberListRelationFilterSchema: z.ZodType<Prisma.SubscriberListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => SubscriberWhereInputSchema).optional(),
+      some: z.lazy(() => SubscriberWhereInputSchema).optional(),
+      none: z.lazy(() => SubscriberWhereInputSchema).optional()
+    })
+    .strict();
+
 export const BlockOrderByRelationAggregateInputSchema: z.ZodType<Prisma.BlockOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const SubscriberOrderByRelationAggregateInputSchema: z.ZodType<Prisma.SubscriberOrderByRelationAggregateInput> =
   z
     .object({
       _count: z.lazy(() => SortOrderSchema).optional()
@@ -25137,35 +25101,6 @@ export const FeedCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.FeedCr
     })
     .strict();
 
-export const SubscriberCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.SubscriberCreateNestedManyWithoutUserInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => SubscriberCreateWithoutUserInputSchema),
-          z.lazy(() => SubscriberCreateWithoutUserInputSchema).array(),
-          z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema),
-          z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema).array()
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => SubscriberCreateOrConnectWithoutUserInputSchema),
-          z.lazy(() => SubscriberCreateOrConnectWithoutUserInputSchema).array()
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => SubscriberCreateManyUserInputEnvelopeSchema)
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional()
-    })
-    .strict();
-
 export const CommentCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.CommentCreateNestedManyWithoutUserInput> =
   z
     .object({
@@ -25764,35 +25699,6 @@ export const FeedUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodType<Pris
         .union([
           z.lazy(() => FeedWhereUniqueInputSchema),
           z.lazy(() => FeedWhereUniqueInputSchema).array()
-        ])
-        .optional()
-    })
-    .strict();
-
-export const SubscriberUncheckedCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.SubscriberUncheckedCreateNestedManyWithoutUserInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => SubscriberCreateWithoutUserInputSchema),
-          z.lazy(() => SubscriberCreateWithoutUserInputSchema).array(),
-          z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema),
-          z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema).array()
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => SubscriberCreateOrConnectWithoutUserInputSchema),
-          z.lazy(() => SubscriberCreateOrConnectWithoutUserInputSchema).array()
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => SubscriberCreateManyUserInputEnvelopeSchema)
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
         ])
         .optional()
     })
@@ -27201,83 +27107,6 @@ export const FeedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.FeedUp
         .union([
           z.lazy(() => FeedScalarWhereInputSchema),
           z.lazy(() => FeedScalarWhereInputSchema).array()
-        ])
-        .optional()
-    })
-    .strict();
-
-export const SubscriberUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.SubscriberUpdateManyWithoutUserNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => SubscriberCreateWithoutUserInputSchema),
-          z.lazy(() => SubscriberCreateWithoutUserInputSchema).array(),
-          z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema),
-          z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema).array()
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => SubscriberCreateOrConnectWithoutUserInputSchema),
-          z.lazy(() => SubscriberCreateOrConnectWithoutUserInputSchema).array()
-        ])
-        .optional(),
-      upsert: z
-        .union([
-          z.lazy(() => SubscriberUpsertWithWhereUniqueWithoutUserInputSchema),
-          z
-            .lazy(() => SubscriberUpsertWithWhereUniqueWithoutUserInputSchema)
-            .array()
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => SubscriberCreateManyUserInputEnvelopeSchema)
-        .optional(),
-      set: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional(),
-      disconnect: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional(),
-      delete: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional(),
-      update: z
-        .union([
-          z.lazy(() => SubscriberUpdateWithWhereUniqueWithoutUserInputSchema),
-          z
-            .lazy(() => SubscriberUpdateWithWhereUniqueWithoutUserInputSchema)
-            .array()
-        ])
-        .optional(),
-      updateMany: z
-        .union([
-          z.lazy(() => SubscriberUpdateManyWithWhereWithoutUserInputSchema),
-          z
-            .lazy(() => SubscriberUpdateManyWithWhereWithoutUserInputSchema)
-            .array()
-        ])
-        .optional(),
-      deleteMany: z
-        .union([
-          z.lazy(() => SubscriberScalarWhereInputSchema),
-          z.lazy(() => SubscriberScalarWhereInputSchema).array()
         ])
         .optional()
     })
@@ -28816,83 +28645,6 @@ export const FeedUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Pris
         .union([
           z.lazy(() => FeedScalarWhereInputSchema),
           z.lazy(() => FeedScalarWhereInputSchema).array()
-        ])
-        .optional()
-    })
-    .strict();
-
-export const SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.SubscriberUncheckedUpdateManyWithoutUserNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => SubscriberCreateWithoutUserInputSchema),
-          z.lazy(() => SubscriberCreateWithoutUserInputSchema).array(),
-          z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema),
-          z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema).array()
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => SubscriberCreateOrConnectWithoutUserInputSchema),
-          z.lazy(() => SubscriberCreateOrConnectWithoutUserInputSchema).array()
-        ])
-        .optional(),
-      upsert: z
-        .union([
-          z.lazy(() => SubscriberUpsertWithWhereUniqueWithoutUserInputSchema),
-          z
-            .lazy(() => SubscriberUpsertWithWhereUniqueWithoutUserInputSchema)
-            .array()
-        ])
-        .optional(),
-      createMany: z
-        .lazy(() => SubscriberCreateManyUserInputEnvelopeSchema)
-        .optional(),
-      set: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional(),
-      disconnect: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional(),
-      delete: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => SubscriberWhereUniqueInputSchema),
-          z.lazy(() => SubscriberWhereUniqueInputSchema).array()
-        ])
-        .optional(),
-      update: z
-        .union([
-          z.lazy(() => SubscriberUpdateWithWhereUniqueWithoutUserInputSchema),
-          z
-            .lazy(() => SubscriberUpdateWithWhereUniqueWithoutUserInputSchema)
-            .array()
-        ])
-        .optional(),
-      updateMany: z
-        .union([
-          z.lazy(() => SubscriberUpdateManyWithWhereWithoutUserInputSchema),
-          z
-            .lazy(() => SubscriberUpdateManyWithWhereWithoutUserInputSchema)
-            .array()
-        ])
-        .optional(),
-      deleteMany: z
-        .union([
-          z.lazy(() => SubscriberScalarWhereInputSchema),
-          z.lazy(() => SubscriberScalarWhereInputSchema).array()
         ])
         .optional()
     })
@@ -32834,22 +32586,6 @@ export const SiteCreateNestedOneWithoutSubscribersInputSchema: z.ZodType<Prisma.
     })
     .strict();
 
-export const UserCreateNestedOneWithoutSubscribersInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutSubscribersInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => UserCreateWithoutSubscribersInputSchema),
-          z.lazy(() => UserUncheckedCreateWithoutSubscribersInputSchema)
-        ])
-        .optional(),
-      connectOrCreate: z
-        .lazy(() => UserCreateOrConnectWithoutSubscribersInputSchema)
-        .optional(),
-      connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
-    })
-    .strict();
-
 export const SiteUpdateOneRequiredWithoutSubscribersNestedInputSchema: z.ZodType<Prisma.SiteUpdateOneRequiredWithoutSubscribersNestedInput> =
   z
     .object({
@@ -32869,36 +32605,6 @@ export const SiteUpdateOneRequiredWithoutSubscribersNestedInputSchema: z.ZodType
           z.lazy(() => SiteUpdateToOneWithWhereWithoutSubscribersInputSchema),
           z.lazy(() => SiteUpdateWithoutSubscribersInputSchema),
           z.lazy(() => SiteUncheckedUpdateWithoutSubscribersInputSchema)
-        ])
-        .optional()
-    })
-    .strict();
-
-export const UserUpdateOneWithoutSubscribersNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutSubscribersNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => UserCreateWithoutSubscribersInputSchema),
-          z.lazy(() => UserUncheckedCreateWithoutSubscribersInputSchema)
-        ])
-        .optional(),
-      connectOrCreate: z
-        .lazy(() => UserCreateOrConnectWithoutSubscribersInputSchema)
-        .optional(),
-      upsert: z.lazy(() => UserUpsertWithoutSubscribersInputSchema).optional(),
-      disconnect: z
-        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
-        .optional(),
-      delete: z
-        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
-        .optional(),
-      connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
-      update: z
-        .union([
-          z.lazy(() => UserUpdateToOneWithWhereWithoutSubscribersInputSchema),
-          z.lazy(() => UserUpdateWithoutSubscribersInputSchema),
-          z.lazy(() => UserUncheckedUpdateWithoutSubscribersInputSchema)
         ])
         .optional()
     })
@@ -36747,9 +36453,6 @@ export const UserCreateWithoutRefererInputSchema: z.ZodType<Prisma.UserCreateWit
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -36848,9 +36551,6 @@ export const UserUncheckedCreateWithoutRefererInputSchema: z.ZodType<Prisma.User
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -36966,9 +36666,6 @@ export const UserCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreate
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -37065,9 +36762,6 @@ export const UserUncheckedCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -37438,48 +37132,6 @@ export const FeedCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.FeedCreateM
       data: z.union([
         z.lazy(() => FeedCreateManyUserInputSchema),
         z.lazy(() => FeedCreateManyUserInputSchema).array()
-      ]),
-      skipDuplicates: z.boolean().optional()
-    })
-    .strict();
-
-export const SubscriberCreateWithoutUserInputSchema: z.ZodType<Prisma.SubscriberCreateWithoutUserInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      site: z.lazy(() => SiteCreateNestedOneWithoutSubscribersInputSchema)
-    })
-    .strict();
-
-export const SubscriberUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.SubscriberUncheckedCreateWithoutUserInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      siteId: z.string()
-    })
-    .strict();
-
-export const SubscriberCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.SubscriberCreateOrConnectWithoutUserInput> =
-  z
-    .object({
-      where: z.lazy(() => SubscriberWhereUniqueInputSchema),
-      create: z.union([
-        z.lazy(() => SubscriberCreateWithoutUserInputSchema),
-        z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema)
-      ])
-    })
-    .strict();
-
-export const SubscriberCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.SubscriberCreateManyUserInputEnvelope> =
-  z
-    .object({
-      data: z.union([
-        z.lazy(() => SubscriberCreateManyUserInputSchema),
-        z.lazy(() => SubscriberCreateManyUserInputSchema).array()
       ]),
       skipDuplicates: z.boolean().optional()
     })
@@ -38792,9 +38444,6 @@ export const UserUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdate
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -38993,9 +38642,6 @@ export const UserUncheckedUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -39507,74 +39153,6 @@ export const FeedScalarWhereInputSchema: z.ZodType<Prisma.FeedScalarWhereInput> 
     })
     .strict();
 
-export const SubscriberUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.SubscriberUpsertWithWhereUniqueWithoutUserInput> =
-  z
-    .object({
-      where: z.lazy(() => SubscriberWhereUniqueInputSchema),
-      update: z.union([
-        z.lazy(() => SubscriberUpdateWithoutUserInputSchema),
-        z.lazy(() => SubscriberUncheckedUpdateWithoutUserInputSchema)
-      ]),
-      create: z.union([
-        z.lazy(() => SubscriberCreateWithoutUserInputSchema),
-        z.lazy(() => SubscriberUncheckedCreateWithoutUserInputSchema)
-      ])
-    })
-    .strict();
-
-export const SubscriberUpdateWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.SubscriberUpdateWithWhereUniqueWithoutUserInput> =
-  z
-    .object({
-      where: z.lazy(() => SubscriberWhereUniqueInputSchema),
-      data: z.union([
-        z.lazy(() => SubscriberUpdateWithoutUserInputSchema),
-        z.lazy(() => SubscriberUncheckedUpdateWithoutUserInputSchema)
-      ])
-    })
-    .strict();
-
-export const SubscriberUpdateManyWithWhereWithoutUserInputSchema: z.ZodType<Prisma.SubscriberUpdateManyWithWhereWithoutUserInput> =
-  z
-    .object({
-      where: z.lazy(() => SubscriberScalarWhereInputSchema),
-      data: z.union([
-        z.lazy(() => SubscriberUpdateManyMutationInputSchema),
-        z.lazy(() => SubscriberUncheckedUpdateManyWithoutUserInputSchema)
-      ])
-    })
-    .strict();
-
-export const SubscriberScalarWhereInputSchema: z.ZodType<Prisma.SubscriberScalarWhereInput> =
-  z
-    .object({
-      AND: z
-        .union([
-          z.lazy(() => SubscriberScalarWhereInputSchema),
-          z.lazy(() => SubscriberScalarWhereInputSchema).array()
-        ])
-        .optional(),
-      OR: z
-        .lazy(() => SubscriberScalarWhereInputSchema)
-        .array()
-        .optional(),
-      NOT: z
-        .union([
-          z.lazy(() => SubscriberScalarWhereInputSchema),
-          z.lazy(() => SubscriberScalarWhereInputSchema).array()
-        ])
-        .optional(),
-      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-      email: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-      createdAt: z
-        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
-        .optional(),
-      updatedAt: z
-        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
-        .optional(),
-      siteId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional()
-    })
-    .strict();
-
 export const CommentUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.CommentUpsertWithWhereUniqueWithoutUserInput> =
   z
     .object({
@@ -39930,9 +39508,6 @@ export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithou
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -40029,9 +39604,6 @@ export const UserUncheckedCreateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -40136,9 +39708,6 @@ export const UserCreateWithoutReceivedInputSchema: z.ZodType<Prisma.UserCreateWi
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -40235,9 +39804,6 @@ export const UserUncheckedCreateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -40464,9 +40030,6 @@ export const UserUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUpdateWithou
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -40665,9 +40228,6 @@ export const UserUncheckedUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -40883,9 +40443,6 @@ export const UserUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.UserUpdateWi
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -41085,9 +40642,6 @@ export const UserUncheckedUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -41177,9 +40731,6 @@ export const UserCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserCreateWi
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -41276,9 +40827,6 @@ export const UserUncheckedCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -41505,9 +41053,6 @@ export const UserUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserUpdateWi
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -41707,9 +41252,6 @@ export const UserUncheckedUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -41802,9 +41344,6 @@ export const UserCreateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -41898,9 +41437,6 @@ export const UserUncheckedCreateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -42127,9 +41663,6 @@ export const UserUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -42326,9 +41859,6 @@ export const UserUncheckedUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -42421,9 +41951,6 @@ export const UserCreateWithoutCustomerInputSchema: z.ZodType<Prisma.UserCreateWi
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -42520,9 +42047,6 @@ export const UserUncheckedCreateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -42749,9 +42273,6 @@ export const UserUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.UserUpdateWi
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -42950,9 +42471,6 @@ export const UserUncheckedUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -43515,9 +43033,6 @@ export const UserCreateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserCre
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -43614,9 +43129,6 @@ export const UserUncheckedCreateWithoutSubscriptionsInputSchema: z.ZodType<Prism
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -44018,9 +43530,6 @@ export const UserUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserUpd
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -44220,9 +43729,6 @@ export const UserUncheckedUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prism
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -44315,9 +43821,6 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -44414,9 +43917,6 @@ export const UserUncheckedCreateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -44643,9 +44143,6 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -44845,9 +44342,6 @@ export const UserUncheckedUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -44940,9 +44434,6 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -45039,9 +44530,6 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -45268,9 +44756,6 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -45470,9 +44955,6 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -45565,9 +45047,6 @@ export const UserCreateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserCre
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -45662,9 +45141,6 @@ export const UserUncheckedCreateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -45891,9 +45367,6 @@ export const UserUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserUpd
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -46090,9 +45563,6 @@ export const UserUncheckedUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -46984,9 +46454,6 @@ export const UserCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserCreateWitho
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -47083,9 +46550,6 @@ export const UserUncheckedCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -47392,9 +46856,6 @@ export const UserUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -47593,9 +47054,6 @@ export const UserUncheckedUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -48283,9 +47741,6 @@ export const UserCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserCreateWitho
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -48382,9 +47837,6 @@ export const UserUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -48916,9 +48368,6 @@ export const UserUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -49117,9 +48566,6 @@ export const UserUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -49341,9 +48787,6 @@ export const UserCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserCreateWitho
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -49440,9 +48883,6 @@ export const UserUncheckedCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -49620,11 +49060,9 @@ export const SubscriberCreateWithoutSiteInputSchema: z.ZodType<Prisma.Subscriber
   z
     .object({
       id: z.string().cuid().optional(),
+      email: z.string(),
       createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      user: z
-        .lazy(() => UserCreateNestedOneWithoutSubscribersInputSchema)
-        .optional()
+      updatedAt: z.coerce.date().optional()
     })
     .strict();
 
@@ -49963,9 +49401,6 @@ export const UserUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -50165,9 +49600,6 @@ export const UserUncheckedUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -50339,6 +49771,37 @@ export const SubscriberUpdateManyWithWhereWithoutSiteInputSchema: z.ZodType<Pris
         z.lazy(() => SubscriberUpdateManyMutationInputSchema),
         z.lazy(() => SubscriberUncheckedUpdateManyWithoutSiteInputSchema)
       ])
+    })
+    .strict();
+
+export const SubscriberScalarWhereInputSchema: z.ZodType<Prisma.SubscriberScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => SubscriberScalarWhereInputSchema),
+          z.lazy(() => SubscriberScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => SubscriberScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => SubscriberScalarWhereInputSchema),
+          z.lazy(() => SubscriberScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      email: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      siteId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional()
     })
     .strict();
 
@@ -50568,9 +50031,6 @@ export const UserCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserCreateWithou
       outbox: z
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -50667,9 +50127,6 @@ export const UserUncheckedCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       outbox: z
         .lazy(() => OutboxUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -51242,9 +50699,6 @@ export const UserUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUpdateWithou
       outbox: z
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -51443,9 +50897,6 @@ export const UserUncheckedUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       outbox: z
         .lazy(() => OutboxUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -51663,9 +51114,6 @@ export const UserCreateWithoutCommentsInputSchema: z.ZodType<Prisma.UserCreateWi
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       sent: z
         .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
         .optional(),
@@ -51762,9 +51210,6 @@ export const UserUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       sent: z
         .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
@@ -52117,9 +51562,6 @@ export const UserUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.UserUpdateWi
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       sent: z
         .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
         .optional(),
@@ -52319,9 +51761,6 @@ export const UserUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       sent: z
         .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
         .optional(),
@@ -52407,212 +51846,6 @@ export const SiteCreateOrConnectWithoutSubscribersInputSchema: z.ZodType<Prisma.
       create: z.union([
         z.lazy(() => SiteCreateWithoutSubscribersInputSchema),
         z.lazy(() => SiteUncheckedCreateWithoutSubscribersInputSchema)
-      ])
-    })
-    .strict();
-
-export const UserCreateWithoutSubscribersInputSchema: z.ZodType<Prisma.UserCreateWithoutSubscribersInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      name: z.string().optional().nullable(),
-      email: z.string(),
-      emailVerified: z.coerce.date().optional().nullable(),
-      image: z.string().optional().nullable(),
-      password: z.string().optional().nullable(),
-      isTwoFactorEnabled: z.boolean().optional(),
-      billing_address: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      payment_method: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      company: z.string().optional().nullable(),
-      address: z.string().optional().nullable(),
-      postcode: z.string().optional().nullable(),
-      city: z.string().optional().nullable(),
-      phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
-      activity: z.string().optional().nullable(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      role: z.lazy(() => UserRoleSchema).optional(),
-      accounts: z
-        .lazy(() => AccountCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sessions: z
-        .lazy(() => SessionCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sites: z
-        .lazy(() => SiteCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscriptions: z
-        .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      Authenticator: z
-        .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      links: z
-        .lazy(() => LinkCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      customer: z
-        .lazy(() => CustomerCreateNestedOneWithoutUserInputSchema)
-        .optional(),
-      twoFactorConfirmation: z
-        .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
-        .optional(),
-      feedback: z
-        .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      likes: z
-        .lazy(() => LikeCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      affiliates: z
-        .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
-        .optional(),
-      events: z
-        .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      workflowStates: z
-        .lazy(() => WorkflowStateCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      executions: z
-        .lazy(() => ExecutionCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      jobs: z
-        .lazy(() => QueueCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      outbox: z
-        .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      comments: z
-        .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sent: z
-        .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
-        .optional(),
-      received: z
-        .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
-        .optional(),
-      reservations: z
-        .lazy(() => ReservationCreateNestedManyWithoutAffiliateInputSchema)
-        .optional()
-    })
-    .strict();
-
-export const UserUncheckedCreateWithoutSubscribersInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutSubscribersInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      name: z.string().optional().nullable(),
-      email: z.string(),
-      emailVerified: z.coerce.date().optional().nullable(),
-      image: z.string().optional().nullable(),
-      password: z.string().optional().nullable(),
-      isTwoFactorEnabled: z.boolean().optional(),
-      billing_address: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      payment_method: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      company: z.string().optional().nullable(),
-      address: z.string().optional().nullable(),
-      postcode: z.string().optional().nullable(),
-      city: z.string().optional().nullable(),
-      phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
-      activity: z.string().optional().nullable(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      role: z.lazy(() => UserRoleSchema).optional(),
-      refererId: z.string().optional().nullable(),
-      accounts: z
-        .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sessions: z
-        .lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sites: z
-        .lazy(() => SiteUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscriptions: z
-        .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      Authenticator: z
-        .lazy(
-          () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
-        )
-        .optional(),
-      links: z
-        .lazy(() => LinkUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      customer: z
-        .lazy(() => CustomerUncheckedCreateNestedOneWithoutUserInputSchema)
-        .optional(),
-      twoFactorConfirmation: z
-        .lazy(
-          () =>
-            TwoFactorConfirmationUncheckedCreateNestedOneWithoutUserInputSchema
-        )
-        .optional(),
-      feedback: z
-        .lazy(() => FeedbackUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      likes: z
-        .lazy(() => LikeUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      affiliates: z
-        .lazy(() => UserUncheckedCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      events: z
-        .lazy(() => EventUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      workflowStates: z
-        .lazy(
-          () => WorkflowStateUncheckedCreateNestedManyWithoutUserInputSchema
-        )
-        .optional(),
-      executions: z
-        .lazy(() => ExecutionUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      jobs: z
-        .lazy(() => QueueUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      outbox: z
-        .lazy(() => OutboxUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      feed: z
-        .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      comments: z
-        .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sent: z
-        .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
-        .optional(),
-      received: z
-        .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
-        .optional(),
-      reservations: z
-        .lazy(
-          () => ReservationUncheckedCreateNestedManyWithoutAffiliateInputSchema
-        )
-        .optional()
-    })
-    .strict();
-
-export const UserCreateOrConnectWithoutSubscribersInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutSubscribersInput> =
-  z
-    .object({
-      where: z.lazy(() => UserWhereUniqueInputSchema),
-      create: z.union([
-        z.lazy(() => UserCreateWithoutSubscribersInputSchema),
-        z.lazy(() => UserUncheckedCreateWithoutSubscribersInputSchema)
       ])
     })
     .strict();
@@ -52873,425 +52106,6 @@ export const SiteUncheckedUpdateWithoutSubscribersInputSchema: z.ZodType<Prisma.
     })
     .strict();
 
-export const UserUpsertWithoutSubscribersInputSchema: z.ZodType<Prisma.UserUpsertWithoutSubscribersInput> =
-  z
-    .object({
-      update: z.union([
-        z.lazy(() => UserUpdateWithoutSubscribersInputSchema),
-        z.lazy(() => UserUncheckedUpdateWithoutSubscribersInputSchema)
-      ]),
-      create: z.union([
-        z.lazy(() => UserCreateWithoutSubscribersInputSchema),
-        z.lazy(() => UserUncheckedCreateWithoutSubscribersInputSchema)
-      ]),
-      where: z.lazy(() => UserWhereInputSchema).optional()
-    })
-    .strict();
-
-export const UserUpdateToOneWithWhereWithoutSubscribersInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutSubscribersInput> =
-  z
-    .object({
-      where: z.lazy(() => UserWhereInputSchema).optional(),
-      data: z.union([
-        z.lazy(() => UserUpdateWithoutSubscribersInputSchema),
-        z.lazy(() => UserUncheckedUpdateWithoutSubscribersInputSchema)
-      ])
-    })
-    .strict();
-
-export const UserUpdateWithoutSubscribersInputSchema: z.ZodType<Prisma.UserUpdateWithoutSubscribersInput> =
-  z
-    .object({
-      id: z
-        .union([
-          z.string().cuid(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      name: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      email: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      emailVerified: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      image: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      password: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      isTwoFactorEnabled: z
-        .union([
-          z.boolean(),
-          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      billing_address: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      payment_method: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      company: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      address: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      postcode: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      city: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      phone: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      activity: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      createdAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      updatedAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      role: z
-        .union([
-          z.lazy(() => UserRoleSchema),
-          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      accounts: z
-        .lazy(() => AccountUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sessions: z
-        .lazy(() => SessionUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sites: z
-        .lazy(() => SiteUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscriptions: z
-        .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      Authenticator: z
-        .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      links: z
-        .lazy(() => LinkUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      customer: z
-        .lazy(() => CustomerUpdateOneWithoutUserNestedInputSchema)
-        .optional(),
-      twoFactorConfirmation: z
-        .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
-        .optional(),
-      feedback: z
-        .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      likes: z
-        .lazy(() => LikeUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      affiliates: z
-        .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
-        .optional(),
-      events: z
-        .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      workflowStates: z
-        .lazy(() => WorkflowStateUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      executions: z
-        .lazy(() => ExecutionUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      jobs: z
-        .lazy(() => QueueUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      outbox: z
-        .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      comments: z
-        .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sent: z
-        .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
-        .optional(),
-      received: z
-        .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
-        .optional(),
-      reservations: z
-        .lazy(() => ReservationUpdateManyWithoutAffiliateNestedInputSchema)
-        .optional()
-    })
-    .strict();
-
-export const UserUncheckedUpdateWithoutSubscribersInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutSubscribersInput> =
-  z
-    .object({
-      id: z
-        .union([
-          z.string().cuid(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      name: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      email: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      emailVerified: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      image: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      password: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      isTwoFactorEnabled: z
-        .union([
-          z.boolean(),
-          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      billing_address: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      payment_method: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      company: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      address: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      postcode: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      city: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      phone: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      activity: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      createdAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      updatedAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      role: z
-        .union([
-          z.lazy(() => UserRoleSchema),
-          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      refererId: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      accounts: z
-        .lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sessions: z
-        .lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sites: z
-        .lazy(() => SiteUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscriptions: z
-        .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      Authenticator: z
-        .lazy(
-          () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
-        )
-        .optional(),
-      links: z
-        .lazy(() => LinkUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      customer: z
-        .lazy(() => CustomerUncheckedUpdateOneWithoutUserNestedInputSchema)
-        .optional(),
-      twoFactorConfirmation: z
-        .lazy(
-          () =>
-            TwoFactorConfirmationUncheckedUpdateOneWithoutUserNestedInputSchema
-        )
-        .optional(),
-      feedback: z
-        .lazy(() => FeedbackUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      likes: z
-        .lazy(() => LikeUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      affiliates: z
-        .lazy(() => UserUncheckedUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      events: z
-        .lazy(() => EventUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      workflowStates: z
-        .lazy(
-          () => WorkflowStateUncheckedUpdateManyWithoutUserNestedInputSchema
-        )
-        .optional(),
-      executions: z
-        .lazy(() => ExecutionUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      jobs: z
-        .lazy(() => QueueUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      outbox: z
-        .lazy(() => OutboxUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      feed: z
-        .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      comments: z
-        .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sent: z
-        .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
-        .optional(),
-      received: z
-        .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
-        .optional(),
-      reservations: z
-        .lazy(
-          () => ReservationUncheckedUpdateManyWithoutAffiliateNestedInputSchema
-        )
-        .optional()
-    })
-    .strict();
-
 export const BlockCreateWithoutReservationsInputSchema: z.ZodType<Prisma.BlockCreateWithoutReservationsInput> =
   z
     .object({
@@ -53441,9 +52255,6 @@ export const UserCreateWithoutReservationsInputSchema: z.ZodType<Prisma.UserCrea
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -53540,9 +52351,6 @@ export const UserUncheckedCreateWithoutReservationsInputSchema: z.ZodType<Prisma
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -53946,9 +52754,6 @@ export const UserUpdateWithoutReservationsInputSchema: z.ZodType<Prisma.UserUpda
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -54148,9 +52953,6 @@ export const UserUncheckedUpdateWithoutReservationsInputSchema: z.ZodType<Prisma
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -54238,9 +53040,6 @@ export const UserCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserCreateWithou
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -54337,9 +53136,6 @@ export const UserUncheckedCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -54566,9 +53362,6 @@ export const UserUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUpdateWithou
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -54767,9 +53560,6 @@ export const UserUncheckedUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -56488,9 +55278,6 @@ export const UserCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserCreateWith
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -56587,9 +55374,6 @@ export const UserUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -56816,9 +55600,6 @@ export const UserUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserUpdateWith
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -57018,9 +55799,6 @@ export const UserUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -57113,9 +55891,6 @@ export const UserCreateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserCr
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -57210,9 +55985,6 @@ export const UserUncheckedCreateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -57482,9 +56254,6 @@ export const UserUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserUp
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -57681,9 +56450,6 @@ export const UserUncheckedUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -57907,9 +56673,6 @@ export const UserCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserCreate
         .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -58006,9 +56769,6 @@ export const UserUncheckedCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -58335,9 +57095,6 @@ export const UserUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserUpdate
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -58536,9 +57293,6 @@ export const UserUncheckedUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -58913,9 +57667,6 @@ export const UserCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserCreateWith
         .lazy(() => QueueCreateNestedManyWithoutUserInputSchema)
         .optional(),
       feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberCreateNestedManyWithoutUserInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -59012,9 +57763,6 @@ export const UserUncheckedCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
@@ -59241,9 +57989,6 @@ export const UserUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserUpdateWith
         .lazy(() => QueueUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -59442,9 +58187,6 @@ export const UserUncheckedUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -59706,16 +58448,6 @@ export const FeedCreateManyUserInputSchema: z.ZodType<Prisma.FeedCreateManyUserI
         .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
         .optional(),
       commentable: z.boolean().optional(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      siteId: z.string()
-    })
-    .strict();
-
-export const SubscriberCreateManyUserInputSchema: z.ZodType<Prisma.SubscriberCreateManyUserInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       siteId: z.string()
@@ -61417,9 +60149,6 @@ export const UserUpdateWithoutRefererInputSchema: z.ZodType<Prisma.UserUpdateWit
         .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      subscribers: z
-        .lazy(() => SubscriberUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
       comments: z
         .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -61614,9 +60343,6 @@ export const UserUncheckedUpdateWithoutRefererInputSchema: z.ZodType<Prisma.User
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscribers: z
-        .lazy(() => SubscriberUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       comments: z
         .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
@@ -62679,93 +61405,6 @@ export const FeedUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.Fee
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      createdAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      updatedAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      siteId: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-    })
-    .strict();
-
-export const SubscriberUpdateWithoutUserInputSchema: z.ZodType<Prisma.SubscriberUpdateWithoutUserInput> =
-  z
-    .object({
-      id: z
-        .union([
-          z.string().cuid(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      createdAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      updatedAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      site: z
-        .lazy(() => SiteUpdateOneRequiredWithoutSubscribersNestedInputSchema)
-        .optional()
-    })
-    .strict();
-
-export const SubscriberUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.SubscriberUncheckedUpdateWithoutUserInput> =
-  z
-    .object({
-      id: z
-        .union([
-          z.string().cuid(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      createdAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      updatedAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      siteId: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-    })
-    .strict();
-
-export const SubscriberUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.SubscriberUncheckedUpdateManyWithoutUserInput> =
-  z
-    .object({
-      id: z
-        .union([
-          z.string().cuid(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -64754,6 +63393,12 @@ export const SubscriberUpdateWithoutSiteInputSchema: z.ZodType<Prisma.Subscriber
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -64765,9 +63410,6 @@ export const SubscriberUpdateWithoutSiteInputSchema: z.ZodType<Prisma.Subscriber
           z.coerce.date(),
           z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
         ])
-        .optional(),
-      user: z
-        .lazy(() => UserUpdateOneWithoutSubscribersNestedInputSchema)
         .optional()
     })
     .strict();

@@ -63,7 +63,6 @@ model User {
   jobs           Queue[]         @relation("UserQueueJobs")
   outbox         Outbox[]
   feed           Feed[]
-  subscribers    Subscriber[]
   comments       Comment[]
   sent           Message[]       @relation("Sent")
   received       Message[]       @relation("Received")
@@ -469,8 +468,6 @@ model Subscriber {
 
   site   Site   @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   siteId String
-
-  user User? @relation(fields: [email], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([siteId])
   @@index([email])

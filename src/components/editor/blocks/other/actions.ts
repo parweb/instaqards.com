@@ -30,6 +30,7 @@ export const subscribe = async (form: FormData) => {
 
     return { subscriber };
   } catch (error) {
+    console.error({ error });
     return { error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };

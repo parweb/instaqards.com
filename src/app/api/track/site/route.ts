@@ -14,10 +14,14 @@ const input = z.object({
 export async function POST(request: Request) {
   const body = input.parse(await request.json());
 
-  const subdomain = body.domain.endsWith(
-    `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
-  )
-    ? body.domain.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
+  const subdomain = body.domain
+    .split('/?')
+    .at(0)
+    ?.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
+    ? body.domain
+        .split('/?')
+        .at(0)
+        ?.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
     : null;
 
   const site = await db.site.findUniqueOrThrow({
