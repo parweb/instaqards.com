@@ -1,26 +1,39 @@
-import { format, formatDistanceToNow } from 'date-fns';
+import { format as formatDateFns, formatDistanceToNow } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import {
   LuActivity,
+  LuCalendar,
   LuCircleCheck,
   LuCirclePlay,
   LuCircleX,
   LuGlobe,
+  LuHandshake,
   LuLink,
   LuListChecks,
   LuMail,
   LuMessageSquare,
+  LuMessagesSquare,
   LuPackage,
+  LuPhone,
+  LuPlus,
+  LuSend,
   LuShieldCheck,
   LuShoppingCart,
   LuThumbsUp,
   LuUser,
   LuUsers,
+  LuVideo,
   LuWorkflow
 } from 'react-icons/lu';
 
+import ModalButton from 'components/modal-button';
+import ProspectCommentModal from 'components/modal/comment-prospect';
+import OutboxCreateModal from 'components/modal/create-outbox';
+import CreateSiteModal from 'components/modal/create-site';
+import ProspectReservationModal from 'components/modal/reservation-prospect';
 import { Badge } from 'components/ui/badge';
 import { db } from 'helpers/db';
 
@@ -43,10 +56,9 @@ import {
 
 const formatDate = (date: Date | string | null | undefined): string => {
   if (!date) return 'N/A';
-
   try {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    return format(dateObj, 'PPP p');
+    return formatDateFns(dateObj, 'd MMMM yyyy', { locale: fr });
   } catch (error) {
     console.error(error);
     return 'Invalid Date';
@@ -61,6 +73,16 @@ const formatRelativeTime = (date: Date | string | null | undefined): string => {
   } catch (error) {
     console.error(error);
     return 'Invalid Date';
+  }
+};
+
+const formatHour = (date: Date | string | null | undefined): string => {
+  if (!date) return '';
+  try {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return formatDateFns(dateObj, 'HH:mm');
+  } catch {
+    return '';
   }
 };
 
@@ -143,7 +165,8 @@ export default async function UserPage(props: {
         take: 20
       },
       jobs: { orderBy: { createdAt: 'desc' }, take: 20 },
-      outbox: { orderBy: { createdAt: 'desc' }, take: 20 }
+      outbox: { orderBy: { createdAt: 'desc' }, take: 20 },
+      comments: { orderBy: { createdAt: 'desc' } }
     }
   });
 
@@ -151,13 +174,18 @@ export default async function UserPage(props: {
     notFound();
   }
 
+  const reservations = await db.reservation.findMany({
+    where: { email: user.email },
+    orderBy: { dateStart: 'desc' }
+  });
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <LuUser className="h-5 w-5" />
+              <LuUser />
               User Profile
             </CardTitle>
 
@@ -295,7 +323,7 @@ export default async function UserPage(props: {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <LuShoppingCart className="h-5 w-5" />
+                <LuShoppingCart />
                 Subscriptions
               </CardTitle>
             </CardHeader>
@@ -346,15 +374,21 @@ export default async function UserPage(props: {
           </Card>
         )}
 
-        {user.sites.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <LuGlobe className="h-5 w-5" />
-                Sites
-              </CardTitle>
-            </CardHeader>
+        <Card>
+          <CardHeader className="flex-row items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <LuGlobe />
+              Sites
+            </CardTitle>
 
+            <div>
+              <ModalButton size="sm" label={<LuPlus />}>
+                <CreateSiteModal user={user} />
+              </ModalButton>
+            </div>
+          </CardHeader>
+
+          {user.sites.length > 0 && (
             <CardContent>
               <Table>
                 <TableHeader>
@@ -401,14 +435,14 @@ export default async function UserPage(props: {
                 </TableBody>
               </Table>
             </CardContent>
-          </Card>
-        )}
+          )}
+        </Card>
 
         {user.links.length > 0 && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <LuLink className="h-5 w-5" />
+                <LuLink />
                 Created Links
               </CardTitle>
             </CardHeader>
@@ -458,7 +492,7 @@ export default async function UserPage(props: {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <LuActivity className="h-5 w-5" />
+                <LuActivity />
                 Recent Activity
               </CardTitle>
 
@@ -599,7 +633,7 @@ export default async function UserPage(props: {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <LuShieldCheck className="h-5 w-5" />
+              <LuShieldCheck />
               Security & Auth
             </CardTitle>
           </CardHeader>
@@ -664,7 +698,7 @@ export default async function UserPage(props: {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <LuUsers className="h-5 w-5" />
+                <LuUsers />
                 Users Referred
               </CardTitle>
             </CardHeader>
@@ -690,7 +724,7 @@ export default async function UserPage(props: {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <LuMessageSquare className="h-5 w-5" />
+                <LuMessageSquare />
                 Feedback Submitted
               </CardTitle>
             </CardHeader>
@@ -715,7 +749,7 @@ export default async function UserPage(props: {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <LuThumbsUp className="h-5 w-5" />
+                <LuThumbsUp />
                 Liked Sites
               </CardTitle>
             </CardHeader>
@@ -742,7 +776,7 @@ export default async function UserPage(props: {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <LuWorkflow className="h-5 w-5" />
+                <LuWorkflow />
                 Active Workflows
               </CardTitle>
             </CardHeader>
@@ -777,15 +811,117 @@ export default async function UserPage(props: {
           </Card>
         )}
 
-        {user.outbox.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <LuMail className="h-5 w-5" />
-                Recent Outbox Emails
-              </CardTitle>
-            </CardHeader>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <LuPackage />
+              Réservations
+            </CardTitle>
+            <div className="flex gap-2 items-center">
+              <ModalButton label={<LuPhone />} size="sm">
+                <ProspectReservationModal
+                  user={{ id: user.id, email: user.email, name: user.name }}
+                  type="PHONE"
+                />
+              </ModalButton>
 
+              <ModalButton label={<LuVideo />} size="sm">
+                <ProspectReservationModal
+                  user={{ id: user.id, email: user.email, name: user.name }}
+                  type="VISIO"
+                />
+              </ModalButton>
+
+              <ModalButton label={<LuHandshake />} size="sm">
+                <ProspectReservationModal
+                  user={{ id: user.id, email: user.email, name: user.name }}
+                  type="PHYSIC"
+                />
+              </ModalButton>
+
+              <ModalButton label={<LuCalendar />} size="sm">
+                <ProspectReservationModal
+                  user={{ id: user.id, email: user.email, name: user.name }}
+                  type="REMINDER"
+                />
+              </ModalButton>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {reservations.map((res: (typeof reservations)[0]) => (
+                <li
+                  key={res.id}
+                  className="text-sm flex flex-col border-b pb-2 last:border-b-0"
+                >
+                  <span className="font-medium">
+                    {res.type || 'Type inconnu'}
+                  </span>
+                  <span className="text-muted-foreground text-xs">
+                    {formatDate(res.dateStart)}
+                    {res.dateEnd && (
+                      <>
+                        {res.dateStart &&
+                          res.dateEnd &&
+                          (new Date(res.dateStart).toDateString() ===
+                          new Date(res.dateEnd).toDateString()
+                            ? ` (${formatHour(res.dateStart)} → ${formatHour(res.dateEnd)})`
+                            : ` → ${formatDate(res.dateEnd)}`)}
+                      </>
+                    )}
+                  </span>
+                  {res.comment && (
+                    <span className="italic text-xs">{res.comment}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <LuMessageSquare />
+              Commentaires
+            </CardTitle>
+
+            <ModalButton label={<LuMessagesSquare />} size="sm">
+              <ProspectCommentModal user={{ id: user.id }} />
+            </ModalButton>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {user.comments.map(comment => (
+                <li
+                  key={comment.id}
+                  className="text-sm border-b pb-2 last:border-b-0"
+                >
+                  <span className="text-muted-foreground text-xs">
+                    {formatRelativeTime(comment.createdAt)}
+                  </span>
+                  <div>{comment.content}</div>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex-row items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <LuMail />
+              Recent Outbox Emails
+            </CardTitle>
+
+            <div>
+              <ModalButton size="sm" label={<LuSend />}>
+                <OutboxCreateModal user={user} />
+              </ModalButton>
+            </div>
+          </CardHeader>
+
+          {user.outbox.length > 0 && (
             <CardContent>
               <Table>
                 <TableHeader>
@@ -815,8 +951,8 @@ export default async function UserPage(props: {
                 </TableBody>
               </Table>
             </CardContent>
-          </Card>
-        )}
+          )}
+        </Card>
       </div>
     </div>
   );

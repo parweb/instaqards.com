@@ -30,13 +30,11 @@ type BackgroundState =
 
 const BackgroundItem = ({
   children,
-  name,
   preview = false,
   isSelected = false,
   onClick
 }: {
   children: React.ReactNode;
-  name: string;
   preview?: boolean;
   isSelected?: boolean;
   onClick: () => void;
@@ -309,12 +307,7 @@ const UpdateSiteBackgroundModal = ({
           {currentBackground.type === 'predefined' &&
             currentBackground.value && (
               <>
-                <BackgroundItem
-                  preview
-                  name={currentBackground.value}
-                  isSelected={false}
-                  onClick={() => {}}
-                >
+                <BackgroundItem preview isSelected={false} onClick={() => {}}>
                   {(() => {
                     const Background =
                       backgrounds[
@@ -348,7 +341,6 @@ const UpdateSiteBackgroundModal = ({
                 {Object.entries(backgrounds).map(([name, Background]) => (
                   <BackgroundItem
                     key={name}
-                    name={name}
                     isSelected={
                       currentBackground.type === 'predefined' &&
                       currentBackground.value === name

@@ -37,7 +37,6 @@ import DeleteBlockButton from 'components/delete-block-button';
 import DuplicateBlockButton from 'components/duplicate-block-button';
 import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
-import { useIsMobile } from 'hooks/use-mobile';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
 const BlockWidget = dynamic(() => import('./BlockWidget'), {
@@ -70,8 +69,6 @@ const BlockItem = ({
   block: Block;
   editor?: boolean;
 }) => {
-  const isMobile = useIsMobile();
-
   const {
     attributes,
     listeners,

@@ -1,18 +1,23 @@
-import { format, formatDistanceToNow } from 'date-fns';
+import { format as formatDateFns, formatDistanceToNow } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import {
   LuActivity,
+  LuCalendar,
   LuCircleCheck,
   LuCirclePlay,
   LuCircleX,
   LuGlobe,
+  LuHandshake,
   LuLink,
   LuListChecks,
   LuMail,
   LuMessageSquare,
+  LuMessagesSquare,
   LuPackage,
+  LuPhone,
   LuPlus,
   LuSend,
   LuShieldCheck,
@@ -20,12 +25,15 @@ import {
   LuThumbsUp,
   LuUser,
   LuUsers,
+  LuVideo,
   LuWorkflow
 } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
+import ProspectCommentModal from 'components/modal/comment-prospect';
 import OutboxCreateModal from 'components/modal/create-outbox';
 import CreateSiteModal from 'components/modal/create-site';
+import ProspectReservationModal from 'components/modal/reservation-prospect';
 import { Badge } from 'components/ui/badge';
 import { db } from 'helpers/db';
 
@@ -48,10 +56,9 @@ import {
 
 const formatDate = (date: Date | string | null | undefined): string => {
   if (!date) return 'N/A';
-
   try {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    return format(dateObj, 'PPP p');
+    return formatDateFns(dateObj, 'd MMMM yyyy', { locale: fr });
   } catch (error) {
     console.error(error);
     return 'Invalid Date';
@@ -66,6 +73,16 @@ const formatRelativeTime = (date: Date | string | null | undefined): string => {
   } catch (error) {
     console.error(error);
     return 'Invalid Date';
+  }
+};
+
+const formatHour = (date: Date | string | null | undefined): string => {
+  if (!date) return '';
+  try {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return formatDateFns(dateObj, 'HH:mm');
+  } catch {
+    return '';
   }
 };
 
@@ -148,13 +165,19 @@ export default async function UserPage(props: {
         take: 20
       },
       jobs: { orderBy: { createdAt: 'desc' }, take: 20 },
-      outbox: { orderBy: { createdAt: 'desc' }, take: 20 }
+      outbox: { orderBy: { createdAt: 'desc' }, take: 20 },
+      comments: { orderBy: { createdAt: 'desc' } }
     }
   });
 
   if (!user) {
     notFound();
   }
+
+  const reservations = await db.reservation.findMany({
+    where: { email: user.email },
+    orderBy: { dateStart: 'desc' }
+  });
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -787,6 +810,102 @@ export default async function UserPage(props: {
             </CardContent>
           </Card>
         )}
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <LuPackage />
+              Réservations
+            </CardTitle>
+            <div className="flex gap-2 items-center">
+              <ModalButton label={<LuPhone />} size="sm">
+                <ProspectReservationModal
+                  user={{ id: user.id, email: user.email, name: user.name }}
+                  type="PHONE"
+                />
+              </ModalButton>
+
+              <ModalButton label={<LuVideo />} size="sm">
+                <ProspectReservationModal
+                  user={{ id: user.id, email: user.email, name: user.name }}
+                  type="VISIO"
+                />
+              </ModalButton>
+
+              <ModalButton label={<LuHandshake />} size="sm">
+                <ProspectReservationModal
+                  user={{ id: user.id, email: user.email, name: user.name }}
+                  type="PHYSIC"
+                />
+              </ModalButton>
+
+              <ModalButton label={<LuCalendar />} size="sm">
+                <ProspectReservationModal
+                  user={{ id: user.id, email: user.email, name: user.name }}
+                  type="REMINDER"
+                />
+              </ModalButton>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {reservations.map((res: (typeof reservations)[0]) => (
+                <li
+                  key={res.id}
+                  className="text-sm flex flex-col border-b pb-2 last:border-b-0"
+                >
+                  <span className="font-medium">
+                    {res.type || 'Type inconnu'}
+                  </span>
+                  <span className="text-muted-foreground text-xs">
+                    {formatDate(res.dateStart)}
+                    {res.dateEnd && (
+                      <>
+                        {res.dateStart &&
+                          res.dateEnd &&
+                          (new Date(res.dateStart).toDateString() ===
+                          new Date(res.dateEnd).toDateString()
+                            ? ` (${formatHour(res.dateStart)} → ${formatHour(res.dateEnd)})`
+                            : ` → ${formatDate(res.dateEnd)}`)}
+                      </>
+                    )}
+                  </span>
+                  {res.comment && (
+                    <span className="italic text-xs">{res.comment}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <LuMessageSquare />
+              Commentaires
+            </CardTitle>
+
+            <ModalButton label={<LuMessagesSquare />} size="sm">
+              <ProspectCommentModal user={{ id: user.id }} />
+            </ModalButton>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {user.comments.map(comment => (
+                <li
+                  key={comment.id}
+                  className="text-sm border-b pb-2 last:border-b-0"
+                >
+                  <span className="text-muted-foreground text-xs">
+                    {formatRelativeTime(comment.createdAt)}
+                  </span>
+                  <div>{comment.content}</div>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader className="flex-row items-center justify-between gap-2">

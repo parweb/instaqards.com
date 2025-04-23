@@ -2,7 +2,7 @@
 import { getSession } from 'lib/auth';
 import Stripe from 'stripe';
 
-export async function GET(request: Request) {
+export async function GET() {
   const session = await getSession();
 
   if (!session) {

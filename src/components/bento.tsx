@@ -1,5 +1,5 @@
 import React, { ReactElement, JSXElementConstructor } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { cn } from 'lib/utils';
 
 const getRandomDelay = () => Math.random() * 0.4 + 0.1;

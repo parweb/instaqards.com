@@ -1,7 +1,7 @@
 'use client';
 
 import type { Block } from '@prisma/client';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { memo, Suspense } from 'react';

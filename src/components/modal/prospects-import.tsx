@@ -1,28 +1,28 @@
 'use client';
 
-import { Prisma } from '@prisma/client';
+import { UserRole, type Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { atom, useAtomValue } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { isEqual } from 'lodash-es';
+import { LucideLoader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
+import { z } from 'zod';
 
 import { ProspectsTable } from 'app/app/(dashboard)/users/prospects-table';
 import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
 import useTranslation from 'hooks/use-translation';
-import { assignProspect, createUser } from 'lib/actions';
-import { z } from 'zod';
-import { ProspectSchema } from '../../../prisma/generated/zod';
+import { assignProspect } from 'lib/actions';
+import { UserSchema } from '../../../prisma/generated/zod';
 import { useModal } from './provider';
-import { LucideLoader2 } from 'lucide-react';
 
 export const ProspectsSchema = z.object({
   data: z.array(
-    ProspectSchema.merge(
+    UserSchema.merge(
       z.object({
         id: z.string()
       })
@@ -34,9 +34,9 @@ export const ProspectsSchema = z.object({
 });
 
 const $prospects = atomFamily(
-  (params: Prisma.ProspectFindManyArgs) =>
+  (params: Prisma.UserFindManyArgs) =>
     atom(() =>
-      fetch('/api/lake/prospect/findMany?paginated', {
+      fetch('/api/lake/user/findMany?paginated', {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(params)
@@ -58,12 +58,7 @@ const Selection = () => {
   const selection = useAtomValue($selection);
 
   return selection.map(id => (
-    <input
-      key={`Selection-${id}`}
-      type="hidden"
-      name={`selected[]`}
-      value={id}
-    />
+    <input key={`Selection-${id}`} type="hidden" name="selected[]" value={id} />
   ));
 };
 
@@ -77,16 +72,17 @@ const Prospects = () => {
       $selection={$selection}
       $prospects={$prospects({
         where: {
-          assigneeId: { equals: null },
+          refererId: { equals: null },
+          role: UserRole.LEAD,
           ...(search !== '' && {
             OR: [
-              { adresse: { contains: search } },
-              { cp: { contains: search } },
-              { ville: { contains: search } },
-              { raison_sociale: { contains: search } },
+              { address: { contains: search } },
+              { postcode: { contains: search } },
+              { city: { contains: search } },
+              { company: { contains: search } },
               { email: { contains: search } },
-              { tel: { contains: search } },
-              { activite: { contains: search } }
+              { phone: { contains: search } },
+              { activity: { contains: search } }
             ]
           })
         },
@@ -103,11 +99,6 @@ const Prospects = () => {
 export default function ProspectsImportModal() {
   const router = useRouter();
   const modal = useModal();
-
-  const [data, setData] = useState<{ name: string; email: string }>({
-    name: '',
-    email: ''
-  });
 
   return (
     <form

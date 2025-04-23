@@ -63,10 +63,11 @@ model User {
   jobs           Queue[]         @relation("UserQueueJobs")
   outbox         Outbox[]
   feed           Feed[]
-  subscriber     Subscriber[]
-  comment        Comment[]
+  subscribers    Subscriber[]
+  comments       Comment[]
   sent           Message[]       @relation("Sent")
   received       Message[]       @relation("Received")
+  reservations   Reservation[]
 
   @@index([email])
   @@index([role])
@@ -479,6 +480,8 @@ model Subscriber {
 model Reservation {
   id String @id @default(cuid())
 
+  type String?
+
   name      String?
   email     String
   dateStart DateTime
@@ -490,6 +493,9 @@ model Reservation {
 
   block   Block?  @relation(fields: [blockId], references: [id])
   blockId String?
+
+  affiliate   User?   @relation(fields: [affiliateId], references: [id])
+  affiliateId String?
 
   @@index([dateStart])
   @@index([dateEnd])

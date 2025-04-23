@@ -2,7 +2,7 @@
 
 import { memo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { LuExpand, LuPlus } from 'react-icons/lu';
+import { LuPlus } from 'react-icons/lu';
 
 import FlipFlap from 'components/editor/blocks//button/flip-flap';
 import ThreeDSpin from 'components/editor/blocks/button/3d-spin';
@@ -22,8 +22,8 @@ import Shiny from 'components/editor/blocks/button/shiny';
 import SlideFromLeft001 from 'components/editor/blocks/button/slide-from-left-001';
 import AppleMusic from 'components/editor/blocks/external/apple-music';
 import Facebook from 'components/editor/blocks/external/facebook';
-import Instagram from 'components/editor/blocks/external/instagram';
 import Iframe from 'components/editor/blocks/external/iframe';
+import Instagram from 'components/editor/blocks/external/instagram';
 import Snapchat from 'components/editor/blocks/external/snapchat';
 import Soundcloud from 'components/editor/blocks/external/soundcloud';
 import Spotify from 'components/editor/blocks/external/spotify';

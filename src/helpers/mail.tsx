@@ -1,12 +1,15 @@
 import 'server-only';
 
+import { Prisma } from '@prisma/client';
 import { render } from '@react-email/render';
 import { waitUntil } from '@vercel/functions';
+import { nanoid } from 'nanoid';
 import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { Resend } from 'resend';
 import { ulid } from 'ulid';
 
 import { db } from 'helpers/db';
+import { trySafe } from 'helpers/trySafe';
 import { sender } from 'settings';
 import { DEFAULT_LANG, type Lang } from 'translations';
 import ConfirmAccountEmail from '../../emails/confirm-account';
@@ -72,10 +75,23 @@ const send = async (
   await resend.emails.send({ from, to, subject, react });
 
   waitUntil(
-    render(react, { pretty: true }).then(
-      async html =>
-        await db.outbox
-          .create({
+    render(react, { pretty: true }).then(async html => {
+      const [, session] = await trySafe(async () => {
+        const { getSession } = await import('lib/auth');
+
+        const session = await getSession();
+        return session;
+      }, null);
+
+      const correlationId = nanoid();
+
+      const destination = await db.user.findUniqueOrThrow({
+        where: { email: to }
+      });
+
+      await db
+        .$transaction([
+          db.outbox.create({
             data: {
               id,
               email: to,
@@ -93,10 +109,40 @@ const send = async (
                 ]
               }
             }
+          }),
+          db.event.createMany({
+            data: [
+              session !== null
+                ? {
+                    userId: String(session.user.id),
+                    eventType: 'LEAD_CONTACTED',
+                    payload: {
+                      by: 'EMAIL',
+                      id,
+                      from,
+                      to,
+                      subject
+                    },
+                    correlationId
+                  }
+                : undefined,
+              {
+                userId: destination.id,
+                eventType: 'EMAIL_SENT',
+                payload: {
+                  id,
+                  from,
+                  to,
+                  subject
+                },
+                correlationId
+              }
+            ].filter(Boolean) as Prisma.EventCreateManyInput[]
           })
-          .then(({ metadata }) => console.info(id, metadata))
-          .catch(console.error)
-    )
+        ])
+        .then(([{ metadata }]) => console.info(id, metadata))
+        .catch(console.error);
+    })
   );
 };
 

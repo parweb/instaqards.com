@@ -1,7 +1,7 @@
 'use client';
 
 import type { Site } from '@prisma/client';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { contentType } from 'mime-types';
 import Image from 'next/image';
 import { RefObject, Suspense } from 'react';

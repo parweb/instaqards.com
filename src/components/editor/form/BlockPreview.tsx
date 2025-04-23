@@ -113,6 +113,7 @@ export function BlockPreview({
   });
 
   const { widget, ...data } = useWatch({ control });
+  console.info({ widget });
 
   const widgetString = JSON.stringify({ ...block_widget, data });
 
@@ -254,8 +255,6 @@ export function BlockPreview({
                           name={key}
                           data={data}
                           shape={property.shape}
-                          // @ts-ignore
-                          setValue={setValue}
                         />
 
                         {errors[key] && (

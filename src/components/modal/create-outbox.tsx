@@ -15,7 +15,11 @@ import useTranslation from 'hooks/use-translation';
 import { createOutbox } from 'lib/actions';
 import { useModal } from './provider';
 
-export default function OutboxCreateModal({ user }: { user: User }) {
+export default function OutboxCreateModal({
+  user
+}: {
+  user: Pick<User, 'id' | 'name' | 'email'>;
+}) {
   const router = useRouter();
   const modal = useModal();
   const translate = useTranslation();

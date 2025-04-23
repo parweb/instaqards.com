@@ -7,7 +7,7 @@ import {
   useMotionValue,
   useSpring,
   useTransform
-} from 'framer-motion';
+} from 'motion/react';
 
 // --- Powder Trail Segment Component ---
 interface TrailSegmentProps {

@@ -1,41 +1,37 @@
 'use client';
 
-import React, { useMemo, useCallback } from 'react';
-import {
-  DndContext,
-  DragOverlay,
-  closestCenter,
-  useDroppable,
-  DragEndEvent,
-  DragOverEvent,
-  DragStartEvent,
-  useSensor,
-  useSensors,
-  MouseSensor,
-  TouchSensor,
-  UniqueIdentifier,
-  defaultDropAnimationSideEffects
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable
-} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import isEqual from 'lodash/isEqual';
+import React, { useCallback, useMemo } from 'react';
+
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  defaultDropAnimationSideEffects,
+  useDroppable,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core';
+
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy
+} from '@dnd-kit/sortable';
 
 export interface KanbanProps<T> {
-  /** Mapping of column ID to list of items */
   columns: Record<string, T[]>;
-  /** Order of columns (their IDs) */
   statuses: string[];
-  /** Human-readable labels for each column */
   statusLabels: Record<string, string>;
-  /** Extract unique ID string for an item */
-  getId(item: T): string;
-  /** Render function for a card item */
-  renderCard(item: T): React.ReactNode;
-  /** Callback when a card is dragged and dropped */
+  getId(item: T): string; // eslint-disable-line no-unused-vars
+  renderCard(item: T): React.ReactNode; // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
   onDragEnd(params: {
     id: string;
     sourceStatus: string;
@@ -71,6 +67,7 @@ const DnDGroup = React.memo(function DnDGroup({
 
   return (
     <SortableContext
+      disabled
       id={id}
       items={items}
       strategy={verticalListSortingStrategy}
@@ -131,7 +128,6 @@ export default function Kanban<T>({
   const [activeData, setActiveData] = React.useState<T | null>(null);
   const previousColumns = React.useRef(initialColumns);
 
-  // Mettre à jour les colonnes quand les props changent
   React.useEffect(() => {
     if (!isEqual(previousColumns.current, initialColumns)) {
       setColumns(initialColumns);
@@ -288,7 +284,7 @@ export default function Kanban<T>({
     >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {columnsItems.map(({ status, items, itemIds }) => (
-          <DnDGroup key={status} id={status} items={itemIds}>
+          <DnDGroup key={`DnDGroup-${status}`} id={status} items={itemIds}>
             <h2 className="text-lg font-semibold dark:text-white mb-4">
               {statusLabels[status]}
             </h2>

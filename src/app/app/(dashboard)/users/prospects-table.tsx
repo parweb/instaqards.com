@@ -1,10 +1,9 @@
 'use client';
 
+import { Atom, PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { LucideLoader2 } from 'lucide-react';
 import { Suspense, useEffect, useState, useTransition } from 'react';
-import { z } from 'zod';
-
-import { Atom, PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import type { z } from 'zod';
 
 import { ProspectsSchema } from 'components/modal/prospects-import';
 import { Checkbox } from 'components/ui/checkbox';
@@ -40,7 +39,7 @@ const Pages = ({
 }) => {
   const [pageAtomValue, setPage] = useAtom($page);
   const [take, setTake] = useAtom($take);
-  const [pending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [pageInputValue, setPageInputValue] = useState(
     pageAtomValue.toString()
   );
@@ -61,9 +60,9 @@ const Pages = ({
         <PaginationContent className="flex gap-4">
           <PaginationItem>
             <PaginationPrevious
-              onClick={async () => {
-                startTransition(async () => {
-                  await setPage(clamp(pageAtomValue - 1, 1, pages));
+              onClick={() => {
+                startTransition(() => {
+                  setPage(clamp(pageAtomValue - 1, 1, pages));
                 });
               }}
             />
@@ -82,8 +81,8 @@ const Pages = ({
 
                 const newPage = Number(currentInput);
                 if (!isNaN(newPage) && newPage >= 1 && newPage <= pages) {
-                  startTransition(async () => {
-                    await setPage(newPage);
+                  startTransition(() => {
+                    setPage(newPage);
                   });
                 }
               }}
@@ -96,9 +95,9 @@ const Pages = ({
 
           <PaginationItem>
             <PaginationNext
-              onClick={async () => {
-                startTransition(async () => {
-                  await setPage(clamp(pageAtomValue + 1, 1, pages));
+              onClick={() => {
+                startTransition(() => {
+                  setPage(clamp(pageAtomValue + 1, 1, pages));
                 });
               }}
             />
@@ -110,8 +109,8 @@ const Pages = ({
         value={take.toString()}
         onValueChange={async value => {
           const newTake = Number(value);
-          startTransition(async () => {
-            await setTake(newTake);
+          startTransition(() => {
+            setTake(newTake);
           });
         }}
       >
@@ -151,14 +150,6 @@ const Tbody = ({
         return (
           <tr
             key={prospect.id}
-            // onClick={() => {
-            //   setSelection(prev => {
-            //     if (prev?.includes(prospect.id)) {
-            //       return prev.filter(id => id !== prospect.id);
-            //     }
-            //     return [...(prev || []), prospect.id];
-            //   });
-            // }}
             className={cn(
               selection?.includes(prospect.id) && 'bg-gray-200',
               'hover:bg-gray-100'
@@ -178,24 +169,22 @@ const Tbody = ({
               />
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">
-                {prospect.raison_sociale}
-              </div>
-              <div className="text-sm text-gray-500">{prospect.adresse}</div>
+              <div className="text-sm text-gray-500">{prospect.company}</div>
+              <div className="text-sm text-gray-500">{prospect.address}</div>
             </td>
 
             <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">{prospect.cp}</div>
-              <div className="text-sm text-gray-500">{prospect.ville}</div>
+              <div className="text-sm text-gray-500">{prospect.postcode}</div>
+              <div className="text-sm text-gray-500">{prospect.city}</div>
             </td>
 
             <td className="px-6 py-4 whitespace-nowrap">
               <div className="text-sm text-gray-500">{prospect.email}</div>
-              <div className="text-sm text-gray-500">{prospect.tel}</div>
+              <div className="text-sm text-gray-500">{prospect.phone}</div>
             </td>
 
             <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">{prospect.activite}</div>
+              <div className="text-sm text-gray-500">{prospect.activity}</div>
             </td>
           </tr>
         );
@@ -250,7 +239,7 @@ const Thead = ({
   $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
 }) => {
   const prospects = useAtomValue($prospects);
-  const [selection, setSelection] = useAtom($selection);
+  const selection = useAtomValue($selection);
 
   return (
     <thead className="bg-gray-50 sticky top-0">

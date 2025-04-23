@@ -221,6 +221,49 @@ const translations = {
     it: 'Invia',
     es: 'Enviar'
   },
+  'components.prospect.unassign.title': {
+    fr: 'Déassigner un prospect',
+    en: 'Unassign Prospect',
+    it: 'Deasigna un prospect',
+    es: 'Desasignar un prospect'
+  },
+  'components.prospect.unassign.button': {
+    fr: 'Déassigner',
+    en: 'Unassign',
+    it: 'Deasigna',
+    es: 'Desasignar'
+  },
+  'components.prospect.reservation.title': {
+    fr: 'Réservier un prospect',
+    en: 'Reserve Prospect',
+    it: 'Riserva un prospect',
+    es: 'Reservar un prospect'
+  },
+  'components.prospect.reservation.button': {
+    fr: 'Réservier',
+    en: 'Reserve',
+    it: 'Riserva',
+    es: 'Reservar'
+  },
+
+  'dashboard.affiliation.title': {
+    fr: 'Affiliations',
+    en: 'Affiliations',
+    it: 'Affiliations',
+    es: 'Affiliations'
+  },
+  'dashboard.affiliation.import.prospects': {
+    fr: 'Importer des prospects',
+    en: 'Import Prospects',
+    it: 'Importa Prospects',
+    es: 'Importar Prospectos'
+  },
+  'dashboard.affiliation.create': {
+    fr: 'Créer un utilisateur',
+    en: 'Create User',
+    it: 'Crea un utente',
+    es: 'Crear un usuario'
+  },
   'components.prices.plan.renews': {
     fr: 'Votre abonnement se renouvelle le',
     en: 'Your plan renews on',
@@ -1018,6 +1061,18 @@ const translations = {
     en: 'Edit',
     it: 'Modifica',
     es: 'Editar'
+  },
+  'components.prospect.comment.title': {
+    fr: 'Commenter',
+    en: 'Comment',
+    it: 'Commenta',
+    es: 'Comentar'
+  },
+  'components.prospect.comment.button': {
+    fr: 'Commenter',
+    en: 'Comment',
+    it: 'Commenta',
+    es: 'Comentar'
   }
 } as const;
 

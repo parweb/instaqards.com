@@ -1,4 +1,11 @@
+import { Pencil } from 'lucide-react';
+import Form from 'next/form';
+import { redirect } from 'next/navigation';
+
+import { Button } from 'components/ui/button';
+import { Switch } from 'components/ui/switch';
 import { db } from 'helpers/db';
+
 import {
   Table,
   TableBody,
@@ -7,14 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from 'components/ui/table'; // Assurez-vous que le chemin d'importation est correct
-import { Badge } from 'components/ui/badge'; // Assurez-vous que le chemin d'importation est correct
-import { format } from 'date-fns'; // Ou une autre bibliothèque de formatage de date
-import { Button } from 'components/ui/button';
-import { Pencil } from 'lucide-react';
-import { redirect } from 'next/navigation';
-import { Switch } from 'components/ui/switch';
-import Form from 'next/form';
+} from 'components/ui/table';
 
 export default async function WorkflowsActions() {
   const actions = await db.action.findMany({

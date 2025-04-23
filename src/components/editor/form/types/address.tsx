@@ -68,14 +68,12 @@ const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
 
 export const Address = ({
   control,
-  name,
-  setValue
+  name
 }: {
   control: Control<FieldValues>;
   name: string;
   shape: Extract<BlockType, { kind: 'address' }>;
   data: Record<string, unknown>;
-  setValue: (name: string, value: string) => void; // eslint-disable-line no-unused-vars
 }) => {
   return (
     <>

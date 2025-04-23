@@ -10,7 +10,7 @@ type Props = {
 export async function GET(request: Request, { params }: Props) {
   try {
     const { id } = await params;
-    const prospect = await db.prospect.findUnique({
+    const prospect = await db.user.findUnique({
       where: { id }
     });
 

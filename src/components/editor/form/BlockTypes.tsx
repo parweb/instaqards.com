@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'motion/react';
 import { FaRegFileAlt, FaRegImage } from 'react-icons/fa';
 import { IoTextOutline } from 'react-icons/io5';
 import { LuShare2 } from 'react-icons/lu';

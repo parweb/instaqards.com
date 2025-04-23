@@ -4,7 +4,6 @@ import { useFormStatus } from 'react-dom';
 
 import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
-import { cn } from 'lib/utils';
 
 export function BlockFormButton({ isLoading }: { isLoading: boolean }) {
   const { pending } = useFormStatus();

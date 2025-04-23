@@ -1,7 +1,7 @@
 'use client';
 
 import type { Block, Prisma, Site } from '@prisma/client';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'motion/react';
 import { Eye, Pencil } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { createPortal } from 'react-dom';

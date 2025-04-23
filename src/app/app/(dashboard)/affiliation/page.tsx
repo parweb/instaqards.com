@@ -1,4 +1,4 @@
-import { Prisma, SubscriptionStatus, Prospect } from '@prisma/client';
+import { Prisma, SubscriptionStatus, User } from '@prisma/client';
 import { eachDayOfInterval } from 'date-fns';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -7,15 +7,14 @@ import { LuArrowUpRight } from 'react-icons/lu';
 import { NewUsersChart } from 'app/app/(dashboard)/users/new-users-chart';
 import { UsersTable } from 'app/app/(dashboard)/users/users-table';
 import Analytics from 'components/analytics';
+import ProspectsKanbanWrapper from 'components/kanban/ProspectsKanbanWrapper';
 import ModalButton from 'components/modal-button';
 import UserCreateModal from 'components/modal/create-user';
 import ProspectsImportModal from 'components/modal/prospects-import';
-import ProspectsKanbanWrapper from 'components/kanban/ProspectsKanbanWrapper';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
-
-import 'array-grouping-polyfill';
+import * as lead from 'services/lead';
 
 export default async function AllAffiliation({
   searchParams
@@ -64,37 +63,40 @@ export default async function AllAffiliation({
     })
   };
 
-  const [affiliates, users, displayUsers, prospectsList] =
-    await db.$transaction([
-      db.user.findMany({
-        where: {
-          referer: { id: session.user.id }
-        }
-      }),
-      db.user.findMany({
-        select: { createdAt: true },
-        where,
-        orderBy: { createdAt: 'desc' }
-      }),
-      db.user.findMany({
-        include: {
-          sites: { orderBy: { createdAt: 'desc' } },
-          subscriptions: {
-            include: { price: { include: { product: true } } },
-            orderBy: {
-              ended_at: 'desc'
-            }
+  const [affiliates, users, displayUsers] = await db.$transaction([
+    db.user.findMany({
+      where: {
+        referer: { id: session.user.id }
+      }
+    }),
+    db.user.findMany({
+      select: { createdAt: true },
+      where,
+      orderBy: { createdAt: 'desc' }
+    }),
+    db.user.findMany({
+      include: {
+        sites: { orderBy: { createdAt: 'desc' } },
+        subscriptions: {
+          include: { price: { include: { product: true } } },
+          orderBy: {
+            ended_at: 'desc'
           }
-        },
-        where,
-        orderBy: { createdAt: 'desc' },
-        take,
-        skip: (page - 1) * take
-      }),
-      db.prospect.findMany({
-        where: { assigneeId: session.user.id },
-        orderBy: { position: 'asc' }
-      })
+        }
+      },
+      where,
+      orderBy: { createdAt: 'desc' },
+      take,
+      skip: (page - 1) * take
+    })
+  ]);
+
+  const [prospectsNew, prospectsInProgress, prospectsWin, prospectsLost] =
+    await Promise.all([
+      lead.all('NEW'),
+      lead.all('IN_PROGRESS'),
+      lead.all('WIN'),
+      lead.all('LOST')
     ]);
 
   const affiliateGroups = affiliates.reduce(
@@ -132,16 +134,18 @@ export default async function AllAffiliation({
   }));
 
   // Group prospects by status
-  const prospectsByStatus: Record<string, Prospect[]> = {};
-  prospectsList.forEach(p => {
-    if (!prospectsByStatus[p.status]) prospectsByStatus[p.status] = [];
-    prospectsByStatus[p.status].push(p);
-  });
-  const statuses = ['NEW', 'IN_PROGRESS', 'WON', 'LOST'];
+  const prospectsByStatus: Record<string, User[]> = {
+    NEW: prospectsNew,
+    IN_PROGRESS: prospectsInProgress,
+    WIN: prospectsWin,
+    LOST: prospectsLost
+  };
+
+  const statuses = ['NEW', 'IN_PROGRESS', 'WIN', 'LOST'];
   const statusLabels: Record<string, string> = {
     NEW: 'Nouveau',
     IN_PROGRESS: 'En cours',
-    WON: 'Gagné',
+    WIN: 'Gagné',
     LOST: 'Perdu'
   };
 
@@ -166,17 +170,21 @@ export default async function AllAffiliation({
         <div className="flex flex-col gap-2">
           <hgroup className="flex items-center justify-between gap-2">
             <h1 className="font-cal text-3xl font-bold dark:text-white">
-              {await translate('dashboard.users.title')}
+              {await translate('dashboard.affiliation.title')}
             </h1>
 
             <div className="flex items-center gap-2">
               <ModalButton
-                label={await translate('dashboard.users.import.prospects')}
+                label={await translate(
+                  'dashboard.affiliation.import.prospects'
+                )}
               >
                 <ProspectsImportModal />
               </ModalButton>
 
-              <ModalButton label={await translate('dashboard.users.create')}>
+              <ModalButton
+                label={await translate('dashboard.affiliation.create')}
+              >
                 <UserCreateModal />
               </ModalButton>
             </div>

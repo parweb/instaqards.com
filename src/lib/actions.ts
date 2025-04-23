@@ -5,6 +5,14 @@ import { revalidateTag } from 'next/cache';
 import { after } from 'next/server';
 import { z } from 'zod';
 
+import {
+  type User,
+  UserRole,
+  type Block,
+  type Link,
+  type Site
+} from '@prisma/client';
+
 import { db } from 'helpers/db';
 import { sendOutboxEmail } from 'helpers/mail';
 import { put } from 'helpers/storage';
@@ -13,14 +21,6 @@ import { trySafe } from 'helpers/trySafe';
 import { shorten } from 'helpers/url';
 import { getSession, withSiteAuth } from 'lib/auth';
 import { getBlurDataURL } from 'lib/utils';
-
-import {
-  type User,
-  UserRole,
-  type Block,
-  type Link,
-  type Site
-} from '@prisma/client';
 
 import {
   addDomainToVercel,
@@ -796,14 +796,21 @@ export const updateUser = async (form: FormData, userId: User['id']) => {
     });
 
     after(() => {
-      db.event.create({
-        data: {
-          userId: String(session.user.id),
-          eventType: 'USER_UPDATED',
-          payload: response,
-          correlationId: nanoid()
-        }
-      });
+      db.event
+        .create({
+          data: {
+            userId: String(session.user.id),
+            eventType: 'USER_UPDATED',
+            payload: response,
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::updateUser', event);
+        })
+        .catch(error => {
+          console.error('events::updateUser', error);
+        });
     });
 
     return response;
@@ -835,14 +842,21 @@ export const createUser = async (form: FormData) => {
   });
 
   after(() => {
-    db.event.create({
-      data: {
-        userId: String(session.user.id),
-        eventType: 'USER_CREATED',
-        payload: response,
-        correlationId: nanoid()
-      }
-    });
+    db.event
+      .create({
+        data: {
+          userId: String(session.user.id),
+          eventType: 'USER_CREATED',
+          payload: response,
+          correlationId: nanoid()
+        }
+      })
+      .then(event => {
+        console.info('events::createUser', event);
+      })
+      .catch(error => {
+        console.error('events::createUser', error);
+      });
   });
 
   return response;
@@ -1033,9 +1047,33 @@ export const assignProspect = async (form: FormData) => {
 
     console.info('assignProspect', { userId, prospectIds });
 
-    const response = await db.prospect.updateMany({
+    const response = await db.user.updateMany({
       where: { id: { in: prospectIds } },
-      data: { assigneeId: userId }
+      data: { refererId: userId }
+    });
+
+    after(() => {
+      db.event
+        .createMany({
+          data: [
+            ...prospectIds.map(pid => ({
+              userId: pid,
+              eventType: 'LEAD_ASSIGNED',
+              payload: { didBy: userId }
+            })),
+            {
+              userId,
+              eventType: 'LEADS_ASSIGNED',
+              payload: { leadIds: prospectIds }
+            }
+          ]
+        })
+        .then(event => {
+          console.info('events::assignProspect', event);
+        })
+        .catch(error => {
+          console.error('events::assignProspect', error);
+        });
     });
 
     return { data: response, error: null };
@@ -1045,6 +1083,231 @@ export const assignProspect = async (form: FormData) => {
       error instanceof Error ? error.message : 'An unknown error occurred';
     return {
       data: null,
+      errorMessage,
+      error: await translate('error')
+    };
+  }
+};
+
+export const unassignProspect = async (form: FormData) => {
+  try {
+    const session = await getSession();
+    const user = session?.user;
+
+    if (!user?.id) {
+      return { data: null, error: await translate('auth.error') };
+    }
+
+    const userId = user.id;
+    const prospectIds = form.getAll('selected[]') as string[]; // Ensure IDs are strings
+    const reason = String(form.get('reason'));
+
+    console.info('unassignProspect', { userId, prospectIds, reason });
+
+    const response = await db.user.updateMany({
+      where: { id: { in: prospectIds } },
+      data: { refererId: null }
+    });
+
+    after(() => {
+      db.event
+        .createMany({
+          data: [
+            ...prospectIds.map(pid => ({
+              userId: pid,
+              eventType: 'LEAD_UNASSIGNED',
+              payload: { didBy: userId, reason }
+            })),
+            {
+              userId,
+              eventType: 'LEADS_UNASSIGNED',
+              payload: { leadIds: prospectIds }
+            }
+          ]
+        })
+        .then(event => {
+          console.info('events::unassignProspect', event);
+        })
+        .catch(error => {
+          console.error('events::unassignProspect', error);
+        });
+    });
+
+    return { data: response, error: null };
+  } catch (error: unknown) {
+    console.error('Error unassigning prospects:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'An unknown error occurred';
+    return {
+      data: null,
+      errorMessage,
+      error: await translate('error')
+    };
+  }
+};
+
+export const bookProspect = async (form: FormData) => {
+  try {
+    const session = await getSession();
+    const user = session?.user;
+
+    if (!user?.id) {
+      return { data: null, error: await translate('auth.error') };
+    }
+
+    const userId = user.id;
+
+    const type = String(form.get('type'));
+    const day = String(form.get('day'));
+    const time = String(form.get('time'));
+    const email = String(form.get('email'));
+    const name = String(form.get('name'));
+    const comment = String(form.get('comment'));
+    const timeSlotInterval = Number(form.get('timeSlotInterval'));
+
+    console.log({
+      type,
+      day,
+      time,
+      email,
+      name,
+      comment,
+      timeSlotInterval,
+      userId
+    });
+
+    const response = await db.reservation.create({
+      data: {
+        type,
+        name,
+        email,
+        comment,
+        dateStart: new Date(`${day} ${time}`),
+        dateEnd: new Date(
+          new Date(`${day} ${time}`).getTime() + timeSlotInterval * 60000
+        ),
+        affiliateId: userId
+      }
+    });
+
+    console.log({ response });
+
+    const destination = await db.user.findUniqueOrThrow({
+      where: { email }
+    });
+
+    console.log({ destination });
+
+    after(() => {
+      const correlationId = nanoid();
+
+      db.event
+        .createMany({
+          data: [
+            {
+              userId: destination.id,
+              eventType: 'RESERVATION_CREATED',
+              payload: { didBy: userId, reservation: response },
+              correlationId
+            },
+            {
+              userId,
+              eventType: 'LEAD_CONTACTED',
+              payload: {
+                by: 'RESERVATION',
+                leadId: destination.id,
+                reservation: response
+              },
+              correlationId
+            }
+          ]
+        })
+        .then(event => {
+          console.info('events::bookProspect', event);
+        })
+        .catch(error => {
+          console.error('events::bookProspect', error);
+        });
+    });
+
+    return { data: response, error: null };
+  } catch (error: unknown) {
+    console.error('Error booking prospect:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'An unknown error occurred';
+    return {
+      data: null,
+      errorMessage,
+      error: await translate('error')
+    };
+  }
+};
+
+export const commentProspect = async (form: FormData) => {
+  try {
+    const session = await getSession();
+    const user = session?.user;
+
+    if (!user?.id) {
+      return { data: null, error: await translate('auth.error') };
+    }
+
+    const userId = user.id;
+
+    const leadId = String(form.get('userId'));
+    const comment = String(form.get('comment'));
+
+    const response = await db.comment.create({
+      data: {
+        content: comment,
+        user: { connect: { id: leadId } }
+      }
+    });
+
+    console.log({ response });
+
+    after(() => {
+      const correlationId = nanoid();
+
+      db.event
+        .createMany({
+          data: [
+            {
+              userId: leadId,
+              correlationId,
+              eventType: 'COMMENT_CREATED',
+              payload: {
+                didBy: userId,
+                comment: response
+              }
+            },
+            {
+              userId,
+              correlationId,
+              eventType: 'LEAD_COMMENTED',
+              payload: {
+                leadId,
+                comment: response
+              }
+            }
+          ]
+        })
+        .then(event => {
+          console.info('events::commentProspect', event);
+        })
+        .catch(error => {
+          console.error('events::commentProspect', error);
+        });
+    });
+
+    return { data: response, error: null };
+  } catch (error: unknown) {
+    console.error('Error booking prospect:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'An unknown error occurred';
+    return {
+      data: null,
+      errorMessage,
       error: await translate('error')
     };
   }

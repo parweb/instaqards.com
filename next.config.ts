@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   distDir: process.env.NODE_ENV === 'production' ? '.next' : '.next-dev',
-  typescript: { ignoreBuildErrors: true },
+  // typescript: { ignoreBuildErrors: true },
   experimental: {
     // reactCompiler: true,
     dynamicIO: true,
@@ -11,7 +11,13 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '20mb',
       allowedOrigins: ['app.localhost:11000']
-    }
+    },
+    optimizePackageImports: [
+      'framer-motion',
+      'lucide-react',
+      'react-icons',
+      'react-social-icons'
+    ]
   },
   images: {
     remotePatterns: [
