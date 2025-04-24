@@ -1,0 +1,86 @@
+import Form from 'next/form';
+import { IconType } from 'react-icons';
+import { z } from 'zod';
+
+import {
+  LuExternalLink,
+  LuPause,
+  LuPencil,
+  LuPlay,
+  LuPlus,
+  LuPointer,
+  LuUser
+} from 'react-icons/lu';
+
+import ModalButton from 'components/modal-button';
+import EmailsMutateModal from 'components/modal/mutate-email';
+import { Button } from 'components/ui/button';
+import { db } from 'helpers/db';
+import { revalidatePath } from 'next/cache';
+
+const Stat = ({
+  label,
+  value,
+  Icon
+}: {
+  label: string;
+  value: number;
+  Icon: IconType;
+}) => (
+  <div className="flex gap-4 items-center border rounded-md px-4 py-2 shadow-sm">
+    <div className="flex items-center justify-center bg-stone-100 rounded-full p-4">
+      <Icon className="w-7 h-7" />
+    </div>
+    <div>
+      <h4 className="text-muted-foreground">{label}</h4>
+      <span className="font-medium">{value}</span>
+    </div>
+  </div>
+);
+
+export default async function WorkflowsEmails() {
+  const emails = await db.email.findMany({
+    // include: { list: { include: { contacts: true } } },
+    orderBy: { updatedAt: 'desc' }
+  });
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        <ModalButton
+          label={
+            <>
+              <LuPlus /> Add Email
+            </>
+          }
+        >
+          <EmailsMutateModal />
+        </ModalButton>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {emails.map(email => (
+          <div
+            key={email.id}
+            className="flex items-center justify-between border p-4 rounded-md gap-4"
+          >
+            {/* <div className="aspect-square w-15 border rounded-md p-4 flex items-center justify-center">
+              {email.list.contacts.length}
+            </div> */}
+
+            <div className="flex-1">
+              <div className="font-medium">{email.title}</div>
+              <div className="text-muted-foreground">{email.description}</div>
+            </div>
+
+            <div className="flex gap-2 items-center">
+              <ModalButton label={<LuPencil />}>
+                <EmailsMutateModal email={email} />
+              </ModalButton>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

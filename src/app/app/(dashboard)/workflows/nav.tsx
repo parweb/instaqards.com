@@ -10,9 +10,24 @@ export default function WorkflowsNav() {
 
   const navItems = [
     {
-      name: 'General',
+      name: 'Workflows',
       href: `/workflows`,
       segment: null
+    },
+    {
+      name: 'Lists',
+      href: `/workflows/lists`,
+      segment: 'lists'
+    },
+    {
+      name: 'Campaigns',
+      href: `/workflows/campaigns`,
+      segment: 'campaigns'
+    },
+    {
+      name: 'Emails',
+      href: `/workflows/emails`,
+      segment: 'emails'
     },
     {
       name: 'Triggers',

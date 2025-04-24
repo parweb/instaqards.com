@@ -1,6 +1,21 @@
 
 TODO
 
+-- angle dattacke
+-- 
+--   annuaire
+--     va y viens voir ta page qu'on viens dajouter
+--     précrée les qards pour tous les prospect
+--     page annuaire
+--     dans l'email screenshot du qards
+
+  
+
+     -> changement de propriétaire ca deconne la recherche
+     -> statique exclure les createur (admin/seller)
+     -> liens sur les picture block facultatif si pas de lien fullscreen image
+     -> logo social tripadvisor
+     -> block avis clients
      -> inscription geré le cas du prospect (email already in use) 
      -> map il faut que je le refasse avec le vrai google map
      -> Sur la Page de Création de QARDS -> module catégorie image -> la galerie quand aucun lien il se passe rien (possibilité aucun lien du coup agrandissement au clique ?)

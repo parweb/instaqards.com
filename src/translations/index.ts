@@ -673,10 +673,10 @@ const translations = {
     es: 'Volver a todos los sitios'
   },
   'menu.workflows': {
-    fr: 'Workflows',
-    en: 'Workflows',
-    it: 'Workflows',
-    es: 'Workflows'
+    fr: 'Marketing',
+    en: 'Marketing',
+    it: 'Marketing',
+    es: 'Marketing'
   },
   'menu.design': {
     fr: 'Design',
@@ -1086,6 +1086,53 @@ const translations = {
     it: 'Crea',
     es: 'Crear'
   },
+  'components.list.mutate.title': {
+    fr: 'Créer une liste',
+    en: 'Create a list',
+    it: 'Crea una lista',
+    es: 'Crear una lista'
+  },
+  'components.list.mutate.button': {
+    fr: 'Enregistrer',
+    en: 'Save',
+    it: 'Salva',
+    es: 'Guardar'
+  },
+  'components.campaign.mutate.title': {
+    fr: 'Créer une campagne',
+    en: 'Create a campaign',
+    it: 'Crea una campagna',
+    es: 'Crear una campaña'
+  },
+  'components.campaign.mutate.button': {
+    fr: 'Enregistrer',
+    en: 'Save',
+    it: 'Salva',
+    es: 'Guardar'
+  },
+  'components.email.mutate.title': {
+    fr: 'Créer un email',
+    en: 'Create an email',
+    it: 'Crea un email',
+    es: 'Crear un email'
+  },
+  'components.email.mutate.button': {
+    fr: 'Enregistrer',
+    en: 'Save',
+    it: 'Salva',
+    es: 'Guardar'
+  },
+  'components.campaign.mutate.list': {
+    fr: "Liste d'emails",
+    en: 'Email list',
+    it: 'Lista di email',
+    es: 'Lista de emails'
+  },
+  'components.campaign.mutate.email': {
+    fr: "Template d'email",
+    en: 'Email template',
+    it: 'Template di email',
+    es: 'Plantilla de email'
   }
 } as const;
 

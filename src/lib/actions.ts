@@ -3,16 +3,19 @@
 import { customAlphabet } from 'nanoid';
 import { revalidateTag } from 'next/cache';
 import { after } from 'next/server';
+import { ulid } from 'ulid';
 import { z } from 'zod';
 
 import {
-  type User,
-  UserRole,
   type Block,
   type Link,
-  type Site
+  type Site,
+  type User,
+  CampaignType,
+  UserRole
 } from '@prisma/client';
 
+import { createHash } from 'helpers/createHash';
 import { db } from 'helpers/db';
 import { sendOutboxEmail } from 'helpers/mail';
 import { put } from 'helpers/storage';
@@ -27,7 +30,6 @@ import {
   removeDomainFromVercelProject,
   validDomainRegex
 } from 'lib/domains';
-import { createHash } from 'helpers/createHash';
 
 const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -1044,7 +1046,7 @@ export const assignProspect = async (form: FormData) => {
     }
 
     const userId = user.id;
-    const prospectIds = form.getAll('selected[]') as string[]; // Ensure IDs are strings
+    const prospectIds = form.getAll('selected[]') as string[];
 
     console.info('assignProspect', { userId, prospectIds });
 
@@ -1324,30 +1326,30 @@ export const createMagicLink = async ({
   callbackUrl?: string;
 }) => {
   try {
-  const token = nanoid();
-  const secret = process.env.AUTH_SECRET;
-  const hash = await createHash(`${token}${secret}`);
+    const token = nanoid();
+    const secret = process.env.AUTH_SECRET;
+    const hash = await createHash(`${token}${secret}`);
 
-  await db.verificationToken.create({
-    data: {
-      identifier: email,
-      token: hash,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysValid)
-    }
-  });
+    await db.verificationToken.create({
+      data: {
+        identifier: email,
+        token: hash,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysValid)
+      }
+    });
 
-  const baseUrl = process.env.NEXT_PUBLIC_NEXTAUTH_URL;
-  const provider = { id: 'resend' };
+    const baseUrl = process.env.NEXT_PUBLIC_NEXTAUTH_URL;
+    const provider = { id: 'resend' };
 
-  const url = `${baseUrl}/api/auth/callback/${provider.id}?${new URLSearchParams(
-    {
-      callbackUrl,
-      token,
-      email
-    }
-  )}`;
+    const url = `${baseUrl}/api/auth/callback/${provider.id}?${new URLSearchParams(
+      {
+        callbackUrl,
+        token,
+        email
+      }
+    )}`;
 
-  console.log({ url });
+    console.log({ url });
 
     return { url };
   } catch (error: unknown) {
@@ -1362,4 +1364,218 @@ export const createMagicLink = async ({
   }
 };
 
+export const mutateLists = async (form: FormData) => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  const id = form.has('id') ? String(form.get('id')) : ulid();
+  const title = String(form.get('title'));
+  const description = String(form.get('description'));
+  const selectedIds = form.getAll('selected[]') as string[];
+
+  console.log({
+    id,
+    title,
+    description,
+    selectedIds
+  });
+
+  try {
+    const response = await db.list.upsert({
+      where: { id },
+      create: {
+        title,
+        description,
+        owners: { connect: { id: session.user.id } },
+        contacts: { connect: selectedIds.map(id => ({ id })) }
+      },
+      update: {
+        title,
+        description,
+        contacts: { connect: selectedIds.map(id => ({ id })) }
+      }
+    });
+
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(session.user.id),
+            eventType: 'LIST_CREATED',
+            payload: response,
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::createLists', event);
+        })
+        .catch(error => {
+          console.error('events::createLists', error);
+        });
+    });
+
+    return response;
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error && 'code' in error && error.code === 'P2002'
+          ? await translate('lib.actions.domain.taken')
+          : error instanceof Error
+            ? error.message
+            : 'An unknown error occurred'
+    };
+  }
+};
+
+export const mutateCampaigns = async (form: FormData) => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  const id = form.has('id') ? String(form.get('id')) : ulid();
+  const type = String(form.get('type')) as CampaignType;
+  const title = String(form.get('title'));
+  const description = String(form.get('description'));
+  const list = String(form.get('list'));
+  const email = String(form.get('email'));
+
+  console.log({
+    id,
+    title,
+    description,
+    list,
+    email
+  });
+
+  try {
+    const response = await db.campaign.upsert({
+      where: { id },
+      create: {
+        type,
+        title,
+        description,
+        email: { connect: { id: email } },
+        list: { connect: { id: list } }
+      },
+      update: {
+        type,
+        title,
+        description,
+        email: { connect: { id: email } },
+        list: { connect: { id: list } }
+      }
+    });
+
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(session.user.id),
+            eventType: 'CAMPAIGN_CREATED',
+            payload: response,
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::createCampaign', event);
+        })
+        .catch(error => {
+          console.error('events::createCampaign', error);
+        });
+    });
+
+    return response;
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error && 'code' in error && error.code === 'P2002'
+          ? await translate('lib.actions.domain.taken')
+          : error instanceof Error
+            ? error.message
+            : 'An unknown error occurred'
+    };
+  }
+};
+
+export const mutateEmails = async (form: FormData) => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  const id = form.has('id') ? String(form.get('id')) : ulid();
+  const title = String(form.get('title'));
+  const description = String(form.get('description'));
+  const subject = String(form.get('subject'));
+  const content = String(form.get('content'));
+
+  const [, design] = await trySafe<string | undefined>(
+    () => JSON.parse(String(form.get('design'))),
+    undefined
+  );
+
+  console.log({
+    id,
+    title,
+    description,
+    subject,
+    content,
+    design
+  });
+
+  try {
+    const response = await db.email.upsert({
+      where: { id },
+      create: {
+        title,
+        description,
+        subject,
+        content,
+        ...(design && { design }),
+        user: { connect: { id: session.user.id } }
+      },
+      update: {
+        title,
+        description,
+        subject,
+        content,
+        ...(design && { design })
+      }
+    });
+
+    after(() => {
+      db.event
+        .create({
+          data: {
+            userId: String(session.user.id),
+            eventType: 'EMAIL_CREATED',
+            payload: response,
+            correlationId: nanoid()
+          }
+        })
+        .then(event => {
+          console.info('events::createEmail', event);
+        })
+        .catch(error => {
+          console.error('events::createEmail', error);
+        });
+    });
+
+    return response;
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error && 'code' in error && error.code === 'P2002'
+          ? await translate('lib.actions.domain.taken')
+          : error instanceof Error
+            ? error.message
+            : 'An unknown error occurred'
+    };
+  }
 };
