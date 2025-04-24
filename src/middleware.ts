@@ -49,7 +49,24 @@ function encodeRequest(req: NextRequest): string {
   ).toString('base64');
 }
 
-function trackSite(domain: string, req: NextRequest, name: string) {
+function trackUser(path: string, email: string | null, req: NextRequest) {
+  waitUntil(
+    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/user`, {
+      method: 'POST',
+      body: JSON.stringify({
+        path,
+        email,
+        url: req.url,
+        method: req.method,
+        headers: Object.fromEntries(
+          Array.from(req.headers.entries()) as Iterable<[string, string]>
+        )
+      })
+    })
+  );
+}
+
+function trackSite(domain: string, req: NextRequest, _name: string) {
   waitUntil(
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/site`, {
       method: 'POST',
@@ -362,6 +379,12 @@ export default async function middleware(
           ? response.headers.get('Location')
           : undefined
     });
+
+    trackUser(
+      `${req.headers.get('host')}${path}`,
+      session?.user?.email ?? null,
+      req
+    );
 
     return response;
   } catch (err) {

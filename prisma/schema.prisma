@@ -67,6 +67,7 @@ model User {
   sent           Message[]       @relation("Sent")
   received       Message[]       @relation("Received")
   reservations   Reservation[]
+  clicks         Click[]
 
   @@index([email])
   @@index([role])
@@ -298,6 +299,7 @@ model Click {
   id String @id @default(cuid())
 
   part    String?
+  path    String?
   request Json?
 
   createdAt DateTime @default(now())
@@ -308,6 +310,8 @@ model Click {
   siteId  String?
   link    Link?   @relation(fields: [linkId], references: [id])
   linkId  String?
+  user    User?   @relation(fields: [userId], references: [id])
+  userId  String?
 
   @@index([createdAt])
   @@index([siteId])
