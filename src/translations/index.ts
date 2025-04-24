@@ -1073,6 +1073,19 @@ const translations = {
     en: 'Comment',
     it: 'Commenta',
     es: 'Comentar'
+  },
+  'components.user.magiclink.title': {
+    fr: 'Créer un lien magique',
+    en: 'Create a magic link',
+    it: 'Crea un link magico',
+    es: 'Crear un enlace mágico'
+  },
+  'components.user.magiclink.button': {
+    fr: 'Créer',
+    en: 'Create',
+    it: 'Crea',
+    es: 'Crear'
+  },
   }
 } as const;
 

@@ -27,6 +27,7 @@ import {
   removeDomainFromVercelProject,
   validDomainRegex
 } from 'lib/domains';
+import { createHash } from 'helpers/createHash';
 
 const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -1311,4 +1312,54 @@ export const commentProspect = async (form: FormData) => {
       error: await translate('error')
     };
   }
+};
+
+export const createMagicLink = async ({
+  email,
+  daysValid = 7,
+  callbackUrl = 'http://app.localhost:11000/'
+}: {
+  email: string;
+  daysValid?: number;
+  callbackUrl?: string;
+}) => {
+  try {
+  const token = nanoid();
+  const secret = process.env.AUTH_SECRET;
+  const hash = await createHash(`${token}${secret}`);
+
+  await db.verificationToken.create({
+    data: {
+      identifier: email,
+      token: hash,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysValid)
+    }
+  });
+
+  const baseUrl = process.env.NEXT_PUBLIC_NEXTAUTH_URL;
+  const provider = { id: 'resend' };
+
+  const url = `${baseUrl}/api/auth/callback/${provider.id}?${new URLSearchParams(
+    {
+      callbackUrl,
+      token,
+      email
+    }
+  )}`;
+
+  console.log({ url });
+
+    return { url };
+  } catch (error: unknown) {
+    console.error('Error creating magic link:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'An unknown error occurred';
+    return {
+      data: null,
+      errorMessage,
+      error: await translate('error')
+    };
+  }
+};
+
 };

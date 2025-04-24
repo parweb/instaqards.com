@@ -11,6 +11,7 @@ import {
   LuCircleX,
   LuGlobe,
   LuHandshake,
+  LuKey,
   LuLink,
   LuListChecks,
   LuMail,
@@ -33,6 +34,7 @@ import ModalButton from 'components/modal-button';
 import ProspectCommentModal from 'components/modal/comment-prospect';
 import OutboxCreateModal from 'components/modal/create-outbox';
 import CreateSiteModal from 'components/modal/create-site';
+import UserMagicLinkModal from 'components/modal/magiclink-user';
 import ProspectReservationModal from 'components/modal/reservation-prospect';
 import { Badge } from 'components/ui/badge';
 import { db } from 'helpers/db';
@@ -631,11 +633,17 @@ export default async function UserPage(props: {
 
       <div className="lg:col-span-1 space-y-6">
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center gap-2 justify-between">
             <CardTitle className="flex items-center gap-2">
               <LuShieldCheck />
               Security & Auth
             </CardTitle>
+
+            <div>
+              <ModalButton label={<LuKey />} size="sm">
+                <UserMagicLinkModal user={{ id: user.id, email: user.email }} />
+              </ModalButton>
+            </div>
           </CardHeader>
 
           <CardContent className="space-y-4">

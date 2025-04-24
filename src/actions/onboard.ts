@@ -36,7 +36,7 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   try {
     await signIn('resend', {
       email,
-      redirectTo: `${DEFAULT_LOGIN_REDIRECT}/api/site/create?subdomain=${subdomain}`
+      redirectTo: `${DEFAULT_LOGIN_REDIRECT}api/site/create?subdomain=${subdomain}`
     });
 
     return { success: true /*, site*/ };
