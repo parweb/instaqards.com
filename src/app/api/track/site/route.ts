@@ -24,11 +24,20 @@ export async function POST(request: Request) {
         ?.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
     : null;
 
-  const site = await db.site.findUniqueOrThrow({
+  console.log('track/site', {
     where: subdomain
       ? { subdomain: subdomain.toLowerCase() }
       : { customDomain: body.subdomain?.toLowerCase() }
   });
+
+  const site = await db.site.findUnique({
+    where: subdomain
+      ? { subdomain: subdomain.toLowerCase() }
+      : { customDomain: body.subdomain?.toLowerCase() }
+  });
+
+  if (!site)
+    return NextResponse.json({ error: 'Site not found' }, { status: 404 });
 
   const click = await db.click.create({
     data: {

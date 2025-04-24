@@ -23,7 +23,15 @@ export default async function Overview() {
   const clicks = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
     session.user.role
   )
-    ? await db.click.findMany({ orderBy: { createdAt: 'asc' } })
+    ? await db.click.findMany({
+        where: {
+          OR: [
+            { site: { userId: { not: null } } },
+            { block: { site: { userId: { not: null } } } }
+          ]
+        },
+        orderBy: { createdAt: 'asc' }
+      })
     : await db.click.findMany({
         where: {
           OR: [

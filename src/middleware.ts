@@ -1,13 +1,15 @@
 import { waitUntil } from '@vercel/functions';
 import NextAuth from 'next-auth';
 import { type NextRequest, NextResponse } from 'next/server';
-import authConfig from './auth.config';
+
+import authConfig from 'auth.config';
+
 import {
   apiAuthPrefix,
   authRoutes,
   marketingRoutes,
   publicRoutes
-} from './settings';
+} from 'settings';
 
 export const config = {
   matcher: ['/((?!api/|_next/|assets|_static/|_vercel|[\\w-]+\\.\\w+).*)']
@@ -31,11 +33,8 @@ function normalizeHostname(req: NextRequest): string | undefined {
   return hostname;
 }
 
-function isProduction(hostname?: string): boolean {
-  return (
-    hostname === `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
-    !!hostname?.includes('bore.pub:')
-  );
+function isDashboard(hostname?: string): boolean {
+  return hostname === `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 }
 
 function encodeRequest(req: NextRequest): string {
@@ -50,7 +49,7 @@ function encodeRequest(req: NextRequest): string {
   ).toString('base64');
 }
 
-function trackSite(domain: string, req: NextRequest) {
+function trackSite(domain: string, req: NextRequest, name: string) {
   waitUntil(
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/site`, {
       method: 'POST',
@@ -78,9 +77,10 @@ type MiddlewareContext = {
   url: URL;
 };
 
-type HandlerResult =
+type HandlerResult = { name: string } & (
   | { action: 'next' }
-  | { action: 'break'; response: NextResponse | Response };
+  | { action: 'break'; response: NextResponse | Response }
+);
 
 interface MiddlewareHandler {
   handle(req: NextRequest, ctx: MiddlewareContext): Promise<HandlerResult>;
@@ -91,39 +91,43 @@ class LoggerHandler implements MiddlewareHandler {
     req: NextRequest,
     ctx: MiddlewareContext
   ): Promise<HandlerResult> {
-    console.log('[MIDDLEWARE][REQUEST]', {
+    console.info('[MIDDLEWARE][REQUEST]', {
       method: req.method,
       url: req.url,
       hostname: ctx.hostname,
       path: ctx.path
       // headers: Object.fromEntries(Array.from(req.headers.entries()) as Iterable<[string, string]>)
     });
-    return { action: 'next' };
+
+    return { action: 'next', name: 'LoggerHandler' };
   }
 }
 
 class RefererTrackingHandler implements MiddlewareHandler {
   async handle(
-    req: NextRequest,
+    _req: NextRequest,
     ctx: MiddlewareContext
   ): Promise<HandlerResult> {
     if (ctx.url.searchParams.has('r')) {
       const referer = ctx.url.searchParams.get('r');
+
       const destination = new URL(ctx.url.toString());
       destination.searchParams.delete('r');
-      const domain = new URL(process.env.NEXTAUTH_URL as string);
+
       return {
         action: 'break',
+        name: 'RefererTrackingHandler',
         response: new Response(null, {
           status: 301,
           headers: {
             Location: destination.toString(),
-            'Set-Cookie': `r=${encodeURIComponent(referer ?? '')}; Path=/; Domain=${domain.host.replace('app.', '.')}; HttpOnly; SameSite=Strict`
+            'Set-Cookie': `r=${encodeURIComponent(referer ?? '')}; Path=/; Domain=${new URL(process.env.NEXTAUTH_URL as string).host.replace('app.', '.')}; HttpOnly; SameSite=Strict`
           }
         })
       };
     }
-    return { action: 'next' };
+
+    return { action: 'next', name: 'RefererTrackingHandler' };
   }
 }
 
@@ -135,14 +139,17 @@ class ShortLinkRedirectHandler implements MiddlewareHandler {
     if (ctx.hostname === 'short.qards.link') {
       const search = ctx.url.searchParams;
       search.append('request', encodeRequest(req));
+
       return {
         action: 'break',
+        name: 'ShortLinkRedirectHandler',
         response: NextResponse.redirect(
           new URL(`/api/short${ctx.url.pathname}?${search.toString()}`, req.url)
         )
       };
     }
-    return { action: 'next' };
+
+    return { action: 'next', name: 'ShortLinkRedirectHandler' };
   }
 }
 
@@ -154,49 +161,62 @@ class ClickTrackingHandler implements MiddlewareHandler {
     if (ctx.url.pathname.startsWith('/click/')) {
       const search = ctx.url.searchParams;
       search.append('request', encodeRequest(req));
+
       return {
+        name: 'ClickTrackingHandler',
         action: 'break',
         response: NextResponse.redirect(
           new URL(`/api${ctx.url.pathname}?${search.toString()}`, req.url)
         )
       };
     }
-    return { action: 'next' };
+
+    return { action: 'next', name: 'ClickTrackingHandler' };
   }
 }
 
-class ProductionHandler implements MiddlewareHandler {
+class ProtectedHandler implements MiddlewareHandler {
   async handle(
     req: NextRequest,
     ctx: MiddlewareContext
   ): Promise<HandlerResult> {
-    if (!isProduction(ctx.hostname)) return { action: 'next' };
+    if (!isDashboard(ctx.hostname))
+      return { action: 'next', name: 'ProtectedHandler' };
+
     const isApiAuthRoute = ctx.url.pathname.startsWith(apiAuthPrefix);
     const isAuthRoute = authRoutes.includes(ctx.url.pathname);
     const isPublicRoute =
       publicRoutes.some(route => ctx.url.pathname.includes(route)) ||
       isAuthRoute ||
       isApiAuthRoute;
+
     if (
       marketingRoutes.includes(ctx.url.pathname) &&
       ctx.hostname?.startsWith('app.') === false
     ) {
+      console.log('ProtectedHandler::marketingRoutes', {
+        pathname: ctx.url.pathname
+      });
       return {
         action: 'break',
+        name: 'ProtectedHandler',
         response: NextResponse.rewrite(
           new URL(ctx.url.pathname, req.url.replace(ctx.url.pathname, '/'))
         )
       };
     }
+
     if (
       (!ctx.session || !('user' in ctx.session) || !ctx.session.user) &&
       !isPublicRoute
     ) {
       return {
         action: 'break',
+        name: 'ProtectedHandler',
         response: NextResponse.redirect(new URL('/login', req.url))
       };
     }
+
     if (
       ctx.session &&
       'user' in ctx.session &&
@@ -205,11 +225,14 @@ class ProductionHandler implements MiddlewareHandler {
     ) {
       return {
         action: 'break',
+        name: 'ProtectedHandler',
         response: NextResponse.redirect(new URL('/', req.url))
       };
     }
+
     return {
       action: 'break',
+      name: 'ProtectedHandler',
       response: NextResponse.rewrite(
         new URL(`/app${ctx.path === '/' ? '' : ctx.path}`, req.url)
       )
@@ -217,7 +240,7 @@ class ProductionHandler implements MiddlewareHandler {
   }
 }
 
-class DevHandler implements MiddlewareHandler {
+class PublicHandler implements MiddlewareHandler {
   async handle(
     req: NextRequest,
     ctx: MiddlewareContext
@@ -227,24 +250,32 @@ class DevHandler implements MiddlewareHandler {
       ctx.hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
     ) {
       if (marketingRoutes.includes(ctx.url.pathname)) {
+        console.log('PublicHandler::marketingRoutes', {
+          pathname: ctx.url.pathname
+        });
         return {
           action: 'break',
+          name: 'PublicHandler',
           response: NextResponse.rewrite(
             new URL(`${ctx.path === '/' ? '/home' : ctx.path}`, req.url)
           )
         };
       }
-      const subdomain = ctx.path.replace('/', '');
-      const domain = `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-      trackSite(domain, req);
+
+      const domain = `${ctx.path.replace('/', '')}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+
+      trackSite(domain, req, 'PublicHandler');
+
       return {
         action: 'break',
+        name: 'PublicHandler',
         response: NextResponse.rewrite(
           new URL(`/${domain}/`, req.url.replace(ctx.path, ''))
         )
       };
     }
-    return { action: 'next' };
+
+    return { action: 'next', name: 'PublicHandler' };
   }
 }
 
@@ -256,10 +287,12 @@ class WwwHandler implements MiddlewareHandler {
     if (ctx.hostname?.startsWith('www.')) {
       return {
         action: 'break',
+        name: 'WwwHandler',
         response: NextResponse.rewrite(new URL('/home', req.url))
       };
     }
-    return { action: 'next' };
+
+    return { action: 'next', name: 'WwwHandler' };
   }
 }
 
@@ -269,9 +302,11 @@ class DefaultRewriteHandler implements MiddlewareHandler {
     ctx: MiddlewareContext
   ): Promise<HandlerResult> {
     const domain = `${ctx.hostname}${ctx.path}`.trim().replace(/\/$/, '');
-    trackSite(domain, req);
+    trackSite(domain, req, 'DefaultRewriteHandler');
+
     return {
       action: 'break',
+      name: 'DefaultRewriteHandler',
       response: NextResponse.rewrite(
         new URL(`/${ctx.hostname}${ctx.path}`, req.url)
       )
@@ -284,8 +319,8 @@ const handlers: MiddlewareHandler[] = [
   new RefererTrackingHandler(),
   new ShortLinkRedirectHandler(),
   new ClickTrackingHandler(),
-  new ProductionHandler(),
-  new DevHandler(),
+  new ProtectedHandler(),
+  new PublicHandler(),
   new WwwHandler(),
   new DefaultRewriteHandler()
 ];
@@ -294,7 +329,11 @@ export default async function middleware(
   req: NextRequest
 ): Promise<NextResponse | Response> {
   const session = await auth();
+
   const url = req.nextUrl;
+
+  console.time('execution -> ' + url.toString());
+
   const hostname = normalizeHostname(req);
   const path = buildPath(url);
   // @ts-ignore
@@ -304,6 +343,9 @@ export default async function middleware(
   try {
     for (const handler of handlers) {
       const result = await handler.handle(req, ctx);
+
+      console.info('[MIDDLEWARE][NAME]', { handler: result.name });
+
       if (result.action === 'break') {
         response = result.response;
         break;
@@ -312,7 +354,7 @@ export default async function middleware(
 
     if (!response) response = NextResponse.next();
 
-    console.log('[MIDDLEWARE][RESPONSE]', {
+    console.info('[MIDDLEWARE][RESPONSE]', {
       url: req.url,
       status: response instanceof Response ? response.status : 'unknown',
       redirected:
@@ -328,6 +370,9 @@ export default async function middleware(
       url: req.url,
       hostname
     });
+
     throw err;
+  } finally {
+    console.timeEnd('execution -> ' + url.toString());
   }
 }
