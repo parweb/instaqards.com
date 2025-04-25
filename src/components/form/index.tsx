@@ -157,7 +157,7 @@ export default function Form({
           </div>
         ) : inputAttrs.type === 'select' ? (
           // @ts-ignore
-          <Combobox {...inputAttrs} onChange={console.log} />
+          <Combobox {...inputAttrs} />
         ) : inputAttrs.name === 'description' ? (
           <textarea
             {...{

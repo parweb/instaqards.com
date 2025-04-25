@@ -22,7 +22,6 @@ export default async function SiteSettingsIndex(props: {
     session?.user.role ?? UserRole.USER
   )
     ? await db.user.findMany({
-        take: 10,
         select: {
           id: true,
           name: true,

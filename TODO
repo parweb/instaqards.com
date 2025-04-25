@@ -11,7 +11,7 @@ TODO
 
   
 
-     -> changement de propriétaire ca deconne la recherche
+DONE -> changement de propriétaire ca deconne la recherche
      -> statique exclure les createur (admin/seller)
      -> liens sur les picture block facultatif si pas de lien fullscreen image
      -> logo social tripadvisor
