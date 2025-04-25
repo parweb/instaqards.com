@@ -153,6 +153,13 @@ export type Block = Share &
     | { kind: 'hidden' }
     | { kind: 'color'; default: string }
     | { kind: 'number'; defaultValue: number }
+    | {
+        kind: 'range';
+        min: number;
+        max: number;
+        step: number;
+        defaultValue: number;
+      }
     | { kind: 'address'; placeholder: string }
     | {
         kind: 'font';

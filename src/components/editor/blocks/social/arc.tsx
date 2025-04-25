@@ -11,6 +11,17 @@ import Arcange from 'components/arcange';
 import { cn, json } from 'lib/utils';
 
 export const input = z.object({
+  corner: z.number().describe(
+    json({
+      label: 'Arrondi',
+      kind: 'range',
+      min: 0,
+      max: 100,
+      step: 1,
+      defaultValue: 100
+    })
+  ),
+
   radius: z.number().describe(
     json({
       label: 'Radius',
@@ -43,6 +54,7 @@ export const input = z.object({
 
 export default function Arc({
   block,
+  corner = 100,
   distribution = 80,
   radius = 150,
   socials = [
@@ -100,9 +112,13 @@ export default function Arc({
                     'object-contain'
                   )}
                   url={social.href ?? ''}
+                  borderRadius={`${corner}%`}
                 />
               ) : (
-                <div className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200 rounded-full">
+                <div
+                  style={{ borderRadius: `${corner}%` }}
+                  className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200"
+                >
                   <LuLink />
                 </div>
               )}

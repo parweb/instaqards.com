@@ -14,6 +14,7 @@ TODO
 DONE -> changement de propriétaire ca deconne la recherche
      -> statique exclure les createur (admin/seller)
      -> liens sur les picture block facultatif si pas de lien fullscreen image
+DONE -> resize pictures circle & square & socials & profile
      -> logo social tripadvisor
      -> block avis clients
      -> inscription geré le cas du prospect (email already in use) 

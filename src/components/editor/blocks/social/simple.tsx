@@ -9,6 +9,17 @@ import * as z from 'zod';
 import { cn, json } from 'lib/utils';
 
 export const input = z.object({
+  radius: z.number().describe(
+    json({
+      label: 'Arrondi',
+      kind: 'range',
+      min: 0,
+      max: 100,
+      step: 1,
+      defaultValue: 100
+    })
+  ),
+
   socials: z
     .array(
       z.object({
@@ -27,6 +38,7 @@ export const input = z.object({
 
 export default function Simple({
   block,
+  radius = 100,
   socials = [
     { id: '1', href: 'https://www.instagram.com', logo: 'instagram' },
     { id: '2', href: 'https://www.tiktok.com', logo: 'tiktok' },
@@ -70,9 +82,13 @@ export default function Simple({
                   'object-contain'
                 )}
                 url={social.href ?? ''}
+                borderRadius={`${radius}%`}
               />
             ) : (
-              <div className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200 rounded-full">
+              <div
+                style={{ borderRadius: `${radius}%` }}
+                className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200"
+              >
                 <LuLink />
               </div>
             )}

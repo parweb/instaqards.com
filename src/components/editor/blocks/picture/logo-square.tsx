@@ -5,6 +5,31 @@ import * as z from 'zod';
 import { json } from 'lib/utils';
 
 export const input = z.object({
+  size: z
+    .number()
+    .default(100)
+    .describe(
+      json({
+        label: 'Taille',
+        kind: 'range',
+        min: 50,
+        max: 350,
+        step: 1,
+        defaultValue: 100
+      })
+    ),
+
+  corner: z.number().describe(
+    json({
+      label: 'Arrondi',
+      kind: 'range',
+      min: 0,
+      max: 100,
+      step: 1,
+      defaultValue: 5
+    })
+  ),
+
   medias: z
     .array(
       z
@@ -26,7 +51,6 @@ export const input = z.object({
             )
         )
     )
-
     .describe(
       json({
         label: 'Logo',
@@ -38,9 +62,11 @@ export const input = z.object({
     )
 });
 
-const placeholder = 'https://placehold.co/96x96.png';
+const placeholder = 'https://placehold.co/96x96.png?text=1:1';
 export default function LogoSquare({
-  medias: [media] = [{ id: '1', kind: 'remote', url: placeholder }]
+  medias: [media] = [{ id: '1', kind: 'remote', url: placeholder }],
+  size = 100,
+  corner = 5
 }: Partial<z.infer<typeof input>>) {
   const [src, setSrc] = useState<string>(
     media.kind === 'remote' ? media.url : ''
@@ -56,11 +82,16 @@ export default function LogoSquare({
   }, [mediaFile]);
 
   return (
-    <div className="relative w-24 aspect-square mx-auto bg-white rounded-md overflow-hidden">
+    <div
+      style={{ width: `${size}px`, borderRadius: `${corner}%` }}
+      className="relative aspect-square mx-auto bg-white overflow-hidden"
+    >
       <Image
         priority
         className="object-cover"
-        src={src}
+        src={
+          src === placeholder ? src.replace('96x96', `${size}x${size}`) : src
+        }
         alt="Logo"
         fill
         sizes="100px"

@@ -7,6 +7,28 @@ import { json } from 'lib/utils';
 
 import { useEffect, useState } from 'react';
 export const input = z.object({
+  corner: z.number().describe(
+    json({
+      label: 'Arrondi',
+      kind: 'range',
+      min: 0,
+      max: 100,
+      step: 1,
+      defaultValue: 100
+    })
+  ),
+
+  size: z.number().describe(
+    json({
+      label: 'Taille',
+      kind: 'range',
+      min: 50,
+      max: 350,
+      step: 1,
+      defaultValue: 100
+    })
+  ),
+
   images: z
     .array(
       z
@@ -43,9 +65,11 @@ export const input = z.object({
     .describe(json({ label: 'Description', kind: 'string' }))
 });
 
-const placeholder = 'https://placehold.co/96x96.png';
+const placeholder = 'https://placehold.co/96x96.png?text=1:1';
 export default function Profile({
   images: [media] = [{ id: '1', kind: 'remote', url: placeholder }],
+  corner = 100,
+  size = 100,
   name = 'Nom',
   description = 'Description'
 }: Partial<z.infer<typeof input>>) {
@@ -64,10 +88,15 @@ export default function Profile({
 
   return (
     <header className="flex-1 flex flex-col justify-center items-center gap-4">
-      <div className="relative w-24 aspect-square mx-auto bg-white rounded-full overflow-hidden">
+      <div
+        style={{ borderRadius: `${corner}%`, width: `${size}px` }}
+        className="relative aspect-square mx-auto bg-white overflow-hidden"
+      >
         <Image
           priority
-          src={src}
+          src={
+            src === placeholder ? src.replace('96x96', `${size}x${size}`) : src
+          }
           alt={name ?? 'Logo'}
           className="object-cover"
           fill
