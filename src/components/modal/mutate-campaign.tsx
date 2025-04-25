@@ -193,8 +193,8 @@ export default function CampaignsMutateModal({
           } else {
             router.refresh();
             modal?.hide();
-            toast.success('List saved!');
-            va.track('List saved');
+            toast.success('Campaign saved!');
+            va.track('Campaign saved');
           }
         })
       }
@@ -208,7 +208,7 @@ export default function CampaignsMutateModal({
         </h2>
 
         <Select
-          disabled
+          name="type"
           value={data.type}
           onValueChange={async value => {
             // @ts-ignore
@@ -221,7 +221,11 @@ export default function CampaignsMutateModal({
 
           <SelectContent>
             {Object.values(CampaignType).map(type => (
-              <SelectItem key={type} value={type}>
+              <SelectItem
+                key={type}
+                value={type}
+                disabled={type !== CampaignType.email}
+              >
                 {type}
               </SelectItem>
             ))}

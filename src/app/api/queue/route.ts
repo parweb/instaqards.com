@@ -14,6 +14,7 @@ import type {
 
 import { db } from 'helpers/db';
 import * as template from 'helpers/mail';
+import { sendCampaignEmail } from 'helpers/sendCampaignEmail';
 
 interface ExecuteWorkflowActionPayload {
   ruleId: string;
@@ -104,167 +105,177 @@ const actionExecutor = {
 async function processJob(job: Queue): Promise<void> {
   console.info(`Processing job ${job.id} (Type: ${job.job})`);
 
-  if (job.job !== 'EXECUTE_WORKFLOW_ACTION') {
-    throw new Error(`Unsupported job type: ${job.job}`);
-  }
-
-  const payload = job?.payload as unknown as ExecuteWorkflowActionPayload;
-
-  if (
-    !payload ||
-    !payload.ruleId ||
-    !payload.triggeringEventId ||
-    !payload.userId
-  ) {
-    throw new Error(
-      `Invalid payload for job ${job.id}: ${JSON.stringify(job.payload)}`
-    );
-  }
-
-  const { ruleId, triggeringEventId, userId, correlationId } = payload;
-  let executionStatus: ExecutionStatus = ExecutionStatus.PENDING;
-  let executionResultPayload: Prisma.JsonValue | null = null;
-  let executionErrorMessage: string | null = null;
-  let actionToExecute: Action | null = null;
-
-  try {
-    const rule = await db.rule.findUnique({
-      where: { id: ruleId },
-      include: {
-        action: true,
-        trigger: true,
-        workflow: true,
-        ruleConditions: {
-          include: {
-            condition: true
-          }
-        }
-      }
-    });
+  if (job.job === 'EXECUTE_WORKFLOW_ACTION') {
+    const payload = job?.payload as unknown as ExecuteWorkflowActionPayload;
 
     if (
-      !rule ||
-      !rule.isActive ||
-      !rule.action ||
-      !rule.workflow ||
-      !rule.workflow.isActive
+      !payload ||
+      !payload.ruleId ||
+      !payload.triggeringEventId ||
+      !payload.userId
     ) {
-      console.info(
-        `Rule ${ruleId} not found, inactive, or workflow inactive. Skipping job ${job.id}.`
-      );
-
-      await db.queue.update({
-        where: { id: job.id },
-        data: { status: 'completed' }
-      });
-
-      return;
-    }
-    actionToExecute = rule.action;
-
-    const user = await db.user.findUnique({ where: { id: userId } });
-    const triggeringEvent = await db.event.findUnique({
-      where: { id: triggeringEventId }
-    });
-
-    if (!user || !triggeringEvent) {
       throw new Error(
-        `User ${userId} or Triggering Event ${triggeringEventId} not found for job ${job.id}.`
+        `Invalid payload for job ${job.id}: ${JSON.stringify(job.payload)}`
       );
     }
 
-    const subscription = await db.subscription.findFirst({
-      where: { userId: userId },
-      orderBy: { created: 'desc' }
-    });
+    const { ruleId, triggeringEventId, userId, correlationId } = payload;
+    let executionStatus: ExecutionStatus = ExecutionStatus.PENDING;
+    let executionResultPayload: Prisma.JsonValue | null = null;
+    let executionErrorMessage: string | null = null;
+    let actionToExecute: Action | null = null;
 
-    const workflowState = await db.workflowState.findUnique({
-      where: {
-        userId_workflowId: { userId: userId, workflowId: rule.workflowId }
-      }
-    });
-
-    if (!workflowState || workflowState.status !== WorkflowStateStatus.ACTIVE) {
-      console.info(
-        `User ${userId} is not ACTIVE in workflow ${rule.workflowId}. Skipping job ${job.id}.`
-      );
-      await db.queue.update({
-        where: { id: job.id },
-        data: { status: 'completed' }
-      });
-
-      return;
-    }
-
-    console.info(
-      `Data loaded for job ${job.id}. User: ${user.email}, Rule: ${rule.id}, Trigger: ${triggeringEvent.eventType}`
-    );
-
-    const conditionsMet = await conditionEngine.evaluate(
-      rule.ruleConditions,
-      user,
-      triggeringEvent,
-      subscription
-    );
-
-    if (conditionsMet) {
-      console.info(
-        `Conditions MET for rule ${rule.id}. Executing action ${rule.action.code}...`
-      );
-      executionStatus = ExecutionStatus.PROCESSING;
-
-      const executionResult = await actionExecutor.execute(
-        rule.action.type,
-        rule.action.config,
-        user,
-        triggeringEvent,
-        job
-      );
-
-      executionStatus = executionResult.success
-        ? ExecutionStatus.SUCCESS
-        : ExecutionStatus.FAILED;
-      executionResultPayload = executionResult.resultPayload ?? null;
-      executionErrorMessage = executionResult.errorMessage ?? null;
-
-      console.info(
-        `Action execution finished for rule ${rule.id}. Status: ${executionStatus}`
-      );
-    } else {
-      console.info(`Conditions NOT MET for rule ${rule.id}. Skipping action.`);
-
-      executionStatus = ExecutionStatus.SUCCESS;
-    }
-  } catch (error: unknown) {
-    console.error(`Error processing job ${job.id}:`, error);
-    executionStatus = ExecutionStatus.FAILED;
-    executionErrorMessage =
-      error instanceof Error ? error.message : String(error);
-
-    throw error;
-  } finally {
-    if (actionToExecute) {
-      await db.execution.create({
-        data: {
-          userId: userId,
-          actionId: actionToExecute.id,
-          ruleId: ruleId,
-          executedAt: new Date(),
-          status: executionStatus,
-          errorMessage: executionErrorMessage,
-          resultPayload: JSON.parse(JSON.stringify(executionResultPayload)),
-          correlationId: correlationId
+    try {
+      const rule = await db.rule.findUnique({
+        where: { id: ruleId },
+        include: {
+          action: true,
+          trigger: true,
+          workflow: true,
+          ruleConditions: {
+            include: {
+              condition: true
+            }
+          }
         }
       });
+
+      if (
+        !rule ||
+        !rule.isActive ||
+        !rule.action ||
+        !rule.workflow ||
+        !rule.workflow.isActive
+      ) {
+        console.info(
+          `Rule ${ruleId} not found, inactive, or workflow inactive. Skipping job ${job.id}.`
+        );
+
+        await db.queue.update({
+          where: { id: job.id },
+          data: { status: 'completed' }
+        });
+
+        return;
+      }
+      actionToExecute = rule.action;
+
+      const user = await db.user.findUnique({ where: { id: userId } });
+      const triggeringEvent = await db.event.findUnique({
+        where: { id: triggeringEventId }
+      });
+
+      if (!user || !triggeringEvent) {
+        throw new Error(
+          `User ${userId} or Triggering Event ${triggeringEventId} not found for job ${job.id}.`
+        );
+      }
+
+      const subscription = await db.subscription.findFirst({
+        where: { userId: userId },
+        orderBy: { created: 'desc' }
+      });
+
+      const workflowState = await db.workflowState.findUnique({
+        where: {
+          userId_workflowId: { userId: userId, workflowId: rule.workflowId }
+        }
+      });
+
+      if (
+        !workflowState ||
+        workflowState.status !== WorkflowStateStatus.ACTIVE
+      ) {
+        console.info(
+          `User ${userId} is not ACTIVE in workflow ${rule.workflowId}. Skipping job ${job.id}.`
+        );
+        await db.queue.update({
+          where: { id: job.id },
+          data: { status: 'completed' }
+        });
+
+        return;
+      }
+
       console.info(
-        `Execution logged for job ${job.id} with status ${executionStatus}.`
+        `Data loaded for job ${job.id}. User: ${user.email}, Rule: ${rule.id}, Trigger: ${triggeringEvent.eventType}`
       );
-    } else {
-      console.warn(
-        `Could not log execution for job ${job.id} as action/rule data was missing.`
+
+      const conditionsMet = await conditionEngine.evaluate(
+        rule.ruleConditions,
+        user,
+        triggeringEvent,
+        subscription
       );
+
+      if (conditionsMet) {
+        console.info(
+          `Conditions MET for rule ${rule.id}. Executing action ${rule.action.code}...`
+        );
+        executionStatus = ExecutionStatus.PROCESSING;
+
+        const executionResult = await actionExecutor.execute(
+          rule.action.type,
+          rule.action.config,
+          user,
+          triggeringEvent,
+          job
+        );
+
+        executionStatus = executionResult.success
+          ? ExecutionStatus.SUCCESS
+          : ExecutionStatus.FAILED;
+        executionResultPayload = executionResult.resultPayload ?? null;
+        executionErrorMessage = executionResult.errorMessage ?? null;
+
+        console.info(
+          `Action execution finished for rule ${rule.id}. Status: ${executionStatus}`
+        );
+      } else {
+        console.info(
+          `Conditions NOT MET for rule ${rule.id}. Skipping action.`
+        );
+
+        executionStatus = ExecutionStatus.SUCCESS;
+      }
+    } catch (error: unknown) {
+      console.error(`Error processing job ${job.id}:`, error);
+      executionStatus = ExecutionStatus.FAILED;
+      executionErrorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      throw error;
+    } finally {
+      if (actionToExecute) {
+        await db.execution.create({
+          data: {
+            userId: userId,
+            actionId: actionToExecute.id,
+            ruleId: ruleId,
+            executedAt: new Date(),
+            status: executionStatus,
+            errorMessage: executionErrorMessage,
+            resultPayload: JSON.parse(JSON.stringify(executionResultPayload)),
+            correlationId: correlationId
+          }
+        });
+        console.info(
+          `Execution logged for job ${job.id} with status ${executionStatus}.`
+        );
+      } else {
+        console.warn(
+          `Could not log execution for job ${job.id} as action/rule data was missing.`
+        );
+      }
     }
-  }
+  } else if (job.job === 'SEND_EMAIL_CAMPAIGN') {
+    const payload = job?.payload as unknown as {
+      contact: User;
+      campaign: Prisma.CampaignGetPayload<{ include: { email: true } }>;
+    };
+
+    await sendCampaignEmail(payload.contact, payload.campaign);
+  } else throw new Error(`Unsupported job type: ${job.job}`);
 }
 
 export async function GET(request: NextRequest) {

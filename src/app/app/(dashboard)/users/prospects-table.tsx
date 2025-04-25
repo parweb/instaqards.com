@@ -142,8 +142,6 @@ const Tbody = ({
   const prospects = useAtomValue($prospects);
   const [selection, setSelection] = useAtom($selection);
 
-  console.log({ selection });
-
   return (
     <tbody className="bg-white divide-y divide-gray-200">
       {prospects.data.map(prospect => {

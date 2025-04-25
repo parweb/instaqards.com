@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { Prisma } from '@prisma/client';
+import { Campaign, Prisma } from '@prisma/client';
 import { render } from '@react-email/render';
 import { waitUntil } from '@vercel/functions';
 import { nanoid } from 'nanoid';
@@ -23,7 +23,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const domain = `http://app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
-const getLang = async () => {
+export const getLang = async () => {
   let lang = (((await cookies()) as unknown as UnsafeUnwrappedCookies).get(
     'lang'
   )?.value ?? DEFAULT_LANG) as Lang;
@@ -53,7 +53,97 @@ const getLang = async () => {
   return lang;
 };
 
-const send = async (
+export const sendHtmlWithCampaign = async (
+  id: string,
+  to: string,
+  subject: string,
+  html: string,
+  campaignId: Campaign['id'],
+  from: string = sender
+) => {
+  const sent = await resend.emails.send({ from, to, subject, html });
+
+  if (sent.error) {
+    throw new Error(`Failed to send email: ${sent.error.message}`);
+  }
+
+  waitUntil(
+    new Promise(async resolve => {
+      const [, session] = await trySafe(async () => {
+        const { getSession } = await import('lib/auth');
+
+        const session = await getSession();
+        return session;
+      }, null);
+
+      const correlationId = nanoid();
+
+      const destination = await db.user.findUnique({
+        where: { email: to }
+      });
+
+      resolve(
+        await db
+          .$transaction([
+            db.outbox.create({
+              data: {
+                id,
+                email: to,
+                subject,
+                body: html,
+                status: 'sent',
+                campaignId,
+                metadata: {
+                  resend_id: sent.data?.id,
+                  events: [
+                    {
+                      type: 'sent',
+                      createdAt: new Date().toISOString()
+                    }
+                  ]
+                }
+              }
+            }),
+            db.event.createMany({
+              data: [
+                session !== null
+                  ? {
+                      userId: String(session.user.id),
+                      eventType: 'LEAD_CONTACTED',
+                      payload: {
+                        by: 'EMAIL',
+                        id,
+                        from,
+                        to,
+                        subject,
+                        campaignId
+                      },
+                      correlationId
+                    }
+                  : undefined,
+                {
+                  userId: destination?.id ?? null,
+                  eventType: 'EMAIL_SENT',
+                  payload: {
+                    id,
+                    from,
+                    to,
+                    subject,
+                    campaignId
+                  },
+                  correlationId
+                }
+              ].filter(Boolean) as Prisma.EventCreateManyInput[]
+            })
+          ])
+          .then(([{ metadata }]) => console.info(id, metadata))
+          .catch(console.error)
+      );
+    })
+  );
+};
+
+const sendTemplateReact = async (
   to: string,
   Template: React.FunctionComponent<
     { lang: Lang; id: string; subject: string } & Record<string, string>
@@ -72,7 +162,11 @@ const send = async (
     <Template lang={lang} subject={subject} id={id} {...variables} />
   );
 
-  await resend.emails.send({ from, to, subject, react });
+  const sent = await resend.emails.send({ from, to, subject, react });
+
+  if (sent.error) {
+    throw new Error(`Failed to send email: ${sent.error.message}`);
+  }
 
   waitUntil(
     render(react, { pretty: true }).then(async html => {
@@ -99,6 +193,7 @@ const send = async (
               body: html,
               status: 'sent',
               metadata: {
+                resend_id: sent.data?.id,
                 lang,
                 variables,
                 events: [
@@ -147,29 +242,29 @@ const send = async (
 };
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
-  await send(email, TwoFactorTokenEmail, { token });
+  await sendTemplateReact(email, TwoFactorTokenEmail, { token });
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${domain}/new-password?token=${token}`;
 
-  await send(email, ResetPasswordEmail, { resetLink });
+  await sendTemplateReact(email, ResetPasswordEmail, { resetLink });
 };
 
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${domain}/new-verification?token=${token}`;
 
-  await send(email, ConfirmAccountEmail, { confirmLink });
+  await sendTemplateReact(email, ConfirmAccountEmail, { confirmLink });
 };
 
 export const sendMagicLinkEmail = async (email: string, magicLink: string) => {
-  await send(email, MagicLinkEmail, { magicLink });
+  await sendTemplateReact(email, MagicLinkEmail, { magicLink });
 };
 
 export const sendWelcomeEmail = async (email: string) => {
   console.info('email::sendWelcomeEmail', { email });
 
-  await send(email, WelcomeEmail);
+  await sendTemplateReact(email, WelcomeEmail);
 };
 
 export const sendOutboxEmail = async (
@@ -179,5 +274,5 @@ export const sendOutboxEmail = async (
 ) => {
   console.info('email::sendOutboxEmail', { email, subject, body });
 
-  await send(email, OutboxEmail, { subject, body });
+  await sendTemplateReact(email, OutboxEmail, { subject, body });
 };

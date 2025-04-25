@@ -3,7 +3,7 @@
 import type { Price as PriceType } from '@prisma/client';
 import { AlertCircle, Check, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Alert, AlertTitle } from 'components/ui/alert';
 import { Badge } from 'components/ui/badge';
@@ -97,6 +97,10 @@ export const Price: React.FC<{
   const [state, setState] = useState<'loading' | 'error' | 'success' | 'idle'>(
     'idle'
   );
+
+  useEffect(() => {
+    setState('idle');
+  }, [billingCycle]);
 
   const offer: Partial<Record<typeof billingCycle, PriceType>> = prices.reduce(
     (carry, price) => ({ ...carry, [String(price.interval)]: price }),

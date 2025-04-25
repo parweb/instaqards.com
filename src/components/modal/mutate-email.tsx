@@ -2,7 +2,7 @@
 
 import { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
-import { atom, useAtom, useAtomValue } from 'jotai';
+import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
@@ -16,8 +16,6 @@ import LoadingDots from 'components/icons/loading-dots';
 import { AutosizeTextarea } from 'components/ui/autosize-textarea';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
-import { Label } from 'components/ui/label';
-import { RadioGroup, RadioGroupItem } from 'components/ui/radio-group';
 import useTranslation from 'hooks/use-translation';
 import { mutateEmails } from 'lib/actions';
 import { LucideLoader2 } from 'lucide-react';
@@ -78,8 +76,6 @@ export default function EmailsMutateModal({
   const onReady: EmailEditorProps['onReady'] = unlayer => {
     const design = JSON.parse(JSON.stringify(data.design));
 
-    console.log({ design });
-
     unlayer.loadDesign(design);
   };
 
@@ -101,8 +97,8 @@ export default function EmailsMutateModal({
             } else {
               router.refresh();
               modal?.hide();
-              toast.success('List saved!');
-              va.track('List saved');
+              toast.success('Email saved!');
+              va.track('Email saved');
             }
           });
         });

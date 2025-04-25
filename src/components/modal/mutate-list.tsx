@@ -18,9 +18,9 @@ import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import useTranslation from 'hooks/use-translation';
 import { mutateLists } from 'lib/actions';
+import { LucideLoader2 } from 'lucide-react';
 import { UserSchema } from '../../../prisma/generated/zod';
 import { useModal } from './provider';
-import { LucideLoader2 } from 'lucide-react';
 
 export const ProspectsSchema = z.object({
   data: z.array(
@@ -74,8 +74,6 @@ const Prospects = () => {
       $selection={$selection}
       $prospects={$prospects({
         where: {
-          refererId: { equals: null },
-          role: UserRole.LEAD,
           ...(search !== '' && {
             OR: [
               { address: { contains: search } },

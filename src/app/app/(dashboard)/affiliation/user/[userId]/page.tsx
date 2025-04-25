@@ -135,6 +135,7 @@ export default async function UserPage(props: {
       id: userId
     },
     include: {
+      clicks: true,
       accounts: true,
       sessions: { orderBy: { expires: 'desc' } },
       sites: { orderBy: { createdAt: 'desc' } },
@@ -626,6 +627,48 @@ export default async function UserPage(props: {
                   </Table>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        )}
+
+        {user.clicks.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <LuActivity />
+                Page visited
+              </CardTitle>
+
+              <CardDescription>
+                List of pages visited by the user.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              <div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Timestamp</TableHead>
+                      <TableHead>Path</TableHead>
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {user.clicks.map(click => (
+                      <TableRow key={click.id}>
+                        <TableCell>
+                          {formatRelativeTime(click.createdAt)}
+                        </TableCell>
+
+                        <TableCell className="font-medium">
+                          {click.path}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         )}

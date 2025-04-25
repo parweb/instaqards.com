@@ -12,7 +12,6 @@ const prisma = new PrismaClient();
 
 (async () => {
   //   console.info('Starting workflow seeding...');
-
   //   // 1. Workflow Principal
   //   const onboardingWorkflow = await prisma.workflow.upsert({
   //     where: { name: 'Onboarding Amélioré + Réengagement' },
@@ -25,9 +24,7 @@ const prisma = new PrismaClient();
   //       isActive: true
   //     }
   //   });
-
   //   console.info(`Workflow upserted: ${onboardingWorkflow.id}`);
-
   //   // 2. Triggers (Types d'événements)
   //   const signupTrigger = await prisma.trigger.upsert({
   //     where: { code: 'USER_SIGNUP' },
@@ -56,7 +53,6 @@ const prisma = new PrismaClient();
   //     }
   //   });
   //   console.info('Triggers upserted.');
-
   //   // 3. Actions (ActionTemplates) - Plusieurs types !
   //   const welcomeEmailAction = await prisma.action.upsert({
   //     where: { code: 'onboarding_welcome_email' },
@@ -72,7 +68,6 @@ const prisma = new PrismaClient();
   //       }
   //     }
   //   });
-
   //   const addCreatorTagAction = await prisma.action.upsert({
   //     where: { code: 'tag_user_creator' },
   //     update: {},
@@ -84,7 +79,6 @@ const prisma = new PrismaClient();
   //       config: { tagName: 'creator' } // Le code exécutant cette action saura quoi faire avec "tagName"
   //     }
   //   });
-
   //   const notifyCsWebhookAction = await prisma.action.upsert({
   //     where: { code: 'webhook_cs_new_creator' },
   //     update: {},
@@ -102,7 +96,6 @@ const prisma = new PrismaClient();
   //       }
   //     }
   //   });
-
   //   const reengagementEmailAction = await prisma.action.upsert({
   //     where: { code: 'reengagement_inactive_trial' },
   //     update: {},
@@ -119,7 +112,6 @@ const prisma = new PrismaClient();
   //       }
   //     }
   //   });
-
   //   const trialReminderEmailAction = await prisma.action.upsert({
   //     where: { code: 'email_trial_reminder_3d' },
   //     update: {},
@@ -136,7 +128,6 @@ const prisma = new PrismaClient();
   //       }
   //     }
   //   });
-
   //   const notifySalesWebhookAction = await prisma.action.upsert({
   //     where: { code: 'webhook_sales_trial_ending' },
   //     update: {},
@@ -153,9 +144,7 @@ const prisma = new PrismaClient();
   //       }
   //     }
   //   });
-
   //   console.info('ActionTemplates upserted.');
-
   //   // 4. Conditions (Réutilisables)
   //   const isFirstSiteCond = await prisma.condition.upsert({
   //     where: { name: 'Is First Site Created' },
@@ -166,7 +155,6 @@ const prisma = new PrismaClient();
   //       parameters: { eventType: 'SITE_CREATED', operator: '==', value: 1 }
   //     }
   //   });
-
   //   const isTrialingCond = await prisma.condition.upsert({
   //     where: { name: 'User Is Trialing' },
   //     update: {},
@@ -176,7 +164,6 @@ const prisma = new PrismaClient();
   //       parameters: { status: ['trialing'], trialEnd: 'isFuture' } // Vérifie statut et date de fin
   //     }
   //   });
-
   //   const isNotActiveSubCond = await prisma.condition.upsert({
   //     where: { name: 'User Is Not Active Subscriber' },
   //     update: {},
@@ -186,7 +173,6 @@ const prisma = new PrismaClient();
   //       parameters: { notStatus: ['active'] } // Vérifie qu'il n'y a PAS d'abo actif
   //     }
   //   });
-
   //   const is3DaysLeftCond = await prisma.condition.upsert({
   //     where: { name: 'Trial Ends in 3 Days' },
   //     update: {},
@@ -196,9 +182,7 @@ const prisma = new PrismaClient();
   //       parameters: { daysLeft: { equals: 3 } } // Vérifie le payload de l'event TRIAL_ENDING_ALERT
   //     }
   //   });
-
   //   console.info('Conditions upserted.');
-
   //   // 5. Règles du Workflow (WorkflowRules)
   //   // Règle 1: Bienvenue Email
   //   await prisma.rule.upsert({
@@ -216,7 +200,6 @@ const prisma = new PrismaClient();
   //       // Aucune condition spécifique ici
   //     }
   //   });
-
   //   // Règle 2: Tag Creator après 1er site
   //   const rule2 = await prisma.rule.create({
   //     // create pour l'exemple
@@ -231,7 +214,6 @@ const prisma = new PrismaClient();
   //       // ruleConditions: sera ajouté ci-dessous
   //     }
   //   });
-
   //   await prisma.ruleCondition.create({
   //     data: {
   //       ruleId: rule2.id,
@@ -239,7 +221,6 @@ const prisma = new PrismaClient();
   //       logic: Operator.AND
   //     }
   //   });
-
   //   // Règle 3: Webhook CS après 1er site (avec léger délai)
   //   const rule3 = await prisma.rule.create({
   //     // create pour l'exemple
@@ -253,11 +234,9 @@ const prisma = new PrismaClient();
   //       version: 1 // Délai de 2 minutes
   //     }
   //   });
-
   //   await prisma.ruleCondition.create({
   //     data: { ruleId: rule3.id, conditionId: isFirstSiteCond.id }
   //   });
-
   //   // Règle 4: Email Réengagement si Inactif 5j ET en essai
   //   const rule4 = await prisma.rule.create({
   //     // create pour l'exemple
@@ -271,7 +250,6 @@ const prisma = new PrismaClient();
   //       version: 1
   //     }
   //   });
-
   //   // Appliquer la condition : doit être en essai
   //   await prisma.ruleCondition.create({
   //     data: {
@@ -280,7 +258,6 @@ const prisma = new PrismaClient();
   //       logic: Operator.AND
   //     }
   //   });
-
   //   // Règle 5: Email Rappel J-3 si pas abonné
   //   const rule5 = await prisma.rule.create({
   //     // create pour l'exemple
@@ -294,7 +271,6 @@ const prisma = new PrismaClient();
   //       version: 1
   //     }
   //   });
-
   //   // Conditions: J-3 ET Pas Abonné Actif (logique AND par défaut)
   //   await prisma.ruleCondition.create({
   //     data: {
@@ -310,7 +286,6 @@ const prisma = new PrismaClient();
   //       logic: Operator.AND
   //     }
   //   });
-
   //   // Règle 6: Webhook Sales J-3 si pas abonné
   //   const rule6 = await prisma.rule.create({
   //     // create pour l'exemple
@@ -324,7 +299,6 @@ const prisma = new PrismaClient();
   //       version: 1
   //     }
   //   });
-
   //   // Mêmes conditions que Règle 5
   //   await prisma.ruleCondition.create({
   //     data: {
@@ -340,9 +314,7 @@ const prisma = new PrismaClient();
   //       logic: Operator.AND
   //     }
   //   });
-
   //   console.info('Workflow Rules and Conditions created/linked.');
-
   //   await prisma.user.create({
   //     data: {
   //       id: 'cm8zwbi0y0001spa09s9s7eat',
@@ -425,16 +397,15 @@ const prisma = new PrismaClient();
   //       }
   //     }
   //   });
-
-  console.log(
-    await prisma.reservation.create({
-      data: {
-        email: 'parweb@gmail.com',
-        dateStart: new Date(),
-        dateEnd: new Date(Date.now() + 15 * 60 * 1000)
-      }
-    })
-  );
+  // console.log(
+  //   await prisma.reservation.create({
+  //     data: {
+  //       email: 'parweb@gmail.com',
+  //       dateStart: new Date(),
+  //       dateEnd: new Date(Date.now() + 15 * 60 * 1000)
+  //     }
+  //   })
+  // );
 })()
   .then(async () => {
     await prisma.$disconnect();

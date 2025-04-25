@@ -18,12 +18,11 @@ export default async function SiteSettingsIndex(props: {
     }
   });
 
-  console.log({ myRole: session?.user.role });
-
   const users = ([UserRole.ADMIN] as UserRole[]).includes(
     session?.user.role ?? UserRole.USER
   )
     ? await db.user.findMany({
+        take: 10,
         select: {
           id: true,
           name: true,

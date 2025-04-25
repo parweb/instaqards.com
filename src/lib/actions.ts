@@ -1168,17 +1168,6 @@ export const bookProspect = async (form: FormData) => {
     const comment = String(form.get('comment'));
     const timeSlotInterval = Number(form.get('timeSlotInterval'));
 
-    console.log({
-      type,
-      day,
-      time,
-      email,
-      name,
-      comment,
-      timeSlotInterval,
-      userId
-    });
-
     const response = await db.reservation.create({
       data: {
         type,
@@ -1193,13 +1182,9 @@ export const bookProspect = async (form: FormData) => {
       }
     });
 
-    console.log({ response });
-
     const destination = await db.user.findUniqueOrThrow({
       where: { email }
     });
-
-    console.log({ destination });
 
     after(() => {
       const correlationId = nanoid();
@@ -1266,8 +1251,6 @@ export const commentProspect = async (form: FormData) => {
         user: { connect: { id: leadId } }
       }
     });
-
-    console.log({ response });
 
     after(() => {
       const correlationId = nanoid();
@@ -1349,8 +1332,6 @@ export const createMagicLink = async ({
       }
     )}`;
 
-    console.log({ url });
-
     return { url };
   } catch (error: unknown) {
     console.error('Error creating magic link:', error);
@@ -1375,13 +1356,6 @@ export const mutateLists = async (form: FormData) => {
   const title = String(form.get('title'));
   const description = String(form.get('description'));
   const selectedIds = form.getAll('selected[]') as string[];
-
-  console.log({
-    id,
-    title,
-    description,
-    selectedIds
-  });
 
   try {
     const response = await db.list.upsert({
@@ -1444,14 +1418,6 @@ export const mutateCampaigns = async (form: FormData) => {
   const list = String(form.get('list'));
   const email = String(form.get('email'));
 
-  console.log({
-    id,
-    title,
-    description,
-    list,
-    email
-  });
-
   try {
     const response = await db.campaign.upsert({
       where: { id },
@@ -1463,7 +1429,6 @@ export const mutateCampaigns = async (form: FormData) => {
         list: { connect: { id: list } }
       },
       update: {
-        type,
         title,
         description,
         email: { connect: { id: email } },
@@ -1519,15 +1484,6 @@ export const mutateEmails = async (form: FormData) => {
     () => JSON.parse(String(form.get('design'))),
     undefined
   );
-
-  console.log({
-    id,
-    title,
-    description,
-    subject,
-    content,
-    design
-  });
 
   try {
     const response = await db.email.upsert({

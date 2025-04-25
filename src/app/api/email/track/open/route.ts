@@ -16,7 +16,7 @@ const PIXEL_BUFFER = Buffer.from(
 export async function GET(request: NextRequest) {
   try {
     if (
-      request.headers.get('referer')?.includes('localhost') ||
+      // request.headers.get('referer')?.includes('localhost') ||
       request.headers.get('referer')?.includes('qards.link')
     ) {
       throw new Error("Don't track internal user");
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
         WHERE id = ${id}
         RETURNING "metadata";
       `
-        .then(([{ metadata }]) => console.info(id, metadata))
+        .then(res => console.info(id, res))
         .catch(console.error)
     );
 

@@ -1,0 +1,73 @@
+'use server';
+
+import { z } from 'zod';
+import { db } from 'helpers/db';
+import { revalidatePath } from 'next/cache';
+
+export const toggleCampaign = async (previous: boolean, form: FormData) => {
+  const { active, id } = z
+    .object({
+      active: z.string().transform(v => v === 'true'),
+      id: z.string()
+    })
+    .parse(Object.fromEntries(form.entries()));
+
+  await db.$transaction(
+    async tx => {
+      const campaign = await tx.campaign.findUniqueOrThrow({
+        where: { id },
+        include: { list: { include: { contacts: true } } }
+      });
+
+      await tx.campaign.update({
+        where: { id: campaign.id },
+        data: { active }
+      });
+
+      const alreadies = await tx.queue.findMany({
+        where: { correlationId: campaign.id }
+      });
+
+      if (alreadies.length > 0) {
+        await tx.queue.updateMany({
+          where: {
+            correlationId: campaign.id,
+            status: active ? 'frozen' : 'pending'
+          },
+          data: { status: active ? 'pending' : 'frozen' }
+        });
+      } else {
+        await tx.queue.createMany({
+          data: campaign.list.contacts.map(contact => ({
+            correlationId: campaign.id,
+            status: active ? 'pending' : 'frozen',
+            job: 'SEND_EMAIL_CAMPAIGN',
+            payload: { campaign, contact }
+          }))
+        });
+      }
+    },
+    {
+      maxWait: 300_000,
+      timeout: 300_000
+    }
+  );
+
+  revalidatePath('/app/workflows/campaigns');
+
+  return !previous;
+};
+
+export const deleteCampaign = async (previous: boolean, form: FormData) => {
+  const { id } = z
+    .object({ id: z.string() })
+    .parse(Object.fromEntries(form.entries()));
+
+  await db.campaign.delete({
+    where: { id }
+  });
+
+  revalidatePath('/app/workflows/campaigns');
+
+  return !previous;
+};
