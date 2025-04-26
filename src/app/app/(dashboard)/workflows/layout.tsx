@@ -21,7 +21,7 @@ export default async function WorkflowsLayout({
         <WorkflowsNav />
       </Suspense>
 
-      {children}
+      <Suspense fallback={null}>{children}</Suspense>
     </div>
   );
 }

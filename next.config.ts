@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   // typescript: { ignoreBuildErrors: true },
   experimental: {
     // reactCompiler: true,
+    clientSegmentCache: true,
     dynamicIO: true,
     ppr: true,
     viewTransition: true,
