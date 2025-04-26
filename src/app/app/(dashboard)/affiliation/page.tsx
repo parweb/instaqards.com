@@ -1,4 +1,4 @@
-import { Prisma, SubscriptionStatus, User } from '@prisma/client';
+import { Prisma, SubscriptionStatus, User, UserRole } from '@prisma/client';
 import { eachDayOfInterval } from 'date-fns';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -185,7 +185,7 @@ export default async function AllAffiliation({
               <ModalButton
                 label={await translate('dashboard.affiliation.create')}
               >
-                <UserCreateModal />
+                <UserCreateModal role={UserRole.LEAD} />
               </ModalButton>
             </div>
           </hgroup>

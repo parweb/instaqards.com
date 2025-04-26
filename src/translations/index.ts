@@ -259,10 +259,10 @@ const translations = {
     es: 'Importar Prospectos'
   },
   'dashboard.affiliation.create': {
-    fr: 'Créer un utilisateur',
-    en: 'Create User',
-    it: 'Crea un utente',
-    es: 'Crear un usuario'
+    fr: 'Créer un prospect',
+    en: 'Create Prospect',
+    it: 'Crea un prospect',
+    es: 'Crear un prospecto'
   },
   'components.prices.plan.renews': {
     fr: 'Votre abonnement se renouvelle le',

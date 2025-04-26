@@ -1,5 +1,6 @@
 'use client';
 
+import { UserRole } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -13,14 +14,27 @@ import useTranslation from 'hooks/use-translation';
 import { createUser } from 'lib/actions';
 import { useModal } from './provider';
 
-export default function UserCreateModal() {
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from 'components/ui/select';
+
+export default function UserCreateModal({ role }: { role?: UserRole }) {
   const router = useRouter();
   const modal = useModal();
   const translate = useTranslation();
 
-  const [data, setData] = useState<{ name: string; email: string }>({
+  const [data, setData] = useState<{
+    name: string;
+    email: string;
+    role: UserRole | undefined;
+  }>({
     name: '',
-    email: ''
+    email: '',
+    role
   });
 
   return (
@@ -44,6 +58,32 @@ export default function UserCreateModal() {
         <h2 className="font-cal text-2xl dark:text-white">
           {translate('components.user.create.title')}
         </h2>
+
+        {role ? (
+          <input type="hidden" name="role" value={role} />
+        ) : (
+          <Select
+            name="role"
+            required
+            value={data.role}
+            onValueChange={async value => {
+              // @ts-ignore
+              setData({ ...data, role: value as UserRole });
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Role" />
+            </SelectTrigger>
+
+            <SelectContent>
+              {Object.values(UserRole).map(role => (
+                <SelectItem key={role} value={role}>
+                  {role}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
