@@ -79,6 +79,7 @@ export const UserScalarFieldEnumSchema = z.enum([
   'payment_method',
   'company',
   'address',
+  'location',
   'postcode',
   'city',
   'phone',
@@ -630,6 +631,7 @@ export const UserSchema = z.object({
   payment_method: JsonValueSchema,
   company: z.string().nullable(),
   address: z.string().nullable(),
+  location: JsonValueSchema.nullable(),
   postcode: z.string().nullable(),
   city: z.string().nullable(),
   phone: z.string().nullable(),
@@ -1420,6 +1422,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     payment_method: z.boolean().optional(),
     company: z.boolean().optional(),
     address: z.boolean().optional(),
+    location: z.boolean().optional(),
     postcode: z.boolean().optional(),
     city: z.boolean().optional(),
     phone: z.boolean().optional(),
@@ -3118,6 +3121,7 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
       .optional()
       .nullable(),
+    location: z.lazy(() => JsonNullableFilterSchema).optional(),
     postcode: z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
       .optional()
@@ -3246,6 +3250,12 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
         ])
         .optional(),
       address: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      location: z
         .union([
           z.lazy(() => SortOrderSchema),
           z.lazy(() => SortOrderInputSchema)
@@ -3414,6 +3424,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
             .union([z.lazy(() => StringNullableFilterSchema), z.string()])
             .optional()
             .nullable(),
+          location: z.lazy(() => JsonNullableFilterSchema).optional(),
           postcode: z
             .union([z.lazy(() => StringNullableFilterSchema), z.string()])
             .optional()
@@ -3554,6 +3565,12 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
           z.lazy(() => SortOrderInputSchema)
         ])
         .optional(),
+      location: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
       postcode: z
         .union([
           z.lazy(() => SortOrderSchema),
@@ -3671,6 +3688,7 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
         ])
         .optional()
         .nullable(),
+      location: z.lazy(() => JsonNullableWithAggregatesFilterSchema).optional(),
       postcode: z
         .union([
           z.lazy(() => StringNullableWithAggregatesFilterSchema),
@@ -12806,6 +12824,12 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
       .optional(),
     company: z.string().optional().nullable(),
     address: z.string().optional().nullable(),
+    location: z
+      .union([
+        z.lazy(() => NullableJsonNullValueInputSchema),
+        InputJsonValueSchema
+      ])
+      .optional(),
     postcode: z.string().optional().nullable(),
     city: z.string().optional().nullable(),
     phone: z.string().optional().nullable(),
@@ -12901,6 +12925,12 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -13059,6 +13089,12 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
       ])
       .optional()
       .nullable(),
+    location: z
+      .union([
+        z.lazy(() => NullableJsonNullValueInputSchema),
+        InputJsonValueSchema
+      ])
+      .optional(),
     postcode: z
       .union([
         z.string(),
@@ -13250,6 +13286,12 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -13415,6 +13457,12 @@ export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> =
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -13496,6 +13544,12 @@ export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyM
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -13621,6 +13675,12 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -23517,6 +23577,25 @@ export const JsonFilterSchema: z.ZodType<Prisma.JsonFilter> = z
   })
   .strict();
 
+export const JsonNullableFilterSchema: z.ZodType<Prisma.JsonNullableFilter> = z
+  .object({
+    equals: InputJsonValueSchema.optional(),
+    path: z.string().array().optional(),
+    mode: z.lazy(() => QueryModeSchema).optional(),
+    string_contains: z.string().optional(),
+    string_starts_with: z.string().optional(),
+    string_ends_with: z.string().optional(),
+    array_starts_with: InputJsonValueSchema.optional().nullable(),
+    array_ends_with: InputJsonValueSchema.optional().nullable(),
+    array_contains: InputJsonValueSchema.optional().nullable(),
+    lt: InputJsonValueSchema.optional(),
+    lte: InputJsonValueSchema.optional(),
+    gt: InputJsonValueSchema.optional(),
+    gte: InputJsonValueSchema.optional(),
+    not: InputJsonValueSchema.optional()
+  })
+  .strict();
+
 export const DateTimeFilterSchema: z.ZodType<Prisma.DateTimeFilter> = z
   .object({
     equals: z.coerce.date().optional(),
@@ -23951,6 +24030,7 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
       payment_method: z.lazy(() => SortOrderSchema).optional(),
       company: z.lazy(() => SortOrderSchema).optional(),
       address: z.lazy(() => SortOrderSchema).optional(),
+      location: z.lazy(() => SortOrderSchema).optional(),
       postcode: z.lazy(() => SortOrderSchema).optional(),
       city: z.lazy(() => SortOrderSchema).optional(),
       phone: z.lazy(() => SortOrderSchema).optional(),
@@ -24123,6 +24203,29 @@ export const JsonWithAggregatesFilterSchema: z.ZodType<Prisma.JsonWithAggregates
       _count: z.lazy(() => NestedIntFilterSchema).optional(),
       _min: z.lazy(() => NestedJsonFilterSchema).optional(),
       _max: z.lazy(() => NestedJsonFilterSchema).optional()
+    })
+    .strict();
+
+export const JsonNullableWithAggregatesFilterSchema: z.ZodType<Prisma.JsonNullableWithAggregatesFilter> =
+  z
+    .object({
+      equals: InputJsonValueSchema.optional(),
+      path: z.string().array().optional(),
+      mode: z.lazy(() => QueryModeSchema).optional(),
+      string_contains: z.string().optional(),
+      string_starts_with: z.string().optional(),
+      string_ends_with: z.string().optional(),
+      array_starts_with: InputJsonValueSchema.optional().nullable(),
+      array_ends_with: InputJsonValueSchema.optional().nullable(),
+      array_contains: InputJsonValueSchema.optional().nullable(),
+      lt: InputJsonValueSchema.optional(),
+      lte: InputJsonValueSchema.optional(),
+      gt: InputJsonValueSchema.optional(),
+      gte: InputJsonValueSchema.optional(),
+      not: InputJsonValueSchema.optional(),
+      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+      _min: z.lazy(() => NestedJsonNullableFilterSchema).optional(),
+      _max: z.lazy(() => NestedJsonNullableFilterSchema).optional()
     })
     .strict();
 
@@ -25030,25 +25133,6 @@ export const TwoFactorTokenMinOrderByAggregateInputSchema: z.ZodType<Prisma.TwoF
     })
     .strict();
 
-export const JsonNullableFilterSchema: z.ZodType<Prisma.JsonNullableFilter> = z
-  .object({
-    equals: InputJsonValueSchema.optional(),
-    path: z.string().array().optional(),
-    mode: z.lazy(() => QueryModeSchema).optional(),
-    string_contains: z.string().optional(),
-    string_starts_with: z.string().optional(),
-    string_ends_with: z.string().optional(),
-    array_starts_with: InputJsonValueSchema.optional().nullable(),
-    array_ends_with: InputJsonValueSchema.optional().nullable(),
-    array_contains: InputJsonValueSchema.optional().nullable(),
-    lt: InputJsonValueSchema.optional(),
-    lte: InputJsonValueSchema.optional(),
-    gt: InputJsonValueSchema.optional(),
-    gte: InputJsonValueSchema.optional(),
-    not: InputJsonValueSchema.optional()
-  })
-  .strict();
-
 export const BlockNullableScalarRelationFilterSchema: z.ZodType<Prisma.BlockNullableScalarRelationFilter> =
   z
     .object({
@@ -25131,29 +25215,6 @@ export const ClickMinOrderByAggregateInputSchema: z.ZodType<Prisma.ClickMinOrder
       siteId: z.lazy(() => SortOrderSchema).optional(),
       linkId: z.lazy(() => SortOrderSchema).optional(),
       userId: z.lazy(() => SortOrderSchema).optional()
-    })
-    .strict();
-
-export const JsonNullableWithAggregatesFilterSchema: z.ZodType<Prisma.JsonNullableWithAggregatesFilter> =
-  z
-    .object({
-      equals: InputJsonValueSchema.optional(),
-      path: z.string().array().optional(),
-      mode: z.lazy(() => QueryModeSchema).optional(),
-      string_contains: z.string().optional(),
-      string_starts_with: z.string().optional(),
-      string_ends_with: z.string().optional(),
-      array_starts_with: InputJsonValueSchema.optional().nullable(),
-      array_ends_with: InputJsonValueSchema.optional().nullable(),
-      array_contains: InputJsonValueSchema.optional().nullable(),
-      lt: InputJsonValueSchema.optional(),
-      lte: InputJsonValueSchema.optional(),
-      gt: InputJsonValueSchema.optional(),
-      gte: InputJsonValueSchema.optional(),
-      not: InputJsonValueSchema.optional(),
-      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
-      _min: z.lazy(() => NestedJsonNullableFilterSchema).optional(),
-      _max: z.lazy(() => NestedJsonNullableFilterSchema).optional()
     })
     .strict();
 
@@ -39566,6 +39627,26 @@ export const NestedJsonFilterSchema: z.ZodType<Prisma.NestedJsonFilter> = z
   })
   .strict();
 
+export const NestedJsonNullableFilterSchema: z.ZodType<Prisma.NestedJsonNullableFilter> =
+  z
+    .object({
+      equals: InputJsonValueSchema.optional(),
+      path: z.string().array().optional(),
+      mode: z.lazy(() => QueryModeSchema).optional(),
+      string_contains: z.string().optional(),
+      string_starts_with: z.string().optional(),
+      string_ends_with: z.string().optional(),
+      array_starts_with: InputJsonValueSchema.optional().nullable(),
+      array_ends_with: InputJsonValueSchema.optional().nullable(),
+      array_contains: InputJsonValueSchema.optional().nullable(),
+      lt: InputJsonValueSchema.optional(),
+      lte: InputJsonValueSchema.optional(),
+      gt: InputJsonValueSchema.optional(),
+      gte: InputJsonValueSchema.optional(),
+      not: InputJsonValueSchema.optional()
+    })
+    .strict();
+
 export const NestedDateTimeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDateTimeWithAggregatesFilter> =
   z
     .object({
@@ -39841,26 +39922,6 @@ export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z
     not: z.union([z.number(), z.lazy(() => NestedFloatFilterSchema)]).optional()
   })
   .strict();
-
-export const NestedJsonNullableFilterSchema: z.ZodType<Prisma.NestedJsonNullableFilter> =
-  z
-    .object({
-      equals: InputJsonValueSchema.optional(),
-      path: z.string().array().optional(),
-      mode: z.lazy(() => QueryModeSchema).optional(),
-      string_contains: z.string().optional(),
-      string_starts_with: z.string().optional(),
-      string_ends_with: z.string().optional(),
-      array_starts_with: InputJsonValueSchema.optional().nullable(),
-      array_ends_with: InputJsonValueSchema.optional().nullable(),
-      array_contains: InputJsonValueSchema.optional().nullable(),
-      lt: InputJsonValueSchema.optional(),
-      lte: InputJsonValueSchema.optional(),
-      gt: InputJsonValueSchema.optional(),
-      gte: InputJsonValueSchema.optional(),
-      not: InputJsonValueSchema.optional()
-    })
-    .strict();
 
 export const NestedEnumFeedTypeFilterSchema: z.ZodType<Prisma.NestedEnumFeedTypeFilter> =
   z
@@ -40673,6 +40734,12 @@ export const UserCreateWithoutRefererInputSchema: z.ZodType<Prisma.UserCreateWit
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -40775,6 +40842,12 @@ export const UserUncheckedCreateWithoutRefererInputSchema: z.ZodType<Prisma.User
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -40910,6 +40983,12 @@ export const UserCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreate
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -41012,6 +41091,12 @@ export const UserUncheckedCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -42751,6 +42836,7 @@ export const UserScalarWhereInputSchema: z.ZodType<Prisma.UserScalarWhereInput> 
         .union([z.lazy(() => StringNullableFilterSchema), z.string()])
         .optional()
         .nullable(),
+      location: z.lazy(() => JsonNullableFilterSchema).optional(),
       postcode: z
         .union([z.lazy(() => StringNullableFilterSchema), z.string()])
         .optional()
@@ -42885,6 +42971,12 @@ export const UserUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdate
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -43083,6 +43175,12 @@ export const UserUncheckedUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -44294,6 +44392,12 @@ export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -44396,6 +44500,12 @@ export const UserUncheckedCreateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -44518,6 +44628,12 @@ export const UserCreateWithoutReceivedInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -44620,6 +44736,12 @@ export const UserUncheckedCreateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -44819,6 +44941,12 @@ export const UserUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -45017,6 +45145,12 @@ export const UserUncheckedUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -45256,6 +45390,12 @@ export const UserUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -45454,6 +45594,12 @@ export const UserUncheckedUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -45616,6 +45762,12 @@ export const UserCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -45718,6 +45870,12 @@ export const UserUncheckedCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -45917,6 +46075,12 @@ export const UserUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -46115,6 +46279,12 @@ export const UserUncheckedUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -46277,6 +46447,12 @@ export const UserCreateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -46379,6 +46555,12 @@ export const UserUncheckedCreateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -46575,6 +46757,12 @@ export const UserUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -46773,6 +46961,12 @@ export const UserUncheckedUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -46932,6 +47126,12 @@ export const UserCreateWithoutCustomerInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -47034,6 +47234,12 @@ export const UserUncheckedCreateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -47233,6 +47439,12 @@ export const UserUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -47431,6 +47643,12 @@ export const UserUncheckedUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -48062,6 +48280,12 @@ export const UserCreateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserCre
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -48164,6 +48388,12 @@ export const UserUncheckedCreateWithoutSubscriptionsInputSchema: z.ZodType<Prism
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -48538,6 +48768,12 @@ export const UserUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserUpd
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -48736,6 +48972,12 @@ export const UserUncheckedUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prism
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -48898,6 +49140,12 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -49000,6 +49248,12 @@ export const UserUncheckedCreateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -49199,6 +49453,12 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -49397,6 +49657,12 @@ export const UserUncheckedUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -49559,6 +49825,12 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -49661,6 +49933,12 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -49860,6 +50138,12 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -50058,6 +50342,12 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -50220,6 +50510,12 @@ export const UserCreateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserCre
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -50322,6 +50618,12 @@ export const UserUncheckedCreateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -50519,6 +50821,12 @@ export const UserUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserUpd
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -50717,6 +51025,12 @@ export const UserUncheckedUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -51060,6 +51374,12 @@ export const UserCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -51162,6 +51482,12 @@ export const UserUncheckedCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -51918,6 +52244,12 @@ export const UserUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -52116,6 +52448,12 @@ export const UserUncheckedUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -52342,6 +52680,12 @@ export const UserCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -52444,6 +52788,12 @@ export const UserUncheckedCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -52680,6 +53030,12 @@ export const UserUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -52878,6 +53234,12 @@ export const UserUncheckedUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -53640,6 +54002,12 @@ export const UserCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -53742,6 +54110,12 @@ export const UserUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -54246,6 +54620,12 @@ export const UserUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -54444,6 +54824,12 @@ export const UserUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -54734,6 +55120,12 @@ export const UserCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -54836,6 +55228,12 @@ export const UserUncheckedCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -55333,6 +55731,12 @@ export const UserUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -55531,6 +55935,12 @@ export const UserUncheckedUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -56030,6 +56440,12 @@ export const UserCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -56134,6 +56550,12 @@ export const UserUncheckedCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -56677,6 +57099,12 @@ export const UserUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -56877,6 +57305,12 @@ export const UserUncheckedUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -57160,6 +57594,12 @@ export const UserCreateWithoutCommentsInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -57262,6 +57702,12 @@ export const UserUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -57587,6 +58033,12 @@ export const UserUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -57785,6 +58237,12 @@ export const UserUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -58349,6 +58807,12 @@ export const UserCreateWithoutReservationsInputSchema: z.ZodType<Prisma.UserCrea
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -58451,6 +58915,12 @@ export const UserUncheckedCreateWithoutReservationsInputSchema: z.ZodType<Prisma
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -58827,6 +59297,12 @@ export const UserUpdateWithoutReservationsInputSchema: z.ZodType<Prisma.UserUpda
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -59025,6 +59501,12 @@ export const UserUncheckedUpdateWithoutReservationsInputSchema: z.ZodType<Prisma
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -59185,6 +59667,12 @@ export const UserCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -59287,6 +59775,12 @@ export const UserUncheckedCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -59486,6 +59980,12 @@ export const UserUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -59684,6 +60184,12 @@ export const UserUncheckedUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -61471,6 +61977,12 @@ export const UserCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -61573,6 +62085,12 @@ export const UserUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -61772,6 +62290,12 @@ export const UserUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -61970,6 +62494,12 @@ export const UserUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -62132,6 +62662,12 @@ export const UserCreateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserCr
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -62234,6 +62770,12 @@ export const UserUncheckedCreateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -62474,6 +63016,12 @@ export const UserUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserUp
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -62672,6 +63220,12 @@ export const UserUncheckedUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -62962,6 +63516,12 @@ export const UserCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserCreate
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -63064,6 +63624,12 @@ export const UserUncheckedCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -63363,6 +63929,12 @@ export const UserUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserUpdate
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -63561,6 +64133,12 @@ export const UserUncheckedUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -64045,6 +64623,12 @@ export const UserCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -64147,6 +64731,12 @@ export const UserUncheckedCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -64488,6 +65078,12 @@ export const UserUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -64686,6 +65282,12 @@ export const UserUncheckedUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -64848,6 +65450,12 @@ export const UserCreateWithoutListsManageInputSchema: z.ZodType<Prisma.UserCreat
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -64950,6 +65558,12 @@ export const UserUncheckedCreateWithoutListsManageInputSchema: z.ZodType<Prisma.
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -65072,6 +65686,12 @@ export const UserCreateWithoutListsInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -65174,6 +65794,12 @@ export const UserUncheckedCreateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -65946,6 +66572,12 @@ export const UserCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -66048,6 +66680,12 @@ export const UserUncheckedCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -66303,6 +66941,12 @@ export const UserUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -66501,6 +67145,12 @@ export const UserUncheckedUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -66819,6 +67469,12 @@ export const UserCreateManyRefererInputSchema: z.ZodType<Prisma.UserCreateManyRe
         .optional(),
       company: z.string().optional().nullable(),
       address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
@@ -68560,6 +69216,12 @@ export const UserUpdateWithoutRefererInputSchema: z.ZodType<Prisma.UserUpdateWit
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -68758,6 +69420,12 @@ export const UserUncheckedUpdateWithoutRefererInputSchema: z.ZodType<Prisma.User
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -68967,6 +69635,12 @@ export const UserUncheckedUpdateManyWithoutRefererInputSchema: z.ZodType<Prisma.
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -74412,6 +75086,12 @@ export const UserUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.UserUpdat
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -74610,6 +75290,12 @@ export const UserUncheckedUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -74823,6 +75509,12 @@ export const UserUncheckedUpdateManyWithoutListsManageInputSchema: z.ZodType<Pri
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -74955,6 +75647,12 @@ export const UserUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -75153,6 +75851,12 @@ export const UserUncheckedUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),
@@ -75366,6 +76070,12 @@ export const UserUncheckedUpdateManyWithoutListsInputSchema: z.ZodType<Prisma.Us
         ])
         .optional()
         .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
       postcode: z
         .union([
           z.string(),

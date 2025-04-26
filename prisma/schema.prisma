@@ -32,6 +32,7 @@ model User {
   payment_method     Json      @default("{}")
   company            String?
   address            String?
+  location           Json?     @default("{}")
   postcode           String?
   city               String?
   phone              String?
