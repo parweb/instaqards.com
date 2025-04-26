@@ -1,6 +1,6 @@
 'use server';
 
-import type { User } from '@prisma/client';
+import { type User, UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import type * as z from 'zod';
@@ -16,11 +16,9 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   console.info({ values });
 
   const validatedFields = RegisterSchema.safeParse(values);
-
   console.info({ validatedFields });
 
   const referer: User['id'] | null = (await cookies()).get('r')?.value ?? null;
-
   console.info({ referer });
 
   if (!validatedFields.success) {
@@ -28,32 +26,40 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   }
 
   const { email, password, name } = validatedFields.data;
-
   console.info({ email, password, name });
 
   const hashedPassword = await bcrypt.hash(password, 10);
-
   console.info({ hashedPassword });
 
   const existingUser = await getUserByEmail(email);
-
   console.info({ existingUser });
 
   if (existingUser) {
-    return { error: await translate('actions.register.email.error') };
+    if (existingUser.role !== UserRole.LEAD) {
+      return { error: await translate('actions.register.email.error') };
+    }
+
+    await db.user.update({
+      where: { id: existingUser.id },
+      data: {
+        name,
+        role: UserRole.USER,
+        password: hashedPassword,
+        ...(existingUser.refererId === null && { refererId: referer })
+      }
+    });
+  } else {
+    await db.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        refererId: referer
+      }
+    });
   }
 
-  await db.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-      refererId: referer
-    }
-  });
-
   const verificationToken = await generateVerificationToken(email);
-
   console.info({ verificationToken });
 
   await sendVerificationEmail(email, verificationToken.token).catch(
@@ -61,6 +67,5 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   );
 
   console.info({ success: await translate('actions.register.form.success') });
-
   return { success: await translate('actions.register.form.success') };
 };
