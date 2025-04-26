@@ -24,7 +24,11 @@ export const Background = ({
     ? 'color'
     : background?.startsWith('component:')
       ? 'css'
-      : contentType(background?.split('/').pop() ?? '') || '';
+      : contentType(
+          String(background)?.split('|').at(0)?.split('/').pop() ?? ''
+        ) || '';
+
+  console.log({ media_type });
 
   return (
     <>
@@ -60,14 +64,26 @@ export const Background = ({
 
             {media_type?.startsWith('image/') && (
               <div className="absolute top-0 left-0 w-full h-full object-cover">
-                <Image
-                  src={background}
-                  alt=""
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                  priority
-                />
+                <div className="plop" />
+                {background.includes('|') ? (
+                  <div
+                    className="yolo absolute inset-0"
+                    style={{
+                      opacity: 0.75,
+                      backgroundImage: `url(${background.split('|').at(0)})`,
+                      backgroundSize: `${background.split('|').at(1)}px`
+                    }}
+                  />
+                ) : (
+                  <Image
+                    src={background}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                    priority
+                  />
+                )}
               </div>
             )}
 
