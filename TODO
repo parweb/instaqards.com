@@ -11,24 +11,30 @@ TODO
 
   
 
-DONE -> changement de propriétaire ca deconne la recherche
-     -> statique exclure les createur (admin/seller)
-     -> liens sur les picture block facultatif si pas de lien fullscreen image
-DONE -> resize pictures circle & square & socials & profile
-     -> logo social tripadvisor
-     -> block avis clients
-     -> inscription geré le cas du prospect (email already in use) 
-     -> map il faut que je le refasse avec le vrai google map
-     -> Sur la Page de Création de QARDS -> module catégorie image -> la galerie quand aucun lien il se passe rien (possibilité aucun lien du coup agrandissement au clique ?)
-     -> editor page pro soit editable (pas besoin d'etre logué)
-     -> template dans page pro
 
-     -> option background vertical double bg avec blur et/ou background secondaire
-     -> logo qards dans les socials
-     -> philipain social network -> application mobile
+     -> on tombe dans les SPAM regarde si on peut faire quelque chose
      -> pré-chargé la qards avec les infos du fichier client
+     -> editor page pro soit editable (pas besoin d'etre logué)
+     -> map il faut que je le refasse avec le vrai google map
+     -> liens sur les picture block facultatif si pas de lien fullscreen image
+     -> template dans page pro
+     -> qards par default préremplis stylé / neutre (modal blank or template)
+     -> block Horaires d'ouverture
+     -> pas claire qu'il faut payer pour que la qards soit public
+     -> intégration externe clean url before (icon check vert si tout va bien)
+     -> description des inputs field possible (ex: youtube tu peux metre une url channel ou video)
+DONE -> inscription geré le cas du prospect (email already in use) 
+DONE -> changement de propriétaire ca deconne la recherche
+DONE -> resize pictures circle & square & socials & profile
+     -> statique exclure les createur (admin/seller)
+     -> logo social tripadvisor (https://www.google.com/s2/favicons?sz=64&domain_url=tripadvisor.com)
+        logo qards dans les socials
+     -> block avis clients
+     -> option background vertical double bg avec blur et/ou background secondaire
+     -> philipain social network -> application mobile
 
      -> commercial
+          - generator to email (commercial crée la qard demande un email ca envoi le un lien pour finir linscription)
           - fait qards avec le calendar
           - peut envoyé par email une demande de rendez vous
           - propects
@@ -37,10 +43,8 @@ DONE -> resize pictures circle & square & socials & profile
           - kanban
 
      -> preview qards mobile / desktop
-     -> intégration externe clean url before (icon check vert si tout va bien)
      -> insta reel, possible ?
      -> generator flingué
-     -> qards par default préremplis stylé / neutre (modal blank or template)
      -> feed
      -> ecommerce (stripe connect) https://youtu.be/dllIBXa0nlE?t=19089
      -> qards dropshiping / affiliation 
@@ -55,23 +59,17 @@ DONE -> resize pictures circle & square & socials & profile
           https://github.com/mosch/react-avatar-editor
      -> menu button faire mieux
      -> armoniser les youtubes block (titre par dessus)
-
-     -> description des inputs field possible (ex: youtube tu peux metre une url channel ou video)
      -> tiktok garder que le lecteur (+ bug sur ilias)
      -> avis google ? peut on les recupéré ?
-     -> tiktok prend en compte les url mobile
-
-     -> generator to email (commercial crée la qard demande un email ca envoi le un lien pour finir linscription)
-     -> qards du mois (abonnement offert)
-     -> block Horaires d'ouverture
+     -> tiktok prend en compte les url mobile (m.tiktok.com)
+     -> qards du mois (abonnement offert) ?
      -> block qards (qards dans qards)
      -> container ?
      -> twitch integration
-     -> email transactional 
-     -> maito & tel:// ui drivé
      -> univers music, girly (template)
-     -> pas claire qu'il faut payer pour que la qards soit public
 
+DONE -> email transactional 
+DONE -> maito & tel:// ui drivé
 DONE -> prospect ce retrouve partout ou y'a des users 
 DONE -> statistiques plus avancé sur les qards
 DONE -> block iframe simple
