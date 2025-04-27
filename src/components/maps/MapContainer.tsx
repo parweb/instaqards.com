@@ -10,10 +10,12 @@ import { cn } from 'lib/utils';
 import { inter, open } from 'styles/fonts';
 
 interface MapContainerProps {
-  selectedLocation: Pick<
-    Location,
-    'id' | 'display_name' | 'lat' | 'lon'
-  > | null;
+  selectedLocation: {
+    id: Location['id'];
+    display_name: Location['properties']['label'];
+    lat: Location['geometry']['coordinates'][0];
+    lon: Location['geometry']['coordinates'][1];
+  } | null;
   mapPosition: [number, number];
   inputValue: {
     name: string;
@@ -28,7 +30,7 @@ const MapContainer = ({
 }: MapContainerProps) => {
   // Memoize marker position calculation to prevent unnecessary re-renders
   const markerPosition = useMemo(
-    () => getMarkerPosition(selectedLocation),
+    () => getMarkerPosition([selectedLocation.lat, selectedLocation.lon]),
     [selectedLocation]
   );
 

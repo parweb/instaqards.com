@@ -40,7 +40,7 @@ export const useMapSearch = ({
       updateSearchState({
         isSearching: true,
         selectedLocation: result,
-        query: result.display_name,
+        query: result.properties.name,
         isPopoverOpen: false,
         results: []
       });

@@ -71,7 +71,12 @@ const MapSearch = ({ onLocationSelect, className }: MapSearchProps) => {
           name: 'Le chateaux',
           address: '2 Rue des Cévennes, 75015 Paris'
         }}
-        selectedLocation={selectedLocation}
+        selectedLocation={{
+          id: selectedLocation.id,
+          display_name: selectedLocation.display_name,
+          lat: selectedLocation.lat,
+          lon: selectedLocation.lon
+        }}
         mapPosition={mapPosition}
       />
     </div>

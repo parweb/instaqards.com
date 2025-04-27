@@ -5,35 +5,34 @@ import * as z from 'zod';
 
 import { cn, json } from 'lib/utils';
 
-const $label = z.string().describe(
-  json({
-    label: 'Label',
-    kind: 'string'
-  })
-);
-
-const $address = z
-  .object({
-    address: z.object({
-      house_number: z.string(),
-      road: z.string(),
-      postcode: z.string(),
-      municipality: z.string()
-    })
-  })
-  .describe(
+export const input = z.object({
+  label: z.string().describe(
     json({
-      label: 'Address',
-      kind: 'address',
-      placeholder: 'Entrez une adresse'
+      label: 'Label',
+      kind: 'string'
     })
-  );
+  ),
 
-const BaseButtonProps = z.object({ label: $label, address: $address });
-export const input = z.object({ label: $label, address: $address });
+  address: z
+    .object({
+      address: z.object({
+        house_number: z.string().optional(),
+        road: z.string().optional(),
+        postcode: z.string(),
+        municipality: z.string().optional()
+      })
+    })
+    .describe(
+      json({
+        label: 'Address',
+        kind: 'address',
+        placeholder: 'Entrez une adresse'
+      })
+    )
+});
 
 const BaseButton: React.FC<
-  Partial<z.infer<typeof BaseButtonProps>> & { className?: string }
+  Partial<z.infer<typeof input>> & { className?: string }
 > = ({
   label,
   address = {

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { searchPlaces } from 'components/maps/services/nominatim';
+import { searchPlaces, Item } from 'components/maps/services/google-maps';
 import type { Location, SearchResult } from 'components/maps/types';
 
 interface SearchStateUpdates {
-  results?: SearchResult;
+  results?: Item[];
   isPopoverOpen?: boolean;
   isSearching?: boolean;
 }
@@ -13,7 +13,7 @@ const MIN_QUERY_LENGTH = 3;
 
 export const useSearchResults = (
   _: string,
-  selectedLocation: Location | null,
+  selected: Item | null,
   // eslint-disable-next-line no-unused-vars
   updateSearchState: (updates: SearchStateUpdates) => void
 ) => {
@@ -21,16 +21,13 @@ export const useSearchResults = (
   const isSelecting = useRef(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const filterResults = useCallback(
-    (data: SearchResult, currentLocation: Location | null) => {
-      if (!currentLocation) return data;
+  const filterResults = useCallback((data: Item[], current: Item | null) => {
+    if (!current) return data;
 
-      return data.filter(
-        result => result.display_name !== currentLocation.display_name
-      );
-    },
-    []
-  );
+    return data.filter(
+      result => result.formatted_address !== current.formatted_address
+    );
+  }, []);
 
   const handleSearch = useCallback(
     async (searchQuery: string) => {
@@ -71,7 +68,7 @@ export const useSearchResults = (
           abortControllerRef.current.signal
         );
 
-        const filteredResults = filterResults(data, selectedLocation);
+        const filteredResults = filterResults(data.results, selected);
 
         updateSearchState({
           results: filteredResults,
@@ -88,7 +85,7 @@ export const useSearchResults = (
         }
       }
     },
-    [filterResults, selectedLocation, updateSearchState]
+    [filterResults, selected, updateSearchState]
   );
 
   useEffect(() => {

@@ -21,18 +21,11 @@ const SearchResultsListComponent = ({
       <CommandList>
         <CommandGroup>
           {results.map(result => {
-            const display_name = [
-              result.address?.house_number,
-              result.address?.road,
-              result.address?.postcode,
-              result.address?.municipality
-            ]
-              .filter(Boolean)
-              .join(' ');
+            const display_name = result.formatted_address;
 
             return (
               <div
-                key={result.id}
+                key={result.place_id}
                 className="location-result-wrapper relative block w-full p-2 hover:bg-accent hover:text-accent-foreground rounded-sm cursor-pointer"
                 onClick={() => handleResultSelection(result)}
                 onMouseDown={e => {

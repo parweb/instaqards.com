@@ -196,6 +196,7 @@ export function BlockPreview({
           <div className="px-4 flex flex-col gap-4 p-0.5">
             {(
               Object.entries(
+                // @ts-ignore
                 (zodToJsonSchema(input) as JsonSchema7Type['default'])
                   ?.properties ?? {}
               ) as [string, { description: string; type: string }][]

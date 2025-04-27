@@ -1,6 +1,6 @@
 import { SearchResultSchema } from 'components/maps/types';
 
-const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org/search';
+const SERVICE_URL = 'https://nominatim.openstreetmap.org/search';
 
 export const searchPlaces = async (
   searchQuery: string,
@@ -13,7 +13,7 @@ export const searchPlaces = async (
     addressdetails: '1'
   });
 
-  const response = await fetch(`${NOMINATIM_BASE_URL}?${params.toString()}`, {
+  const response = await fetch(`${SERVICE_URL}?${params.toString()}`, {
     signal
   });
 
