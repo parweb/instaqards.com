@@ -19,10 +19,10 @@ export const input = z.object({
       lon: z.number(),
       display_name: z.string(),
       address: z.object({
-        house_number: z.string(),
-        road: z.string(),
+        house_number: z.string().optional(),
+        road: z.string().optional(),
         postcode: z.string(),
-        municipality: z.string()
+        municipality: z.string().optional()
       })
     })
     .describe(

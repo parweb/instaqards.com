@@ -1,12 +1,13 @@
-import type { SearchResult } from 'components/maps/types';
 import { useCallback, useState } from 'react';
+
+import type { Location } from 'components/maps/types';
 
 const DEFAULT_POSITION: [number, number] = [48.8566, 2.3522];
 const SELECTION_RESET_DELAY = 150;
 
 interface UseMapPositionProps {
   // eslint-disable-next-line no-unused-vars
-  onLocationSelect?: (location: SearchResult) => void;
+  onLocationSelect?: (location: Location) => void;
 }
 
 export const useMapPosition = ({ onLocationSelect }: UseMapPositionProps) => {
@@ -14,7 +15,7 @@ export const useMapPosition = ({ onLocationSelect }: UseMapPositionProps) => {
     useState<[number, number]>(DEFAULT_POSITION);
 
   const handleSelectLocation = useCallback(
-    (result: SearchResult) => {
+    (result: Location) => {
       setMapPosition([result.lat, result.lon]);
 
       if (onLocationSelect) {

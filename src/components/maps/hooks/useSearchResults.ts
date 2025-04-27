@@ -1,9 +1,10 @@
-import { useCallback, useRef, useEffect } from 'react';
-import type { SearchResult } from 'components/maps/types';
+import { useCallback, useEffect, useRef } from 'react';
+
 import { searchPlaces } from 'components/maps/services/nominatim';
+import type { Location, SearchResult } from 'components/maps/types';
 
 interface SearchStateUpdates {
-  results?: SearchResult[];
+  results?: SearchResult;
   isPopoverOpen?: boolean;
   isSearching?: boolean;
 }
@@ -12,7 +13,7 @@ const MIN_QUERY_LENGTH = 3;
 
 export const useSearchResults = (
   _: string,
-  selectedLocation: SearchResult | null,
+  selectedLocation: Location | null,
   // eslint-disable-next-line no-unused-vars
   updateSearchState: (updates: SearchStateUpdates) => void
 ) => {
@@ -21,7 +22,7 @@ export const useSearchResults = (
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const filterResults = useCallback(
-    (data: SearchResult[], currentLocation: SearchResult | null) => {
+    (data: SearchResult, currentLocation: Location | null) => {
       if (!currentLocation) return data;
 
       return data.filter(
@@ -69,12 +70,8 @@ export const useSearchResults = (
           trimmedQuery,
           abortControllerRef.current.signal
         );
-        const mappedData = data.map(result => ({
-          ...result,
-          lat: Number(result.lat),
-          lon: Number(result.lon)
-        }));
-        const filteredResults = filterResults(mappedData, selectedLocation);
+
+        const filteredResults = filterResults(data, selectedLocation);
 
         updateSearchState({
           results: filteredResults,

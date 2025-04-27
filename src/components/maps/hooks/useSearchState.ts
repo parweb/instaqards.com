@@ -1,11 +1,12 @@
-import { useState, useCallback } from 'react';
-import type { SearchResult } from 'components/maps/types';
+import { useCallback, useState } from 'react';
+
+import type { Location, SearchResult } from 'components/maps/types';
 
 interface SearchState {
   query: string;
-  results: SearchResult[];
+  results: SearchResult;
   isSearching: boolean;
-  selectedLocation: SearchResult | null;
+  selectedLocation: Location | null;
   isPopoverOpen: boolean;
 }
 

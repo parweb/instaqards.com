@@ -5,12 +5,15 @@ import { memo, Suspense, useMemo } from 'react';
 import LoadingDots from 'components/icons/loading-dots';
 import { getMarkerPosition } from 'components/maps/map/MapMarker';
 import Yolo from 'components/maps/map/Yolo';
-import type { SearchResult } from 'components/maps/types';
+import type { Location } from 'components/maps/types';
 import { cn } from 'lib/utils';
 import { inter, open } from 'styles/fonts';
 
 interface MapContainerProps {
-  selectedLocation: SearchResult | null;
+  selectedLocation: Pick<
+    Location,
+    'id' | 'display_name' | 'lat' | 'lon'
+  > | null;
   mapPosition: [number, number];
   inputValue: {
     name: string;

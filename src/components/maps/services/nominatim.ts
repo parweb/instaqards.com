@@ -1,11 +1,11 @@
-import type { SearchResult } from 'components/maps/types';
+import { SearchResultSchema } from 'components/maps/types';
 
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org/search';
 
 export const searchPlaces = async (
   searchQuery: string,
   signal: AbortSignal
-): Promise<SearchResult[]> => {
+) => {
   const params = new URLSearchParams({
     q: searchQuery,
     format: 'json',
@@ -21,7 +21,7 @@ export const searchPlaces = async (
     throw new Error(`Nominatim API error: ${response.statusText}`);
   }
 
-  return response.json();
+  return SearchResultSchema.parse(await response.json());
 };
 
 export const formatDisplayName = (displayName: string): string => {

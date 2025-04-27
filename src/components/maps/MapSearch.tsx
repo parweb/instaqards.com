@@ -3,17 +3,14 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
 import { useMapSearch } from 'components/maps/hooks/useMapSearch';
+import type { Location } from 'components/maps/types';
 import { cn } from 'lib/utils';
 import MapContainer from './MapContainer';
 import SearchInput from './SearchInput';
 
 interface MapSearchProps {
   // eslint-disable-next-line no-unused-vars
-  onLocationSelect?: (location: {
-    display_name: string;
-    lat: number;
-    lon: number;
-  }) => void;
+  onLocationSelect?: (location: Location) => void;
   className?: string;
 }
 

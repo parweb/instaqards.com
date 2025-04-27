@@ -1,13 +1,14 @@
-import { useDebounce } from 'components/maps/hooks/useDebounce';
-import type { SearchResult } from 'components/maps/types';
 import { useCallback } from 'react';
+
+import { useDebounce } from 'components/maps/hooks/useDebounce';
+import type { Location } from 'components/maps/types';
 import { useMapPosition } from './useMapPosition';
 import { useSearchResults } from './useSearchResults';
 import { useSearchState } from './useSearchState';
 
 interface UseMapSearchProps {
   // eslint-disable-next-line no-unused-vars
-  onLocationSelect?: (location: SearchResult) => void;
+  onLocationSelect?: (location: Location) => void;
   query?: string;
 }
 
@@ -33,7 +34,7 @@ export const useMapSearch = ({
   const debouncedQuery = useDebounce(searchState?.query ?? '', DEBOUNCE_DELAY);
 
   const handleSelectResult = useCallback(
-    async (result: SearchResult) => {
+    async (result: Location) => {
       isSelecting.current = true;
 
       updateSearchState({

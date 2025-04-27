@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
 import { useSearchField } from 'components/maps/hooks/useSearchField';
 import { memo, useCallback, useMemo } from 'react';
-import type { SearchInputProps, SearchResult } from './types';
+import type { Location, SearchInputProps } from './types';
 import SearchInputField from './SearchInputField';
 import { SearchResultsList } from './SearchResultsList';
 
@@ -24,7 +24,7 @@ const SearchInput = ({
   );
 
   const handleResultSelection = useCallback(
-    (result: SearchResult) => {
+    (result: Location) => {
       onOpenChange(false);
       onResultSelect(result);
       setTimeout(focusInput, 10);

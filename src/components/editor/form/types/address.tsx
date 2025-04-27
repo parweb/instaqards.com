@@ -11,6 +11,7 @@ import {
 
 import { useMapSearch } from 'components/maps/hooks/useMapSearch';
 import SearchInput from 'components/maps/SearchInput';
+import type { Location } from 'components/maps/types';
 import type { Block as BlockType } from 'lib/utils';
 
 const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
@@ -29,7 +30,7 @@ const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
   } = useMapSearch({
     query: props?.value?.display_name ?? '',
     onLocationSelect: useCallback(
-      (location: { display_name: string; lat: number; lon: number }) => {
+      (location: Location) => {
         props.onChange(location);
       },
       [props]
