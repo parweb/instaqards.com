@@ -94,7 +94,8 @@ export default async function UserPage(props: {
                 [UserRole.ADMIN]: 'destructive',
                 [UserRole.SELLER]: 'secondary',
                 [UserRole.USER]: 'default',
-                [UserRole.LEAD]: 'outline'
+                [UserRole.LEAD]: 'outline',
+                [UserRole.GUEST]: 'outline'
               } as const
             )[user.role]
           }

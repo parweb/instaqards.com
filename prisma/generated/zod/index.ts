@@ -532,7 +532,13 @@ export const JsonNullValueFilterSchema = z
 
 export const NullsOrderSchema = z.enum(['first', 'last']);
 
-export const UserRoleSchema = z.enum(['USER', 'ADMIN', 'SELLER', 'LEAD']);
+export const UserRoleSchema = z.enum([
+  'USER',
+  'ADMIN',
+  'SELLER',
+  'LEAD',
+  'GUEST'
+]);
 
 export type UserRoleType = `${z.infer<typeof UserRoleSchema>}`;
 
