@@ -15,9 +15,13 @@ const input = z.object({
 export async function POST(request: Request) {
   const body = input.parse(await request.json());
 
-  const user = await db.user.findUnique({
-    where: { email: body.email ?? undefined }
-  });
+  const user = body.email
+    ? await db.user
+        .findUnique({
+          where: { email: body.email ?? undefined }
+        })
+        .catch(() => undefined)
+    : undefined;
 
   const click = await db.click.create({
     data: {

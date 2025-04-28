@@ -23,11 +23,7 @@ export default function CreateBlockModal({
     <BlockForm
       {...{
         mode,
-        initialData: {
-          label: '',
-          href: '',
-          logo: ''
-        },
+        initialData: { label: '', href: '', logo: '' },
         initialWidget: null,
         siteId
       }}
