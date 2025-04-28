@@ -12,17 +12,17 @@ TODO
   
 
 
-     -> on tombe dans les SPAM regarde si on peut faire quelque chose
-     -> pré-chargé la qards avec les infos du fichier client
      -> editor page pro soit editable (pas besoin d'etre logué)
-     -> map il faut que je le refasse avec le vrai google map
-     -> liens sur les picture block facultatif si pas de lien fullscreen image
      -> template dans page pro
      -> qards par default préremplis stylé / neutre (modal blank or template)
      -> block Horaires d'ouverture
      -> pas claire qu'il faut payer pour que la qards soit public
+     -> liens sur les picture block facultatif si pas de lien fullscreen image
      -> intégration externe clean url before (icon check vert si tout va bien)
      -> description des inputs field possible (ex: youtube tu peux metre une url channel ou video)
+DONE -> on tombe dans les SPAM regarde si on peut faire quelque chose
+DONE -> pré-chargé la qards avec les infos du fichier client
+DONE -> map il faut que je le refasse avec le vrai google map
 DONE -> inscription geré le cas du prospect (email already in use) 
 DONE -> changement de propriétaire ca deconne la recherche
 DONE -> resize pictures circle & square & socials & profile
