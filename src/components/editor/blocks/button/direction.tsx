@@ -3,7 +3,22 @@ import Link from 'next/link';
 import { FaDirections } from 'react-icons/fa';
 import * as z from 'zod';
 
+import { SchemaAddress } from 'components/maps/services/google-maps';
 import { cn, json } from 'lib/utils';
+
+const placeholder = {
+  formatted_address: '10 Av. des Champs-Élysées, 75008 Paris, France',
+  components: {
+    street_number: '10',
+    route: 'Avenue des Champs-Élysées',
+    locality: 'Paris',
+    political: 'France',
+    administrative_area_level_2: 'Paris',
+    administrative_area_level_1: 'Île-de-France',
+    country: 'France',
+    postal_code: '75008'
+  }
+};
 
 export const input = z.object({
   label: z.string().describe(
@@ -14,42 +29,25 @@ export const input = z.object({
   ),
 
   address: z
-    .object({
-      address: z.object({
-        house_number: z.string().optional(),
-        road: z.string().optional(),
-        postcode: z.string(),
-        municipality: z.string().optional()
-      })
-    })
+    .object({ components: SchemaAddress, formatted_address: z.string() })
     .describe(
       json({
         label: 'Address',
         kind: 'address',
-        placeholder: 'Entrez une adresse'
+        placeholder: 'Entrez une adresse',
+        defaultValue: placeholder
       })
     )
 });
 
 const BaseButton: React.FC<
   Partial<z.infer<typeof input>> & { className?: string }
-> = ({
-  label,
-  address = {
-    address: {
-      house_number: '',
-      road: '',
-      postcode: '',
-      municipality: ''
-    }
-  },
-  className
-}) => {
+> = ({ className, label = 'Champs-Élysées', address = placeholder }) => {
   const display_name = [
-    address.address.house_number,
-    address.address.road,
-    address.address.postcode,
-    address.address.municipality
+    address.components.street_number,
+    address.components.route,
+    address.components.postal_code,
+    address.components.locality
   ]
     .filter(Boolean)
     .join(' ');
@@ -88,17 +86,15 @@ const BaseButton: React.FC<
 };
 
 export default function Direction({
-  label = 'Nom du lieu',
-  address = {
-    address: { house_number: '', road: '', postcode: '', municipality: '' }
-  },
-  block
+  block,
+  label = 'Champs-Élysées',
+  address = placeholder
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
   const display_name = [
-    address.address.house_number,
-    address.address.road,
-    address.address.postcode,
-    address.address.municipality
+    address.components.street_number,
+    address.components.route,
+    address.components.postal_code,
+    address.components.locality
   ]
     .filter(Boolean)
     .join(' ');

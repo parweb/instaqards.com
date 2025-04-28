@@ -21,7 +21,11 @@ export default async function AllSites() {
   )
     ? await db.user.findMany({
         include: { sites: true },
-        where: { id: { not: session.user.id }, sites: { some: {} } }
+        where: {
+          id: { not: session.user.id },
+          sites: { some: {} },
+          role: { not: UserRole.LEAD }
+        }
       })
     : [];
 

@@ -5,6 +5,23 @@ import * as z from 'zod';
 
 import MapContainer from 'components/maps/MapContainer';
 import { json } from 'lib/utils';
+import { SchemaAddress } from 'components/maps/services/google-maps';
+
+const placeholder = {
+  place_id: 'default',
+  geometry: { location: { lat: 48.8566, lng: 2.3522 } },
+  formatted_address: '10 Av. des Champs-Élysées, 75008 Paris, France',
+  components: {
+    street_number: '10',
+    route: 'Avenue des Champs-Élysées',
+    locality: 'Paris',
+    political: 'France',
+    administrative_area_level_2: 'Paris',
+    administrative_area_level_1: 'Île-de-France',
+    country: 'France',
+    postal_code: '75008'
+  }
+};
 
 export const input = z.object({
   label: z.string().describe(
@@ -15,44 +32,32 @@ export const input = z.object({
   ),
   position: z
     .object({
-      lat: z.number(),
-      lon: z.number(),
-      display_name: z.string(),
-      address: z.object({
-        house_number: z.string().optional(),
-        road: z.string().optional(),
-        postcode: z.string(),
-        municipality: z.string().optional()
-      })
+      place_id: z.string(),
+      geometry: z.object({
+        location: z.object({ lat: z.number(), lng: z.number() })
+      }),
+      components: SchemaAddress,
+      formatted_address: z.string()
     })
     .describe(
       json({
+        label: 'Address',
         kind: 'address',
-        label: 'Adresse',
-        placeholder: 'Entrez une adresse'
+        placeholder: 'Entrez une adresse',
+        defaultValue: placeholder
       })
     )
 });
 
 export default function Maps({
-  position = {
-    lat: 48.8566,
-    lon: 2.3522,
-    display_name: 'Paris',
-    address: {
-      house_number: '1',
-      road: 'rue de la paix',
-      postcode: '75000',
-      municipality: 'Paris'
-    }
-  },
-  label = 'Nom du lieu'
+  position = placeholder,
+  label = 'Champs-Élysées'
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
   const display_name = [
-    position.address.house_number,
-    position.address.road,
-    position.address.postcode,
-    position.address.municipality
+    position.components.street_number,
+    position.components.route,
+    position.components.postal_code,
+    position.components.locality
   ]
     .filter(Boolean)
     .join(' ');
@@ -63,12 +68,15 @@ export default function Maps({
         name: label,
         address: display_name
       }}
-      mapPosition={[position.lat, position.lon]}
-      selectedLocation={{
-        id: 'default',
-        display_name: display_name,
-        lat: position.lat,
-        lon: position.lon
+      mapPosition={[
+        position.geometry.location.lat,
+        position.geometry.location.lng
+      ]}
+      selected={{
+        id: position.place_id,
+        display_name,
+        lat: position.geometry.location.lat,
+        lng: position.geometry.location.lng
       }}
     />
   );

@@ -16,6 +16,8 @@ import { db } from 'helpers/db';
 import * as template from 'helpers/mail';
 import { sendCampaignEmail } from 'helpers/sendCampaignEmail';
 
+export const runtime = 'nodejs';
+
 interface ExecuteWorkflowActionPayload {
   ruleId: string;
   triggeringEventId: string;

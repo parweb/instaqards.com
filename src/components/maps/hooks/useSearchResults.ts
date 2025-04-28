@@ -24,9 +24,7 @@ export const useSearchResults = (
   const filterResults = useCallback((data: Item[], current: Item | null) => {
     if (!current) return data;
 
-    return data.filter(
-      result => result.formatted_address !== current.formatted_address
-    );
+    return data.filter(result => result.place_id !== current.place_id);
   }, []);
 
   const handleSearch = useCallback(
@@ -68,7 +66,11 @@ export const useSearchResults = (
           abortControllerRef.current.signal
         );
 
+        console.log({ data: data.results });
+
         const filteredResults = filterResults(data.results, selected);
+
+        console.log({ filteredResults });
 
         updateSearchState({
           results: filteredResults,

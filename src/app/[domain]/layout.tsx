@@ -59,7 +59,10 @@ export default async function SiteLayout(props: {
   const { children } = props;
 
   const domain = decodeURIComponent(params.domain);
+  console.log({ domain });
   const data = await getSiteData(domain);
+
+  console.log({ data });
 
   if (!data) {
     notFound();

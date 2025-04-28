@@ -1,6 +1,18 @@
 import { z } from 'zod';
 
+export const SchemaAddress = z.object({
+  street_number: z.string().optional(),
+  route: z.string().optional(),
+  locality: z.string().optional(),
+  political: z.string().optional(),
+  administrative_area_level_2: z.string().optional(),
+  administrative_area_level_1: z.string().optional(),
+  country: z.string().optional(),
+  postal_code: z.string().optional()
+});
+
 const SchemaItem = z.object({
+  components: SchemaAddress,
   address_components: z.array(
     z.object({
       long_name: z.string(),
@@ -23,11 +35,13 @@ const SchemaItem = z.object({
       southwest: z.object({ lat: z.number(), lng: z.number() })
     })
   }),
-  navigation_points: z.array(
-    z.object({
-      location: z.object({ latitude: z.number(), longitude: z.number() })
-    })
-  ),
+  navigation_points: z
+    .array(
+      z.object({
+        location: z.object({ latitude: z.number(), longitude: z.number() })
+      })
+    )
+    .optional(),
   place_id: z.string(),
   types: z.array(z.string())
 });
@@ -58,7 +72,22 @@ export const searchPlaces = async (
     throw new Error(`Address API error: ${response.statusText}`);
   }
 
-  return SchemaResult.parse(await response.json());
+  return SchemaResult.parse(
+    await response.json().then(data => ({
+      ...data,
+      // @ts-ignore
+      results: data.results.map(result => ({
+        ...result,
+        components: Object.fromEntries(
+          // @ts-ignore
+          result.address_components.flatMap(component =>
+            // @ts-ignore
+            component.types.map(type => [type, component.long_name])
+          )
+        )
+      }))
+    }))
+  );
 };
 
 export const formatDisplayName = (displayName: string): string => {

@@ -7,8 +7,44 @@ export async function getSiteData(domain: string) {
     ? domain.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
     : null;
 
+  console.log({
+    hey: {
+      where: subdomain
+        ? { subdomain: subdomain }
+        : { customDomain: domain.toLowerCase() },
+      include: {
+        user: true,
+        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+      }
+    }
+  });
+
+  return db.site
+    .findUnique({
+      where: subdomain
+        ? { subdomain: subdomain.toLowerCase() }
+        : { customDomain: domain.toLowerCase() },
+      include: {
+        user: true,
+        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+      }
+    })
+    .catch(error => {
+      console.error({ plop: error });
+      return null;
+    });
+
   return await unstable_cache(
     async () => {
+      console.log({
+        where: subdomain
+          ? { subdomain: subdomain.toLowerCase() }
+          : { customDomain: domain.toLowerCase() },
+        include: {
+          user: true,
+          blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+        }
+      });
       return db.site.findUnique({
         where: subdomain
           ? { subdomain: subdomain.toLowerCase() }

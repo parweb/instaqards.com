@@ -1,12 +1,12 @@
 import type { Location } from '../types';
 
 export const getMarkerPosition = (
-  selectedLocation: Location['geometry']['location'] | null
+  selected: Location['geometry']['location'] | null
 ): { position: [number, number]; id: string } | undefined => {
-  if (!selectedLocation) return undefined;
+  if (!selected) return undefined;
 
   return {
-    position: [selectedLocation.lat, selectedLocation.lng],
+    position: [selected.lat, selected.lng],
     id: 'default'
   };
 };

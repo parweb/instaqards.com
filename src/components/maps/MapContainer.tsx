@@ -10,11 +10,11 @@ import { cn } from 'lib/utils';
 import { inter, open } from 'styles/fonts';
 
 interface MapContainerProps {
-  selectedLocation: {
-    id: Location['id'];
-    display_name: Location['properties']['label'];
-    lat: Location['geometry']['coordinates'][0];
-    lon: Location['geometry']['coordinates'][1];
+  selected: {
+    id: Location['place_id'];
+    display_name: Location['formatted_address'];
+    lat: Location['geometry']['location']['lat'];
+    lng: Location['geometry']['location']['lng'];
   } | null;
   mapPosition: [number, number];
   inputValue: {
@@ -24,14 +24,17 @@ interface MapContainerProps {
 }
 
 const MapContainer = ({
-  selectedLocation,
+  selected,
   mapPosition,
   inputValue
 }: MapContainerProps) => {
   // Memoize marker position calculation to prevent unnecessary re-renders
   const markerPosition = useMemo(
-    () => getMarkerPosition([selectedLocation.lat, selectedLocation.lon]),
-    [selectedLocation]
+    () =>
+      selected
+        ? getMarkerPosition({ lat: selected.lat, lng: selected.lng })
+        : null,
+    [selected]
   );
 
   // Memoize markers array to prevent unnecessary re-renders

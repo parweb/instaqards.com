@@ -27,7 +27,7 @@ export const useMapSearch = ({
 
   const { handleSearch, isSelecting } = useSearchResults(
     searchState.query,
-    searchState.selectedLocation,
+    searchState.selected,
     updateSearchState
   );
 
@@ -39,8 +39,8 @@ export const useMapSearch = ({
 
       updateSearchState({
         isSearching: true,
-        selectedLocation: result,
-        query: result.properties.name,
+        selected: result,
+        query: result.formatted_address,
         isPopoverOpen: false,
         results: []
       });
@@ -68,7 +68,7 @@ export const useMapSearch = ({
     setQuery,
     searchResults: searchState.results,
     isSearching: searchState.isSearching,
-    selectedLocation: searchState.selectedLocation,
+    selected: searchState.selected,
     isOpen: searchState.isPopoverOpen,
     setIsOpen: (isOpen: boolean) =>
       updateSearchState({ isPopoverOpen: isOpen }),

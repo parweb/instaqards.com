@@ -17,8 +17,8 @@ export const useMapPosition = ({ onLocationSelect }: UseMapPositionProps) => {
   const handleSelectLocation = useCallback(
     (result: Location) => {
       setMapPosition([
-        result.geometry.coordinates[0],
-        result.geometry.coordinates[1]
+        result.geometry.location.lat,
+        result.geometry.location.lng
       ]);
 
       if (onLocationSelect) {

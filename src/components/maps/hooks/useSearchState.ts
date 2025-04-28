@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
 
-import type { Feature } from 'components/maps/services/adresse-gouv';
+import type { Location } from 'components/maps/types';
 
 interface SearchState {
   query: string;
-  results: Feature[];
+  results: Location[];
   isSearching: boolean;
-  selectedLocation: Feature | null;
+  selected: Location | null;
   isPopoverOpen: boolean;
 }
 
@@ -14,7 +14,7 @@ const INITIAL_STATE: SearchState = {
   query: '',
   results: [],
   isSearching: false,
-  selectedLocation: null,
+  selected: null,
   isPopoverOpen: false
 };
 

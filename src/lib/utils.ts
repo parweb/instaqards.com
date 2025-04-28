@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from 'clsx';
+import { Item } from 'components/maps/services/google-maps';
 import { twMerge } from 'tailwind-merge';
 import countries from 'world-countries';
 
@@ -160,7 +161,14 @@ export type Block = Share &
         step: number;
         defaultValue: number;
       }
-    | { kind: 'address'; placeholder: string }
+    | {
+        kind: 'address';
+        placeholder: string;
+        defaultValue: {
+          components: Item['components'];
+          formatted_address: Item['formatted_address'];
+        };
+      }
     | {
         kind: 'font';
         default: Partial<{
