@@ -13,10 +13,11 @@ export const like = async (
   const user = await currentUser();
   const headersList = await headers();
 
-  const ip =
-    headersList.get('x-forwarded-host') === 'localhost:11000'
-      ? '127.0.0.1'
-      : headersList.get('x-forwarded-for');
+  const ip = ['qards.local:11000', 'localhost:11000'].includes(
+    String(headersList.get('x-forwarded-host'))
+  )
+    ? '127.0.0.1'
+    : headersList.get('x-forwarded-for');
 
   console.info({
     headers: Object.fromEntries(headersList.entries()),

@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   distDir: process.env.NODE_ENV === 'production' ? '.next' : '.next-dev',
   // typescript: { ignoreBuildErrors: true },
+  allowedDevOrigins: ['qards.local', '*.qards.local'],
   experimental: {
     // reactCompiler: true,
     // clientSegmentCache: true,
@@ -12,7 +13,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['framer-motion', 'lucide-react', 'react-icons'],
     serverActions: {
       bodySizeLimit: '20mb',
-      allowedOrigins: ['app.localhost:11000']
+      allowedOrigins: ['app.localhost:11000', 'app.qards.local:11000']
     }
   },
   images: {
