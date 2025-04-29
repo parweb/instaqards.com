@@ -24,6 +24,7 @@ import { trySafe } from 'helpers/trySafe';
 import { shorten } from 'helpers/url';
 import { getSession, withSiteAuth } from 'lib/auth';
 import { getBlurDataURL } from 'lib/utils';
+import { uri } from 'settings';
 
 import {
   addDomainToVercel,
@@ -1273,7 +1274,7 @@ export const commentProspect = async (form: FormData) => {
 export const createMagicLink = async ({
   email,
   daysValid = 7,
-  callbackUrl = 'http://app.localhost:11000/'
+  callbackUrl = uri.app()
 }: {
   email: string;
   daysValid?: number;
@@ -1292,7 +1293,7 @@ export const createMagicLink = async ({
       }
     });
 
-    const baseUrl = process.env.NEXT_PUBLIC_NEXTAUTH_URL;
+    const baseUrl = uri.app();
     const provider = { id: 'resend' };
 
     const url = `${baseUrl}/api/auth/callback/${provider.id}?${new URLSearchParams(

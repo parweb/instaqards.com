@@ -2,16 +2,16 @@ import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { LuArrowUpRight, LuCog, LuCopy, LuMousePointer } from 'react-icons/lu';
 
+import { uri } from 'settings';
 import DeleteButton from './DeleteButton';
 import ModalButton from './modal-button';
 import SiteDuplicateModal from './modal/duplicate-site';
+
 export default function SiteCard({
   data
 }: {
   data: Prisma.SiteGetPayload<{ include: { clicks: true } }>;
 }) {
-  const url = `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-
   return (
     <div className="group relative rounded-lg border pb-10 shadow-md transition-all hover:shadow-xl border-stone-300 ">
       <div className="flex flex-col overflow-hidden rounded-lg">
@@ -46,16 +46,12 @@ export default function SiteCard({
 
       <div className="absolute bottom-4 flex w-full justify-between space-x-4 px-4">
         <a
-          href={
-            process.env.NEXT_PUBLIC_VERCEL_ENV
-              ? `https://${url}`
-              : `http://${data.subdomain}.localhost:11000`
-          }
+          href={uri.site(data).link}
           target="_blank"
           rel="noreferrer"
           className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700 flex items-center gap-2"
         >
-          {url}
+          {uri.site(data).title}
           <LuArrowUpRight />
         </a>
 

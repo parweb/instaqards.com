@@ -2,13 +2,14 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { db } from 'helpers/db';
 import { createSite } from 'lib/actions';
+import { uri } from 'settings';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const subdomain = searchParams.get('subdomain');
 
   if (!subdomain) {
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}`);
+    return NextResponse.redirect(uri.app());
   }
 
   const form = new FormData();
@@ -22,16 +23,14 @@ export async function GET(request: NextRequest) {
   });
 
   if (already) {
-    return NextResponse.redirect(
-      `${process.env.NEXTAUTH_URL}/site/${already.id}`
-    );
+    return NextResponse.redirect(uri.app(`/site/${already.id}`));
   }
 
   const site = await createSite(form);
 
   if ('error' in site) {
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}`);
+    return NextResponse.redirect(uri.app());
   }
 
-  return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/site/${site.id}`);
+  return NextResponse.redirect(uri.app(`/site/${site.id}`));
 }

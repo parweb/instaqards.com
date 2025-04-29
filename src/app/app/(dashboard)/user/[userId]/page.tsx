@@ -38,6 +38,7 @@ import UserMagicLinkModal from 'components/modal/magiclink-user';
 import ProspectReservationModal from 'components/modal/reservation-prospect';
 import { Badge } from 'components/ui/badge';
 import { db } from 'helpers/db';
+import { uri } from 'settings';
 
 import {
   Card,
@@ -404,8 +405,6 @@ export default async function UserPage(props: {
 
                 <TableBody>
                   {user.sites.map(site => {
-                    const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-
                     return (
                       <TableRow key={site.id}>
                         <TableCell className="font-medium">
@@ -414,18 +413,12 @@ export default async function UserPage(props: {
 
                         <TableCell>
                           <a
-                            href={
-                              process.env.NEXT_PUBLIC_VERCEL_ENV
-                                ? `https://${url}`
-                                : `http://${site.subdomain}.localhost:11000`
-                            }
+                            href={uri.site(site).link}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline"
                           >
-                            {process.env.NEXT_PUBLIC_VERCEL_ENV
-                              ? url
-                              : `${site.subdomain}.localhost:11000`}
+                            {uri.site(site).title}
                           </a>
                         </TableCell>
 

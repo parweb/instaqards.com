@@ -6,6 +6,7 @@ import { Badge } from 'components/ui/badge';
 import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 import { cn } from 'lib/utils';
+import { uri } from 'settings';
 import { Calendar } from './client';
 
 import 'array-grouping-polyfill';
@@ -38,8 +39,6 @@ export default async function SiteReservations(props: {
     notFound();
   }
 
-  const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-
   const reservations = await db.reservation.findMany({
     include: { block: { include: { site: true } } },
     where: { block: { siteId: site.id } },
@@ -58,19 +57,12 @@ export default async function SiteReservations(props: {
         </h1>
 
         <a
-          href={
-            process.env.NEXT_PUBLIC_VERCEL_ENV
-              ? `https://${url}`
-              : `http://${site.subdomain}.localhost:11000`
-          }
+          href={uri.site(site).link}
           target="_blank"
           rel="noreferrer"
           className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
         >
-          {process.env.NEXT_PUBLIC_VERCEL_ENV
-            ? url
-            : `${site.subdomain}.localhost:11000`}{' '}
-          <LuArrowUpRight />
+          {uri.site(site).title} <LuArrowUpRight />
         </a>
       </div>
 

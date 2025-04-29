@@ -7,6 +7,7 @@ import { LuArrowUpRight } from 'react-icons/lu';
 import Analytics, { Tuple } from 'components/analytics';
 import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
+import { uri } from 'settings';
 
 import 'array-grouping-polyfill';
 
@@ -70,8 +71,6 @@ export default async function SiteAnalytics(props: {
       Visitors: visitorsCount
     };
   });
-
-  const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
   const categories = [
     {
@@ -181,18 +180,12 @@ export default async function SiteAnalytics(props: {
         </h1>
 
         <a
-          href={
-            process.env.NEXT_PUBLIC_VERCEL_ENV
-              ? `https://${url}`
-              : `http://${site.subdomain}.localhost:11000`
-          }
+          href={uri.site(site).link}
           target="_blank"
           rel="noreferrer"
           className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
         >
-          {process.env.NEXT_PUBLIC_VERCEL_ENV
-            ? url
-            : `${site.subdomain}.localhost:11000`}
+          {uri.site(site).title}
           <LuArrowUpRight />
         </a>
       </div>

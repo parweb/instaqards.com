@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import LoadingDots from 'components/icons/loading-dots';
 import { createSite } from 'lib/actions';
 import { cn } from 'lib/utils';
+import { uri } from 'settings';
 import { useModal } from './provider';
 
 export default function CreateSiteModal({ user }: { user?: User }) {
@@ -105,7 +106,7 @@ export default function CreateSiteModal({ user }: { user?: User }) {
               className="w-full rounded-l-lg border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-hidden focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white"
             />
             <div className="flex items-center rounded-r-lg border border-l-0 border-stone-200 bg-stone-100 px-3 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-stone-400">
-              .{process.env.NEXT_PUBLIC_ROOT_DOMAIN}
+              {uri.cookie}
             </div>
           </div>
         </div>

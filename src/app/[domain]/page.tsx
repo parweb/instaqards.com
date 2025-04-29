@@ -11,6 +11,7 @@ import { Wrapper } from 'components/website/wrapper';
 import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
 import { getSiteData } from 'lib/fetchers';
+import { uri } from 'settings';
 import { BlockList } from './client';
 
 import 'array-grouping-polyfill';
@@ -44,7 +45,7 @@ export default async function SiteHomePage(props: {
             <Link
               prefetch
               className="bg-black rounded-md px-3 py-2 text-white"
-              href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`}
+              href={uri.base()}
             >
               {await translate('page.public.site.create')}
             </Link>
@@ -83,7 +84,7 @@ export default async function SiteHomePage(props: {
 
           <div className="text-center">
             <a
-              href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/?r=${site.user?.id}`}
+              href={uri.base(`/?r=${site.user?.id}`)}
               className="text-white"
               target="_blank"
               rel="noreferrer"

@@ -25,6 +25,7 @@ import { Main } from 'components/website/main';
 import { Wrapper } from 'components/website/wrapper';
 import { useIsMobile } from 'hooks/use-mobile';
 import { cn } from 'lib/utils';
+import { uri } from 'settings';
 
 import 'array-grouping-polyfill';
 
@@ -132,8 +133,6 @@ const SiteCardComponent = ({
     ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
   };
 
-  const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-
   return (
     <div
       ref={cardRef}
@@ -174,9 +173,7 @@ const SiteCardComponent = ({
             <div className="pointer-events-auto">
               <Link
                 href={
-                  (process.env.NEXT_PUBLIC_VERCEL_ENV
-                    ? `https://${url}`
-                    : `http://${site.subdomain}.localhost:11000`) +
+                  uri.site(site).link +
                   '?utm_source=qards.link&utm_medium=marketing&utm_campaign=lookmeup'
                 }
                 target="_blank"

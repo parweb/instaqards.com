@@ -16,6 +16,7 @@ import { cn } from 'lib/utils';
 import DeleteButton from './DeleteButton';
 import { EditButton } from './EditButton';
 import { MutateModal } from './MutateModal';
+import { uri } from 'settings';
 
 const CopyLink = ({ url }: { url: string }) => {
   const [isCopied, setIsCopied] = useState(false);
@@ -47,9 +48,7 @@ type LinkCardProps = {
 };
 
 export function LinkCard({ link }: LinkCardProps) {
-  const url = process.env.NEXT_PUBLIC_VERCEL_ENV
-    ? `https://short.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/${link.id}`
-    : `http://short.localhost:11000/${link.id}`;
+  const url = uri.app(`/${link.id}`).replace('app.', 'short.');
 
   return (
     <div className="group relative rounded-lg border border-stone-200 shadow-md transition-all hover:shadow-xl">

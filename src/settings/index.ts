@@ -1,3 +1,5 @@
+import { Site } from '@prisma/client';
+
 export const apiAuthPrefix = '/api/auth';
 
 export const publicRoutes = ['/new-verification', '/onboard'];
@@ -41,3 +43,30 @@ export const options = {
     }
   }
 } as const;
+
+export const uri = {
+  cookie:
+    '.' +
+    String(process.env.NEXT_PUBLIC_BETTER_AUTH_URL)
+      .split('://')
+      .at(1)
+      ?.replace(':11000', ''),
+  base: (path: string = '') =>
+    `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}${path}`,
+  app: (path: string = '') =>
+    `${String(process.env.NEXT_PUBLIC_BETTER_AUTH_URL).replace('://', '://app.')}${path}`,
+  site: (site: { subdomain: Site['subdomain'] } | null) => {
+    if (!site) return { link: '', title: '' };
+
+    const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+
+    return {
+      link: process.env.NEXT_PUBLIC_VERCEL_ENV
+        ? `https://${url}`
+        : `http://${site.subdomain}.qards.local:11000`,
+      title: process.env.NEXT_PUBLIC_VERCEL_ENV
+        ? url
+        : `${site.subdomain}.qards.local:11000`
+    };
+  }
+};

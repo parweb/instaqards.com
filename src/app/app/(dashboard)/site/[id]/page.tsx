@@ -1,12 +1,13 @@
+import { UserRole } from '@prisma/client';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { LuArrowUpRight } from 'react-icons/lu';
-import { UserRole } from '@prisma/client';
 
 import { WebSite } from 'components/editor/WebSite';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
+import { uri } from 'settings';
 
 export default async function SitePosts(props: {
   params: Promise<{ id: string }>;
@@ -35,8 +36,6 @@ export default async function SitePosts(props: {
     notFound();
   }
 
-  const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-
   return (
     <>
       <div className="flex flex-col gap-6 p-2 sm:p-8">
@@ -48,18 +47,12 @@ export default async function SitePosts(props: {
           </h1>
 
           <a
-            href={
-              process.env.NEXT_PUBLIC_VERCEL_ENV
-                ? `https://${url}`
-                : `http://${site.subdomain}.localhost:11000`
-            }
+            href={uri.site(site).link}
             target="_blank"
             rel="noreferrer"
             className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
           >
-            {process.env.NEXT_PUBLIC_VERCEL_ENV
-              ? url
-              : `${site.subdomain}.localhost:11000`}
+            {uri.site(site).title}
             <LuArrowUpRight />
           </a>
         </div>

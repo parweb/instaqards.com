@@ -10,6 +10,7 @@ import * as job from 'data/job';
 import { getLang } from 'helpers/translate';
 import { cn } from 'lib/utils';
 import { boldonse } from 'styles/fonts';
+import { uri } from 'settings';
 
 interface Props {
   params: Promise<{ profession: string }>;
@@ -53,7 +54,7 @@ export async function generateMetadata(props: Props): Promise<Metadata | null> {
       creator: '@qards_link'
     },
     icons: [image],
-    metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`),
+    metadataBase: new URL(uri.base()),
     alternates: {
       canonical: `/pro/${params.profession.replace('.qards.link', '')}`
     }

@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 import Link from 'next/link';
 
 import { Badge } from 'components/ui/badge';
+import { uri } from 'settings';
 
 export default function UserSiteModal({
   user
@@ -22,8 +23,6 @@ export default function UserSiteModal({
       ) : (
         <div className="grid gap-4 max-h-[500px] overflow-y-auto">
           {user.sites.map(site => {
-            const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-
             return (
               <div
                 key={site.id}
@@ -44,17 +43,11 @@ export default function UserSiteModal({
                     <h3 className="font-medium">{site.name || 'Sans nom'}</h3>
                     <p className="text-sm text-gray-500 truncate">
                       <Link
-                        href={
-                          process.env.NEXT_PUBLIC_VERCEL_ENV
-                            ? `https://${url}`
-                            : `http://${site.subdomain}.localhost:11000`
-                        }
+                        href={uri.site(site).link}
                         target="_blank"
                         className="hover:underline"
                       >
-                        {process.env.NEXT_PUBLIC_VERCEL_ENV
-                          ? `https://${url}`
-                          : `http://${site.subdomain}.localhost:11000`}
+                        {uri.site(site).title}
                       </Link>
                     </p>
                   </div>

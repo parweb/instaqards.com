@@ -5,6 +5,7 @@ import { Separator } from 'components/ui/separator';
 import * as featureService from 'data/features';
 import * as job from 'data/job';
 import { getLang } from 'helpers/translate';
+import { uri } from 'settings';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -39,7 +40,7 @@ export async function generateMetadata(props: Props): Promise<Metadata | null> {
       creator: '@qards_link'
     },
     // icons: [image],
-    metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`),
+    metadataBase: new URL(uri.base()),
     alternates: {
       canonical: `/feature/${id}`
     }

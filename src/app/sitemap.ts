@@ -1,8 +1,10 @@
-import { db } from 'helpers/db';
-import { marketingRoutes } from 'settings';
-import * as job from 'data/job';
-import * as feature from 'data/features';
+'use cache';
+
 import * as city from 'data/city';
+import * as feature from 'data/features';
+import * as job from 'data/job';
+import { db } from 'helpers/db';
+import { marketingRoutes, uri } from 'settings';
 
 export default async function Sitemap() {
   const [sites, allCities] = await Promise.all([
@@ -11,34 +13,36 @@ export default async function Sitemap() {
   ]);
 
   const marketingUrls = marketingRoutes.map(route => ({
-    url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}${route}`,
+    url: uri.base(route),
     lastModified: new Date()
   }));
 
   const siteUrls = sites.flatMap(site => [
     {
-      url: `https://${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
+      url: uri.app('/').replace('app.', `${site.subdomain}.`),
       lastModified: new Date()
     },
     {
-      url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/${site.subdomain}`,
+      url: uri.base(`/${site.subdomain}`),
       lastModified: new Date()
     }
   ]);
 
   const jobUrls = job.all.flatMap(job => [
     {
-      url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/pro/${job.id}`,
+      url: uri.base(`/pro/${job.id}`),
       lastModified: new Date()
     },
     ...allCities.map(city => ({
-      url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/pro/${job.id}-${city.slug?.replaceAll('-', '_')}`,
+      url: uri.base(
+        `/pro/${job.id}-${city.slug?.replaceAll('-', '_')}-${city.codePostal}`
+      ),
       lastModified: new Date()
     }))
   ]);
 
   const featureUrls = feature.all.map(feature => ({
-    url: `https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/feature/${feature.id}`,
+    url: uri.base(`/feature/${feature.id}`),
     lastModified: new Date()
   }));
 

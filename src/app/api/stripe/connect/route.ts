@@ -1,6 +1,8 @@
 // import { stripe } from "helpers/stripe";
-import { getSession } from 'lib/auth';
 import Stripe from 'stripe';
+
+import { getSession } from 'lib/auth';
+import { uri } from 'settings';
 
 export async function GET() {
   const session = await getSession();
@@ -28,8 +30,8 @@ export async function GET() {
 
   const accountLink = await stripe.accountLinks.create({
     account: account.id,
-    refresh_url: 'http://localhost:3000/reauth',
-    return_url: 'http://localhost:3000/connected',
+    refresh_url: uri.base('/reauth'),
+    return_url: uri.base('/connected'),
     type: 'account_onboarding'
   });
 

@@ -6,6 +6,7 @@ import { BackButton } from 'components/auth/back-button';
 import { Header } from 'components/auth/header';
 import { Social } from 'components/auth/social';
 import { Card, CardContent, CardFooter, CardHeader } from 'components/ui/card';
+import { uri } from 'settings';
 
 interface CardWrapperProps {
   children: React.ReactNode;
@@ -50,13 +51,7 @@ export const CardWrapper = ({
       <CardFooter className="flex flex-col gap-4">
         <BackButton label={backButtonLabel} href={backButtonHref} />
 
-        <BackButton
-          label="back to home"
-          href={(process.env.NEXT_PUBLIC_SITE_URL as string).replace(
-            'app.',
-            ''
-          )}
-        />
+        <BackButton label="back to home" href={uri.base()} />
       </CardFooter>
     </Card>
   );

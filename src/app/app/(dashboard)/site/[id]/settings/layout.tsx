@@ -5,6 +5,7 @@ import { LuArrowUpRight } from 'react-icons/lu';
 
 import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
+import { uri } from 'settings';
 import SiteSettingsNav from './nav';
 
 export default async function SiteAnalyticsLayout(props: {
@@ -35,8 +36,6 @@ export default async function SiteAnalyticsLayout(props: {
     notFound();
   }
 
-  const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-
   return (
     <div className="p-8 flex flex-col gap-6 flex-1 self-stretch">
       <div className="flex flex-col items-center sm:flex-row justify-between">
@@ -45,18 +44,12 @@ export default async function SiteAnalyticsLayout(props: {
         </h1>
 
         <a
-          href={
-            process.env.NEXT_PUBLIC_VERCEL_ENV
-              ? `https://${url}`
-              : `http://${site.subdomain}.localhost:11000`
-          }
+          href={uri.site(site).link}
           target="_blank"
           rel="noreferrer"
           className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
         >
-          {process.env.NEXT_PUBLIC_VERCEL_ENV
-            ? url
-            : `${site.subdomain}.localhost:11000`}
+          {uri.site(site).title}
           <LuArrowUpRight />
         </a>
       </div>
