@@ -50,19 +50,16 @@ export async function generateMetadata(props: {
   };
 }
 
-export default async function SiteLayout(props: {
+export default async function SiteLayout({
+  params,
+  children
+}: {
   params: Promise<{ domain: string }>;
   children: ReactNode;
 }) {
-  const params = await props.params;
-
-  const { children } = props;
-
-  const domain = decodeURIComponent(params.domain);
-  console.log({ domain });
+  const query = await params;
+  const domain = decodeURIComponent(query.domain);
   const data = await getSiteData(domain);
-
-  console.log({ data });
 
   if (!data) {
     notFound();
