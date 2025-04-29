@@ -1,10 +1,10 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { nanoid } from 'nanoid';
-import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { db } from 'helpers/db';
+import { revalidate } from 'helpers/revalidate';
 import { storage } from 'helpers/storage';
 import { contentType } from 'mime-types';
 
@@ -40,11 +40,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       }
     });
 
-    site?.customDomain && revalidateTag(`${site?.customDomain}-metadata`);
-
-    revalidateTag(
-      `${site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
+    revalidate(site);
 
     return NextResponse.json({ url, filename });
   } catch (error) {

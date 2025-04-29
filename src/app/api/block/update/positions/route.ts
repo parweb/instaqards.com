@@ -3,6 +3,7 @@ import { revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { db } from 'helpers/db';
+import { revalidate } from 'helpers/revalidate';
 
 export async function POST(request: NextRequest) {
   const { result, site } = (await request.json()) as {
@@ -19,11 +20,7 @@ export async function POST(request: NextRequest) {
     )
   );
 
-  revalidateTag(
-    `${site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-  );
-
-  site?.customDomain && revalidateTag(`${site?.customDomain}-metadata`);
+  revalidate(site);
 
   return NextResponse.json(blocks);
 }

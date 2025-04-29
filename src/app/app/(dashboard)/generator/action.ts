@@ -1,10 +1,10 @@
 'use server';
 
 import { nanoid } from 'nanoid';
-import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { db } from 'helpers/db';
+import { revalidate } from 'helpers/revalidate';
 import { getSession } from 'lib/auth';
 
 export const generateSite = async (form: FormData) => {
@@ -125,12 +125,7 @@ export const generateSite = async (form: FormData) => {
     }
   }
 
-  revalidateTag(
-    `${site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-  );
-  site?.customDomain && revalidateTag(`${site?.customDomain}-metadata`);
-
-  console.info({ site });
+  site && revalidate(site);
 
   if (site === null) redirect(`?siteId=${qards.id}`);
 

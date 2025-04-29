@@ -1,7 +1,6 @@
 'use server';
 
 import { customAlphabet } from 'nanoid';
-import { revalidateTag } from 'next/cache';
 import { after } from 'next/server';
 import { ulid } from 'ulid';
 import { z } from 'zod';
@@ -18,6 +17,7 @@ import {
 import { createHash } from 'helpers/createHash';
 import { db } from 'helpers/db';
 import { sendOutboxEmail } from 'helpers/mail';
+import { revalidate } from 'helpers/revalidate';
 import { put } from 'helpers/storage';
 import { translate } from 'helpers/translate';
 import { trySafe } from 'helpers/trySafe';
@@ -102,9 +102,7 @@ export const createSite = async (
         });
     });
 
-    revalidateTag(
-      `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
+    revalidate(response);
 
     return response;
   } catch (error: unknown) {
@@ -349,11 +347,7 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
         });
     });
 
-    revalidateTag(
-      `${response?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
-    response?.site?.customDomain &&
-      revalidateTag(`${response?.site?.customDomain}-metadata`);
+    revalidate(response.site);
 
     return response;
   } catch (error: unknown) {
@@ -456,11 +450,7 @@ export const createBlock = async (
       }
     });
 
-    revalidateTag(
-      `${response?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
-    response?.site?.customDomain &&
-      revalidateTag(`${response?.site?.customDomain}-metadata`);
+    revalidate(response.site);
 
     after(() => {
       db.event
@@ -513,11 +503,7 @@ export const duplicateBlock = async (blockId: Block['id']) => {
       }
     });
 
-    revalidateTag(
-      `${block?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
-    block?.site?.customDomain &&
-      revalidateTag(`${block?.site?.customDomain}-metadata`);
+    revalidate(block.site);
 
     return newBlock;
   } catch (error: unknown) {
@@ -535,11 +521,7 @@ export const deleteBlock = async (blockId: Block['id']) => {
       where: { id: blockId }
     });
 
-    revalidateTag(
-      `${response?.site?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
-    response?.site?.customDomain &&
-      revalidateTag(`${response?.site?.customDomain}-metadata`);
+    revalidate(response.site);
 
     return response;
   } catch (error: unknown) {
@@ -668,11 +650,7 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
       });
     }
 
-    revalidateTag(
-      `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
-
-    site.customDomain && revalidateTag(`${site.customDomain}-metadata`);
+    revalidate(site);
 
     return response;
   } catch (error: unknown) {
@@ -693,11 +671,7 @@ export const deleteSite = withSiteAuth<Site>(async (_, site) => {
       where: { id: site.id }
     });
 
-    revalidateTag(
-      `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
-
-    response.customDomain && revalidateTag(`${site.customDomain}-metadata`);
+    revalidate(site);
 
     return response;
   } catch (error: unknown) {
@@ -1002,10 +976,7 @@ export const duplicateSite = async (
     }
 
     // 6. Revalidate tags for the new site
-    revalidateTag(
-      `${newSite.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`
-    );
-    // No custom domain to revalidate initially
+    revalidate(newSite);
 
     // 7. Optional: Add an event log
     after(() => {
