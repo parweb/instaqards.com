@@ -1,19 +1,18 @@
 'use client';
 
 import va from '@vercel/analytics';
-import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
+import { Combobox } from 'components/ui/combobox';
 import { Switch } from 'components/ui/switch';
 import { cn } from 'lib/utils';
 import { uri } from 'settings';
 import DomainConfiguration from './domain-configuration';
 import DomainStatus from './domain-status';
 import Uploader from './uploader';
-import { Combobox } from 'components/ui/combobox';
 
 export default function Form({
   title,
@@ -62,7 +61,6 @@ export default function Form({
 }) {
   const { id } = useParams() as { id?: string };
   const router = useRouter();
-  const { update } = useSession();
 
   return (
     <form
@@ -83,12 +81,7 @@ export default function Form({
             toast.error(res.error);
           } else {
             va.track(`Updated ${inputAttrs.name}`, id ? { id } : {});
-            if (id) {
-              router.refresh();
-            } else {
-              await update();
-              router.refresh();
-            }
+            router.refresh();
             toast.success(`Successfully updated ${inputAttrs.name}!`);
           }
         });

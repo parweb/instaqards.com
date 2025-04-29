@@ -25,9 +25,8 @@ model User {
   id                 String    @id @default(cuid())
   name               String?
   email              String    @unique
-  emailVerified      DateTime?
+  emailVerified      Boolean   @default(false)
   image              String?
-  password           String?
   isTwoFactorEnabled Boolean   @default(false)
   billing_address    Json      @default("{}")
   payment_method     Json      @default("{}")
@@ -220,16 +219,14 @@ model Subscription {
 model Account {
   id String @id @default(cuid())
 
-  type              String
-  provider          String
+  providerId          String?
   providerAccountId String
+  password String?
   refresh_token     String?
   access_token      String?
   expires_at        Int?
-  token_type        String?
   scope             String?
   id_token          String?
-  session_state     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -237,7 +234,7 @@ model Account {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  @@unique([provider, providerAccountId])
+  @@unique([providerId, providerAccountId])
   @@index([userId])
 }
 
@@ -246,6 +243,8 @@ model Session {
 
   sessionToken String   @unique
   expires      DateTime
+  ipAddress    String?
+  userAgent    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

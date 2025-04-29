@@ -1,6 +1,8 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+
+import { signOut } from 'lib/auth/client';
 import { DropdownMenuItem } from './ui/dropdown-menu';
 
 export default function LogoutButton({
@@ -8,7 +10,21 @@ export default function LogoutButton({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
   return (
-    <DropdownMenuItem onClick={() => signOut()}>{children}</DropdownMenuItem>
+    <DropdownMenuItem
+      onClick={() =>
+        signOut({
+          fetchOptions: {
+            onSuccess: () => {
+              router.refresh();
+            }
+          }
+        })
+      }
+    >
+      {children}
+    </DropdownMenuItem>
   );
 }

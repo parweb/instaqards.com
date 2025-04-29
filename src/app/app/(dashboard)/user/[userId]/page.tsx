@@ -215,10 +215,7 @@ export default async function UserPage(props: {
 
                 <p className="flex items-center gap-1">
                   {user.emailVerified ? (
-                    <>
-                      <LuCircleCheck className="h-4 w-4 text-green-600" />
-                      {formatDate(user.emailVerified)}
-                    </>
+                    <LuCircleCheck className="h-4 w-4 text-green-600" />
                   ) : (
                     <>
                       <LuCircleX className="h-4 w-4 text-red-600" />
@@ -690,7 +687,7 @@ export default async function UserPage(props: {
                   {user.accounts.map(acc => (
                     <li key={acc.id} className="text-sm text-muted-foreground">
                       <span className="font-semibold text-foreground">
-                        {acc.provider}
+                        {acc.providerId}
                       </span>
                       ({acc.providerAccountId.substring(0, 10)}...)
                     </li>
