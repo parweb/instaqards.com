@@ -34,7 +34,10 @@ export const LoginSchema = z.object({
 });
 
 export const RegisterSchema = z.object({
-  email: z.string().email('schemas.email.required'),
+  email: z
+    .string()
+    .email('schemas.email.required')
+    .transform(email => email.toLowerCase().trim()),
   password: z.string().min(6, 'schemas.string.min'),
   name: z.string().min(1, 'schemas.name.required')
 });

@@ -251,9 +251,10 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   await sendTemplateReact(email, ResetPasswordEmail, { resetLink });
 };
 
-export const sendVerificationEmail = async (email: string, token: string) => {
-  const confirmLink = `${domain}/new-verification?token=${token}`;
-
+export const sendVerificationEmail = async (
+  email: string,
+  confirmLink: string
+) => {
   await sendTemplateReact(email, ConfirmAccountEmail, { confirmLink });
 };
 

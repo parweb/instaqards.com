@@ -1,8 +1,8 @@
+import { betterFetch } from '@better-fetch/fetch';
 import { waitUntil } from '@vercel/functions';
-import NextAuth from 'next-auth';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import authConfig from 'auth.config';
+import { auth } from 'lib/auth';
 
 import {
   apiAuthPrefix,
@@ -16,10 +16,7 @@ export const config = {
   matcher: ['/((?!api/|_next/|assets|_static/|_vercel|[\\w-]+\\.\\w+).*)']
 };
 
-const { auth } = NextAuth({
-  ...authConfig,
-  providers: authConfig.providers.filter(provider => provider.id !== 'resend')
-});
+type Session = typeof auth.$Infer.Session;
 
 function normalizeHostname(req: NextRequest): string | undefined {
   let hostname = req.headers
@@ -106,7 +103,7 @@ function buildPath(url: URL): string {
 }
 
 type MiddlewareContext = {
-  session: Awaited<ReturnType<typeof auth>>;
+  session: Session | null;
   hostname: string | undefined;
   path: string;
   url: URL;
@@ -368,7 +365,15 @@ const handlers: MiddlewareHandler[] = [
 export default async function middleware(
   req: NextRequest
 ): Promise<NextResponse | Response> {
-  const session = await auth();
+  const { data: session } = await betterFetch<Session>(
+    '/api/auth/get-session',
+    {
+      baseURL: req.nextUrl.origin,
+      headers: {
+        cookie: req.headers.get('cookie') || ''
+      }
+    }
+  );
 
   const url = req.nextUrl;
 

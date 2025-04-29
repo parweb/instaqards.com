@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
@@ -27,6 +27,8 @@ import {
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const callbackUrl = searchParams.get('callbackUrl');
   const urlError =
     searchParams.get('error') === 'OAuthAccountNotLinked'
@@ -54,23 +56,20 @@ export const LoginForm = () => {
     startTransition(() => {
       login(values, callbackUrl)
         .then(data => {
-          if (data?.error) {
+          if ('error' in data) {
             form.reset();
             setError(data.error);
           }
 
-          if (data?.success) {
+          if ('success' in data) {
             form.reset();
-            setSuccess(data.success);
-          }
-
-          if (data?.twoFactor) {
-            setShowTwoFactor(true);
+            console.log(data.success?.callbackUrl);
+            router.push(String(data.success?.callbackUrl));
           }
         })
         .catch(error => {
           console.error({ error });
-          if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
+          if (error instanceof Error) {
             setError('Something went wrong');
           }
         });
