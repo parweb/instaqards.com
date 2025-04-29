@@ -9,6 +9,7 @@ import { postData } from 'helpers/api';
 import { getStripe } from 'helpers/getStripe';
 import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
+import { uri } from 'settings';
 
 export const PriceTableButton = ({ price }: { price: Price }) => {
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,7 @@ export const PriceTableButton = ({ price }: { price: Price }) => {
       (await getStripe())?.redirectToCheckout({ sessionId });
     } catch {
       setLoading(false);
-      router.push(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL as string}/register`);
+      router.push(uri.app('/register'));
     } finally {
     }
   };

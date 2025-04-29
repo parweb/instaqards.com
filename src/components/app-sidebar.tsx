@@ -28,6 +28,7 @@ import { NavMain } from 'components/nav-main';
 import { NavProjects } from 'components/nav-projects';
 import { NavSecondary } from 'components/nav-secondary';
 import useTranslation from 'hooks/use-translation';
+import { uri } from 'settings';
 
 import {
   Sidebar,
@@ -131,31 +132,21 @@ export function AppSidebar(
     projects: props.sites
       .filter(site => (id ? site.id !== id : true))
       .map(site => {
-        const url = `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-        const secondaryUrl = process.env.NEXT_PUBLIC_VERCEL_ENV
-          ? `https://${url}`
-          : `http://${site.subdomain}.localhost:11000`;
-
         return {
           name: site.name ?? 'Untitled',
           url: `/site/${site.id}`,
           icon: Frame,
-          secondaryUrl,
+          secondaryUrl: uri.site(site).link,
           clicks: site.clicks.length
         };
       })
   };
 
-  const url = `${openProject?.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
-  const secondaryUrl = process.env.NEXT_PUBLIC_VERCEL_ENV
-    ? `https://${url}`
-    : `http://${openProject?.subdomain}.localhost:11000`;
-
   const project = openProject
     ? {
         title: openProject.name ?? 'Untitled',
         url: `/site/${openProject.id}`,
-        secondaryUrl,
+        secondaryUrl: uri.site(openProject).link,
         icon: Frame,
         isActive: true,
         items: [

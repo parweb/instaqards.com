@@ -8,7 +8,8 @@ import {
   apiAuthPrefix,
   authRoutes,
   marketingRoutes,
-  publicRoutes
+  publicRoutes,
+  uri
 } from 'settings';
 
 export const config = {
@@ -51,7 +52,7 @@ function encodeRequest(req: NextRequest): string {
 
 function trackUser(path: string, email: string | null, req: NextRequest) {
   waitUntil(
-    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/user`, {
+    fetch(uri.base('/api/track/user'), {
       method: 'POST',
       body: JSON.stringify({
         path,
@@ -68,7 +69,7 @@ function trackUser(path: string, email: string | null, req: NextRequest) {
 
 function trackSite(domain: string, req: NextRequest, _name: string) {
   waitUntil(
-    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/site`, {
+    fetch(uri.base('/api/track/site'), {
       method: 'POST',
       body: JSON.stringify({
         domain,

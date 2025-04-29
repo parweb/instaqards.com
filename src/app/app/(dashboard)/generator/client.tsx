@@ -10,6 +10,7 @@ import { BlockTypesItem } from 'components/editor/form/BlockTypesItem';
 import { AutosizeTextarea } from 'components/ui/autosize-textarea';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
+import { uri } from 'settings';
 import { generateSite } from './action';
 
 export function Fields({
@@ -114,19 +115,9 @@ export function Fields({
           target={site ? '_blank' : undefined}
           rel="noreferrer"
           className="truncate rounded-md bg-green-400 p-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 inline-flex items-center gap-2 content empty:hidden"
-          href={
-            site
-              ? process.env.NEXT_PUBLIC_VERCEL_ENV
-                ? `https://${`${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`}`
-                : `http://${site.subdomain}.localhost:11000`
-              : undefined
-          }
+          href={uri.site(site).link}
         >
-          {site
-            ? process.env.NEXT_PUBLIC_VERCEL_ENV
-              ? `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
-              : `${site.subdomain}.localhost:11000`
-            : undefined}
+          {uri.site(site).title}
 
           {debouncedSubmit.isPending() ? (
             <LuLoader className="animate-spin" />

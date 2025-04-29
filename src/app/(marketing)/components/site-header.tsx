@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import { Button } from 'components/ui/button';
 import useTranslation from 'hooks/use-translation';
+import { uri } from 'settings';
 import { DEFAULT_LANG, Lang } from 'translations';
 import { MainNav } from './main-nav';
 import { MobileNav } from './mobile-nav';
@@ -131,10 +132,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
         <MainNav items={navigationItems} lang={lang} />
 
         <div>
-          <Link
-            prefetch
-            href={`${process.env.NEXT_PUBLIC_NEXTAUTH_URL as string}/register`}
-          >
+          <Link prefetch href={uri.app('/register')}>
             <Button>{translate('page.home.register')}</Button>
           </Link>
         </div>

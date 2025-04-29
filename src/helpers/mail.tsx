@@ -10,7 +10,7 @@ import { ulid } from 'ulid';
 
 import { db } from 'helpers/db';
 import { trySafe } from 'helpers/trySafe';
-import { sender } from 'settings';
+import { sender, uri } from 'settings';
 import { DEFAULT_LANG, type Lang } from 'translations';
 import ConfirmAccountEmail from '../../emails/confirm-account';
 import MagicLinkEmail from '../../emails/magic-link';
@@ -21,7 +21,7 @@ import TwoFactorTokenEmail from '../../emails/two-factor-token';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const domain = `http://app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+const domain = uri.app();
 
 export const getLang = async () => {
   let lang = (((await cookies()) as unknown as UnsafeUnwrappedCookies).get(
