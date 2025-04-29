@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
+import { LuLoader } from 'react-icons/lu';
 import type * as z from 'zod';
 
 import { login } from 'actions/login';
@@ -188,7 +189,13 @@ export const LoginForm = () => {
           <FormSuccess message={success} />
 
           <Button disabled={isPending} type="submit" className="w-full">
-            {showTwoFactor ? 'Confirm' : 'Login'}
+            {isPending ? (
+              <LuLoader className="animate-spin" />
+            ) : showTwoFactor ? (
+              'Confirm'
+            ) : (
+              'Login'
+            )}
           </Button>
         </form>
       </Form>
