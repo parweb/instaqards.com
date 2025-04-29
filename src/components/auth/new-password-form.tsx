@@ -22,6 +22,7 @@ import {
   FormLabel,
   FormMessage
 } from 'components/ui/form';
+import { LuLoader } from 'react-icons/lu';
 
 export const NewPasswordForm = () => {
   const searchParams = useSearchParams();
@@ -90,7 +91,11 @@ export const NewPasswordForm = () => {
           <FormSuccess message={success} />
 
           <Button disabled={isPending} type="submit" className="w-full">
-            Reset password
+            {isPending ? (
+              <LuLoader className="animate-spin" />
+            ) : (
+              'Reset password'
+            )}
           </Button>
         </form>
       </Form>

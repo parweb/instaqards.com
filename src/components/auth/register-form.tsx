@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
+import { LuLoader } from 'react-icons/lu';
 import type * as z from 'zod';
 
 import { register } from 'actions/register';
@@ -10,6 +11,9 @@ import { CardWrapper } from 'components/auth/card-wrapper';
 import { FormError } from 'components/form-error';
 import { FormSuccess } from 'components/form-success';
 import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { RegisterSchema } from 'schemas';
+
 import {
   Form,
   FormControl,
@@ -18,8 +22,6 @@ import {
   FormLabel,
   FormMessage
 } from 'components/ui/form';
-import { Input } from 'components/ui/input';
-import { RegisterSchema } from 'schemas';
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>('');
@@ -138,7 +140,11 @@ export const RegisterForm = () => {
             <FormError message={error} />
 
             <Button disabled={isPending} type="submit" className="w-full">
-              Create an account
+              {isPending ? (
+                <LuLoader className="animate-spin" />
+              ) : (
+                'Create an account'
+              )}
             </Button>
           </form>
         </Form>

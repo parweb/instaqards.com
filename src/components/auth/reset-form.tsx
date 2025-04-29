@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
+import { LuLoader } from 'react-icons/lu';
 import type * as z from 'zod';
 
 import { reset } from 'actions/reset';
@@ -10,6 +11,9 @@ import { CardWrapper } from 'components/auth/card-wrapper';
 import { FormError } from 'components/form-error';
 import { FormSuccess } from 'components/form-success';
 import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { ResetSchema } from 'schemas';
+
 import {
   Form,
   FormControl,
@@ -18,8 +22,6 @@ import {
   FormLabel,
   FormMessage
 } from 'components/ui/form';
-import { Input } from 'components/ui/input';
-import { ResetSchema } from 'schemas';
 
 export const ResetForm = () => {
   const [error, setError] = useState<string | undefined>('');
@@ -87,7 +89,11 @@ export const ResetForm = () => {
           <FormSuccess message={success} />
 
           <Button disabled={isPending} type="submit" className="w-full">
-            Send reset email
+            {isPending ? (
+              <LuLoader className="animate-spin" />
+            ) : (
+              'Send reset email'
+            )}
           </Button>
         </form>
       </Form>
