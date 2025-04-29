@@ -21,7 +21,9 @@ type Session = typeof auth.$Infer.Session;
 function normalizeHostname(req: NextRequest): string | undefined {
   let hostname = req.headers
     .get('host')
+    ?.replace('.qards.local:11000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
     ?.replace('.localhost:11000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
+
   if (
     hostname?.includes('---') &&
     hostname?.endsWith(`.${process.env.NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX}`)

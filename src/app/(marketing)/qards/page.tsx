@@ -22,10 +22,11 @@ const QardsPage = async () => {
 
   const headersList = await headers();
 
-  const ip =
-    headersList.get('x-forwarded-host') === 'localhost:11000'
-      ? '127.0.0.1'
-      : (headersList.get('x-forwarded-for') ?? 'none');
+  const ip = ['qards.local:11000', 'localhost:11000'].includes(
+    String(headersList.get('x-forwarded-host'))
+  )
+    ? '127.0.0.1'
+    : (headersList.get('x-forwarded-for') ?? 'none');
 
   const sites = await db.site.findMany({
     include: {
