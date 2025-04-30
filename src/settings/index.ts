@@ -32,7 +32,7 @@ export const prices = {
   yearly: { id: 'price_1R2YR7IExtBoSSWLTa7swlyG', price: 9 }
 };
 
-export const sender = 'contact@qards.link';
+export const sender = 'Qards.link <contact@qards.link>';
 
 export const options = {
   dashboard: {

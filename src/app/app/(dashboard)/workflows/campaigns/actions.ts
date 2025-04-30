@@ -16,7 +16,7 @@ export const toggleCampaign = async (previous: boolean, form: FormData) => {
     async tx => {
       const campaign = await tx.campaign.findUniqueOrThrow({
         where: { id },
-        include: { list: { include: { contacts: true } } }
+        include: { list: { include: { contacts: true } }, email: true }
       });
 
       await tx.campaign.update({
