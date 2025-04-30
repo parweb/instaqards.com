@@ -16,6 +16,7 @@ import { sender } from 'settings';
 
 export default {
   pages: {
+    error: '/error',
     verifyRequest: '/email-in',
     signIn: '/login'
   },

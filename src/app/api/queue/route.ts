@@ -272,8 +272,31 @@ async function processJob(job: Queue): Promise<void> {
     }
   } else if (job.job === 'SEND_EMAIL_CAMPAIGN') {
     const payload = job?.payload as unknown as {
-      contact: User;
-      campaign: Prisma.CampaignGetPayload<{ include: { email: true } }>;
+      contact: Prisma.UserGetPayload<{
+        include: {
+          sites: {
+            select: { id: true };
+            orderBy: [{ updatedAt: 'desc' }];
+          };
+        };
+      }>;
+      campaign: Prisma.CampaignGetPayload<{
+        include: {
+          list: {
+            include: {
+              contacts: {
+                include: {
+                  sites: {
+                    select: { id: true };
+                    orderBy: [{ updatedAt: 'desc' }];
+                  };
+                };
+              };
+            };
+          };
+          email: { select: { id: true; subject: true; content: true } };
+        };
+      }>;
     };
 
     await sendCampaignEmail(payload.contact, payload.campaign);

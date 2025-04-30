@@ -4,7 +4,7 @@ import { ulid } from 'ulid';
 import { getLang, sendHtmlWithCampaign } from 'helpers/mail';
 import { createMagicLink } from 'lib/actions';
 import { Lang } from 'translations';
-import { base } from '../../emails/layout/settings';
+import { base, app } from '../../emails/layout/settings';
 
 export const link =
   (id: string, { lang }: { lang: Lang }) =>
@@ -57,19 +57,42 @@ export function getVariables(
 }
 
 export const sendCampaignEmail = async (
-  contact: User,
-  campaign: Prisma.CampaignGetPayload<{ include: { email: true } }>
+  contact: Prisma.UserGetPayload<{
+    include: {
+      sites: {
+        select: { id: true };
+        orderBy: [{ updatedAt: 'desc' }];
+      };
+    };
+  }>,
+  campaign: Prisma.CampaignGetPayload<{
+    include: {
+      list: {
+        include: {
+          contacts: {
+            include: {
+              sites: {
+                select: { id: true };
+                orderBy: [{ updatedAt: 'desc' }];
+              };
+            };
+          };
+        };
+      };
+      email: { select: { id: true; subject: true; content: true } };
+    };
+  }>
 ) => {
   const id = ulid();
   const lang = await getLang();
   const track = link(id, { lang });
-  const pixelUrl = `${base}/api/email/track/open?id=${encodeURIComponent(id)}`;
-  const pixel = `<img src="${pixelUrl}" alt="" width="1" height="1" style="display: none;" />`;
+  const pixel = `<img src="${base}/api/email/track/open?id=${encodeURIComponent(id)}" alt="" width="1" height="1" style="display: none;" />`;
+
   const values: Record<string, string | (() => Promise<string | undefined>)> = {
     magicLink: () =>
       createMagicLink({
         email: contact.email,
-        callbackUrl: `${base}/xxxxxx`
+        callbackUrl: `${app}/site/${contact.sites?.at(0)?.id}`
       }).then(({ url }) => url),
     ...Object.fromEntries(
       Object.entries(contact)

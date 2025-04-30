@@ -1,8 +1,8 @@
 'use server';
 
-import { z } from 'zod';
 import { db } from 'helpers/db';
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 
 export const toggleCampaign = async (previous: boolean, form: FormData) => {
   const { active, id } = z
@@ -16,7 +16,21 @@ export const toggleCampaign = async (previous: boolean, form: FormData) => {
     async tx => {
       const campaign = await tx.campaign.findUniqueOrThrow({
         where: { id },
-        include: { list: { include: { contacts: true } }, email: true }
+        include: {
+          list: {
+            include: {
+              contacts: {
+                include: {
+                  sites: {
+                    select: { id: true },
+                    orderBy: [{ updatedAt: 'desc' }]
+                  }
+                }
+              }
+            }
+          },
+          email: { select: { id: true, subject: true, content: true } }
+        }
       });
 
       await tx.campaign.update({
@@ -37,12 +51,23 @@ export const toggleCampaign = async (previous: boolean, form: FormData) => {
           data: { status: active ? 'pending' : 'frozen' }
         });
       } else {
+        const { list, ...data } = campaign;
+
         await tx.queue.createMany({
-          data: campaign.list.contacts.map(contact => ({
+          data: list.contacts.map(contact => ({
             correlationId: campaign.id,
             status: active ? 'pending' : 'frozen',
             job: 'SEND_EMAIL_CAMPAIGN',
-            payload: { campaign, contact }
+            payload: {
+              campaign: {
+                ...data,
+                list: {
+                  ...list,
+                  contacts: list.contacts.map(({ id }) => ({ id }))
+                }
+              },
+              contact
+            }
           }))
         });
       }
