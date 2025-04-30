@@ -9,7 +9,7 @@ import { base, app } from '../../emails/layout/settings';
 export const link =
   (id: string, { lang }: { lang: Lang }) =>
   (href: string, name: string = '') =>
-    `${base}/api/email/track/click?url=${encodeURIComponent(String(href))}&id=${id}&name=${encodeURIComponent(name)}&lang=${lang}`;
+    `____BASE____/api/email/track/click?url=${encodeURIComponent(String(href))}&id=${id}&name=${encodeURIComponent(name)}&lang=${lang}`;
 
 export const getLinks = (html: string) => {
   const result = [];
@@ -36,7 +36,7 @@ export const getLinks = (html: string) => {
     }
   }
 
-  return result;
+  return [...result].sort((a, b) => b.href.length - a.href.length);
 };
 
 export function getVariables(
@@ -46,7 +46,6 @@ export function getVariables(
     unique: true
   }
 ) {
-  // ASCII (rapide) ou plein Unicode (plus complet) au choix
   const rx = unicode
     ? /\{(\p{ID_Start}\p{ID_Continue}*(?:\.\p{ID_Start}\p{ID_Continue}*)*)\}/gu
     : /\{([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\}/g;
@@ -101,7 +100,6 @@ export const sendCampaignEmail = async (
     )
   };
 
-  // 1. Remplacement des variables {variable} par leur valeur réelle
   let html = campaign.email.content;
   const variables = getVariables(html);
   for (const variable of variables) {
@@ -112,19 +110,26 @@ export const sendCampaignEmail = async (
       : `{${variable}}`;
     html = html.replaceAll(`{${variable}}`, value);
   }
-  // 2. Tracking des liens (hors mailto, ancres, déjà trackés)
+
   const links = getLinks(html);
+  console.log({ links });
   for (const link of links) {
     html = html.replaceAll(
       link.href,
-      track(link.href, link?.title ?? link.href)
+      track(
+        link.href,
+        link?.title ??
+          link.href.replaceAll('https://', '').replaceAll('http://', '')
+      )
     );
   }
-  // 3. Ajout du pixel de tracking
+
+  html = html.replaceAll('____BASE____', base);
+
+  console.log(html);
+
   html = html.replace('</body>', pixel + '</body>');
-  // console.log('------');
-  // process.stdout.write(html);
-  // console.log('------');
+
   await sendHtmlWithCampaign(
     id,
     contact.email,

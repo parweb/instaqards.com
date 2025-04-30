@@ -23,6 +23,7 @@ Pour nous y’en a pas forcément besoin mais plus les futurs prospects ce qu’
      -> pas claire qu'il faut payer pour que la qards soit public
      -> liens sur les picture block facultatif si pas de lien fullscreen image
      -> intégration externe clean url before (icon check vert si tout va bien)
+     -> traductions
      -> description des inputs field possible (ex: youtube tu peux metre une url channel ou video)
 DONE -> on tombe dans les SPAM regarde si on peut faire quelque chose
 DONE -> pré-chargé la qards avec les infos du fichier client
@@ -144,6 +145,10 @@ DONE -> logo par default des site mettre logo qards au lieu de vercel
 DONE -> image OG par default des site changer l'image par default
 DONE -> multi-langue
 DONE -> compte email contact@qards.link
+
+herberger: vercel (chris)
+domain: hostinger (ilias)
+email: cloudflare (chris)
 
 compte email
 
