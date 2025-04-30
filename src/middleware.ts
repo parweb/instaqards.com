@@ -267,14 +267,14 @@ class PublicHandler implements MiddlewareHandler {
       ctx.hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
     ) {
       if (marketingRoutes.includes(ctx.url.pathname)) {
-        console.log('PublicHandler::marketingRoutes', {
-          pathname: ctx.url.pathname
-        });
         return {
           action: 'break',
           name: 'PublicHandler',
           response: NextResponse.rewrite(
-            new URL(`${ctx.path === '/' ? '/home' : ctx.path}`, req.url)
+            new URL(
+              `${ctx.path.split('?').at(0) === '/' ? '/home' : ctx.path}`,
+              req.url
+            )
           )
         };
       }
