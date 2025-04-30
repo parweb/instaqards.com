@@ -15,18 +15,20 @@ import {
 export const BlockTypesItem = ({
   label,
   type,
+  description,
   onClick,
   value,
-  color = ['#743ad5', '#d53a9d', '#d53a9d'],
+  color = ['#743ad5', '#d53a9d', '#d53a9d', '#d53a9d'],
   Icon,
   index
 }: {
   label: string;
+  description?: string;
   type: 'button' | 'picture' | 'text' | 'external' | 'other' | 'social';
   // eslint-disable-next-line no-unused-vars
   onClick: (data: { type: string; id: string }) => void;
   value?: { type: string; id: string };
-  color?: [string, string, string];
+  color?: [string, string, string, string];
   Icon?: React.ElementType;
   index: number;
 }) => {
@@ -91,6 +93,7 @@ export const BlockTypesItem = ({
         <div className="flex flex-col">
           <hgroup className="flex gap-2 items-center justify-between">
             <label>{label}</label>
+            {description && <p>{description}</p>}
           </hgroup>
 
           <BlockTypesItemVariants
@@ -118,23 +121,36 @@ export const BlockTypesItem = ({
         >
           <div className="flex flex-col gap-0">
             <AccordionTrigger className="p-2" style={{ color: color[2] }}>
-              <hgroup className="flex gap-2 items-center justify-between flex-1 pr-2">
-                {Icon && <Icon className="w-4 h-4" />}
+              <hgroup className="flex flex-col gap-2 items-start justify-between flex-1 pr-2">
+                <div className="flex-1 self-stretch flex gap-2 items-center justify-between flex-1 pr-2">
+                  {Icon && <Icon className="w-4 h-4" />}
 
-                <label className="flex-1 text-left" style={{ color: color[2] }}>
-                  {label}
-                </label>
+                  <label
+                    className="flex-1 text-left"
+                    style={{ color: color[2] }}
+                  >
+                    {label}
+                  </label>
 
-                <Badge
-                  variant="outline"
-                  style={{
-                    background: `linear-gradient(to bottom, ${color[0]}, ${color[1]})`,
-                    color: color[2],
-                    borderColor: color[2]
-                  }}
-                >
-                  {collection.length}
-                </Badge>
+                  <Badge
+                    variant="outline"
+                    style={{
+                      background: `linear-gradient(to bottom, ${color[0]}, ${color[1]})`,
+                      color: color[2],
+                      borderColor: color[2]
+                    }}
+                  >
+                    {collection.length}
+                  </Badge>
+                </div>
+                {description && (
+                  <p
+                    className="text-left italic text-sm"
+                    style={{ color: color[2] }}
+                  >
+                    {description}
+                  </p>
+                )}
               </hgroup>
             </AccordionTrigger>
 

@@ -27,13 +27,14 @@ const getRainbowColor = (
   value: number,
   min = 0,
   max = 100
-): [string, string, string] => {
+): [string, string, string, string] => {
   const hue = ((value - min) / (max - min)) * 360;
 
   return [
     hslToRgb(hue, 100, 90),
     hslToRgb(hue, 100, 80),
-    hslToRgb(hue, 100, 30)
+    hslToRgb(hue, 100, 30),
+    hslToRgb(hue, 100, 50)
   ];
 };
 
@@ -49,12 +50,48 @@ export const BlockTypes = ({
         <AnimatePresence>
           {(
             [
-              { type: 'button', label: 'Boutons', icon: RxButton },
-              { type: 'picture', label: 'Images', icon: FaRegImage },
-              { type: 'text', label: 'Textes', icon: IoTextOutline },
-              { type: 'external', label: 'Externes', icon: LuShare2 },
-              { type: 'other', label: 'Autres', icon: FaRegFileAlt },
-              { type: 'social', label: 'Socials', icon: FaRegFileAlt }
+              {
+                type: 'button',
+                label: 'Boutons',
+                description:
+                  'Ajoutez des boutons interactifs pour des liens ou des actions personnalisées.',
+                icon: RxButton
+              },
+              {
+                type: 'picture',
+                label: 'Images',
+                description:
+                  'Insérez et gérez des images (upload, galerie, etc.) dans votre page.',
+                icon: FaRegImage
+              },
+              {
+                type: 'text',
+                label: 'Textes',
+                description:
+                  'Ajoutez du contenu textuel : titres, paragraphes, listes, etc.',
+                icon: IoTextOutline
+              },
+              {
+                type: 'external',
+                label: 'Externes',
+                description:
+                  'Intégrez du contenu de: Instagram, Facebook, TikTok, YouTube, etc.',
+                icon: LuShare2
+              },
+              {
+                type: 'other',
+                label: 'Autres',
+                description:
+                  'Ajoutez des fonctionnalités diverses ou personnalisées (formulaires, réservations, etc.).',
+                icon: FaRegFileAlt
+              },
+              {
+                type: 'social',
+                label: 'Socials',
+                description:
+                  'Ajoutez et gérez des liens vers vos réseaux sociaux.',
+                icon: FaRegFileAlt
+              }
             ] as const
           ).map((block, index, list) => (
             <BlockTypesItem
