@@ -149,6 +149,11 @@ export default async function AllAffiliation({
     LOST: 'Perdu'
   };
 
+  // @ts-ignore
+  const isSeller = [UserRole.SELLER, UserRole.ADMIN].includes(
+    session.user.role
+  );
+
   return (
     <div className="flex flex-col space-y-12 p-8">
       <hgroup className="flex items-center justify-between gap-2">
@@ -167,35 +172,39 @@ export default async function AllAffiliation({
       </hgroup>
 
       <div className="flex flex-col space-y-6">
-        <div className="flex flex-col gap-2">
-          <hgroup className="flex items-center justify-between gap-2">
-            <h1 className="font-cal text-3xl font-bold dark:text-white">
-              {await translate('dashboard.affiliation.title')}
-            </h1>
+        {isSeller && (
+          <>
+            <div className="flex flex-col gap-2">
+              <hgroup className="flex items-center justify-between gap-2">
+                <h1 className="font-cal text-3xl font-bold dark:text-white">
+                  {await translate('dashboard.affiliation.title')}
+                </h1>
 
-            <div className="flex items-center gap-2">
-              <ModalButton
-                label={await translate(
-                  'dashboard.affiliation.import.prospects'
-                )}
-              >
-                <ProspectsImportModal />
-              </ModalButton>
+                <div className="flex items-center gap-2">
+                  <ModalButton
+                    label={await translate(
+                      'dashboard.affiliation.import.prospects'
+                    )}
+                  >
+                    <ProspectsImportModal />
+                  </ModalButton>
 
-              <ModalButton
-                label={await translate('dashboard.affiliation.create')}
-              >
-                <UserCreateModal role={UserRole.LEAD} />
-              </ModalButton>
+                  <ModalButton
+                    label={await translate('dashboard.affiliation.create')}
+                  >
+                    <UserCreateModal role={UserRole.LEAD} />
+                  </ModalButton>
+                </div>
+              </hgroup>
             </div>
-          </hgroup>
-        </div>
 
-        <ProspectsKanbanWrapper
-          initialColumns={prospectsByStatus}
-          statuses={statuses}
-          statusLabels={statusLabels}
-        />
+            <ProspectsKanbanWrapper
+              initialColumns={prospectsByStatus}
+              statuses={statuses}
+              statusLabels={statusLabels}
+            />
+          </>
+        )}
 
         <NewUsersChart
           data={chartUsers}
