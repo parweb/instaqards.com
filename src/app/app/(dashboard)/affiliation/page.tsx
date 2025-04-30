@@ -149,8 +149,8 @@ export default async function AllAffiliation({
     LOST: 'Perdu'
   };
 
-  // @ts-ignore
   const isSeller = [UserRole.SELLER, UserRole.ADMIN].includes(
+    // @ts-ignore
     session.user.role
   );
 

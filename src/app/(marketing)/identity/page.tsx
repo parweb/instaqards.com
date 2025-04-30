@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { cn } from 'lib/utils';
 import { boldonse } from 'styles/fonts';
-import { DownloadButton } from './client';
+import { DownloadButton, GalleryAdsVideo } from './client';
 
 export default async function Identity() {
   return (
@@ -15,6 +15,10 @@ export default async function Identity() {
         >
           Identity
         </h1>
+      </div>
+
+      <div className="w-full overflow-hidden">
+        <GalleryAdsVideo />
       </div>
 
       <div className="flex flex-col gap-10">
