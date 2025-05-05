@@ -62,7 +62,8 @@ export default async function ReferalsPage() {
                 role: UserRole.USER,
                 refererId: null,
                 affiliates: users,
-                location: {}
+                location: {},
+                bounced: 0
               }
             ]}
           />
