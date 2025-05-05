@@ -34,7 +34,7 @@ const QardsPage = async () => {
   });
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-0 p-0">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-0 sm:gap-4 p-0 sm:p-4">
       {sites.map(site => (
         <Suspense key={site.id} fallback={null}>
           <SiteCard site={site} ip={ip} />
