@@ -64,6 +64,11 @@ export const auth = betterAuth({
         type: Object.values(UserRole),
         nullable: true,
         default: UserRole.USER
+      },
+      affiliateRate: {
+        type: 'number',
+        nullable: true,
+        default: 0.05
       }
     }
   },
