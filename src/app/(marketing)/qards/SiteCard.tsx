@@ -9,6 +9,7 @@ import { LuExternalLink } from 'react-icons/lu';
 import {
   memo,
   Suspense,
+  unstable_Activity as Activity,
   useActionState,
   useEffect,
   useRef,
@@ -80,47 +81,50 @@ const SiteCardComponent = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
+        console.log(
+          'Intersection Observer Fired:',
+          entry.isIntersecting,
+          entry.target
+        );
+        setIsVisible(entry.isIntersecting);
       },
       { rootMargin: '750px', threshold: 0.1 }
     );
 
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
+    const currentCardRef = cardRef.current;
+    if (currentCardRef) {
+      observer.observe(currentCardRef);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      if (currentCardRef) {
+        observer.unobserve(currentCardRef);
+      }
+    };
   }, []);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (videoRef.current && isMobile) {
-        if (entry.isIntersecting) {
-          videoRef.current.play();
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isVisible) {
+      if (isMobile) {
+        video.play().catch(err => console.error('Failed to play video:', err));
+      } else {
+        if (state === 'playing') {
+          video
+            .play()
+            .catch(err => console.error('Failed to play video:', err));
         } else {
-          videoRef.current.pause();
+          video.pause();
         }
       }
-    });
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
+    } else {
+      video.pause();
     }
+  }, [isVisible, isMobile, state]);
 
-    return () => observer.disconnect();
-  }, [isMobile, isVisible]);
-
-  if (!isVisible) {
-    return (
-      <div
-        ref={cardRef}
-        className="relative w-full aspect-[9/16] flex bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg"
-      />
-    );
-  }
+  console.log(`Rendering SiteCard ${site.subdomain}, isVisible:`, isVisible);
 
   const data: Record<Block['type'], Block[]> = {
     main: [],
@@ -132,82 +136,90 @@ const SiteCardComponent = ({
 
   return (
     <div
+      ref={cardRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      ref={cardRef}
-      className="relative w-full aspect-[9/16] flex"
+      className="relative w-full aspect-[9/16] flex sm:rounded-lg overflow-hidden"
     >
-      <Wrapper key={site.id}>
-        <Suspense fallback={null}>
-          <Background
-            background={site.background}
-            autoPlay={false}
-            state={state}
-            videoRef={videoRef as React.RefObject<HTMLVideoElement>}
-          />
-        </Suspense>
-
-        <Content>
-          <Main length={data.main.length}>
+      <Activity mode={isVisible ? 'visible' : 'hidden'}>
+        <>
+          <Wrapper key={site.id}>
             <Suspense fallback={null}>
-              <BlockList blocks={data.main} />
+              <Background
+                background={site.background}
+                autoPlay={false}
+                state={state}
+                videoRef={videoRef as React.RefObject<HTMLVideoElement>}
+              />
             </Suspense>
-          </Main>
 
-          <Footer>
-            <div className="flex gap-3 items-center justify-center">
-              <Suspense fallback={null}>
-                <BlockList blocks={data.social} />
-              </Suspense>
-            </div>
-          </Footer>
-        </Content>
-      </Wrapper>
+            <Content>
+              <Main length={data.main.length}>
+                <Suspense fallback={null}>
+                  <BlockList blocks={data.main} />
+                </Suspense>
+              </Main>
 
-      <div className="absolute inset-0 flex gap-4 items-end justify-end p-2">
-        <div>
-          <Link
-            href={
-              (process.env.NEXT_PUBLIC_VERCEL_ENV
-                ? `https://${url}`
-                : `http://${site.subdomain}.localhost:11000`) +
-              '?utm_source=qards.link&utm_medium=marketing&utm_campaign=lookmeup'
-            }
-            target="_blank"
-            className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
-          >
-            <LuExternalLink className="" />
+              <Footer>
+                <div className="flex gap-3 items-center justify-center">
+                  <Suspense fallback={null}>
+                    <BlockList blocks={data.social} />
+                  </Suspense>
+                </div>
+              </Footer>
+            </Content>
+          </Wrapper>
 
-            <span className="text-xl font-bold">Share</span>
-          </Link>
-        </div>
-
-        <form action={likeAction}>
-          <input type="hidden" name="siteId" value={site.id} />
-
-          <button
-            type="submit"
-            className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
-          >
-            {likeState.liked ? (
-              <FaHeart className={cn({ 'animate-wiggle': loading })} />
-            ) : (
-              <FaRegHeart className={cn({ 'animate-wiggle': loading })} />
-            )}
-
-            {likeState.count > 0 && (
-              <motion.span
-                className="text-xl font-bold"
-                exit={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+          <div className="absolute inset-0 flex gap-4 items-end justify-end p-2 pointer-events-none">
+            <div className="pointer-events-auto">
+              <Link
+                href={
+                  (process.env.NEXT_PUBLIC_VERCEL_ENV
+                    ? `https://${url}`
+                    : `http://${site.subdomain}.localhost:11000`) +
+                  '?utm_source=qards.link&utm_medium=marketing&utm_campaign=lookmeup'
+                }
+                target="_blank"
+                className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
               >
-                {likeState.count}
-              </motion.span>
-            )}
-          </button>
-        </form>
-      </div>
+                <LuExternalLink className="" />
+
+                <span className="text-xl font-bold">Share</span>
+              </Link>
+            </div>
+
+            <form action={likeAction} className="pointer-events-auto">
+              <input type="hidden" name="siteId" value={site.id} />
+
+              <button
+                type="submit"
+                className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
+              >
+                {likeState.liked ? (
+                  <FaHeart className={cn({ 'animate-wiggle': loading })} />
+                ) : (
+                  <FaRegHeart className={cn({ 'animate-wiggle': loading })} />
+                )}
+
+                {likeState.count > 0 && (
+                  <motion.span
+                    className="text-xl font-bold"
+                    exit={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {likeState.count}
+                  </motion.span>
+                )}
+              </button>
+            </form>
+          </div>
+        </>
+      </Activity>
+
+      {!isVisible && (
+        <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 animate-pulse" />
+      )}
     </div>
   );
 };
