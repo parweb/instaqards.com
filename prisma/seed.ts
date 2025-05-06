@@ -21,6 +21,7 @@ const populateAllLeadWithDefaultSite = async () => {
   const leads = await prisma.user.findMany({
     // take: 100,
     where: {
+      bounced: { lte: 0 },
       role: UserRole.LEAD,
       sites: {
         none: {}

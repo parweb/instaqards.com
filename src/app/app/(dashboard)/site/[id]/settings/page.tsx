@@ -22,6 +22,9 @@ export default async function SiteSettingsIndex(props: {
     session?.user.role ?? UserRole.USER
   )
     ? await db.user.findMany({
+        where: {
+          bounced: { lte: 0 }
+        },
         select: {
           id: true,
           name: true,
@@ -35,6 +38,7 @@ export default async function SiteSettingsIndex(props: {
           email: true
         },
         where: {
+          bounced: { lte: 0 },
           OR: [{ refererId: session?.user.id }, { id: session?.user.id }]
         }
       });

@@ -72,6 +72,7 @@ const Prospects = () => {
       $selection={$selection}
       $prospects={$prospects({
         where: {
+          bounced: { lte: 0 },
           refererId: { equals: null },
           role: UserRole.LEAD,
           ...(search !== '' && {

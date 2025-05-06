@@ -30,6 +30,7 @@ export default async function UsersPage({
   const subscription = params.subscription || 'all';
 
   const where: Prisma.UserWhereInput = {
+    bounced: { lte: 0 },
     ...(subscription !== 'all' && {
       subscriptions: {
         some: {

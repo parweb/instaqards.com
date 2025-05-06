@@ -74,6 +74,7 @@ const Prospects = () => {
       $selection={$selection}
       $prospects={$prospects({
         where: {
+          bounced: { lte: 0 },
           ...(search !== '' && {
             OR: [
               { address: { contains: search } },
