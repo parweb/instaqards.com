@@ -82,6 +82,23 @@ function trackSite(domain: string, req: NextRequest, _name: string) {
   );
 }
 
+function trackReferer(path: string, referer: string, req: NextRequest) {
+  waitUntil(
+    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/referer`, {
+      method: 'POST',
+      body: JSON.stringify({
+        path,
+        referer,
+        url: req.url,
+        method: req.method,
+        headers: Object.fromEntries(
+          Array.from(req.headers.entries()) as Iterable<[string, string]>
+        )
+      })
+    })
+  );
+}
+
 function buildPath(url: URL): string {
   const searchParams = url.searchParams.toString();
   return `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
@@ -122,14 +139,19 @@ class LoggerHandler implements MiddlewareHandler {
 
 class RefererTrackingHandler implements MiddlewareHandler {
   async handle(
-    _req: NextRequest,
+    req: NextRequest,
     ctx: MiddlewareContext
   ): Promise<HandlerResult> {
     if (ctx.url.searchParams.has('r')) {
-      const referer = ctx.url.searchParams.get('r');
+      const referer = String(ctx.url.searchParams.get('r'));
 
       const destination = new URL(ctx.url.toString());
       destination.searchParams.delete('r');
+
+      const url = req.nextUrl;
+      const path = buildPath(url);
+
+      trackReferer(`${req.headers.get('host')}${path}`, referer, req);
 
       return {
         action: 'break',

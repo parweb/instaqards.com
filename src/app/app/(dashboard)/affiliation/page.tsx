@@ -1,12 +1,10 @@
 import { Prisma, SubscriptionStatus, User, UserRole } from '@prisma/client';
-import { eachDayOfInterval } from 'date-fns';
+import { eachDayOfInterval, format } from 'date-fns';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { LuArrowUpRight } from 'react-icons/lu';
 
-import { NewUsersChart } from 'app/app/(dashboard)/users/new-users-chart';
 import { UsersTable } from 'app/app/(dashboard)/users/users-table';
-import Analytics from 'components/analytics';
 import ProspectsKanbanWrapper from 'components/kanban/ProspectsKanbanWrapper';
 import ModalButton from 'components/modal-button';
 import UserCreateModal from 'components/modal/create-user';
@@ -15,6 +13,8 @@ import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 import * as lead from 'services/lead';
+import { AffiliationChart } from './affiliation-chart';
+import { parser } from './utils';
 
 export default async function AllAffiliation({
   searchParams
@@ -25,6 +25,7 @@ export default async function AllAffiliation({
     search: string | undefined;
     withSite: string;
     subscription: string;
+    range: string;
   }>;
 }) {
   const session = await getSession();
@@ -35,11 +36,18 @@ export default async function AllAffiliation({
 
   const params = await searchParams;
 
+  const range = parser.parse(params.range);
+
   const page = parseInt(params.page) || 1;
   const take = parseInt(params.take) || 25;
   const search = params.search;
   const withSite = params.withSite === 'true';
   const subscription = params.subscription || 'all';
+
+  const isSeller = [UserRole.SELLER, UserRole.ADMIN].includes(
+    // @ts-ignore
+    session.user.role
+  );
 
   const where: Prisma.UserWhereInput = {
     refererId: session.user.id,
@@ -60,80 +68,122 @@ export default async function AllAffiliation({
       sites: {
         some: {}
       }
+    }),
+    ...(range && {
+      createdAt: {
+        gte: range.from,
+        lte: range.to
+      }
     })
   };
 
-  const [affiliates, users, displayUsers] = await db.$transaction([
+  const [
+    totalUsersInRange,
+    allUserCreations,
+    allUserClicks,
+    allUserSubscriptions,
+    displayUsers
+  ] = await db.$transaction([
+    db.user.count({ where }),
     db.user.findMany({
-      where: {
-        referer: { id: session.user.id }
-      }
-    }),
-    db.user.findMany({
-      select: { createdAt: true },
       where,
-      orderBy: { createdAt: 'desc' }
+      select: { createdAt: true }
+    }),
+    db.click.findMany({
+      where: {
+        refererId: session.user.id,
+        createdAt: { gte: range?.from, lte: range?.to }
+      },
+      select: { createdAt: true }
+    }),
+    db.subscription.findMany({
+      select: {
+        created: true,
+        price: { select: { unit_amount: true } },
+        quantity: true
+      },
+      where: {
+        user: { refererId: session.user.id },
+        created: { gte: range?.from, lte: range?.to }
+      }
     }),
     db.user.findMany({
       include: {
         sites: { orderBy: { createdAt: 'desc' } },
         subscriptions: {
           include: { price: { include: { product: true } } },
-          orderBy: {
-            ended_at: 'desc'
-          }
+          orderBy: { ended_at: 'desc' }
         }
       },
-      where,
       orderBy: { createdAt: 'desc' },
-      take,
-      skip: (page - 1) * take
+      skip: (page - 1) * take,
+      where,
+      take
     })
   ]);
 
   const [prospectsNew, prospectsInProgress, prospectsWin, prospectsLost] =
-    await Promise.all([
-      lead.all('NEW'),
-      lead.all('IN_PROGRESS'),
-      lead.all('WIN'),
-      lead.all('LOST')
-    ]);
+    isSeller
+      ? await Promise.all([
+          lead.all('NEW'),
+          lead.all('IN_PROGRESS'),
+          lead.all('WIN'),
+          lead.all('LOST')
+        ])
+      : [[], [], [], []];
 
-  const affiliateGroups = affiliates.reduce(
-    (acc, user) => {
-      const key = user.createdAt.toDateString();
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const dailyUsersMap: Record<string, number> = {};
+  allUserCreations.forEach(u => {
+    const dateStr = format(u.createdAt, 'MMM d');
+    dailyUsersMap[dateStr] = (dailyUsersMap[dateStr] || 0) + 1;
+  });
 
-  const chartdata = eachDayOfInterval({
-    start: affiliates.at(0)?.createdAt ?? 0,
-    end: new Date()
-  }).map(date => ({
-    date: date.toDateString(),
-    Clicks: affiliateGroups[date.toDateString()] || 0
-  }));
+  const dailyClicksMap: Record<string, number> = {};
+  allUserClicks.forEach(click => {
+    const dateStr = format(click.createdAt, 'MMM d');
+    dailyClicksMap[dateStr] = (dailyClicksMap[dateStr] || 0) + 1;
+  });
 
-  const usersGroups = users.reduce(
-    (acc, user) => {
-      const key = user.createdAt.toDateString();
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const dailySubscriptionsMap: Record<string, number> = {};
+  allUserSubscriptions.forEach(sub => {
+    const dateStr = format(sub.created, 'MMM d');
+    dailySubscriptionsMap[dateStr] =
+      (dailySubscriptionsMap[dateStr] || 0) +
+      ((sub.price.unit_amount || 0) / 100) *
+        sub.quantity *
+        session.user.affiliateRate;
+  });
+
+  const earliestDateOverall =
+    allUserCreations.length > 0
+      ? allUserCreations[allUserCreations.length - 1].createdAt
+      : allUserClicks.length > 0
+        ? allUserClicks[allUserClicks.length - 1].createdAt
+        : allUserSubscriptions.length > 0
+          ? allUserSubscriptions[allUserSubscriptions.length - 1].created
+          : new Date();
+  const defaultStartDate = new Date();
+  if (
+    allUserCreations.length === 0 &&
+    allUserClicks.length === 0 &&
+    allUserSubscriptions.length === 0
+  ) {
+    defaultStartDate.setDate(defaultStartDate.getDate() - 30);
+  }
+
+  const intervalStart = range?.from ?? earliestDateOverall ?? defaultStartDate;
+  const intervalEnd = range?.to ?? new Date();
 
   const chartUsers = eachDayOfInterval({
-    start: users.at(-1)?.createdAt ?? 0,
-    end: new Date()
+    start: intervalStart,
+    end: intervalEnd
   }).map(date => ({
-    date: date.toDateString(),
-    Users: usersGroups[date.toDateString()] || 0
+    date: format(date, 'MMM d'),
+    Users: dailyUsersMap[format(date, 'MMM d')] || 0,
+    Clicks: dailyClicksMap[format(date, 'MMM d')] || 0,
+    Subscriptions: dailySubscriptionsMap[format(date, 'MMM d')] || 0
   }));
 
-  // Group prospects by status
   const prospectsByStatus: Record<string, User[]> = {
     NEW: prospectsNew,
     IN_PROGRESS: prospectsInProgress,
@@ -148,11 +198,6 @@ export default async function AllAffiliation({
     WIN: 'Gagné',
     LOST: 'Perdu'
   };
-
-  const isSeller = [UserRole.SELLER, UserRole.ADMIN].includes(
-    // @ts-ignore
-    session.user.role
-  );
 
   return (
     <div className="flex flex-col space-y-12 p-8">
@@ -206,29 +251,9 @@ export default async function AllAffiliation({
           </>
         )}
 
-        <NewUsersChart
-          data={chartUsers}
-          total={users.length}
-          dailyGrowth={
-            (chartUsers.at(-2)?.Users ?? 0) === 0
-              ? 0
-              : Number(
-                  ((chartUsers.at(-1)?.Users ?? 0) /
-                    (chartUsers.at(-2)?.Users ?? 0)) *
-                    100
-                )
-          }
-        />
+        <AffiliationChart data={chartUsers} />
 
-        <UsersTable affiliate users={displayUsers} total={users.length} />
-      </div>
-
-      <div className="flex flex-col space-y-6">
-        <div className="flex items-center justify-center sm:justify-start">
-          <div className="flex flex-col items-center space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 flex-1 justify-between"></div>
-        </div>
-
-        <Analytics chartdata={chartdata} categories={[]} />
+        <UsersTable affiliate users={displayUsers} total={totalUsersInRange} />
       </div>
     </div>
   );

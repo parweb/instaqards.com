@@ -106,6 +106,7 @@
     "react-social-media-embed": "2.5.18",
     "react-spinners": "0.17.0",
     "reactflow": "11.11.4",
+    "recharts": "^2.15.3",
     "resend": "4.5.1",
     "sonner": "2.0.3",
     "stripe": "17",

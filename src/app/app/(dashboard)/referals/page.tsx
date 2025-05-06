@@ -63,7 +63,8 @@ export default async function ReferalsPage() {
                 refererId: null,
                 affiliates: users,
                 location: {},
-                bounced: 0
+                bounced: 0,
+                affiliateRate: 0.05
               }
             ]}
           />

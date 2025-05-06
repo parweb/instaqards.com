@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "affiliateRate" DOUBLE PRECISION DEFAULT 0.05;

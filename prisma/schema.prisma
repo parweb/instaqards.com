@@ -40,6 +40,7 @@ model User {
   codeNaf            String?
   activity           String?
   bounced            Int       @default(0)
+  affiliateRate      Float?    @default(0.05)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -73,7 +74,8 @@ model User {
   lists          List[]          @relation("Contacts")
   listsManage    List[]          @relation("ContactsOwners")
   emails         Email[]
-  clicks         Click[]
+  clicks         Click[]         @relation("ClickUser")
+  referrals      Click[]         @relation("ClickReferer")
 
   @@index([email])
   @@index([role])
@@ -310,19 +312,23 @@ model Click {
 
   createdAt DateTime @default(now())
 
-  block   Block?  @relation(fields: [blockId], references: [id])
-  blockId String?
-  site    Site?   @relation(fields: [siteId], references: [id])
-  siteId  String?
-  link    Link?   @relation(fields: [linkId], references: [id])
-  linkId  String?
-  user    User?   @relation(fields: [userId], references: [id])
-  userId  String?
+  block     Block?  @relation(fields: [blockId], references: [id])
+  blockId   String?
+  site      Site?   @relation(fields: [siteId], references: [id])
+  siteId    String?
+  link      Link?   @relation(fields: [linkId], references: [id])
+  linkId    String?
+  user      User?   @relation("ClickUser", fields: [userId], references: [id])
+  userId    String?
+  referer   User?   @relation("ClickReferer", fields: [refererId], references: [id])
+  refererId String?
 
   @@index([createdAt])
   @@index([siteId])
   @@index([linkId])
   @@index([blockId])
+  @@index([userId])
+  @@index([refererId])
 }
 
 model Link {

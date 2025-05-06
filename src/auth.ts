@@ -116,6 +116,10 @@ const {
         session.user.role = token.role as UserRole;
       }
 
+      if (token.affiliateRate && session?.user) {
+        session.user.affiliateRate = token.affiliateRate as number;
+      }
+
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
       }
@@ -144,7 +148,7 @@ const {
       token.email = existingUser.email;
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-
+      token.affiliateRate = existingUser.affiliateRate;
       return token;
     }
   },
