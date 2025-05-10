@@ -200,3 +200,13 @@ Analytics :
 yt-dlp -f "bestvideo+bestaudio/best" -o - "https://www.youtube.com/watch?v=iaxekGfUzvk" | tee video.mp4 | nc -l 1234
 
 nc localhost 1234 | mpv -
+
+
+https://ag-carrosserie.com/admin_login.php
+https://wouestcoast.com/football
+https://nikkiapp.com/admin
+https://lebigbangbar.fr/admin_login.php
+https://solid-aire.fr/admin_login.php
+https://worldvelopers.com/petshop/
+https://weezevent.com/fr/nos-tarifs/
+https://www.planity.com/
