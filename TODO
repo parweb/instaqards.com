@@ -15,6 +15,13 @@ Pour nous y’en a pas forcément besoin mais plus les futurs prospects ce qu’
 
   
 
+     
+     auth
+          register -> email already in use -> retry
+          register          -> page info email send -> valide email confirmation -> dashboard logged
+          register -> login -> page info email send -> valide email confirmation -> dashboard logged
+          login -> no account found -> retry
+          login -> email not verify -> resend email
 
      -> editor page pro soit editable (pas besoin d'etre logué)
      -> template dans page pro
