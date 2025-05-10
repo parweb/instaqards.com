@@ -27,6 +27,12 @@ export const auth = betterAuth({
     nextCookies(),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
+        console.log('lib/auth::emailOTP::sendVerificationOTP', {
+          email,
+          otp,
+          type
+        });
+
         const mapper: Record<
           typeof type,
           (email: string, otp: string) => Promise<void>
@@ -49,7 +55,15 @@ export const auth = betterAuth({
   emailVerification: {
     autoSignInAfterVerification: true,
     async sendVerificationEmail({ user, url }) {
-      await sendVerificationEmail(user.email, url);
+      await sendVerificationEmail(
+        user.email,
+        url.replace(
+          'callbackURL=/',
+          `${new URLSearchParams({
+            callbackURL: uri.app()
+          })}`
+        )
+      );
     }
   },
   trustedOrigins: [
