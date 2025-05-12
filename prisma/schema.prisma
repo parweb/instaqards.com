@@ -22,24 +22,25 @@ enum UserRole {
 }
 
 model User {
-  id                 String    @id @default(cuid())
+  id String @id @default(cuid())
+
   name               String?
-  email              String    @unique
-  emailVerified      Boolean   @default(false)
+  email              String  @unique
+  emailVerified      Boolean @default(false)
   image              String?
-  isTwoFactorEnabled Boolean   @default(false)
-  billing_address    Json      @default("{}")
-  payment_method     Json      @default("{}")
+  isTwoFactorEnabled Boolean @default(false)
+  billing_address    Json    @default("{}")
+  payment_method     Json    @default("{}")
   company            String?
   address            String?
-  location           Json?     @default("{}")
+  location           Json?   @default("{}")
   postcode           String?
   city               String?
   phone              String?
   codeNaf            String?
   activity           String?
-  bounced            Int       @default(0)
-  affiliateRate      Float?    @default(0.05)
+  bounced            Int     @default(0)
+  affiliateRate      Float?  @default(0.05)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -219,9 +220,9 @@ model Subscription {
 model Account {
   id String @id @default(cuid())
 
-  providerId          String?
+  providerId        String?
   providerAccountId String
-  password String?
+  password          String?
   refresh_token     String?
   access_token      String?
   expires_at        Int?

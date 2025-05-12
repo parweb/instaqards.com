@@ -1,13 +1,13 @@
-import { auth } from 'auth';
 import { createOrRetrieveCustomer } from 'data/customer';
 import { getURL } from 'helpers/getURL';
 import { stripe } from 'helpers/stripe';
 import { translate } from 'helpers/translate';
+import { getSession } from 'lib/auth';
 
 export async function POST(req: Request) {
   if (req.method === 'POST') {
     try {
-      const { user = null } = (await auth()) || {};
+      const { user = null } = (await getSession()) || {};
 
       if (!user) throw Error(await translate('api.stripe.user.not-found'));
 

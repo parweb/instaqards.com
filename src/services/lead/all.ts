@@ -5,7 +5,7 @@ import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 
 type Context = {
-  referer: Session['user'];
+  referer: Pick<Session['user'], 'id'>;
   db: typeof db;
 };
 
@@ -55,11 +55,12 @@ const list: Record<State | 'default', (context: Context) => Promise<User[]>> = {
 export const all = async (state: State | undefined) => {
   const session = await getSession();
 
-  if (!session || !session?.user) {
+  if (!session || !session?.user || !session?.user.id) {
     return [];
   }
 
-  if (typeof state === 'undefined')
-    return list.default({ referer: session.user, db });
-  return list[state]({ referer: session.user, db });
+  const referer = { id: session.user.id };
+
+  if (typeof state === 'undefined') return list.default({ referer, db });
+  return list[state]({ referer, db });
 };

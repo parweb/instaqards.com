@@ -2,12 +2,12 @@ import { nanoid } from 'nanoid';
 import { after } from 'next/server';
 import type Stripe from 'stripe';
 
-import { auth } from 'auth';
 import { createOrRetrieveCustomer } from 'data/customer';
 import { db } from 'helpers/db';
 import { getURL } from 'helpers/getURL';
 import { stripe } from 'helpers/stripe';
 import { translate } from 'helpers/translate';
+import { getSession } from 'lib/auth';
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
     console.info({ price });
 
-    const { user = null } = (await auth()) || {};
+    const { user = null } = (await getSession()) || {};
 
     if (user === null)
       throw new Error(await translate('api.stripe.user.error'));
