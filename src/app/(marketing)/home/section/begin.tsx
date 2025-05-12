@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'motion/react';
+import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 import { onboard } from 'actions/onboard';
@@ -12,6 +13,7 @@ import { uri } from 'settings';
 
 export function Begin() {
   const translate = useTranslation();
+  const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
 
@@ -30,7 +32,15 @@ export function Begin() {
             subdomain: String(form.get('subdomain')),
             email: String(form.get('email'))
           }).then(data => {
-            setError(data.error || null);
+            if (data.error) {
+              setError(data.error);
+            } else {
+              setError(null);
+            }
+
+            if (data.success) {
+              router.push(data.redirect);
+            }
           });
         });
       }}

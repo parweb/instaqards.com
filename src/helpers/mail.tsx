@@ -181,62 +181,70 @@ const sendTemplateReact = async (
 
       const correlationId = nanoid();
 
-      const destination = await db.user.findUniqueOrThrow({
+      const destination = await db.user.findUnique({
         where: { email: to }
       });
 
+      if (!destination) {
+        return null;
+      }
+
       await db
-        .$transaction([
-          db.outbox.create({
-            data: {
-              id,
-              email: to,
-              subject,
-              body: html,
-              status: 'sent',
-              metadata: {
-                resend_id: sent.data?.id,
-                lang,
-                variables,
-                events: [
-                  {
-                    type: 'sent',
-                    createdAt: new Date().toISOString()
-                  }
-                ]
+        .$transaction(
+          [
+            db.outbox.create({
+              data: {
+                id,
+                email: to,
+                subject,
+                body: html,
+                status: 'sent',
+                metadata: {
+                  resend_id: sent.data?.id,
+                  lang,
+                  variables,
+                  events: [
+                    {
+                      type: 'sent',
+                      createdAt: new Date().toISOString()
+                    }
+                  ]
+                }
               }
-            }
-          }),
-          db.event.createMany({
-            data: [
-              session !== null
-                ? {
-                    userId: String(session.user.id),
-                    eventType: 'LEAD_CONTACTED',
-                    payload: {
-                      by: 'EMAIL',
-                      id,
-                      from,
-                      to,
-                      subject
-                    },
-                    correlationId
-                  }
-                : undefined,
-              {
-                userId: destination.id,
-                eventType: 'EMAIL_SENT',
-                payload: {
-                  id,
-                  from,
-                  to,
-                  subject
-                },
-                correlationId
-              }
-            ].filter(Boolean) as Prisma.EventCreateManyInput[]
-          })
-        ])
+            }),
+            destination
+              ? db.event.createMany({
+                  data: [
+                    session !== null
+                      ? {
+                          userId: String(session.user.id),
+                          eventType: 'LEAD_CONTACTED',
+                          payload: {
+                            by: 'EMAIL',
+                            id,
+                            from,
+                            to,
+                            subject
+                          },
+                          correlationId
+                        }
+                      : undefined,
+                    {
+                      userId: destination.id,
+                      eventType: 'EMAIL_SENT',
+                      payload: {
+                        id,
+                        from,
+                        to,
+                        subject
+                      },
+                      correlationId
+                    }
+                  ].filter(Boolean) as Prisma.EventCreateManyInput[]
+                })
+              : null
+          ].filter(Boolean) as Prisma.PrismaPromise<any>[]
+        )
         .then(([{ metadata }]) => console.info(id, metadata))
         .catch(console.error);
     })
@@ -247,9 +255,10 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   await sendTemplateReact(email, TwoFactorTokenEmail, { token });
 };
 
-export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const resetLink = `${domain}/new-password?token=${token}`;
-
+export const sendPasswordResetEmail = async (
+  email: string,
+  resetLink: string
+) => {
   await sendTemplateReact(email, ResetPasswordEmail, { resetLink });
 };
 
