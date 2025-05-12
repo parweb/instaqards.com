@@ -579,7 +579,7 @@ const seedWorkflow = async () => {
     data: {
       id: 'cm8zwbi0y0001spa09s9s7eat',
       email: 'parweb@gmail.com',
-      emailVerified: new Date(),
+      emailVerified: true,
       role: UserRole.ADMIN,
       sites: {
         create: {
@@ -624,7 +624,7 @@ const seedWorkflow = async () => {
                 createdAt: '2025-04-02T12:21:09.250Z',
                 refererId: null,
                 updatedAt: '2025-04-02T12:21:09.250Z',
-                emailVerified: '2025-04-02T12:21:09.248Z',
+                emailVerified: true,
                 payment_method: {},
                 billing_address: {},
                 isTwoFactorEnabled: false

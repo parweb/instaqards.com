@@ -81,7 +81,7 @@ export default async function SettingsPage() {
           </div>
         </div>
 
-        <Form
+        {/* <Form
           title="Two factor authentification"
           description="Enable two factor authentication for your account"
           helpText=""
@@ -98,7 +98,7 @@ export default async function SettingsPage() {
               name: string // eslint-disable-line no-unused-vars
             ) => Promise<T | { error?: string }>
           }
-        />
+        /> */}
 
         <Form
           title="Name"
