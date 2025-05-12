@@ -11,8 +11,6 @@ export async function GET(req: Request) {
     const data = await get(id, { Range });
 
     if (data.ContentType?.startsWith('image/') || query.has('download')) {
-      console.log({ data });
-
       // @ts-ignore
       return new Response(data.Body, {
         status: 200,

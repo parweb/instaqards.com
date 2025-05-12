@@ -29,7 +29,7 @@ const populateAllLeadWithDefaultSite = async () => {
     }
   });
 
-  console.log({ leads: leads.map(({ id }) => id) });
+  console.info({ leads: leads.map(({ id }) => id) });
 
   for (const lead of leads) {
     const name = lead.name || lead.email.split('@')[0].replaceAll('.', ' ');
@@ -259,7 +259,7 @@ const populateAllLeadWithDefaultSite = async () => {
     });
   }
 
-  console.log({ count: leads.length });
+  console.info({ count: leads.length });
 };
 
 const testGuestUser = async () => {
