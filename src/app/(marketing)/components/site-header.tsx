@@ -133,7 +133,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
 
         <div>
           <Link prefetch href={uri.app('/register')}>
-            <Button>{translate('page.home.register')}</Button>
+            <Button>{translate('page.home.header.cta')}</Button>
           </Link>
         </div>
       </div>

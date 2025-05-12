@@ -762,11 +762,11 @@ const translations = {
     it: 'Feedback',
     es: 'Feedback'
   },
-  'page.home.register': {
-    fr: 'Inscription',
-    en: 'Register',
-    it: 'Registrati',
-    es: 'Regístrate'
+  'page.home.header.cta': {
+    fr: 'Espace membre',
+    en: 'Member space',
+    it: 'Area membri',
+    es: 'Espacio de miembros'
   },
   'page.home.hero.title': {
     fr: 'Votre site web, réinventé',
