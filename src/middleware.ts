@@ -233,9 +233,6 @@ class ProtectedHandler implements MiddlewareHandler {
       marketingRoutes.includes(ctx.url.pathname) &&
       ctx.hostname?.startsWith('app.') === false
     ) {
-      console.log('ProtectedHandler::marketingRoutes', {
-        pathname: ctx.url.pathname
-      });
       return {
         action: 'break',
         name: 'ProtectedHandler',
