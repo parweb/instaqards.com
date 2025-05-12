@@ -129,17 +129,15 @@ export function AppSidebar(
         isActive: false
       }
     ],
-    projects: props.sites
-      .filter(site => (id ? site.id !== id : true))
-      .map(site => {
-        return {
-          name: site.name ?? 'Untitled',
-          url: `/site/${site.id}`,
-          icon: Frame,
-          secondaryUrl: uri.site(site).link,
-          clicks: site.clicks.length
-        };
-      })
+    projects: props.sites.map(site => {
+      return {
+        name: site.name ?? 'Untitled',
+        url: `/site/${site.id}`,
+        icon: Frame,
+        secondaryUrl: uri.site(site).link,
+        clicks: site.clicks.length
+      };
+    })
   };
 
   const project = openProject

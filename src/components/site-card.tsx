@@ -1,6 +1,9 @@
+'use client';
+
 import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { LuArrowUpRight, LuCog, LuCopy, LuMousePointer } from 'react-icons/lu';
+import { motion } from 'motion/react';
 
 import { uri } from 'settings';
 import DeleteButton from './DeleteButton';
@@ -13,7 +16,7 @@ export default function SiteCard({
   data: Prisma.SiteGetPayload<{ include: { clicks: true } }>;
 }) {
   return (
-    <div className="group relative rounded-lg border pb-10 shadow-md transition-all hover:shadow-xl border-stone-300 ">
+    <div className="group relative rounded-lg border pb-10 shadow-md transition-all hover:shadow-2xl hover:scale-[1.025] hover:border-blue-400/70 border-stone-300 dark:hover:border-blue-500/60 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md transition-all duration-200">
       <div className="flex flex-col overflow-hidden rounded-lg">
         <div className="border-t border-stone-200 p-4 dark:border-stone-700">
           <div className="flex items-center justify-between">
@@ -23,7 +26,12 @@ export default function SiteCard({
               </h3>
             </Link>
 
-            <div className="transition-all opacity-0 group-hover:opacity-100 flex items-center gap-2">
+            <motion.div
+              initial={{ x: 24, opacity: 0 }}
+              whileHover={{ x: 0, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+              className="transition-all opacity-0 group-hover:opacity-100 flex items-center gap-2 group-hover:translate-x-0"
+            >
               <ModalButton variant="ghost" size="icon" label={<LuCopy />}>
                 <SiteDuplicateModal site={data} />
               </ModalButton>
@@ -33,7 +41,7 @@ export default function SiteCard({
               </Link>
 
               <DeleteButton siteId={data.id} />
-            </div>
+            </motion.div>
           </div>
 
           <Link prefetch href={`/site/${data.id}`}>
