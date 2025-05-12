@@ -83,18 +83,10 @@ export function NavMain({
                   isActive={item.isActive}
                   className="data-[active=true]:bg-transparent[data-active='true']"
                 >
-                  {item.url === '/affiliation' ? (
-                    <MiniGold
-                      href={item.url}
-                      label={item.title}
-                      className="h-auto text-center"
-                    />
-                  ) : (
-                    <Link prefetch href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  )}
+                  <Link prefetch href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
                 </SidebarMenuButton>
 
                 {item.items?.length ? (
