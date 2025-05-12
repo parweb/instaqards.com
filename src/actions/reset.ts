@@ -2,11 +2,11 @@
 
 import type * as z from 'zod';
 
-import { getUserByEmail } from 'data/user';
-import { sendPasswordResetEmail } from 'helpers/mail';
-import { generatePasswordResetToken } from 'helpers/tokens';
 import { translate } from 'helpers/translate';
+import { auth } from 'lib/auth';
 import { ResetSchema } from 'schemas';
+import { uri } from 'settings';
+import { APIError } from 'better-auth/api';
 
 export const reset = async (values: z.infer<typeof ResetSchema>) => {
   const validatedFields = ResetSchema.safeParse(values);
@@ -17,17 +17,26 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
 
   const { email } = validatedFields.data;
 
-  const existingUser = await getUserByEmail(email);
+  try {
+    await auth.api.forgetPassword({
+      body: {
+        email,
+        redirectTo: uri.app('/new-password')
+      }
+    });
 
-  if (!existingUser) {
-    return { error: await translate('actions.reset.email.not-found') };
+    return { success: await translate('actions.reset.form.success') };
+  } catch (error) {
+    console.error({ error });
+
+    if (error instanceof APIError) {
+      return {
+        error: await translate('actions.reset.email.error'),
+        code: error.body?.code,
+        message: error.body?.message
+      };
+    }
+
+    throw error;
   }
-
-  const passwordResetToken = await generatePasswordResetToken(email);
-  await sendPasswordResetEmail(
-    passwordResetToken.email,
-    passwordResetToken.token
-  );
-
-  return { success: await translate('actions.reset.form.success') };
 };

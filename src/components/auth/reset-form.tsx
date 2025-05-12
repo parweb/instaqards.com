@@ -42,8 +42,16 @@ export const ResetForm = () => {
     startTransition(() => {
       reset(values)
         .then(data => {
-          setError(data?.error);
-          setSuccess(data?.success);
+          if ('error' in data) {
+            if ('code' in data) {
+              setError(data.message);
+            } else setError(data.error);
+          }
+
+          if ('success' in data) {
+            setError('');
+            setSuccess(data.success);
+          }
         })
         .catch(error => {
           console.error({ error });
