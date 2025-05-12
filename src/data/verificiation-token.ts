@@ -2,15 +2,15 @@ import { db } from 'helpers/db';
 
 export const getVerificationTokenByToken = async (token: string) => {
   try {
-    await db.verificationToken.deleteMany({
-      where: { expires: { lt: new Date() } }
+    await db.verification.deleteMany({
+      where: { expiresAt: { lt: new Date() } }
     });
 
-    const verificationToken = await db.verificationToken.findUnique({
-      where: { token }
+    const verification = await db.verification.findFirst({
+      where: { identifier: token }
     });
 
-    return verificationToken;
+    return verification;
   } catch {
     return null;
   }
@@ -18,15 +18,15 @@ export const getVerificationTokenByToken = async (token: string) => {
 
 export const getVerificationTokenByEmail = async (email: string) => {
   try {
-    await db.verificationToken.deleteMany({
-      where: { expires: { lt: new Date() } }
+    await db.verification.deleteMany({
+      where: { expiresAt: { lt: new Date() } }
     });
 
-    const verificationToken = await db.verificationToken.findFirst({
-      where: { identifier: email }
+    const verification = await db.verification.findFirst({
+      where: { value: JSON.stringify({ email }) }
     });
 
-    return verificationToken;
+    return verification;
   } catch {
     return null;
   }

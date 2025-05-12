@@ -1285,11 +1285,11 @@ export const createMagicLink = async ({
     const secret = process.env.AUTH_SECRET;
     const hash = await createHash(`${token}${secret}`);
 
-    await db.verificationToken.create({
+    await db.verification.create({
       data: {
-        identifier: email,
-        token: hash,
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysValid)
+        value: JSON.stringify({ email }),
+        identifier: hash,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysValid)
       }
     });
 
