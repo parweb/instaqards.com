@@ -8,6 +8,8 @@ import { getUserByEmail } from 'data/user';
 import { db } from 'helpers/db';
 import { NewPasswordSchema } from 'schemas';
 import { translate } from 'helpers/translate';
+import { auth } from 'lib/auth';
+import { APIError } from 'better-auth/api';
 
 export const newPassword = async (
   values: z.infer<typeof NewPasswordSchema>,
@@ -25,36 +27,28 @@ export const newPassword = async (
 
   const { password } = validatedFields.data;
 
-  const existingToken = await getPasswordResetTokenByToken(token);
+  try {
+    await auth.api.resetPassword({
+      body: {
+        token,
+        newPassword: password
+      }
+    });
 
-  if (!existingToken) {
-    return { error: await translate('actions.new-password.token.error') };
+    return {
+      success: await translate('actions.new-password.password.form.success')
+    };
+  } catch (error) {
+    console.error({ error });
+
+    if (error instanceof APIError) {
+      return {
+        error: await translate('actions.new-password.field.error'),
+        code: error.body?.code,
+        message: error.body?.message
+      };
+    }
+
+    throw error;
   }
-
-  const hasExpired = new Date(existingToken.expires) < new Date();
-
-  if (hasExpired) {
-    return { error: await translate('actions.new-password.token.expire') };
-  }
-
-  const existingUser = await getUserByEmail(existingToken.email);
-
-  if (!existingUser) {
-    return { error: await translate('actions.new-password.email.error') };
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  await db.user.update({
-    where: { id: existingUser.id },
-    data: { password: hashedPassword }
-  });
-
-  await db.passwordResetToken.delete({
-    where: { id: existingToken.id }
-  });
-
-  return {
-    success: await translate('actions.new-password.password.form.success')
-  };
 };
