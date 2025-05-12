@@ -1,14 +1,15 @@
 'use server';
 
-import { AuthError } from 'next-auth';
 import type * as z from 'zod';
 
-import { signIn } from 'auth';
+import { APIError } from 'better-auth/api';
 import { getUserByEmail } from 'data/user';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
+import { auth } from 'lib/auth';
 import { OnboardSchema } from 'schemas';
-import { DEFAULT_LOGIN_REDIRECT } from 'settings';
+import { uri } from 'settings';
+import { redirect } from 'next/dist/server/api-utils';
 
 export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   const validatedFields = OnboardSchema.safeParse(values);
@@ -34,23 +35,26 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   }
 
   try {
-    await signIn('resend', {
-      email,
-      redirectTo: `${DEFAULT_LOGIN_REDIRECT}api/site/create?subdomain=${subdomain}`
+    await auth.api.signInMagicLink({
+      body: {
+        email,
+        callbackURL: `${uri.base(`/api/site/create?subdomain=${subdomain}`)}`
+      },
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
     });
 
-    return { success: true /*, site*/ };
+    return { success: true, redirect: uri.app('/email-in') };
   } catch (error) {
     console.error({ error });
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return {
-            error: await translate('actions.login.credentials.invalid')
-          };
-        default:
-          return { error: await translate('actions.login.credentials.oops') };
-      }
+
+    if (error instanceof APIError) {
+      return {
+        error: await translate('actions.login.credentials.oops'),
+        code: error.body?.code,
+        message: error.body?.message
+      };
     }
 
     throw error;

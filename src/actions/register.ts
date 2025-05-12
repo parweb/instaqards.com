@@ -1,41 +1,39 @@
 'use server';
 
-import { type User, UserRole } from '@prisma/client';
-import { cookies } from 'next/headers';
+import { UserRole } from '@prisma/client';
 import * as z from 'zod';
 
+import { APIError } from 'better-auth/api';
 import { translate } from 'helpers/translate';
 import { auth } from 'lib/auth';
 import { RegisterSchema } from 'schemas';
-import { db } from 'helpers/db';
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   try {
-    const { email, password, name, refererId } = await RegisterSchema.merge(
-      z.object({
-        refererId: z
-          .string()
-          .optional()
-          .nullable()
-          .transform(async () => (await cookies()).get('r')?.value ?? undefined)
-      })
-    ).parseAsync(values);
+    const { email, password, name } = await RegisterSchema.parseAsync(values);
 
-    const response = await auth.api.signUpEmail({
+    await auth.api.signUpEmail({
       body: {
         name,
         email,
         password,
-        role: UserRole.USER
+        role: UserRole.USER,
+        affiliateRate: 0.05
       }
     });
 
-    console.log({ response });
-
-    console.info({ success: await translate('actions.register.form.success') });
     return { success: await translate('actions.register.form.success') };
   } catch (error) {
     console.error({ error });
-    return { error: await translate('actions.register.field.error') };
+
+    if (error instanceof APIError) {
+      return {
+        error: await translate('actions.register.field.error'),
+        code: error.body?.code,
+        message: error.body?.message
+      };
+    }
+
+    throw error;
   }
 };
