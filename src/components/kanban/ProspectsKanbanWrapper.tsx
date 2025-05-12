@@ -58,12 +58,9 @@ export default function ProspectsKanbanWrapper({
       status: string,
       position: number
     ): Promise<User | null> => {
-      console.log('updateProspect', { id, sourceStatus, status, position });
-
       setPositions(state => ({ ...state, [id]: { position, status } }));
       return null;
 
-      // console.log('not implemented', { id, sourceStatus, status, position });
       // alert('not implemented');
       // return null;
 
@@ -105,10 +102,8 @@ export default function ProspectsKanbanWrapper({
       destStatus: string;
       destIndex: number;
     }) => {
-      if (isUpdatingRef.current) {
-        console.log('Update already in progress, skipping...');
-        return;
-      }
+      if (isUpdatingRef.current) return;
+
       isUpdatingRef.current = true;
 
       try {

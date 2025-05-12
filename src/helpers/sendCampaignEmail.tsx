@@ -112,7 +112,7 @@ export const sendCampaignEmail = async (
   }
 
   const links = getLinks(html);
-  console.log({ links });
+
   for (const link of links) {
     html = html.replaceAll(
       link.href,
@@ -125,9 +125,6 @@ export const sendCampaignEmail = async (
   }
 
   html = html.replaceAll('____BASE____', base);
-
-  console.log(html);
-
   html = html.replace('</body>', pixel + '</body>');
 
   await sendHtmlWithCampaign(

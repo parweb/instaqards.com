@@ -64,6 +64,7 @@ export const sendHtmlWithCampaign = async (
   const sent = await resend.emails.send({ from, to, subject, html });
 
   if (sent.error) {
+    console.error(`Failed to send email:`, sent);
     throw new Error(`Failed to send email: ${sent.error.message}`);
   }
 
@@ -165,6 +166,7 @@ const sendTemplateReact = async (
   const sent = await resend.emails.send({ from, to, subject, react });
 
   if (sent.error) {
+    console.error(`Failed to send email:`, sent);
     throw new Error(`Failed to send email: ${sent.error.message}`);
   }
 

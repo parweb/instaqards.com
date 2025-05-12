@@ -66,11 +66,7 @@ export const useSearchResults = (
           abortControllerRef.current.signal
         );
 
-        console.log({ data: data.results });
-
         const filteredResults = filterResults(data.results, selected);
-
-        console.log({ filteredResults });
 
         updateSearchState({
           results: filteredResults,
