@@ -12,32 +12,23 @@ interface Step {
 
 interface OnboardingStepsProps {
   steps: Step[];
-  currentStep?: number;
   onCreateSite?: () => void;
   createSiteButton: ReactNode;
 }
 
 export function OnboardingSteps({
   steps,
-  currentStep = 2,
   onCreateSite,
   createSiteButton
 }: OnboardingStepsProps) {
   return (
     <div className="relative space-y-8">
-      {/* Barre de progression animée */}
-      <div className="w-full h-2 bg-gradient-to-r from-indigo-200/40 to-purple-200/40 dark:from-indigo-900/30 dark:to-purple-900/30 mb-8">
-        <motion.div
-          className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-r"
-          initial={{ width: 0 }}
-          animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-        />
-      </div>
       {steps.map((step, i) => (
         <div
           key={i}
-          className={`relative flex pl-14 transform transition-all hover:scale-105 ${i === currentStep ? 'opacity-100' : 'opacity-80'}`}
+          className={
+            'relative flex pl-14 transform transition-all hover:scale-105'
+          }
         >
           <div
             className={`absolute left-0 top-0 w-10 h-10 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-bold shadow-md`}

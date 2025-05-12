@@ -1,43 +1,33 @@
 import { UserRole } from '@prisma/client';
-import { eachDayOfInterval, format, subDays } from 'date-fns';
+import { Tooltip, TooltipContent, TooltipTrigger } from 'components/ui/tooltip';
+import { eachDayOfInterval, subDays } from 'date-fns';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import {
-  LuUsers,
-  LuMousePointer,
-  LuExternalLink,
-  LuPlus,
-  LuLayoutDashboard,
-  LuArrowRight,
-  LuTrendingUp,
-  LuCalendar,
-  LuStar,
-  LuHeartHandshake,
-  LuPalette,
-  LuChevronRight,
-  LuPartyPopper,
-  LuZap,
-  LuRocket,
-  LuWand,
-  LuSparkles
-} from 'react-icons/lu';
-import Image from 'next/image';
-import Link from 'next/link';
-import { AnimatedNumber } from 'components/ui/AnimatedNumber';
-import { motion } from 'motion/react';
-import { Tooltip, TooltipTrigger, TooltipContent } from 'components/ui/tooltip';
-import { WelcomeCard } from 'components/WelcomeCard';
 
+import {
+  LuArrowRight,
+  LuCalendar,
+  LuLayoutDashboard,
+  LuMousePointer,
+  LuPalette,
+  LuRocket,
+  LuSparkles,
+  LuStar,
+  LuUsers,
+  LuWand
+} from 'react-icons/lu';
+
+import CreateSiteButton from 'components/create-site-button';
+import { MetricCard } from 'components/MetricCard';
+import CreateSiteModal from 'components/modal/create-site';
+import { OnboardingChecklist } from 'components/OnboardingChecklist';
+import { OnboardingSteps } from 'components/OnboardingSteps';
 import OverviewStats from 'components/overview-stats';
 import PlaceholderCard from 'components/placeholder-card';
 import Sites from 'components/sites';
 import { db } from 'helpers/db';
-import { translate } from 'helpers/translate';
-import { getSession } from 'lib/auth';
-import CreateSiteButton from 'components/create-site-button';
-import CreateSiteModal from 'components/modal/create-site';
-import { MetricCard } from 'components/MetricCard';
-import { OnboardingSteps } from 'components/OnboardingSteps';
+import { getSession, getSubscription } from 'lib/auth';
 
 import 'array-grouping-polyfill';
 
@@ -128,6 +118,18 @@ export default async function Overview() {
     }
   });
 
+  const links = await db.link.findMany({
+    where: {
+      userId: session.user.id
+    }
+  });
+
+  const affiliate = await db.user.findMany({
+    where: {
+      refererId: session.user.id
+    }
+  });
+
   // Calcul des métriques globales
   const totalClicks = clicks.length;
   const totalSubscribers = sites.reduce(
@@ -145,20 +147,9 @@ export default async function Overview() {
   );
 
   // Calculs supplémentaires pour les nouvelles métriques
-  const totalSites = sites.length;
-  const totalLikes = sites.reduce(
-    (acc, site) => acc + (site.likes?.length || 0),
-    0
-  );
   // Visiteurs uniques (par site, ou global si possible)
-  const uniqueVisitors = Array.from(
-    new Set(clicks.map(c => c.userId).filter(Boolean))
-  ).length;
   // Taux de conversion (abonnés / visiteurs uniques)
-  const conversionRate =
-    uniqueVisitors > 0 ? (totalSubscribers / uniqueVisitors) * 100 : 0;
   // Taux d'engagement (clics / visiteurs uniques)
-  const engagementRate = uniqueVisitors > 0 ? totalClicks / uniqueVisitors : 0;
   // Dernière activité (date du dernier clic ou réservation)
   const lastClick =
     clicks.length > 0 ? clicks[clicks.length - 1].createdAt : null;
@@ -179,12 +170,10 @@ export default async function Overview() {
     lastActivityCandidates.length > 0
       ? lastActivityCandidates.sort((a, b) => b.getTime() - a.getTime())[0]
       : null;
-  let lastActivityLabel = 'Aucune activité';
   if (lastActivity) {
     const dateObj =
       typeof lastActivity === 'string' ? new Date(lastActivity) : lastActivity;
     if (!isNaN(dateObj.getTime())) {
-      lastActivityLabel = dateObj.toLocaleString();
     }
   }
 
@@ -192,21 +181,45 @@ export default async function Overview() {
   // const hasSites = sites.length > 0;
   const hasSites = false;
 
-  // Journée actuelle pour les salutations personnalisées
-  const hour = new Date().getHours();
-  let greeting = 'Bonjour';
-  if (hour < 5) greeting = 'Bonne nuit';
-  else if (hour < 12) greeting = 'Bonjour';
-  else if (hour < 18) greeting = 'Bon après-midi';
-  else greeting = 'Bonsoir';
-
-  // Récupérer le nombre total de produits de l'utilisateur
   const totalProducts = await db.product.count({
     where: {
       // Si tu as un champ userId ou similaire sur Product, adapte ici
       // userId: session.user.id
     }
   });
+
+  const subscription = await getSubscription();
+
+  const checklistState = {
+    hasSite: sites.length > 0,
+    hasDescription: sites.some(site => site.description && site.logo),
+    hasLogo: sites.some(site => site.logo),
+    hasCustomDomain: sites.some(site => site.customDomain),
+    hasBlock: sites.some(site => site.blocks.length > 0),
+    hasReservation: sites.some(site =>
+      site.blocks.some(block => block.reservations.length > 0)
+    ),
+    hasSubscriber: sites.some(site => site.subscribers.length > 0),
+    hasLink: links.length > 0,
+    hasClick: clicks.length > 0,
+    // hasLike: sites.some(site => site.likes && site.likes.length > 0),
+    // hasFeedback: false, // Remplace par la logique réelle si disponible
+    // hasMessage: false, // Remplace par la logique réelle si disponible
+    // hasProduct: totalProducts > 0,
+    hasSubscription: subscription.isPaid(), // Remplace par la logique réelle si disponible
+    // hasCompany: false, // Remplace par la logique réelle si disponible
+    // hasBilling: false, // Remplace par la logique réelle si disponible
+    // has2FA: false, // Remplace par la logique réelle si disponible
+    hasAffiliate: affiliate.length > 0, // Remplace par la logique réelle si disponible
+    // hasCampaign: false, // Remplace par la logique réelle si disponible
+    // hasFeed: false, // Remplace par la logique réelle si disponible
+    // hasComment: false, // Remplace par la logique réelle si disponible
+    // hasWorkflow: false // Remplace par la logique réelle si disponible
+    hasShare: false // Remplace par la logique réelle si disponible
+  };
+  const total = Object.keys(checklistState).length;
+  const completed = Object.values(checklistState).filter(Boolean).length;
+  const percent = Math.round((completed / total) * 100);
 
   return (
     <div className="relative min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-100 via-zinc-100 to-zinc-200 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-800 overflow-hidden pb-10">
@@ -215,95 +228,80 @@ export default async function Overview() {
         <div className="absolute -right-5 -top-40 w-72 h-72 bg-blue-500/5 dark:bg-blue-500/10 rounded-full mix-blend-multiply dark:mix-blend-soft-light blur-3xl"></div>
         <div className="absolute -left-20 top-1/4 w-80 h-80 bg-purple-500/5 dark:bg-purple-500/10 rounded-full mix-blend-multiply dark:mix-blend-soft-light blur-3xl"></div>
         <div className="absolute right-40 bottom-10 w-56 h-56 bg-pink-500/5 dark:bg-pink-500/10 rounded-full mix-blend-multiply dark:mix-blend-soft-light blur-3xl"></div>
-
-        {/* Motif de points */}
-        <div className="absolute inset-0 opacity-20 dark:opacity-10">
-          <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern
-                id="grid-pattern"
-                width="40"
-                height="40"
-                patternUnits="userSpaceOnUse"
-              >
-                <circle cx="4" cy="4" r="1" fill="#6b7280" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-          </svg>
-        </div>
       </div>
 
       <div className="relative z-10 px-6 md:px-10 pt-8 space-y-12">
-        {hasSites && <><div className="flex flex-col gap-4">
-          <div className="flex-1 flex items-center gap-4">
-            <MetricCard
-              title="Total des clics"
-              value={totalClicks}
-              icon={<LuMousePointer className="w-6 h-6 text-white" />}
-              iconBg="bg-blue-500"
-              badge={
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span
-                      className={`px-2 py-1 text-sm rounded-md ${pourcentVisitors >= 0 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}
-                    >
-                      {pourcentVisitors >= 0 ? '+' : ''}
-                      {pourcentVisitors.toFixed(1)}%
+        {hasSites && (
+          <>
+            <div className="flex flex-col gap-4">
+              <div className="flex-1 flex items-center gap-4">
+                <MetricCard
+                  title="Total des clics"
+                  value={totalClicks}
+                  icon={<LuMousePointer className="w-6 h-6 text-white" />}
+                  iconBg="bg-blue-500"
+                  badge={
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span
+                          className={`px-2 py-1 text-sm rounded-md ${pourcentVisitors >= 0 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}
+                        >
+                          {pourcentVisitors >= 0 ? '+' : ''}
+                          {pourcentVisitors.toFixed(1)}%
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent sideOffset={8}>
+                        Croissance par rapport à hier
+                      </TooltipContent>
+                    </Tooltip>
+                  }
+                  bgGradient="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/10 dark:to-blue-800/10"
+                  shadowColor="shadow-blue-100 dark:shadow-blue-900/20"
+                />
+
+                <MetricCard
+                  title="Abonnés"
+                  value={totalSubscribers}
+                  icon={<LuUsers className="w-6 h-6 text-white" />}
+                  iconBg="bg-purple-500"
+                  badge={
+                    <span className="px-2 py-1 text-sm rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400">
+                      {sites.length} {sites.length > 1 ? 'sites' : 'site'}
                     </span>
-                  </TooltipTrigger>
-                  <TooltipContent sideOffset={8}>
-                    Croissance par rapport à hier
-                  </TooltipContent>
-                </Tooltip>
-              }
-              bgGradient="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/10 dark:to-blue-800/10"
-              shadowColor="shadow-blue-100 dark:shadow-blue-900/20"
-            />
+                  }
+                  bgGradient="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/10 dark:to-purple-800/10"
+                  shadowColor="shadow-purple-100 dark:shadow-purple-900/20"
+                />
 
-            <MetricCard
-              title="Abonnés"
-              value={totalSubscribers}
-              icon={<LuUsers className="w-6 h-6 text-white" />}
-              iconBg="bg-purple-500"
-              badge={
-                <span className="px-2 py-1 text-sm rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400">
-                  {sites.length} {sites.length > 1 ? 'sites' : 'site'}
-                </span>
-              }
-              bgGradient="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/10 dark:to-purple-800/10"
-              shadowColor="shadow-purple-100 dark:shadow-purple-900/20"
-            />
+                <MetricCard
+                  title="Réservations"
+                  value={upcomingReservations}
+                  icon={<LuCalendar className="w-6 h-6 text-white" />}
+                  iconBg="bg-amber-500"
+                  badge={
+                    <span className="px-2 py-1 text-sm rounded-md bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                      À venir
+                    </span>
+                  }
+                  bgGradient="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/10 dark:to-amber-800/10"
+                  shadowColor="shadow-amber-100 dark:shadow-amber-900/20"
+                />
 
-            <MetricCard
-              title="Réservations"
-              value={upcomingReservations}
-              icon={<LuCalendar className="w-6 h-6 text-white" />}
-              iconBg="bg-amber-500"
-              badge={
-                <span className="px-2 py-1 text-sm rounded-md bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                  À venir
-                </span>
-              }
-              bgGradient="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/10 dark:to-amber-800/10"
-              shadowColor="shadow-amber-100 dark:shadow-amber-900/20"
-            />
+                <MetricCard
+                  title="Produits"
+                  value={totalProducts}
+                  icon={<LuPalette className="w-6 h-6 text-white" />}
+                  iconBg="bg-fuchsia-500"
+                  badge={
+                    <span className="px-2 py-1 text-xs rounded-md bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-400">
+                      Total
+                    </span>
+                  }
+                  bgGradient="bg-gradient-to-br from-fuchsia-50 to-fuchsia-100 dark:from-fuchsia-900/10 dark:to-fuchsia-800/10"
+                  shadowColor="shadow-fuchsia-100 dark:shadow-fuchsia-900/20"
+                />
 
-            <MetricCard
-              title="Produits"
-              value={totalProducts}
-              icon={<LuPalette className="w-6 h-6 text-white" />}
-              iconBg="bg-fuchsia-500"
-              badge={
-                <span className="px-2 py-1 text-xs rounded-md bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-400">
-                  Total
-                </span>
-              }
-              bgGradient="bg-gradient-to-br from-fuchsia-50 to-fuchsia-100 dark:from-fuchsia-900/10 dark:to-fuchsia-800/10"
-              shadowColor="shadow-fuchsia-100 dark:shadow-fuchsia-900/20"
-            />
-
-            {/* <MetricCard
+                {/* <MetricCard
               title="Likes reçus"
               value={totalLikes}
               icon={<LuStar className="w-6 h-6 text-white" />}
@@ -313,7 +311,7 @@ export default async function Overview() {
               shadowColor="shadow-yellow-100 dark:shadow-yellow-900/20"
             /> */}
 
-            {/* <MetricCard
+                {/* <MetricCard
               title="Visiteurs uniques"
               value={uniqueVisitors}
               icon={<LuUsers className="w-6 h-6 text-white" />}
@@ -323,7 +321,7 @@ export default async function Overview() {
               shadowColor="shadow-green-100 dark:shadow-green-900/20"
             /> */}
 
-            {/* <MetricCard
+                {/* <MetricCard
               title="Taux de conversion"
               value={Math.round(conversionRate)}
               icon={<LuHeartHandshake className="w-6 h-6 text-white" />}
@@ -333,7 +331,7 @@ export default async function Overview() {
               shadowColor="shadow-pink-100 dark:shadow-pink-900/20"
             /> */}
 
-            {/* <MetricCard
+                {/* <MetricCard
               title="Taux d'engagement"
               value={Math.round(engagementRate)}
               icon={<LuSparkles className="w-6 h-6 text-white" />}
@@ -342,14 +340,16 @@ export default async function Overview() {
               bgGradient="bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/10 dark:to-cyan-800/10"
               shadowColor="shadow-cyan-100 dark:shadow-cyan-900/20"
             /> */}
-          </div>
-        </div>
+              </div>
+            </div>
 
-        <OverviewStats
-          dailyGrowth={pourcentVisitors}
-          chartdata={chartdata}
-          total={clicks.length}
-        /></>}
+            <OverviewStats
+              dailyGrowth={pourcentVisitors}
+              chartdata={chartdata}
+              total={clicks.length}
+            />
+          </>
+        )}
 
         {/* Sites ou Onboarding */}
         {hasSites ? (
@@ -413,35 +413,8 @@ export default async function Overview() {
                 </h2>
               </div>
 
-              {/* Contenu principal avec design inspiré des vagues */}
               <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-0">
-                {/* Colonne de gauche avec étapes */}
                 <div className="lg:col-span-7 p-6 pb-10 relative">
-                  {/* Vague décorative en arrière-plan */}
-                  <div className="absolute -bottom-5 -right-5 w-full h-32 opacity-20">
-                    <svg
-                      viewBox="0 0 400 400"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M0,192 C80,96 160,0 240,0 C320,0 400,96 400,192 C400,288 320,384 240,384 C160,384 80,288 0,192 Z"
-                        fill="url(#gradient-steps)"
-                      />
-                      <defs>
-                        <linearGradient
-                          id="gradient-steps"
-                          x1="0%"
-                          y1="0%"
-                          x2="100%"
-                          y2="0%"
-                        >
-                          <stop offset="0%" stopColor="#4f46e5" />
-                          <stop offset="100%" stopColor="#9f7aea" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                  </div>
-
                   <OnboardingSteps
                     steps={[
                       {
@@ -472,17 +445,35 @@ export default async function Overview() {
                         color: 'from-amber-500 to-orange-500'
                       }
                     ]}
-                    currentStep={2}
                     createSiteButton={
                       <CreateSiteButton>
                         <CreateSiteModal />
                       </CreateSiteButton>
                     }
                   />
+
+                  <div className="my-6">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                        Progression
+                      </span>
+                      <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                        {percent}%
+                      </span>
+                    </div>
+
+                    <div className="w-full h-3 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700"
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <OnboardingChecklist state={checklistState} />
                 </div>
 
-                {/* Colonne de droite avec prévisualisation */}
-                <div className="lg:col-span-5 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 p-6 flex items-center justify-center rounded-r-2xl">
+                {/* <div className="lg:col-span-5 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 p-6 flex items-center justify-center rounded-r-2xl">
                   <div className="relative group flex flex-col items-center">
                     <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition duration-300 -rotate-2"></div>
                     <div className="relative rounded-xl overflow-hidden shadow-2xl border-4 border-white dark:border-zinc-900">
@@ -505,13 +496,13 @@ export default async function Overview() {
                       </div>
                     </div>
 
-                    {/* Badge flottant */}
+
                     <div className="absolute -top-4 -right-4 bg-white dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400 text-xs font-medium px-3 py-1 rounded-full shadow-md border border-indigo-100 dark:border-indigo-900/50 flex items-center">
                       <LuZap className="w-3 h-3 mr-1 text-amber-500" />
                       <span>Prêt en 5 minutes</span>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

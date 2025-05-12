@@ -35,8 +35,7 @@ export function WelcomeCard({
             </div>
           ) : (
             <div className="flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium rounded-full">
-              {/* Calendar icon à injecter par le parent si besoin */}
-              <span>Aujourd'hui</span>
+              <span>{"Aujourd'hui"}</span>
             </div>
           )}
           <div className="h-px flex-1 bg-gradient-to-r from-zinc-500/20 to-transparent"></div>

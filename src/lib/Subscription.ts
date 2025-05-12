@@ -24,6 +24,10 @@ export class Subscription {
     this.user = user;
   }
 
+  isPaid(): boolean {
+    return this.active();
+  }
+
   valid(): boolean {
     return this.active() || this.onTrial() || this.onGracePeriod();
   }
