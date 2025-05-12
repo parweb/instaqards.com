@@ -28,8 +28,6 @@ export const Background = ({
           String(background)?.split('|').at(0)?.split('/').pop() ?? ''
         ) || '';
 
-  console.log({ media_type });
-
   return (
     <>
       <motion.div

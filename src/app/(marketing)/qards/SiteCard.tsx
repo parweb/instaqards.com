@@ -82,11 +82,6 @@ const SiteCardComponent = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        console.log(
-          'Intersection Observer Fired:',
-          entry.isIntersecting,
-          entry.target
-        );
         setIsVisible(entry.isIntersecting);
       },
       { rootMargin: '750px', threshold: 0.1 }
@@ -124,8 +119,6 @@ const SiteCardComponent = ({
       video.pause();
     }
   }, [isVisible, isMobile, state]);
-
-  console.log(`Rendering SiteCard ${site.subdomain}, isVisible:`, isVisible);
 
   const data: Record<Block['type'], Block[]> = {
     main: [],

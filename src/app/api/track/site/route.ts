@@ -24,7 +24,7 @@ export async function POST(request: Request) {
         ?.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
     : null;
 
-  console.log('track/site', {
+  console.info('track/site', {
     where: subdomain
       ? { subdomain: subdomain.toLowerCase() }
       : { customDomain: body.subdomain?.toLowerCase() }

@@ -14,7 +14,7 @@ const input = z.object({
 export async function POST(request: Request) {
   const body = input.parse(await request.json());
 
-  console.log('track/referer', body);
+  console.info('track/referer', body);
 
   const click = await db.click.create({
     data: {

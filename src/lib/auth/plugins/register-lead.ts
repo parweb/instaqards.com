@@ -21,9 +21,6 @@ export const registerLead = () => {
           handler: createAuthMiddleware(async ctx => {
             const { adapter, internalAdapter } = ctx.context;
 
-            console.log({ path: ctx.path });
-            console.log({ ctx });
-
             const { email, password, name, referer } =
               await RegisterSchema.merge(
                 z.object({
@@ -36,8 +33,6 @@ export const registerLead = () => {
                     )
                 })
               ).parseAsync(ctx.body);
-
-            console.log({ email, password, name, referer });
 
             const existingUser =
               (await adapter.findOne<User>({
