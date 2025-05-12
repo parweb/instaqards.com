@@ -23,6 +23,8 @@ Pour nous y’en a pas forcément besoin mais plus les futurs prospects ce qu’
           login -> no account found -> retry
           login -> email not verify -> resend email
 
+     -> campaign lien direct vers le profile user
+     -> espace membre au lieu register dans la home marketing
      -> editor page pro soit editable (pas besoin d'etre logué)
      -> template dans page pro
      -> qards par default préremplis stylé / neutre (modal blank or template)
