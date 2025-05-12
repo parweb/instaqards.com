@@ -4,16 +4,21 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { hashPassword, verifyPassword } from 'better-auth/crypto';
 import { nextCookies } from 'better-auth/next-js';
+import { emailOTP, magicLink } from 'better-auth/plugins';
 import { headers } from 'next/headers';
-import { emailOTP } from 'better-auth/plugins';
 
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { Subscription } from 'lib/Subscription';
+import { uri } from 'settings';
 import { authjs } from './plugins/legacy/authjs';
 import { registerLead } from './plugins/register-lead';
-import { sendPasswordResetEmail, sendVerificationEmail } from 'helpers/mail';
-import { uri } from 'settings';
+
+import {
+  sendMagicLinkEmail,
+  sendPasswordResetEmail,
+  sendVerificationEmail
+} from 'helpers/mail';
 
 export const auth = betterAuth({
   advanced: {
@@ -49,12 +54,28 @@ export const auth = betterAuth({
         return mapper[type](email, otp);
       }
     }),
-    registerLead()
+    registerLead(),
+    magicLink({
+      expiresIn: 60 * 60 * 24 * 30, // 30 days
+      sendMagicLink: async ({ email, url }) => {
+        console.log('lib/auth::magicLink::sendMagicLink', {
+          email,
+          url
+        });
+
+        await sendMagicLinkEmail(email, url);
+      }
+    })
   ],
   database: prismaAdapter(db, { provider: 'postgresql' }),
   emailVerification: {
     autoSignInAfterVerification: true,
     async sendVerificationEmail({ user, url }) {
+      console.log('lib/auth::emailVerification::sendVerificationEmail', {
+        user,
+        url
+      });
+
       await sendVerificationEmail(
         user.email,
         url.replace(
@@ -107,6 +128,15 @@ export const auth = betterAuth({
 
         return verifyPassword({ hash, password });
       }
+    },
+    sendResetPassword: async ({ user, url, token }) => {
+      console.log('lib/auth::emailAndPassword::sendResetPassword', {
+        user,
+        url,
+        token
+      });
+
+      await sendPasswordResetEmail(user.email, url);
     }
   },
   session: {
