@@ -1,9 +1,8 @@
 'use server';
 
-import { AuthError } from 'next-auth';
-import { redirect } from 'next/navigation';
 import type * as z from 'zod';
 
+import { APIError } from 'better-auth/api';
 import { translate } from 'helpers/translate';
 import { auth } from 'lib/auth';
 import { LoginSchema } from 'schemas';
@@ -24,8 +23,14 @@ export const login = async (
     const user = await auth.api.signInEmail({ body: { email, password } });
     return { success: { callbackUrl: callbackUrl || '/', user } };
   } catch (error) {
-    if (error instanceof AuthError) {
-      return { error: await translate('actions.login.credentials.oops') };
+    console.error({ error });
+
+    if (error instanceof APIError) {
+      return {
+        error: await translate('actions.login.credentials.oops'),
+        code: error.body?.code,
+        message: error.body?.message
+      };
     }
 
     throw error;

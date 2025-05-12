@@ -58,18 +58,19 @@ export const LoginForm = () => {
       login(values, callbackUrl)
         .then(data => {
           if ('error' in data) {
-            form.reset();
-            setError(data.error);
+            if ('code' in data) {
+              setError(data.message);
+            } else setError(data.error);
           }
 
           if ('success' in data) {
             form.reset();
-            console.log(data.success?.callbackUrl);
             router.push(String(data.success?.callbackUrl));
           }
         })
         .catch(error => {
           console.error({ error });
+
           if (error instanceof Error) {
             setError('Something went wrong');
           }
