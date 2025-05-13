@@ -25,22 +25,23 @@ model User {
   id String @id @default(cuid())
 
   name               String?
-  email              String  @unique
-  emailVerified      Boolean @default(false)
+  email              String   @unique
+  emailVerified      Boolean  @default(false)
   image              String?
-  isTwoFactorEnabled Boolean @default(false)
-  billing_address    Json    @default("{}")
-  payment_method     Json    @default("{}")
+  isTwoFactorEnabled Boolean  @default(false)
+  billing_address    Json     @default("{}")
+  payment_method     Json     @default("{}")
   company            String?
   address            String?
-  location           Json?   @default("{}")
+  location           Json?    @default("{}")
   postcode           String?
   city               String?
   phone              String?
   codeNaf            String?
   activity           String?
-  bounced            Int     @default(0)
-  affiliateRate      Float?  @default(0.05)
+  bounced            Int      @default(0)
+  affiliateRate      Float?   @default(0.05)
+  isAnonymous        Boolean? @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -86,6 +86,7 @@ export const UserScalarFieldEnumSchema = z.enum([
   'activity',
   'bounced',
   'affiliateRate',
+  'isAnonymous',
   'createdAt',
   'updatedAt',
   'role',
@@ -648,6 +649,7 @@ export const UserSchema = z.object({
   activity: z.string().nullable(),
   bounced: z.number().int(),
   affiliateRate: z.number().nullable(),
+  isAnonymous: z.boolean().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   refererId: z.string().nullable()
@@ -1447,6 +1449,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     activity: z.boolean().optional(),
     bounced: z.boolean().optional(),
     affiliateRate: z.boolean().optional(),
+    isAnonymous: z.boolean().optional(),
     createdAt: z.boolean().optional(),
     updatedAt: z.boolean().optional(),
     role: z.boolean().optional(),
@@ -3168,6 +3171,10 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
       .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
       .optional()
       .nullable(),
+    isAnonymous: z
+      .union([z.lazy(() => BoolNullableFilterSchema), z.boolean()])
+      .optional()
+      .nullable(),
     createdAt: z
       .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
       .optional(),
@@ -3309,6 +3316,12 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
         .optional(),
       bounced: z.lazy(() => SortOrderSchema).optional(),
       affiliateRate: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      isAnonymous: z
         .union([
           z.lazy(() => SortOrderSchema),
           z.lazy(() => SortOrderInputSchema)
@@ -3470,6 +3483,10 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
             .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
             .optional()
             .nullable(),
+          isAnonymous: z
+            .union([z.lazy(() => BoolNullableFilterSchema), z.boolean()])
+            .optional()
+            .nullable(),
           createdAt: z
             .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
             .optional(),
@@ -3623,6 +3640,12 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
           z.lazy(() => SortOrderInputSchema)
         ])
         .optional(),
+      isAnonymous: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       role: z.lazy(() => SortOrderSchema).optional(),
@@ -3744,6 +3767,13 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
         .union([
           z.lazy(() => FloatNullableWithAggregatesFilterSchema),
           z.number()
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.lazy(() => BoolNullableWithAggregatesFilterSchema),
+          z.boolean()
         ])
         .optional()
         .nullable(),
@@ -12903,6 +12933,7 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
     activity: z.string().optional().nullable(),
     bounced: z.number().int().optional(),
     affiliateRate: z.number().optional().nullable(),
+    isAnonymous: z.boolean().optional().nullable(),
     createdAt: z.coerce.date().optional(),
     updatedAt: z.coerce.date().optional(),
     role: z.lazy(() => UserRoleSchema).optional(),
@@ -13010,6 +13041,7 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -13206,6 +13238,13 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
       .union([
         z.number(),
         z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    isAnonymous: z
+      .union([
+        z.boolean(),
+        z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
       ])
       .optional()
       .nullable(),
@@ -13416,6 +13455,13 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -13561,6 +13607,7 @@ export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> =
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -13680,6 +13727,13 @@ export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyM
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -13816,6 +13870,13 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -23795,6 +23856,16 @@ export const FloatNullableFilterSchema: z.ZodType<Prisma.FloatNullableFilter> =
     })
     .strict();
 
+export const BoolNullableFilterSchema: z.ZodType<Prisma.BoolNullableFilter> = z
+  .object({
+    equals: z.boolean().optional().nullable(),
+    not: z
+      .union([z.boolean(), z.lazy(() => NestedBoolNullableFilterSchema)])
+      .optional()
+      .nullable()
+  })
+  .strict();
+
 export const DateTimeFilterSchema: z.ZodType<Prisma.DateTimeFilter> = z
   .object({
     equals: z.coerce.date().optional(),
@@ -24236,6 +24307,7 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
       activity: z.lazy(() => SortOrderSchema).optional(),
       bounced: z.lazy(() => SortOrderSchema).optional(),
       affiliateRate: z.lazy(() => SortOrderSchema).optional(),
+      isAnonymous: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       role: z.lazy(() => SortOrderSchema).optional(),
@@ -24269,6 +24341,7 @@ export const UserMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserMaxOrderBy
       activity: z.lazy(() => SortOrderSchema).optional(),
       bounced: z.lazy(() => SortOrderSchema).optional(),
       affiliateRate: z.lazy(() => SortOrderSchema).optional(),
+      isAnonymous: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       role: z.lazy(() => SortOrderSchema).optional(),
@@ -24294,6 +24367,7 @@ export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderBy
       activity: z.lazy(() => SortOrderSchema).optional(),
       bounced: z.lazy(() => SortOrderSchema).optional(),
       affiliateRate: z.lazy(() => SortOrderSchema).optional(),
+      isAnonymous: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       role: z.lazy(() => SortOrderSchema).optional(),
@@ -24467,6 +24541,23 @@ export const FloatNullableWithAggregatesFilterSchema: z.ZodType<Prisma.FloatNull
       _sum: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
       _min: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
       _max: z.lazy(() => NestedFloatNullableFilterSchema).optional()
+    })
+    .strict();
+
+export const BoolNullableWithAggregatesFilterSchema: z.ZodType<Prisma.BoolNullableWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.boolean().optional().nullable(),
+      not: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NestedBoolNullableWithAggregatesFilterSchema)
+        ])
+        .optional()
+        .nullable(),
+      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+      _min: z.lazy(() => NestedBoolNullableFilterSchema).optional(),
+      _max: z.lazy(() => NestedBoolNullableFilterSchema).optional()
     })
     .strict();
 
@@ -28605,6 +28696,13 @@ export const NullableFloatFieldUpdateOperationsInputSchema: z.ZodType<Prisma.Nul
       decrement: z.number().optional(),
       multiply: z.number().optional(),
       divide: z.number().optional()
+    })
+    .strict();
+
+export const NullableBoolFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableBoolFieldUpdateOperationsInput> =
+  z
+    .object({
+      set: z.boolean().optional().nullable()
     })
     .strict();
 
@@ -39928,6 +40026,17 @@ export const NestedFloatNullableFilterSchema: z.ZodType<Prisma.NestedFloatNullab
     })
     .strict();
 
+export const NestedBoolNullableFilterSchema: z.ZodType<Prisma.NestedBoolNullableFilter> =
+  z
+    .object({
+      equals: z.boolean().optional().nullable(),
+      not: z
+        .union([z.boolean(), z.lazy(() => NestedBoolNullableFilterSchema)])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
 export const NestedDateTimeFilterSchema: z.ZodType<Prisma.NestedDateTimeFilter> =
   z
     .object({
@@ -40144,6 +40253,23 @@ export const NestedFloatNullableWithAggregatesFilterSchema: z.ZodType<Prisma.Nes
       _sum: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
       _min: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
       _max: z.lazy(() => NestedFloatNullableFilterSchema).optional()
+    })
+    .strict();
+
+export const NestedBoolNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedBoolNullableWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.boolean().optional().nullable(),
+      not: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NestedBoolNullableWithAggregatesFilterSchema)
+        ])
+        .optional()
+        .nullable(),
+      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+      _min: z.lazy(() => NestedBoolNullableFilterSchema).optional(),
+      _max: z.lazy(() => NestedBoolNullableFilterSchema).optional()
     })
     .strict();
 
@@ -41213,6 +41339,7 @@ export const UserCreateWithoutRefererInputSchema: z.ZodType<Prisma.UserCreateWit
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -41325,6 +41452,7 @@ export const UserUncheckedCreateWithoutRefererInputSchema: z.ZodType<Prisma.User
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -41470,6 +41598,7 @@ export const UserCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreate
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -41582,6 +41711,7 @@ export const UserUncheckedCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -43418,6 +43548,10 @@ export const UserScalarWhereInputSchema: z.ZodType<Prisma.UserScalarWhereInput> 
         .union([z.lazy(() => FloatNullableFilterSchema), z.number()])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([z.lazy(() => BoolNullableFilterSchema), z.boolean()])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
         .optional(),
@@ -43575,6 +43709,13 @@ export const UserUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdate
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -43787,6 +43928,13 @@ export const UserUncheckedUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -45022,6 +45170,7 @@ export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithou
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -45134,6 +45283,7 @@ export const UserUncheckedCreateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -45266,6 +45416,7 @@ export const UserCreateWithoutReceivedInputSchema: z.ZodType<Prisma.UserCreateWi
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -45378,6 +45529,7 @@ export const UserUncheckedCreateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -45621,6 +45773,13 @@ export const UserUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -45830,6 +45989,13 @@ export const UserUncheckedUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -46086,6 +46252,13 @@ export const UserUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -46298,6 +46471,13 @@ export const UserUncheckedUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -46440,6 +46620,7 @@ export const UserCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserCreateWi
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -46552,6 +46733,7 @@ export const UserUncheckedCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -46795,6 +46977,13 @@ export const UserUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -47007,6 +47196,13 @@ export const UserUncheckedUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -47149,6 +47345,7 @@ export const UserCreateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -47261,6 +47458,7 @@ export const UserUncheckedCreateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -47501,6 +47699,13 @@ export const UserUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -47713,6 +47918,13 @@ export const UserUncheckedUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -47852,6 +48064,7 @@ export const UserCreateWithoutCustomerInputSchema: z.ZodType<Prisma.UserCreateWi
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -47964,6 +48177,7 @@ export const UserUncheckedCreateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -48207,6 +48421,13 @@ export const UserUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -48416,6 +48637,13 @@ export const UserUncheckedUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -49030,6 +49258,7 @@ export const UserCreateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserCre
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -49142,6 +49371,7 @@ export const UserUncheckedCreateWithoutSubscriptionsInputSchema: z.ZodType<Prism
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -49560,6 +49790,13 @@ export const UserUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserUpd
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -49772,6 +50009,13 @@ export const UserUncheckedUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prism
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -49914,6 +50158,7 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -50026,6 +50271,7 @@ export const UserUncheckedCreateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -50269,6 +50515,13 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -50481,6 +50734,13 @@ export const UserUncheckedUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -50623,6 +50883,7 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -50735,6 +50996,7 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -50978,6 +51240,13 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -51190,6 +51459,13 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -51332,6 +51608,7 @@ export const UserCreateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserCre
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -51444,6 +51721,7 @@ export const UserUncheckedCreateWithoutAuthenticatorInputSchema: z.ZodType<Prism
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -51685,6 +51963,13 @@ export const UserUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserUpd
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -51894,6 +52179,13 @@ export const UserUncheckedUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -52220,6 +52512,7 @@ export const UserCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserCreateWith
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -52332,6 +52625,7 @@ export const UserUncheckedCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -52464,6 +52758,7 @@ export const UserCreateWithoutReferralsInputSchema: z.ZodType<Prisma.UserCreateW
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -52576,6 +52871,7 @@ export const UserUncheckedCreateWithoutReferralsInputSchema: z.ZodType<Prisma.Us
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -53376,6 +53672,13 @@ export const UserUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -53585,6 +53888,13 @@ export const UserUncheckedUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -53841,6 +54151,13 @@ export const UserUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.UserUpdateW
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -54050,6 +54367,13 @@ export const UserUncheckedUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.Us
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -54265,6 +54589,7 @@ export const UserCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserCreateWitho
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -54377,6 +54702,7 @@ export const UserUncheckedCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -54657,6 +54983,13 @@ export const UserUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -54866,6 +55199,13 @@ export const UserUncheckedUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -55617,6 +55957,7 @@ export const UserCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserCreateWitho
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -55729,6 +56070,7 @@ export const UserUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -56277,6 +56619,13 @@ export const UserUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -56486,6 +56835,13 @@ export const UserUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -56759,6 +57115,7 @@ export const UserCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserCreateWitho
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -56871,6 +57228,7 @@ export const UserUncheckedCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -57418,6 +57776,13 @@ export const UserUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -57627,6 +57992,13 @@ export const UserUncheckedUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -58109,6 +58481,7 @@ export const UserCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserCreateWithou
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -58223,6 +58596,7 @@ export const UserUncheckedCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -58810,6 +59184,13 @@ export const UserUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -59021,6 +59402,13 @@ export const UserUncheckedUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -59287,6 +59675,7 @@ export const UserCreateWithoutCommentsInputSchema: z.ZodType<Prisma.UserCreateWi
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -59399,6 +59788,7 @@ export const UserUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -59768,6 +60158,13 @@ export const UserUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -59977,6 +60374,13 @@ export const UserUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -60524,6 +60928,7 @@ export const UserCreateWithoutReservationsInputSchema: z.ZodType<Prisma.UserCrea
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -60636,6 +61041,7 @@ export const UserUncheckedCreateWithoutReservationsInputSchema: z.ZodType<Prisma
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -61056,6 +61462,13 @@ export const UserUpdateWithoutReservationsInputSchema: z.ZodType<Prisma.UserUpda
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -61268,6 +61681,13 @@ export const UserUncheckedUpdateWithoutReservationsInputSchema: z.ZodType<Prisma
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -61408,6 +61828,7 @@ export const UserCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserCreateWithou
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -61520,6 +61941,7 @@ export const UserUncheckedCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -61763,6 +62185,13 @@ export const UserUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -61972,6 +62401,13 @@ export const UserUncheckedUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -63742,6 +64178,7 @@ export const UserCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserCreateWith
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -63854,6 +64291,7 @@ export const UserUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -64097,6 +64535,13 @@ export const UserUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -64309,6 +64754,13 @@ export const UserUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -64451,6 +64903,7 @@ export const UserCreateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserCr
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -64563,6 +65016,7 @@ export const UserUncheckedCreateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -64847,6 +65301,13 @@ export const UserUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserUp
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -65056,6 +65517,13 @@ export const UserUncheckedUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -65329,6 +65797,7 @@ export const UserCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserCreate
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -65441,6 +65910,7 @@ export const UserUncheckedCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -65784,6 +66254,13 @@ export const UserUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserUpdate
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -65993,6 +66470,13 @@ export const UserUncheckedUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -66460,6 +66944,7 @@ export const UserCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserCreateWith
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -66572,6 +67057,7 @@ export const UserUncheckedCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -66957,6 +67443,13 @@ export const UserUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -67169,6 +67662,13 @@ export const UserUncheckedUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -67311,6 +67811,7 @@ export const UserCreateWithoutListsManageInputSchema: z.ZodType<Prisma.UserCreat
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -67423,6 +67924,7 @@ export const UserUncheckedCreateWithoutListsManageInputSchema: z.ZodType<Prisma.
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -67555,6 +68057,7 @@ export const UserCreateWithoutListsInputSchema: z.ZodType<Prisma.UserCreateWitho
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -67667,6 +68170,7 @@ export const UserUncheckedCreateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -68449,6 +68953,7 @@ export const UserCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserCreateWith
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -68561,6 +69066,7 @@ export const UserUncheckedCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
@@ -68860,6 +69366,13 @@ export const UserUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -69069,6 +69582,13 @@ export const UserUncheckedUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -69370,6 +69890,7 @@ export const UserCreateManyRefererInputSchema: z.ZodType<Prisma.UserCreateManyRe
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional()
@@ -71179,6 +71700,13 @@ export const UserUpdateWithoutRefererInputSchema: z.ZodType<Prisma.UserUpdateWit
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -71388,6 +71916,13 @@ export const UserUncheckedUpdateWithoutRefererInputSchema: z.ZodType<Prisma.User
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -71611,6 +72146,13 @@ export const UserUncheckedUpdateManyWithoutRefererInputSchema: z.ZodType<Prisma.
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -77329,6 +77871,13 @@ export const UserUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.UserUpdat
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -77538,6 +78087,13 @@ export const UserUncheckedUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -77768,6 +78324,13 @@ export const UserUncheckedUpdateManyWithoutListsManageInputSchema: z.ZodType<Pri
         ])
         .optional()
         .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       createdAt: z
         .union([
           z.coerce.date(),
@@ -77908,6 +78471,13 @@ export const UserUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -78120,6 +78690,13 @@ export const UserUncheckedUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),
@@ -78347,6 +78924,13 @@ export const UserUncheckedUpdateManyWithoutListsInputSchema: z.ZodType<Prisma.Us
         .union([
           z.number(),
           z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
         ])
         .optional()
         .nullable(),

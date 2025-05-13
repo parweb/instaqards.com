@@ -4,7 +4,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { hashPassword, verifyPassword } from 'better-auth/crypto';
 import { nextCookies } from 'better-auth/next-js';
-import { emailOTP, magicLink } from 'better-auth/plugins';
+import { anonymous, emailOTP, magicLink } from 'better-auth/plugins';
 import { headers } from 'next/headers';
 
 import { db } from 'helpers/db';
@@ -64,6 +64,15 @@ export const auth = betterAuth({
         });
 
         await sendMagicLinkEmail(email, url);
+      }
+    }),
+    anonymous({
+      onLinkAccount: async ({ anonymousUser, newUser }) => {
+        console.log('lib/auth::anonymous::onLinkAccount', {
+          anonymousUser,
+          newUser
+        });
+        // perform actions like moving the cart items from anonymous user to the new user
       }
     })
   ],
