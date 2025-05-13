@@ -1,6 +1,8 @@
 'use client';
 
 import { Outbox, Prisma, Queue } from '@prisma/client';
+import { LucideLoader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useActionState, useState } from 'react';
 import { IconType } from 'react-icons';
 
@@ -22,6 +24,7 @@ import ModalButton from 'components/modal-button';
 import CampaignsMutateModal from 'components/modal/mutate-campaign';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
+import { cn } from 'lib/utils';
 import { deleteCampaign, toggleCampaign } from './actions';
 
 import {
@@ -31,8 +34,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from 'components/ui/dropdown-menu';
-import { cn } from 'lib/utils';
-import { LucideLoader2 } from 'lucide-react';
 
 const Stat = ({
   label,
@@ -222,6 +223,7 @@ export const CampaignItem = ({
                 outbox.email === contact.email &&
                 outbox.campaignId === campaign.id
             );
+
             const queue = queues.find(
               q =>
                 // @ts-ignore
@@ -244,7 +246,11 @@ export const CampaignItem = ({
                 >
                   {queue?.status}
                 </Badge>
-                <span>{contact.email}</span>
+
+                <Link href={`/user/${contact.id}/outbox/${outbox?.id}`}>
+                  {contact.email}
+                </Link>
+
                 <div className="flex gap-2 items-center">
                   {outbox?.status === 'opened' && (
                     <Badge variant="secondary">{outbox?.status}</Badge>
