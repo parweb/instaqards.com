@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { motion } from 'motion/react';
-import { AnimatedNumber } from 'components/ui/AnimatedNumber';
+import { AnimatedNumber } from 'components/ui/animated-number';
 
 interface MetricCardProps {
   title: string;
@@ -27,7 +27,7 @@ export function MetricCard({
 }: MetricCardProps) {
   return (
     <div
-      className={`flex-1 relative bg-white/70 dark:bg-zinc-800/70 rounded-xl overflow-hidden shadow-lg border border-white/40 dark:border-white/10 backdrop-blur-md backdrop-saturate-150 ${shadowColor} transition-all`}
+      className={`flex-1 self-stretch relative bg-white/70 dark:bg-zinc-800/70 rounded-xl overflow-hidden shadow-lg border border-white/40 dark:border-white/10 backdrop-blur-md backdrop-saturate-150 ${shadowColor} transition-all`}
     >
       <div
         className={`absolute inset-0 ${bgGradient} mix-blend-multiply dark:mix-blend-soft-light`}

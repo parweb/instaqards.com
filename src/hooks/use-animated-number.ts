@@ -1,26 +1,26 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 
 interface AnimatedNumberProps {
   value: number;
   duration?: number; // en ms
-  className?: string;
 }
 
-export function AnimatedNumber({
+export function useAnimatedNumber({
   value,
-  duration = 800,
-  className
+  duration = 800
 }: AnimatedNumberProps) {
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    let start = 0;
+    const start = 0;
     const end = value;
+
     if (start === end) return;
+
     const increment = (end - start) / (duration / 16);
+
     let current = start;
+
     const timer = setInterval(() => {
       current += increment;
       if (
@@ -33,8 +33,9 @@ export function AnimatedNumber({
         setDisplay(Math.round(current));
       }
     }, 16);
+
     return () => clearInterval(timer);
   }, [value, duration]);
 
-  return <span className={className}>{display}</span>;
+  return display;
 }

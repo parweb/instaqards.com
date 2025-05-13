@@ -396,6 +396,30 @@ const translations = {
     it: 'Cambia la foto di profilo',
     es: 'Cambiar la foto de perfil'
   },
+  'components.site.title': {
+    fr: 'Vos sites',
+    en: 'Your sites',
+    it: 'I tuoi siti',
+    es: 'Tus sitios'
+  },
+  'components.site.presence.start': {
+    fr: 'Commencez votre aventure Qards',
+    en: 'Start your Qards adventure',
+    it: 'Inizia la tua avventura Qards',
+    es: 'Comienza tu aventura Qards'
+  },
+  'components.site.presence.title': {
+    fr: 'Donnez vie à votre',
+    en: 'Give life to your',
+    it: 'Dai vita al tuo',
+    es: 'Dale vida a tu'
+  },
+  'components.site.presence.subtitle': {
+    fr: 'présence en ligne',
+    en: 'online presence',
+    it: 'presenza online',
+    es: 'presencia en línea'
+  },
   'components.site.updateBackground.title': {
     fr: 'Modifier le fond',
     en: 'Change Background',
