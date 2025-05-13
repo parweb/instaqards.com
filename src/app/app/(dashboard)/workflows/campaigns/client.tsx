@@ -5,6 +5,7 @@ import { LucideLoader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useActionState, useState } from 'react';
 import { IconType } from 'react-icons';
+import { interpolate } from 'motion';
 
 import {
   LuChevronDown,
@@ -46,17 +47,37 @@ const Stat = ({
   total?: number;
   Icon: IconType;
 }) => (
-  <div className="flex gap-4 items-center border rounded-md px-4 py-2 shadow-sm">
-    <div className="flex items-center justify-center bg-stone-100 rounded-full p-4">
-      <Icon className="w-7 h-7" />
-    </div>
+  <div className="border rounded-md shadow-sm">
+    <div className="rounded-md overflow-hidden">
+      <div className="flex gap-4 items-center px-4 py-2">
+        <div className="flex items-center justify-center bg-stone-100 rounded-full p-4">
+          <Icon className="w-7 h-7" />
+        </div>
 
-    <div>
-      <h4 className="text-muted-foreground">{label}</h4>
+        <div>
+          <h4 className="text-muted-foreground">{label}</h4>
 
-      <span className="font-medium">
-        {value} {total && `/${total} (${((value / total) * 100).toFixed(2)}%)`}
-      </span>
+          <span className="font-medium">
+            {value}{' '}
+            {total && `/${total} (${((value / total) * 100).toFixed(0)}%)`}
+          </span>
+        </div>
+      </div>
+
+      {total && (
+        <div className="w-full h-2  bg-stone-200">
+          <div
+            className="h-full "
+            style={{
+              width: `${(value / total) * 100}%`,
+              backgroundColor: interpolate(
+                [0, 1],
+                ['#f00', '#06ae06']
+              )(value / total)
+            }}
+          />
+        </div>
+      )}
     </div>
   </div>
 );
@@ -116,6 +137,7 @@ export const CampaignItem = ({
             value={campaign.outboxes.length}
             Icon={LuUser}
           />
+
           <Stat
             label="Ouverture"
             total={campaign.list.contacts.length}
@@ -127,8 +149,15 @@ export const CampaignItem = ({
             }
             Icon={LuExternalLink}
           />
+
           <Stat
             label="Clicks"
+            total={
+              campaign.outboxes.filter(({ metadata }) =>
+                // @ts-expect-error
+                metadata?.events?.find(e => e.type === 'open')
+              ).length
+            }
             value={
               campaign.outboxes.filter(({ metadata }) =>
                 // @ts-expect-error
