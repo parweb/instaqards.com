@@ -21,6 +21,10 @@ const navigationItems = [
     href: '/'
   },
   {
+    title: { fr: 'Explorer', en: 'Explore', it: 'Esplora', es: 'Explorar' },
+    href: '/explore'
+  },
+  {
     title: { fr: 'Qards', en: 'Qards', it: 'Qards', es: 'Qards' },
     items: [
       {
@@ -57,48 +61,23 @@ const navigationItems = [
       }
     ]
   }
-  // {
-  //   title: 'Blog',
-  //   href: '/blog'
-  // },
-  // {
-  //   title: 'À propos',
-  //   href: '/about'
-  // }
 ];
 
-const mobileLinks = [
-  {
-    label: { fr: 'Accueil', en: 'Home', it: 'Home', es: 'Home' },
-    href: '/'
-  },
-  {
-    label: {
-      fr: 'Qards du mois',
-      en: 'Qards of the month',
-      it: 'Qards del mese',
-      es: 'Qards del mes'
-    },
-    href: '/qards/top'
-  },
-  {
-    label: {
-      fr: 'Créer une qard',
-      en: 'Create a qard',
-      it: 'Crea una qard',
-      es: 'Crear una qard'
-    },
-    href: '/pro'
+const mobileLinks = navigationItems.flatMap(item => {
+  if (item.items) {
+    return item.items.map(item => ({
+      label: item.title,
+      href: item.href
+    }));
   }
-  // {
-  //   label: 'Blog',
-  //   href: '/blog'
-  // },
-  // {
-  //   label: 'À propos',
-  //   href: '/about'
-  // }
-];
+
+  return [
+    {
+      label: item.title,
+      href: item.href
+    }
+  ];
+});
 
 export const SiteHeader: React.FC<SiteHeaderProps> = ({
   lang = DEFAULT_LANG

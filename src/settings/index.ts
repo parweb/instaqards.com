@@ -15,7 +15,8 @@ export const marketingRoutes = [
   '/privacy',
   '/pro',
   '/qards/top',
-  '/identity'
+  '/identity',
+  '/explore'
 ];
 
 export const authRoutes = [
