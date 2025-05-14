@@ -5,7 +5,12 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import 'leaflet-defaulticon-compatibility';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
+import 'leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet/dist/leaflet.css';
+
+type MarkerClusterGroup = L.MarkerClusterGroup;
 
 const MapViewInner = ({
   position,
@@ -14,17 +19,17 @@ const MapViewInner = ({
 }: {
   position: [number, number];
   zoom?: number;
-  markers: { id: string; position: [number, number] }[];
+  markers: { id: string; position: [number, number]; name?: string }[];
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const markerRefsMap = useRef<Map<string, L.Marker>>(new Map());
+  const markerClusterRef = useRef<MarkerClusterGroup | null>(null);
   const isInitialRender = useRef(true);
   const lastKnownPosition = useRef(position);
 
   // Memoize marker positions to avoid unnecessary rerenders
   const markerPositions = useMemo(
-    () => markers.map(marker => ({ id: marker.id, position: marker.position })),
+    () => markers.map(marker => ({ id: marker.id, position: marker.position, name: marker.name })),
     [markers]
   );
 
@@ -42,62 +47,39 @@ const MapViewInner = ({
     const mapInstance = mapInstanceRef.current;
     if (!mapInstance) return;
 
-    const currentMarkers = markerRefsMap.current;
-
-    if (markerPositions.length === 0) {
-      // Only clear markers if there are no new markers to show
-      currentMarkers.forEach(marker => marker.remove());
-      currentMarkers.clear();
-      return;
+    // Initialize marker cluster if not exists
+    if (!markerClusterRef.current) {
+      const clusterGroup = (L as any).markerClusterGroup({
+        maxClusterRadius: 50,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        disableClusteringAtZoom: 15,
+        chunkedLoading: true,
+        chunkInterval: 200,
+        chunkDelay: 50
+      }) as MarkerClusterGroup;
+      
+      markerClusterRef.current = clusterGroup;
+      mapInstance.addLayer(clusterGroup);
     }
 
-    // Create a set of current marker IDs
-    const currentMarkerIds = new Set(markerPositions.map(m => m.id));
+    const clusterGroup = markerClusterRef.current;
+    if (!clusterGroup) return;
 
-    // Remove markers that are no longer needed
-    currentMarkers.forEach((marker, id) => {
-      if (!currentMarkerIds.has(id)) {
-        marker.remove();
-        currentMarkers.delete(id);
-      }
-    });
+    clusterGroup.clearLayers();
 
-    // Add or update markers
+    // Add markers to cluster group
     markerPositions.forEach(marker => {
-      // Check if marker already exists
-      const existingMarker = currentMarkers.get(marker.id);
-
-      if (existingMarker) {
-        // Update existing marker position
-        existingMarker.setLatLng(marker.position);
-      } else {
-        // Create new marker
-        const markerInstance = L.marker(marker.position, {
-          // Make sure marker stays on top and is interactive
-          zIndexOffset: 1000,
-          interactive: true,
-          keyboard: false
-        }).addTo(mapInstance);
-
-        currentMarkers.set(marker.id, markerInstance);
-
-        // Animate new marker appearance
-        const markerElement = markerInstance.getElement();
-        if (markerElement) {
-          markerElement.style.opacity = '0';
-          markerElement.style.transform = 'translateY(-10px)';
-          markerElement.style.transition =
-            'transform 0.3s ease-out, opacity 0.3s ease-out';
-
-          // Force browser to process the style changes before changing them
-          requestAnimationFrame(() => {
-            if (markerElement) {
-              markerElement.style.opacity = '1';
-              markerElement.style.transform = 'translateY(0)';
-            }
-          });
-        }
+      const markerInstance = L.marker(marker.position, {
+        title: marker.name || marker.id
+      });
+      
+      if (marker.name) {
+        markerInstance.bindPopup(marker.name);
       }
+      
+      clusterGroup.addLayer(markerInstance);
     });
   }, [markerPositions]);
 
@@ -144,11 +126,12 @@ const MapViewInner = ({
       const mapInstance = mapInstanceRef.current;
       if (!mapInstance) return;
 
-      // Create a local copy of the markers
-      const markerMap = new Map(markerRefsMap.current);
-
-      // Remove all markers
-      markerMap.forEach(marker => marker.remove());
+      // Clean up marker cluster
+      if (markerClusterRef.current) {
+        markerClusterRef.current.clearLayers();
+        mapInstance.removeLayer(markerClusterRef.current);
+        markerClusterRef.current = null;
+      }
 
       // Clean up the map
       mapInstance.off();
@@ -156,11 +139,8 @@ const MapViewInner = ({
 
       // Reset refs
       mapInstanceRef.current = null;
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      markerRefsMap.current.clear();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Enlever updateMarkers des dépendances
+  }, []);
 
   // Update view when position changes, but keep markers
   useEffect(() => {
