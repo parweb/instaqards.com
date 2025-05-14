@@ -9,9 +9,7 @@ TODO
           login -> email not verify -> resend email
 
      -> page annuaire
-     -> editor page pro soit editable (pas besoin d'etre logué)
      -> intégration externe clean url before (icon check vert si tout va bien)
-     -> template dans page pro
      -> share my qard on (iphone, android)
      -> qards par default préremplis stylé / neutre (modal blank or template)
      ->  widgets « site web » - Quand on fais un hover au dessus on pourrait avoir un bouton « voir le site » (apercu seulement, hauteur configurable)
@@ -21,9 +19,8 @@ TODO
      -> traductions
      -> description des inputs field possible (ex: youtube tu peux metre une url channel ou video)
      -> widget jeux concours
-
      -> logo social tripadvisor (https://www.google.com/s2/favicons?sz=64&domain_url=tripadvisor.com)
-        logo qards dans les socials
+     -> logo qards dans les socials
      -> block avis clients
      -> option background vertical double bg avec blur et/ou background secondaire
      -> philipain social network -> application mobile
@@ -62,6 +59,9 @@ TODO
      -> container ?
      -> twitch integration
      -> univers music, girly (template)
+
+DONE -> editor page pro soit editable (pas besoin d'etre logué)
+DONE -> template dans page pro
 
 DONE -> campaign lien direct vers le profile user
 DONE -> espace membre au lieu register dans la home marketing
