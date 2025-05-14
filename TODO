@@ -8,6 +8,7 @@ TODO
           login -> no account found -> retry
           login -> email not verify -> resend email
 
+     -> vue kanban par campaign
      -> page annuaire
      -> intégration externe clean url before (icon check vert si tout va bien)
      -> share my qard on (iphone, android)
