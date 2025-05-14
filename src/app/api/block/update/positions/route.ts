@@ -1,11 +1,17 @@
 import type { Block, Site } from '@prisma/client';
-import { revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { db } from 'helpers/db';
 import { revalidate } from 'helpers/revalidate';
+import { getSession } from 'lib/auth';
 
 export async function POST(request: NextRequest) {
+  const session = await getSession();
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { result, site } = (await request.json()) as {
     result: Block[];
     site: Site;

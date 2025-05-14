@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { Alert, AlertDescription } from 'components/ui/alert';
 import { translate } from 'helpers/translate';
+import { uri } from 'settings';
 
 const EmailInPage = async () => {
   return (
@@ -46,7 +47,7 @@ const EmailInPage = async () => {
         </Alert>
 
         <div className="text-sm text-gray-500">
-          <Link prefetch href="/home">
+          <Link prefetch href={uri.base()}>
             {await translate('auth.return.home')}
           </Link>
         </div>

@@ -3,7 +3,8 @@
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useQueryState } from 'nuqs';
+import { useState } from 'react';
 
 import type { CarouselApi } from 'components/ui/carousel';
 import { Job } from 'data/job';
@@ -27,10 +28,7 @@ const Persona = ({
     id: Job['id'];
     profession: Job['profession'][keyof Job['profession']];
   };
-  select: [
-    Job['id'] | undefined,
-    Dispatch<SetStateAction<Job['id'] | undefined>>
-  ];
+  select: [Job['id'], (value: Job['id']) => void];
   index: number;
   api: CarouselApi | null;
   linkable: boolean;
@@ -82,15 +80,12 @@ const Persona = ({
         }
       )}
       onClick={() => {
-        setSelected(state => {
-          const newState = state === job.id ? undefined : job.id;
-
-          if (newState === job.id && api) {
-            api.scrollTo(index, true);
-          }
-
-          return newState;
-        });
+        const newState = selected === job.id ? undefined : job.id;
+        if (newState === job.id && api) {
+          api.scrollTo(index, true);
+        }
+        // @ts-expect-error
+        setSelected(newState);
       }}
     >
       <Image
@@ -129,7 +124,13 @@ export const Personas = ({
   }[];
   linkable?: boolean;
 }) => {
-  const select = useState<Job['id']>();
+  const select = useQueryState<Job['id']>('select', {
+    shallow: false,
+    parse: v => v as Job['id'],
+    serialize: v => v ?? '',
+    defaultValue: jobs[0].id
+  });
+
   const [api, setApi] = useState<CarouselApi | null>(null);
 
   return (

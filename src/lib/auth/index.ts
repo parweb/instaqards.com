@@ -68,11 +68,20 @@ export const auth = betterAuth({
     }),
     anonymous({
       onLinkAccount: async ({ anonymousUser, newUser }) => {
-        console.log('lib/auth::anonymous::onLinkAccount', {
-          anonymousUser,
-          newUser
-        });
-        // perform actions like moving the cart items from anonymous user to the new user
+        await db.$transaction([
+          db.site.updateMany({
+            where: { userId: anonymousUser.user.id },
+            data: { userId: newUser.user.id }
+          }),
+          db.event.updateMany({
+            where: { userId: anonymousUser.user.id },
+            data: { userId: newUser.user.id }
+          }),
+          db.click.updateMany({
+            where: { userId: anonymousUser.user.id },
+            data: { userId: newUser.user.id }
+          })
+        ]);
       }
     })
   ],

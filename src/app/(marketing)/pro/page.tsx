@@ -1,21 +1,127 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
+import * as z from 'zod';
 
+import { Begin } from 'app/(marketing)/home/section/begin';
 import { WebSite } from 'components/editor/WebSite';
 import * as job from 'data/job';
+import { Job } from 'data/job';
 import { db } from 'helpers/db';
-import { getLang } from 'helpers/translate';
-import { Begin } from '../home/section/begin';
+import { getLang, translate } from 'helpers/translate';
+import { getSession } from 'lib/auth';
+import { nanoid } from 'nanoid';
+import { redirect } from 'next/navigation';
 import { Personas } from './personas';
 
-export default async function ProPage() {
+const ParamsSchema = z.object({
+  select: z
+    .string()
+    .optional()
+    .default(job.all[0].id)
+    .transform(v => v as Job['id'])
+});
+
+export default async function ProPage({
+  searchParams
+}: {
+  searchParams: Promise<z.infer<typeof ParamsSchema>>;
+}) {
+  const params = ParamsSchema.parse(await searchParams);
+
+  const session = await getSession();
+
+  if (!session || !session.user?.id) {
+    redirect('/api/auth/login/guest');
+  }
+
   const lang = await getLang();
+  const template = await db.site.findUnique({
+    include: {
+      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+    },
+    where: {
+      subdomain: params.select,
+      user: {
+        email: 'templates@qards.link'
+      }
+    }
+  });
+
+  if (!template) {
+    return { error: await translate('error') };
+  }
+
+  let slug = nanoid(5);
+  let newSubdomain = `${template.subdomain}-${slug}`;
+
+  const newName = template.name;
+  const newDisplayName = template.display_name;
+
+  while (true) {
+    newSubdomain = `${template.subdomain}-${slug}`;
+
+    const taken = await db.site.findUnique({
+      where: { subdomain: newSubdomain }
+    });
+
+    if (!taken) break;
+
+    slug = nanoid(5);
+  }
+
+  const already = await db.site.findFirst({
+    where: {
+      subdomain: { startsWith: `${template.subdomain}-` },
+      user: { id: session.user.id }
+    }
+  });
+
+  let siteId = null;
+
+  if (already === null) {
+    const newSite = await db.site.create({
+      data: {
+        name: newName,
+        display_name: newDisplayName,
+        description: template.description,
+        logo: template.logo,
+        font: template.font,
+        image: template.image,
+        imageBlurhash: template.imageBlurhash,
+        subdomain: newSubdomain,
+        customDomain: null,
+        message404: template.message404,
+        background: template.background,
+        user: { connect: { id: session.user.id } }
+      }
+    });
+
+    siteId = newSite.id;
+
+    if (template.blocks.length > 0) {
+      await db.block.createMany({
+        data: template.blocks.map(block => ({
+          type: block.type,
+          position: block.position,
+          label: block.label,
+          href: block.href,
+          logo: block.logo,
+          style: block.style ?? {},
+          widget: block.widget ?? {},
+          siteId: newSite.id
+        }))
+      });
+    }
+  } else {
+    siteId = already.id;
+  }
+
   const site = await db.site.findUnique({
     include: {
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     },
     where: {
-      id: 'cm8dqblta000vspcs6c7giksg'
+      id: siteId
     }
   });
 

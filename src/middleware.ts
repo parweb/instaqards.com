@@ -257,7 +257,8 @@ class ProtectedHandler implements MiddlewareHandler {
       ctx.session &&
       'user' in ctx.session &&
       ctx.session.user &&
-      isPublicRoute
+      isPublicRoute &&
+      ctx.path !== '/email-in'
     ) {
       return {
         action: 'break',

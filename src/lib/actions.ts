@@ -960,19 +960,17 @@ export const duplicateSite = async (
 
     // 5. Duplicate the blocks for the new site
     if (originalSite.blocks.length > 0) {
-      const blocksData = originalSite.blocks.map(block => ({
-        type: block.type,
-        position: block.position,
-        label: block.label,
-        href: block.href,
-        logo: block.logo,
-        style: block.style ?? {}, // Ensure style is not null
-        widget: block.widget ?? {}, // Ensure widget is not null
-        siteId: newSite.id // Link to the newly created site
-      }));
-
       await db.block.createMany({
-        data: blocksData
+        data: originalSite.blocks.map(block => ({
+          type: block.type,
+          position: block.position,
+          label: block.label,
+          href: block.href,
+          logo: block.logo,
+          style: block.style ?? {}, // Ensure style is not null
+          widget: block.widget ?? {}, // Ensure widget is not null
+          siteId: newSite.id // Link to the newly created site
+        }))
       });
     }
 
