@@ -1,7 +1,17 @@
 'use client';
 
 import L from 'leaflet';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
+import { isEqual } from 'lodash';
+import * as z from 'zod';
+import ReactDOMServer from 'react-dom/server';
+import { Prisma, Site } from '@prisma/client';
+import { atomFamily } from 'jotai/utils';
+import { atom, useAtomValue } from 'jotai';
+import { createRoot } from 'react-dom/client';
+
+import { WebSite } from 'components/editor/WebSite';
+import { BlockSchema, SiteSchema } from '../../../../prisma/generated/zod';
 
 import 'leaflet-defaulticon-compatibility';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
@@ -9,6 +19,47 @@ import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet/dist/leaflet.css';
+
+// Add global style to remove default Leaflet popup background
+const customPopupStyle = `
+  .leaflet-marker-icon {
+    display: none;
+  }
+    
+  .custom-popup-class .leaflet-popup-content-wrapper {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+  .custom-popup-class .leaflet-popup-tip-container {
+    display: none;
+  }
+  .custom-popup-class .leaflet-popup-content {
+    margin: 0;
+    padding: 0;
+  }
+  .custom-popup-class .leaflet-popup-close-button {
+    color: white;
+    text-shadow: 0 0 3px rgba(0,0,0,0.4);
+    z-index: 30;
+    top: 5px;
+    right: 5px;
+  }
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes shine {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+`;
 
 type MarkerClusterGroup = L.MarkerClusterGroup;
 
@@ -48,6 +99,193 @@ const getClusterColor = (count: number) => {
   }
 };
 
+// Composant React pour l'icône de cluster
+const ClusterIcon = ({ count, colors }: { count: number; colors: any }) => (
+  <div className="relative flex items-center justify-center w-14 h-14">
+    <div className="absolute inset-0 bg-white rounded-full shadow-2xl transform -rotate-8 transition-all duration-500 ease-out"></div>
+    <div
+      className={`absolute inset-0 bg-gradient-to-br ${colors.from} ${colors.via} ${colors.to} rounded-full shadow-2xl transform rotate-8 transition-all duration-500 ease-out`}
+    ></div>
+    <div
+      className={`relative flex items-center justify-center w-12 h-12 bg-white rounded-full border-3 ${colors.border} shadow-lg transition-all duration-500 ease-out`}
+    >
+      <span className={`${colors.text} font-bold text-lg`}>{count}</span>
+    </div>
+  </div>
+);
+
+// Composant React pour l'icône de marker
+const MarkerIcon = () => (
+  <div
+    className="isolate relative group select-none"
+    style={{ width: '48px', height: '64px' }}
+  >
+    <div className="absolute left-0 top-0 w-12 h-12 rounded-full bg-purple-400/10 blur-md transform scale-[1.2] group-hover:scale-[1.25] transition-transform duration-500"></div>
+
+    <div className="z-10 absolute left-0 top-0 w-12 h-12 group-hover:scale-105 transition-all duration-500">
+      <div className="absolute -inset-1 bg-gradient-to-br from-purple-300/40 to-purple-700/40 rounded-full blur-md opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400 to-purple-800 border border-white/20 backdrop-blur-sm shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_8px_12px_rgba(90,20,150,0.4)] overflow-hidden flex items-center justify-center group-hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_8px_15px_rgba(90,20,150,0.5)] transition-all duration-500">
+        <div className="absolute -top-6 -left-6 w-[150%] h-6 bg-white/40 rotate-45 blur-sm transform group-hover:translate-x-1 group-hover:translate-y-1 transition-transform duration-1000"></div>
+        <div className="absolute w-7 h-7 rounded-full bg-gradient-to-br from-white/90 to-white/60 backdrop-blur-md border border-white/40 shadow-[inset_0_-2px_5px_rgba(0,0,0,0.1),0_2px_5px_rgba(255,255,255,0.4)] group-hover:w-8 group-hover:h-8 transition-all duration-300 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full bg-white/5 shadow-[inset_0_0_15px_5px_rgba(139,92,246,0.15)]"></div>
+          <div className="absolute top-[20%] left-[20%] w-2 h-1 rounded-full bg-white/90 rotate-[-20deg] blur-[0.5px]"></div>
+          <div className="absolute top-[30%] left-[30%] w-1 h-1 rounded-full bg-white/80 blur-[0.2px]"></div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      className="z-0 absolute left-1/2 top-[44px] w-7 h-4.5"
+      style={{ transform: 'translateX(-50%)' }}
+    >
+      <div className="absolute w-4 h-1 bg-black/15 rounded-full blur-[2px] left-1/2 bottom-0 transform -translate-x-1/2 group-hover:w-5 transition-all duration-500"></div>
+      <div className="absolute w-full h-full">
+        <div
+          className="w-full h-full bg-gradient-to-b from-purple-400 to-purple-900 shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),0_2px_4px_rgba(90,20,150,0.3)]"
+          style={{
+            clipPath: 'polygon(50% 100%, 20% 0, 80% 0)',
+            borderRadius: '2px 2px 40% 40% / 2px 2px 8% 8%'
+          }}
+        ></div>
+        <div
+          className="absolute w-[60%] h-[50%] top-0 left-1/2 transform -translate-x-1/2 bg-gradient-to-b from-white/40 to-white/5"
+          style={{
+            clipPath: 'polygon(50% 100%, 0 0, 100% 0)',
+            borderRadius: '40% 40% 0 0'
+          }}
+        ></div>
+        <div className="absolute h-full w-[1px] top-0 left-[calc(20%+1px)] bg-purple-300/30 blur-[0.5px]"></div>
+        <div className="absolute h-full w-[1px] top-0 right-[calc(20%+1px)] bg-purple-300/30 blur-[0.5px]"></div>
+      </div>
+    </div>
+  </div>
+);
+
+// Composant React pour le contenu du popup
+const CustomPopupContent = ({
+  marker
+}: {
+  marker: { id: string; position: [number, number]; name?: string };
+}) => (
+  <div className="transform transition-all duration-300 popup-content">
+    <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-white/20 backdrop-filter backdrop-blur-lg bg-white/10">
+      <div className="absolute -inset-[100%] bg-gradient-to-r from-purple-600/20 via-pink-600/0 to-blue-600/20 animate-[gradient-shift_8s_ease-in-out_infinite]"></div>
+      <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-full blur-2xl opacity-80"></div>
+      <div className="absolute -top-6 -left-6 w-24 h-24 bg-gradient-to-r from-blue-600/30 to-purple-600/30 rounded-full blur-2xl opacity-80"></div>
+
+      <div className="relative backdrop-filter backdrop-blur-md bg-white/70 overflow-hidden flex flex-col">
+        <div className="h-1.5 w-full bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 animate-[gradient-shift_3s_ease-in-out_infinite]"></div>
+
+        <div className="px-5 py-4 flex items-start">
+          <div className="relative flex-shrink-0 mr-4">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-600/60 to-purple-800/60 blur-sm transform scale-[1.15] opacity-70"></div>
+
+            <div className="relative w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-800 rounded-full flex items-center justify-center shadow-lg border border-white/30">
+              <span className="text-white text-sm font-bold tracking-wide">
+                {marker.name?.charAt(0) || '?'}
+              </span>
+              <div className="absolute top-[20%] left-[20%] w-2 h-1 rounded-full bg-white/80 rotate-[-20deg] blur-[0.5px]"></div>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <h3 className="text-base font-bold text-purple-900 tracking-tight leading-tight mb-0.5 group-hover:text-purple-700 transition-colors duration-300">
+              {marker.name || ''}
+            </h3>
+
+            <div className="flex items-center text-xs text-purple-700/80">
+              <svg
+                className="w-3 h-3 mr-1"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+
+              <span>Explorer ce lieu</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-5 pb-4 text-sm text-purple-800/90 leading-snug">
+          <p>Cliquez pour découvrir ce lieu et ses informations détaillées.</p>
+        </div>
+
+        <div className="px-5 pb-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
+          {/* <button 
+            className="group relative px-4 py-1.5 text-xs font-medium rounded-full bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-md transition-all duration-300 hover:shadow-lg hover:from-purple-500 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-white/50 overflow-hidden"
+            data-zoom-center={`${marker.position[0]},${marker.position[1]}`}
+          >
+            <span className="relative z-10">Zoomer et centrer ici</span>
+            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            <div className="absolute -inset-[100%] blur-md bg-gradient-to-r from-purple-400/0 via-purple-400/40 to-purple-400/0 group-hover:animate-[shine_1.5s_ease-out]"></div>
+          </button> */}
+
+          <button className="group relative px-4 py-1.5 text-xs font-medium rounded-full bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-md transition-all duration-300 hover:shadow-lg hover:from-purple-500 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-white/50 overflow-hidden">
+            <span className="relative z-10">Voir plus</span>
+            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            <div className="absolute -inset-[100%] blur-md bg-gradient-to-r from-purple-400/0 via-purple-400/40 to-purple-400/0 group-hover:animate-[shine_1.5s_ease-out]"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const SiteWithBlocks = SiteSchema.merge(
+  z.object({
+    blocks: z.array(BlockSchema)
+  })
+);
+
+const $site = atomFamily(
+  (params: Prisma.SiteFindManyArgs) =>
+    atom(() =>
+      fetch('/api/lake/site/findFirst', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(params)
+      })
+        .then(res => res.json())
+        .then(data => SiteWithBlocks.parse(data))
+    ),
+  isEqual
+);
+
+const Qards = ({ userId }: { userId: Site['id'] }) => {
+  const site = useAtomValue(
+    $site({
+      where: { userId },
+      include: { blocks: true }
+    })
+  );
+
+  return (
+    <div className="yyyyooooolllllooooo relative w-full aspect-[9/16] max-w-xl mx-auto flex">
+      <WebSite site={site} />
+    </div>
+  );
+};
+
+const CustomPopupContentQards = ({
+  marker
+}: {
+  marker: { id: string; position: [number, number]; name?: string };
+}) => {
+  return (
+    <div className="yolo-container">
+      <Suspense fallback={<div className="yolo-loading">Loading...</div>}>
+        <Qards userId={marker.id} />
+      </Suspense>
+    </div>
+  );
+};
+
 const MapViewInner = ({
   position,
   zoom = 13,
@@ -65,7 +303,12 @@ const MapViewInner = ({
 
   // Memoize marker positions to avoid unnecessary rerenders
   const markerPositions = useMemo(
-    () => markers.map(marker => ({ id: marker.id, position: marker.position, name: marker.name })),
+    () =>
+      markers.map(marker => ({
+        id: marker.id,
+        position: marker.position,
+        name: marker.name
+      })),
     [markers]
   );
 
@@ -94,27 +337,24 @@ const MapViewInner = ({
         chunkedLoading: true,
         chunkInterval: 200,
         chunkDelay: 50,
-        spiderLegPolylineOptions: { weight: 1.5, color: '#2563eb', opacity: 0.5 },
+        spiderLegPolylineOptions: {
+          weight: 1.5,
+          color: '#2563eb',
+          opacity: 0.5
+        },
         iconCreateFunction: (cluster: any) => {
           const childCount = cluster.getChildCount();
           const colors = getClusterColor(childCount);
-          
           return L.divIcon({
-            html: `
-              <div class="relative flex items-center justify-center w-14 h-14">
-                <div class="absolute inset-0 bg-white rounded-full shadow-2xl transform -rotate-8 transition-all duration-500 ease-out"></div>
-                <div class="absolute inset-0 bg-gradient-to-br ${colors.from} ${colors.via} ${colors.to} rounded-full shadow-2xl transform rotate-8 transition-all duration-500 ease-out"></div>
-                <div class="relative flex items-center justify-center w-12 h-12 bg-white rounded-full border-3 ${colors.border} shadow-lg transition-all duration-500 ease-out">
-                  <span class="${colors.text} font-bold text-lg">${childCount}</span>
-                </div>
-              </div>
-            `,
+            html: ReactDOMServer.renderToString(
+              <ClusterIcon count={childCount} colors={colors} />
+            ),
             className: '',
             iconSize: L.point(56, 56)
           });
         }
       }) as MarkerClusterGroup;
-      
+
       markerClusterRef.current = clusterGroup;
       mapInstance.addLayer(clusterGroup);
     }
@@ -129,52 +369,49 @@ const MapViewInner = ({
       const markerInstance = L.marker(marker.position, {
         title: marker.name || marker.id,
         icon: L.divIcon({
-          html: `
-            <div class="isolate relative group select-none" style="width:48px;height:64px;">
-              <div class="absolute left-0 top-0 w-12 h-12 rounded-full bg-purple-400/10 blur-md transform scale-[1.2] group-hover:scale-[1.25] transition-transform duration-500"></div>
-              <div class="z-10 absolute left-0 top-0 w-12 h-12 group-hover:scale-105 transition-all duration-500">
-                <div class="absolute -inset-1 bg-gradient-to-br from-purple-300/40 to-purple-700/40 rounded-full blur-md opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div class="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400 to-purple-800 border border-white/20 backdrop-blur-sm shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_8px_12px_rgba(90,20,150,0.4)] overflow-hidden flex items-center justify-center group-hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_8px_15px_rgba(90,20,150,0.5)] transition-all duration-500">
-                  <div class="absolute -top-6 -left-6 w-[150%] h-6 bg-white/40 rotate-45 blur-sm transform group-hover:translate-x-1 group-hover:translate-y-1 transition-transform duration-1000"></div>
-                  <div class="absolute w-7 h-7 rounded-full bg-gradient-to-br from-white/90 to-white/60 backdrop-blur-md border border-white/40 shadow-[inset_0_-2px_5px_rgba(0,0,0,0.1),0_2px_5px_rgba(255,255,255,0.4)] group-hover:w-8 group-hover:h-8 transition-all duration-300 flex items-center justify-center">
-                    <div class="absolute inset-0 rounded-full bg-white/5 shadow-[inset_0_0_15px_5px_rgba(139,92,246,0.15)]"></div>
-                    <div class="absolute top-[20%] left-[20%] w-2 h-1 rounded-full bg-white/90 rotate-[-20deg] blur-[0.5px]"></div>
-                    <div class="absolute top-[30%] left-[30%] w-1 h-1 rounded-full bg-white/80 blur-[0.2px]"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="z-0 absolute left-1/2 top-[44px] w-7 h-4.5" style="transform:translateX(-50%)">
-                <div class="absolute w-4 h-1 bg-black/15 rounded-full blur-[2px] left-1/2 bottom-0 transform -translate-x-1/2 group-hover:w-5 transition-all duration-500"></div>
-                <div class="absolute w-full h-full">
-                  <div class="w-full h-full bg-gradient-to-b from-purple-400 to-purple-900 shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),0_2px_4px_rgba(90,20,150,0.3)]" 
-                       style="clip-path: polygon(50% 100%, 20% 0, 80% 0); border-radius: 2px 2px 40% 40% / 2px 2px 8% 8%;"></div>
-                  <div class="absolute w-[60%] h-[50%] top-0 left-1/2 transform -translate-x-1/2 bg-gradient-to-b from-white/40 to-white/5"
-                       style="clip-path: polygon(50% 100%, 0 0, 100% 0); border-radius: 40% 40% 0 0;"></div>                  
-                  <div class="absolute h-full w-[1px] top-0 left-[calc(20%+1px)] bg-purple-300/30 blur-[0.5px]"></div>
-                  <div class="absolute h-full w-[1px] top-0 right-[calc(20%+1px)] bg-purple-300/30 blur-[0.5px]"></div>
-                </div>
-              </div>
-            </div>
-          `,
-          className: '',
-          iconSize: [48, 64],
-          iconAnchor: [24, 48.5]
+          html: ReactDOMServer.renderToString(<MarkerIcon />),
+          ...L.divIcon({
+            className: '',
+            iconSize: [48, 64],
+            iconAnchor: [24, 48.5]
+          })
         })
       });
-      
+
       if (marker.name) {
-        markerInstance.bindPopup(`
-          <div class="p-5 bg-white rounded-2xl shadow-3xl border-2 border-indigo-100">
-            <div class="text-lg font-bold text-gray-900">${marker.name}</div>
-            <div class="mt-2 text-sm text-gray-600">Cliquez pour plus d'informations</div>
-          </div>
-        `, {
-          className: 'custom-popup',
-          maxWidth: 300,
-          minWidth: 200
+        // Utilise un conteneur vide pour le popup
+        const popupContainerId = `popup-qards-${marker.id}`;
+        markerInstance.bindPopup(`<div id="${popupContainerId}"></div>`, {
+          className: 'custom-popup-class',
+          maxWidth: 280,
+          minWidth: 240,
+          closeButton: false,
+          autoClose: false,
+          closeOnEscapeKey: true,
+          closeOnClick: false
+        });
+
+        // Ajoute le rendu dynamique lors de l'ouverture du popup
+        markerInstance.on('popupopen', () => {
+          const container = document.getElementById(popupContainerId);
+          if (container) {
+            // Utilise createRoot pour React 18+
+            const root = createRoot(container);
+            // Stocke le root sur l'élément pour le cleanup
+            (container as any).__reactRoot = root;
+            root.render(<CustomPopupContentQards marker={marker} />);
+          }
+        });
+        // Nettoie le composant lors de la fermeture du popup
+        markerInstance.on('popupclose', () => {
+          const container = document.getElementById(popupContainerId);
+          if (container && (container as any).__reactRoot) {
+            (container as any).__reactRoot.unmount();
+            delete (container as any).__reactRoot;
+          }
         });
       }
-      
+
       clusterGroup.addLayer(markerInstance);
     });
   }, [markerPositions]);
@@ -185,6 +422,11 @@ const MapViewInner = ({
 
     // Only initialize the map if it hasn't been created yet
     if (!mapInstanceRef.current) {
+      // Inject custom styles for popup
+      const styleElement = document.createElement('style');
+      styleElement.innerHTML = customPopupStyle;
+      document.head.appendChild(styleElement);
+
       const mapInstance = L.map(mapRef.current, {
         center: position,
         zoom: zoom,
@@ -266,8 +508,69 @@ const MapViewInner = ({
     updateMarkers();
   }, [markerPositions, updateMarkers]);
 
+  // Add event delegation for zoom/center button
+  useEffect(() => {
+    function handlePopupClick(e: MouseEvent) {
+      const btn = (e.target as HTMLElement).closest('[data-zoom-center]');
+      if (btn && mapInstanceRef.current) {
+        const attr = btn.getAttribute('data-zoom-center');
+        if (attr) {
+          const [lat, lng] = attr.split(',').map(Number);
+          mapInstanceRef.current.setView([lat, lng], 16, { animate: true });
+        }
+      }
+    }
+    document.body.addEventListener('click', handlePopupClick);
+    return () => document.body.removeEventListener('click', handlePopupClick);
+  }, []);
+
   return (
     <div className="w-full h-full map-container overflow-hidden">
+      <style jsx global>{`
+        .leaflet-marker-icon {
+          border: none !important;
+          background: transparent !important;
+        }
+        .custom-popup-class .leaflet-popup-content-wrapper {
+          background: transparent;
+          box-shadow: none;
+          border: none;
+          padding: 0;
+        }
+        .custom-popup-class .leaflet-popup-tip-container {
+          display: none;
+        }
+        .custom-popup-class .leaflet-popup-content {
+          margin: 0;
+          padding: 0;
+        }
+        .custom-popup-class .leaflet-popup-close-button {
+          color: white;
+          text-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+          z-index: 30;
+          top: 5px;
+          right: 5px;
+        }
+        @keyframes gradient-shift {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+        @keyframes shine {
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(100%);
+          }
+        }
+      `}</style>
       <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
     </div>
   );

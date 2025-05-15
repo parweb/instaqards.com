@@ -15,7 +15,10 @@ export const Map = ({ users }: MapProps) => {
           if (location?.geometry?.coordinates?.length === 2) {
             return {
               id: user.id,
-              position: location.geometry.coordinates.reverse() as [number, number],
+              position: location.geometry.coordinates.reverse() as [
+                number,
+                number
+              ],
               name: user.name || user.email
             };
           }
@@ -33,11 +36,7 @@ export const Map = ({ users }: MapProps) => {
 
   return (
     <div className="flex flex-1 self-stretch aspect-video">
-      <Yolo 
-        position={[48.8566, 2.3522]} 
-        markers={markers}
-       
-      />
+      <Yolo position={[48.8566, 2.3522]} markers={markers} />
     </div>
   );
 };
