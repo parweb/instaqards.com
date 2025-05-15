@@ -1,14 +1,11 @@
 import { db } from 'helpers/db';
 import { Map } from './Map';
+import { Switcher } from './Switcher';
+import { List } from './List';
 
 export default async function ExplorePage() {
   const users = await db.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      location: true
-    },
+    take: 10,
     where: {
       location: {
         not: '{}'
@@ -27,8 +24,9 @@ export default async function ExplorePage() {
   });
 
   return (
-    <div className="flex flex-1 self-stretch">
+    <Switcher className="flex flex-1 self-stretch">
       <Map users={usersWithCoordinates} />
-    </div>
+      <List users={usersWithCoordinates} />
+    </Switcher>
   );
 }
