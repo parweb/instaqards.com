@@ -35,7 +35,7 @@ export const Map = ({ users }: MapProps) => {
   }, [users]);
 
   return (
-    <div className="flex flex-1 self-stretch aspect-video">
+    <div data-mode="map" className="flex flex-1 self-stretch aspect-video">
       <Yolo position={[48.8566, 2.3522]} markers={markers} />
     </div>
   );
