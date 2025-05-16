@@ -185,6 +185,7 @@ export default function CampaignsMutateModal({
 
   return (
     <form
+    className="grid grid-rows-[1fr,auto] flex-col w-full rounded-md bg-white max-w-3xl md:border md:border-stone-200 md:shadow-sm max-h-[90dvh] overflow-y-scroll"
       action={async (data: FormData) =>
         mutateCampaigns(data).then(res => {
           if ('error' in res) {
@@ -198,7 +199,6 @@ export default function CampaignsMutateModal({
           }
         })
       }
-      className="w-full rounded-md bg-white max-w-3xl md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700 dark:bg-stone-800"
     >
       {campaign?.id && <input type="hidden" name="id" value={campaign.id} />}
 
@@ -280,7 +280,9 @@ export default function CampaignsMutateModal({
                 {translate('components.campaign.mutate.list')}
               </h4>
 
-              <Lists defaultValue={campaign?.list?.id} />
+              <div className="max-h-[150px] overflow-y-auto">
+                <Lists defaultValue={campaign?.list?.id} />
+              </div>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -288,7 +290,9 @@ export default function CampaignsMutateModal({
                 {translate('components.campaign.mutate.email')}
               </h4>
 
-              <Emails defaultValue={campaign?.email?.id} />
+              <div className="max-h-[150px] overflow-y-auto">
+                <Emails defaultValue={campaign?.email?.id} />
+              </div>
             </div>
           </div>
         </Suspense>
