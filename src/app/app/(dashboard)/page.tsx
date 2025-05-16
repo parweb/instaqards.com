@@ -93,6 +93,9 @@ export default async function Overview() {
     session.user.role
   )
     ? await db.click.findMany({
+        where: {
+          OR: [{ site: { is: {} } }, { block: { site: { is: {} } } }]
+        },
         orderBy: { createdAt: 'asc' }
       })
     : await db.click.findMany({

@@ -6,7 +6,7 @@ export const prisma = new PrismaClient();
   // await seedWorkflow(prisma)
   // await populateAllLeadWithDefaultSite(prisma);
   // await testGuestUser(prisma);
-  await importCodeNaf(prisma);
+  // await importCodeNaf(prisma);
 })()
   .then(async () => {
     await prisma.$disconnect();

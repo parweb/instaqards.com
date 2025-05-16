@@ -56,15 +56,14 @@ model User {
   customer              Customer?
   twoFactorConfirmation TwoFactorConfirmation?
 
+  referer   User?    @relation("Affiliation", fields: [refererId], references: [id])
+  refererId String?
+  naf       NafCode? @relation(fields: [codeNaf], references: [id])
+  codeNaf   String?
 
-  referer    User?      @relation("Affiliation", fields: [refererId], references: [id])
-  refererId  String?
-  naf        NafCode?   @relation(fields: [codeNaf], references: [id])
-  codeNaf    String?
-  
-  feedback   Feedback[]
-  likes      Like[]
-  affiliates User[]     @relation("Affiliation")
+  feedback       Feedback[]
+  likes          Like[]
+  affiliates     User[]          @relation("Affiliation")
   events         Event[]         @relation("UserEvents")
   workflowStates WorkflowState[]
   executions     Execution[]     @relation("UserActionLogs")
@@ -83,7 +82,6 @@ model User {
 
   @@index([email])
   @@index([role])
-  @@index([refererId])
   @@index([emailVerified])
   @@index([createdAt, id])
   @@index([refererId, createdAt])
@@ -339,9 +337,9 @@ model Click {
 model Link {
   id String @id
 
-  url         String  @db.Text
-  name        String? @db.Text
-  description String? @db.Text
+  url         String
+  name        String?
+  description String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -359,11 +357,11 @@ model Link {
 model Block {
   id String @id @default(cuid())
 
-  type     String  @db.Text
+  type     String
   position Int     @default(0)
-  label    String? @db.Text
-  href     String? @db.Text
-  logo     String? @db.Text
+  label    String?
+  href     String?
+  logo     String?
   style    Json?   @default("{\"hover\": {\"color\": \"#000000\",\"backgroundColor\": \"#ffffff\",\"fontSize\": \"16\",\"fontFamily\": \"Open Sans\"},\"normal\": {\"color\": \"#ffffffe6\",\"backgroundColor\": \"#00000000\",\"fontSize\": \"16\",\"fontFamily\": \"Open Sans\"}}")
   widget   Json?   @default("{}")
 
@@ -406,20 +404,20 @@ model Site {
 
   name          String?
   display_name  String?
-  description   String? @db.Text
-  logo          String? @default("https://qards.link/rsz_noir-fon-transparent.png") @db.Text
+  description   String?
+  logo          String? @default("https://qards.link/rsz_noir-fon-transparent.png")
   font          String  @default("font-cal")
-  image         String? @default("https://qards.link/site-default.png") @db.Text
-  imageBlurhash String? @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC") @db.Text
+  image         String? @default("https://qards.link/site-default.png")
+  imageBlurhash String? @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC")
   subdomain     String? @unique
   customDomain  String? @unique
-  message404    String? @default("Blimey! You've found a page that doesn't exist.") @db.Text
-  background    String? @db.Text
+  message404    String? @default("Blimey! You've found a page that doesn't exist.")
+  background    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId      String
   blocks      Block[]
   clicks      Click[]
@@ -428,8 +426,6 @@ model Site {
   feed        Feed[]
 
   @@index([userId])
-  @@index([subdomain])
-  @@index([customDomain])
   @@index([userId, createdAt])
   @@index([userId, updatedAt])
 }
@@ -527,16 +523,16 @@ model Queue {
 
   job                 String    @default("none")
   payload             Json      @default("{}")
-  status              String    @default("pending") @db.VarChar(20)
+  status              String    @default("pending")
   attempts            Int       @default(0)
-  lastError           String?   @db.Text
-  runAt               DateTime  @default(now()) @db.Timestamptz
+  lastError           String?
+  runAt               DateTime  @default(now())
   priority            Int       @default(0)
-  processingStartedAt DateTime? @db.Timestamptz
+  processingStartedAt DateTime?
   correlationId       String?
 
-  createdAt DateTime @default(now()) @db.Timestamptz
-  updatedAt DateTime @updatedAt @db.Timestamptz
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user   User?   @relation("UserQueueJobs", fields: [userId], references: [id], onDelete: Cascade)
   userId String?
@@ -651,9 +647,9 @@ model Event {
   payload       Json?
   correlationId String?
   createdAt     DateTime @default(now())
-  status        String   @default("pending") @db.VarChar(20)
+  status        String   @default("pending")
   attempts      Int      @default(0)
-  lastError     String?  @db.Text
+  lastError     String?
   user          User     @relation("UserEvents", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
@@ -696,7 +692,7 @@ model Execution {
   ruleId        String?
   executedAt    DateTime?
   status        ExecutionStatus @default(PENDING)
-  errorMessage  String?         @db.Text
+  errorMessage  String?
   resultPayload Json?
   correlationId String?
 
@@ -730,7 +726,6 @@ model Outbox {
 
   @@index([createdAt])
   @@index([status])
-  @@index([email])
 }
 
 model City {

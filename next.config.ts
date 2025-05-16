@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     viewTransition: true,
     optimizePackageImports: ['framer-motion', 'lucide-react', 'react-icons'],
     serverActions: {
-      bodySizeLimit: '20mb',
+      bodySizeLimit: '200mb',
       allowedOrigins: ['app.localhost:11000', 'app.qards.local:11000']
     }
   },
