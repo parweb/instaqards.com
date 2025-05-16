@@ -93,12 +93,6 @@ export default async function Overview() {
     session.user.role
   )
     ? await db.click.findMany({
-        where: {
-          OR: [
-            { site: { userId: { not: null } } },
-            { block: { site: { userId: { not: null } } } }
-          ]
-        },
         orderBy: { createdAt: 'asc' }
       })
     : await db.click.findMany({

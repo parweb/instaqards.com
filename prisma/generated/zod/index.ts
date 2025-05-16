@@ -970,7 +970,7 @@ export const SiteSchema = z.object({
   background: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  userId: z.string().nullable()
+  userId: z.string()
 });
 
 export type Site = z.infer<typeof SiteSchema>;
@@ -8120,17 +8120,13 @@ export const SiteWhereInputSchema: z.ZodType<Prisma.SiteWhereInput> = z
     updatedAt: z
       .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
       .optional(),
-    userId: z
-      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-      .optional()
-      .nullable(),
+    userId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
     user: z
       .union([
-        z.lazy(() => UserNullableScalarRelationFilterSchema),
+        z.lazy(() => UserScalarRelationFilterSchema),
         z.lazy(() => UserWhereInputSchema)
       ])
-      .optional()
-      .nullable(),
+      .optional(),
     blocks: z.lazy(() => BlockListRelationFilterSchema).optional(),
     clicks: z.lazy(() => ClickListRelationFilterSchema).optional(),
     subscribers: z.lazy(() => SubscriberListRelationFilterSchema).optional(),
@@ -8206,12 +8202,7 @@ export const SiteOrderByWithRelationInputSchema: z.ZodType<Prisma.SiteOrderByWit
         .optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
-      userId: z
-        .union([
-          z.lazy(() => SortOrderSchema),
-          z.lazy(() => SortOrderInputSchema)
-        ])
-        .optional(),
+      userId: z.lazy(() => SortOrderSchema).optional(),
       user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
       blocks: z.lazy(() => BlockOrderByRelationAggregateInputSchema).optional(),
       clicks: z.lazy(() => ClickOrderByRelationAggregateInputSchema).optional(),
@@ -8317,16 +8308,14 @@ export const SiteWhereUniqueInputSchema: z.ZodType<Prisma.SiteWhereUniqueInput> 
             .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
             .optional(),
           userId: z
-            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-            .optional()
-            .nullable(),
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
           user: z
             .union([
-              z.lazy(() => UserNullableScalarRelationFilterSchema),
+              z.lazy(() => UserScalarRelationFilterSchema),
               z.lazy(() => UserWhereInputSchema)
             ])
-            .optional()
-            .nullable(),
+            .optional(),
           blocks: z.lazy(() => BlockListRelationFilterSchema).optional(),
           clicks: z.lazy(() => ClickListRelationFilterSchema).optional(),
           subscribers: z
@@ -8405,12 +8394,7 @@ export const SiteOrderByWithAggregationInputSchema: z.ZodType<Prisma.SiteOrderBy
         .optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
-      userId: z
-        .union([
-          z.lazy(() => SortOrderSchema),
-          z.lazy(() => SortOrderInputSchema)
-        ])
-        .optional(),
+      userId: z.lazy(() => SortOrderSchema).optional(),
       _count: z.lazy(() => SiteCountOrderByAggregateInputSchema).optional(),
       _max: z.lazy(() => SiteMaxOrderByAggregateInputSchema).optional(),
       _min: z.lazy(() => SiteMinOrderByAggregateInputSchema).optional()
@@ -8525,12 +8509,8 @@ export const SiteScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.SiteScal
         ])
         .optional(),
       userId: z
-        .union([
-          z.lazy(() => StringNullableWithAggregatesFilterSchema),
-          z.string()
-        ])
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
         .optional()
-        .nullable()
     })
     .strict();
 
@@ -18912,7 +18892,7 @@ export const SiteCreateInputSchema: z.ZodType<Prisma.SiteCreateInput> = z
     background: z.string().optional().nullable(),
     createdAt: z.coerce.date().optional(),
     updatedAt: z.coerce.date().optional(),
-    user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema).optional(),
+    user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema),
     blocks: z
       .lazy(() => BlockCreateNestedManyWithoutSiteInputSchema)
       .optional(),
@@ -18944,7 +18924,7 @@ export const SiteUncheckedCreateInputSchema: z.ZodType<Prisma.SiteUncheckedCreat
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      userId: z.string().optional().nullable(),
+      userId: z.string(),
       blocks: z
         .lazy(() => BlockUncheckedCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -19056,7 +19036,9 @@ export const SiteUpdateInputSchema: z.ZodType<Prisma.SiteUpdateInput> = z
         z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
       ])
       .optional(),
-    user: z.lazy(() => UserUpdateOneWithoutSitesNestedInputSchema).optional(),
+    user: z
+      .lazy(() => UserUpdateOneRequiredWithoutSitesNestedInputSchema)
+      .optional(),
     blocks: z
       .lazy(() => BlockUpdateManyWithoutSiteNestedInputSchema)
       .optional(),
@@ -19171,10 +19153,9 @@ export const SiteUncheckedUpdateInputSchema: z.ZodType<Prisma.SiteUncheckedUpdat
       userId: z
         .union([
           z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
-        .optional()
-        .nullable(),
+        .optional(),
       blocks: z
         .lazy(() => BlockUncheckedUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -19210,7 +19191,7 @@ export const SiteCreateManyInputSchema: z.ZodType<Prisma.SiteCreateManyInput> =
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      userId: z.string().optional().nullable()
+      userId: z.string()
     })
     .strict();
 
@@ -19414,10 +19395,9 @@ export const SiteUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SiteUncheckedU
       userId: z
         .union([
           z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional()
-        .nullable()
     })
     .strict();
 
@@ -36781,7 +36761,7 @@ export const FeedUncheckedCreateNestedManyWithoutSiteInputSchema: z.ZodType<Pris
     })
     .strict();
 
-export const UserUpdateOneWithoutSitesNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutSitesNestedInput> =
+export const UserUpdateOneRequiredWithoutSitesNestedInputSchema: z.ZodType<Prisma.UserUpdateOneRequiredWithoutSitesNestedInput> =
   z
     .object({
       create: z
@@ -36794,12 +36774,6 @@ export const UserUpdateOneWithoutSitesNestedInputSchema: z.ZodType<Prisma.UserUp
         .lazy(() => UserCreateOrConnectWithoutSitesInputSchema)
         .optional(),
       upsert: z.lazy(() => UserUpsertWithoutSitesInputSchema).optional(),
-      disconnect: z
-        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
-        .optional(),
-      delete: z
-        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
-        .optional(),
       connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
       update: z
         .union([
@@ -46080,10 +46054,7 @@ export const SiteScalarWhereInputSchema: z.ZodType<Prisma.SiteScalarWhereInput> 
       updatedAt: z
         .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
         .optional(),
-      userId: z
-        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-        .optional()
-        .nullable()
+      userId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional()
     })
     .strict();
 
@@ -55595,7 +55566,7 @@ export const SiteCreateWithoutClicksInputSchema: z.ZodType<Prisma.SiteCreateWith
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema).optional(),
+      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema),
       blocks: z
         .lazy(() => BlockCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -55626,7 +55597,7 @@ export const SiteUncheckedCreateWithoutClicksInputSchema: z.ZodType<Prisma.SiteU
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      userId: z.string().optional().nullable(),
+      userId: z.string(),
       blocks: z
         .lazy(() => BlockUncheckedCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -56488,7 +56459,9 @@ export const SiteUpdateWithoutClicksInputSchema: z.ZodType<Prisma.SiteUpdateWith
           z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      user: z.lazy(() => UserUpdateOneWithoutSitesNestedInputSchema).optional(),
+      user: z
+        .lazy(() => UserUpdateOneRequiredWithoutSitesNestedInputSchema)
+        .optional(),
       blocks: z
         .lazy(() => BlockUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -56602,10 +56575,9 @@ export const SiteUncheckedUpdateWithoutClicksInputSchema: z.ZodType<Prisma.SiteU
       userId: z
         .union([
           z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
-        .optional()
-        .nullable(),
+        .optional(),
       blocks: z
         .lazy(() => BlockUncheckedUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -58666,7 +58638,7 @@ export const SiteCreateWithoutBlocksInputSchema: z.ZodType<Prisma.SiteCreateWith
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema).optional(),
+      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema),
       clicks: z
         .lazy(() => ClickCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -58697,7 +58669,7 @@ export const SiteUncheckedCreateWithoutBlocksInputSchema: z.ZodType<Prisma.SiteU
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      userId: z.string().optional().nullable(),
+      userId: z.string(),
       clicks: z
         .lazy(() => ClickUncheckedCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -58921,7 +58893,9 @@ export const SiteUpdateWithoutBlocksInputSchema: z.ZodType<Prisma.SiteUpdateWith
           z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      user: z.lazy(() => UserUpdateOneWithoutSitesNestedInputSchema).optional(),
+      user: z
+        .lazy(() => UserUpdateOneRequiredWithoutSitesNestedInputSchema)
+        .optional(),
       clicks: z
         .lazy(() => ClickUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -59035,10 +59009,9 @@ export const SiteUncheckedUpdateWithoutBlocksInputSchema: z.ZodType<Prisma.SiteU
       userId: z
         .union([
           z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
-        .optional()
-        .nullable(),
+        .optional(),
       clicks: z
         .lazy(() => ClickUncheckedUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -59071,7 +59044,7 @@ export const SiteCreateWithoutLikesInputSchema: z.ZodType<Prisma.SiteCreateWitho
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema).optional(),
+      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema),
       blocks: z
         .lazy(() => BlockCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -59102,7 +59075,7 @@ export const SiteUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.SiteUn
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      userId: z.string().optional().nullable(),
+      userId: z.string(),
       blocks: z
         .lazy(() => BlockUncheckedCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -59549,7 +59522,9 @@ export const SiteUpdateWithoutLikesInputSchema: z.ZodType<Prisma.SiteUpdateWitho
           z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      user: z.lazy(() => UserUpdateOneWithoutSitesNestedInputSchema).optional(),
+      user: z
+        .lazy(() => UserUpdateOneRequiredWithoutSitesNestedInputSchema)
+        .optional(),
       blocks: z
         .lazy(() => BlockUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -59663,10 +59638,9 @@ export const SiteUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.SiteUn
       userId: z
         .union([
           z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
-        .optional()
-        .nullable(),
+        .optional(),
       blocks: z
         .lazy(() => BlockUncheckedUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -61591,7 +61565,7 @@ export const SiteCreateWithoutFeedInputSchema: z.ZodType<Prisma.SiteCreateWithou
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema).optional(),
+      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema),
       blocks: z
         .lazy(() => BlockCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -61622,7 +61596,7 @@ export const SiteUncheckedCreateWithoutFeedInputSchema: z.ZodType<Prisma.SiteUnc
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      userId: z.string().optional().nullable(),
+      userId: z.string(),
       blocks: z
         .lazy(() => BlockUncheckedCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -62110,7 +62084,9 @@ export const SiteUpdateWithoutFeedInputSchema: z.ZodType<Prisma.SiteUpdateWithou
           z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      user: z.lazy(() => UserUpdateOneWithoutSitesNestedInputSchema).optional(),
+      user: z
+        .lazy(() => UserUpdateOneRequiredWithoutSitesNestedInputSchema)
+        .optional(),
       blocks: z
         .lazy(() => BlockUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -62224,10 +62200,9 @@ export const SiteUncheckedUpdateWithoutFeedInputSchema: z.ZodType<Prisma.SiteUnc
       userId: z
         .union([
           z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
-        .optional()
-        .nullable(),
+        .optional(),
       blocks: z
         .lazy(() => BlockUncheckedUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -63707,7 +63682,7 @@ export const SiteCreateWithoutSubscribersInputSchema: z.ZodType<Prisma.SiteCreat
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema).optional(),
+      user: z.lazy(() => UserCreateNestedOneWithoutSitesInputSchema),
       blocks: z
         .lazy(() => BlockCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -63738,7 +63713,7 @@ export const SiteUncheckedCreateWithoutSubscribersInputSchema: z.ZodType<Prisma.
       background: z.string().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      userId: z.string().optional().nullable(),
+      userId: z.string(),
       blocks: z
         .lazy(() => BlockUncheckedCreateNestedManyWithoutSiteInputSchema)
         .optional(),
@@ -63888,7 +63863,9 @@ export const SiteUpdateWithoutSubscribersInputSchema: z.ZodType<Prisma.SiteUpdat
           z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      user: z.lazy(() => UserUpdateOneWithoutSitesNestedInputSchema).optional(),
+      user: z
+        .lazy(() => UserUpdateOneRequiredWithoutSitesNestedInputSchema)
+        .optional(),
       blocks: z
         .lazy(() => BlockUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
@@ -64002,10 +63979,9 @@ export const SiteUncheckedUpdateWithoutSubscribersInputSchema: z.ZodType<Prisma.
       userId: z
         .union([
           z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
-        .optional()
-        .nullable(),
+        .optional(),
       blocks: z
         .lazy(() => BlockUncheckedUpdateManyWithoutSiteNestedInputSchema)
         .optional(),
