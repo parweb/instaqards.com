@@ -1,47 +1,34 @@
 import Link from 'next/link';
 
 interface FiltersBarProps {
-  city?: string;
-  state?: string;
-  naf?: string;
+  name: 'city' | 'state' | 'naf' | 'class' | 'division' | 'group' | 'section';
+  value: string;
 }
 
-export function FiltersBar({ city, state, naf }: FiltersBarProps) {
+const filterConfig = {
+  city: { label: 'Ville', path: 'city' },
+  state: { label: 'Département', path: 'state' },
+  naf: { label: 'Activité', path: 'activity' },
+  class: { label: 'Classe', path: 'class' },
+  division: { label: 'Division', path: 'division' },
+  group: { label: 'Groupe', path: 'group' },
+  section: { label: 'Section', path: 'section' }
+} as const;
+
+export function FiltersBar({ name, value }: FiltersBarProps) {
+  const config = filterConfig[name];
+
   return (
     <div className="flex flex-wrap gap-4 mb-6 items-center text-sm">
-      {city && (
-        <span>
-          Ville :{' '}
-          <Link
-            href={`/explore/city/${city}`}
-            className="underline text-blue-600 hover:text-blue-800"
-          >
-            {city}
-          </Link>
-        </span>
-      )}
-      {state && (
-        <span>
-          Département :{' '}
-          <Link
-            href={`/explore/state/${state}`}
-            className="underline text-blue-600 hover:text-blue-800"
-          >
-            {state}
-          </Link>
-        </span>
-      )}
-      {naf && (
-        <span>
-          Activité :{' '}
-          <Link
-            href={`/explore/activity/${naf}`}
-            className="underline text-blue-600 hover:text-blue-800"
-          >
-            {naf}
-          </Link>
-        </span>
-      )}
+      <span>
+        {config.label} :{' '}
+        <Link
+          href={`/explore/${config.path}/${value}`}
+          className="underline text-blue-600 hover:text-blue-800"
+        >
+          {value}
+        </Link>
+      </span>
     </div>
   );
 }

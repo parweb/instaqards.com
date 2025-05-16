@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
-import Yolo from 'components/maps/map/Yolo';
 import { useMemo } from 'react';
+
+import Yolo from 'components/maps/map/Yolo';
 
 interface MapProps {
   users: Pick<User, 'id' | 'name' | 'email' | 'location'>[];
@@ -35,7 +36,7 @@ export const Map = ({ users }: MapProps) => {
   }, [users]);
 
   return (
-    <div data-mode="map" className="flex flex-1 self-stretch aspect-video">
+    <div className="flex flex-1 self-stretch">
       <Yolo position={[48.8566, 2.3522]} markers={markers} />
     </div>
   );

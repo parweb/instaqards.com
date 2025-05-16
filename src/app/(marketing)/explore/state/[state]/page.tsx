@@ -5,9 +5,9 @@ import { FiltersBar } from 'components/FiltersBar';
 export default async function StatePage({
   params
 }: {
-  params: { state: string };
+  params: Promise<{ state: string }>;
 }) {
-  const [state] = params.state.split('-');
+  const [state] = (await params).state.split('-');
   const users = await db.user.findMany({
     where: {
       postcode: {
@@ -21,7 +21,7 @@ export default async function StatePage({
       <h1 className="text-2xl font-bold mb-4">
         Annuaire des entreprises du département {state}
       </h1>
-      <FiltersBar state={state} />
+      <FiltersBar name="state" value={state} />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {users.map((user: any) => (
           <UserCard key={user.id} user={user} />

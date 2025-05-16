@@ -25,23 +25,23 @@ model User {
   id String @id @default(cuid())
 
   name               String?
-  email              String   @unique
-  emailVerified      Boolean  @default(false)
+  email              String  @unique
+  emailVerified      Boolean @default(false)
   image              String?
-  isTwoFactorEnabled Boolean  @default(false)
-  billing_address    Json     @default("{}")
-  payment_method     Json     @default("{}")
+  isTwoFactorEnabled Boolean @default(false)
+  billing_address    Json    @default("{}")
+  payment_method     Json    @default("{}")
   company            String?
   address            String?
-  location           Json?    @default("{}")
+  location           Json?   @default("{}")
   postcode           String?
   city               String?
   phone              String?
-  codeNaf            String?
-  activity           String?
-  bounced            Int      @default(0)
-  affiliateRate      Float?   @default(0.05)
-  isAnonymous        Boolean? @default(false)
+
+  activity      String?
+  bounced       Int      @default(0)
+  affiliateRate Float?   @default(0.05)
+  isAnonymous   Boolean? @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,12 +56,15 @@ model User {
   customer              Customer?
   twoFactorConfirmation TwoFactorConfirmation?
 
+
+  referer    User?      @relation("Affiliation", fields: [refererId], references: [id])
+  refererId  String?
+  naf        NafCode?   @relation(fields: [codeNaf], references: [id])
+  codeNaf    String?
+  
   feedback   Feedback[]
   likes      Like[]
   affiliates User[]     @relation("Affiliation")
-  referer    User?      @relation("Affiliation", fields: [refererId], references: [id])
-  refererId  String?
-
   events         Event[]         @relation("UserEvents")
   workflowStates WorkflowState[]
   executions     Execution[]     @relation("UserActionLogs")
@@ -825,4 +828,48 @@ model Email {
   userId    String
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   campaigns Campaign[]
+}
+
+model NafSection {
+  id    String @id
+  title String
+
+  divisions NafDivision[]
+}
+
+model NafDivision {
+  id    String @id
+  title String
+
+  groups    NafGroup[]
+  section   NafSection @relation(fields: [sectionId], references: [id])
+  sectionId String
+}
+
+model NafGroup {
+  id    String @id
+  title String
+
+  classes    NafClass[]
+  division   NafDivision @relation(fields: [divisionId], references: [id])
+  divisionId String
+}
+
+model NafClass {
+  id    String @id
+  title String
+
+  codes   NafCode[]
+  group   NafGroup  @relation(fields: [groupId], references: [id])
+  groupId String
+}
+
+model NafCode {
+  id    String @id
+  title String
+
+  class   NafClass @relation(fields: [classId], references: [id])
+  classId String
+
+  users User[]
 }

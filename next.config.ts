@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   experimental: {
     // reactCompiler: true,
     // clientSegmentCache: true,
+    inlineCss: true,
     dynamicIO: true,
     ppr: true,
     viewTransition: true,

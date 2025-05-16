@@ -1,15 +1,19 @@
+'use client';
+
 import { User } from '@prisma/client';
+import { format } from 'date-fns';
+import { Building2, Calendar, Mail, MapPin, Phone, Share } from 'lucide-react';
+
+import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
+
 import {
   Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
   CardContent,
-  CardFooter
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
 } from 'components/ui/card';
-import { Avatar, AvatarImage, AvatarFallback } from 'components/ui/avatar';
-import { Mail, MapPin, Share, Building2, Phone, Calendar } from 'lucide-react';
-import { format } from 'date-fns';
 
 interface ListProps {
   users: User[];
@@ -17,10 +21,7 @@ interface ListProps {
 
 export const List = ({ users }: ListProps) => {
   return (
-    <div
-      data-mode="list"
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 py-8 px-2"
-    >
+    <div className="flex-1 grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-4">
       {users.map(user => (
         <Card
           key={user.id}

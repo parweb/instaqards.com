@@ -82,7 +82,6 @@ export const UserScalarFieldEnumSchema = z.enum([
   'postcode',
   'city',
   'phone',
-  'codeNaf',
   'activity',
   'bounced',
   'affiliateRate',
@@ -90,7 +89,8 @@ export const UserScalarFieldEnumSchema = z.enum([
   'createdAt',
   'updatedAt',
   'role',
-  'refererId'
+  'refererId',
+  'codeNaf'
 ]);
 
 export const MessageScalarFieldEnumSchema = z.enum([
@@ -505,6 +505,24 @@ export const EmailScalarFieldEnumSchema = z.enum([
   'userId'
 ]);
 
+export const NafSectionScalarFieldEnumSchema = z.enum(['id', 'title']);
+
+export const NafDivisionScalarFieldEnumSchema = z.enum([
+  'id',
+  'title',
+  'sectionId'
+]);
+
+export const NafGroupScalarFieldEnumSchema = z.enum([
+  'id',
+  'title',
+  'divisionId'
+]);
+
+export const NafClassScalarFieldEnumSchema = z.enum(['id', 'title', 'groupId']);
+
+export const NafCodeScalarFieldEnumSchema = z.enum(['id', 'title', 'classId']);
+
 export const SortOrderSchema = z.enum(['asc', 'desc']);
 
 export const JsonNullValueInputSchema = z
@@ -645,14 +663,14 @@ export const UserSchema = z.object({
   postcode: z.string().nullable(),
   city: z.string().nullable(),
   phone: z.string().nullable(),
-  codeNaf: z.string().nullable(),
   activity: z.string().nullable(),
   bounced: z.number().int(),
   affiliateRate: z.number().nullable(),
   isAnonymous: z.boolean().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  refererId: z.string().nullable()
+  refererId: z.string().nullable(),
+  codeNaf: z.string().nullable()
 });
 
 export type User = z.infer<typeof UserSchema>;
@@ -1292,6 +1310,65 @@ export const EmailSchema = z.object({
 export type Email = z.infer<typeof EmailSchema>;
 
 /////////////////////////////////////////
+// NAF SECTION SCHEMA
+/////////////////////////////////////////
+
+export const NafSectionSchema = z.object({
+  id: z.string(),
+  title: z.string()
+});
+
+export type NafSection = z.infer<typeof NafSectionSchema>;
+
+/////////////////////////////////////////
+// NAF DIVISION SCHEMA
+/////////////////////////////////////////
+
+export const NafDivisionSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  sectionId: z.string()
+});
+
+export type NafDivision = z.infer<typeof NafDivisionSchema>;
+
+/////////////////////////////////////////
+// NAF GROUP SCHEMA
+/////////////////////////////////////////
+
+export const NafGroupSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  divisionId: z.string()
+});
+
+export type NafGroup = z.infer<typeof NafGroupSchema>;
+
+/////////////////////////////////////////
+// NAF CLASS SCHEMA
+/////////////////////////////////////////
+
+export const NafClassSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  groupId: z.string()
+});
+
+export type NafClass = z.infer<typeof NafClassSchema>;
+
+/////////////////////////////////////////
+// NAF CODE SCHEMA
+/////////////////////////////////////////
+
+export const NafCodeSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  classId: z.string()
+});
+
+export type NafCode = z.infer<typeof NafCodeSchema>;
+
+/////////////////////////////////////////
 // SELECT & INCLUDE
 /////////////////////////////////////////
 
@@ -1324,6 +1401,8 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z
     twoFactorConfirmation: z
       .union([z.boolean(), z.lazy(() => TwoFactorConfirmationArgsSchema)])
       .optional(),
+    referer: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
+    naf: z.union([z.boolean(), z.lazy(() => NafCodeArgsSchema)]).optional(),
     feedback: z
       .union([z.boolean(), z.lazy(() => FeedbackFindManyArgsSchema)])
       .optional(),
@@ -1333,7 +1412,6 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z
     affiliates: z
       .union([z.boolean(), z.lazy(() => UserFindManyArgsSchema)])
       .optional(),
-    referer: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
     events: z
       .union([z.boolean(), z.lazy(() => EventFindManyArgsSchema)])
       .optional(),
@@ -1445,7 +1523,6 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     postcode: z.boolean().optional(),
     city: z.boolean().optional(),
     phone: z.boolean().optional(),
-    codeNaf: z.boolean().optional(),
     activity: z.boolean().optional(),
     bounced: z.boolean().optional(),
     affiliateRate: z.boolean().optional(),
@@ -1454,6 +1531,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     updatedAt: z.boolean().optional(),
     role: z.boolean().optional(),
     refererId: z.boolean().optional(),
+    codeNaf: z.boolean().optional(),
     accounts: z
       .union([z.boolean(), z.lazy(() => AccountFindManyArgsSchema)])
       .optional(),
@@ -1478,6 +1556,8 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     twoFactorConfirmation: z
       .union([z.boolean(), z.lazy(() => TwoFactorConfirmationArgsSchema)])
       .optional(),
+    referer: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
+    naf: z.union([z.boolean(), z.lazy(() => NafCodeArgsSchema)]).optional(),
     feedback: z
       .union([z.boolean(), z.lazy(() => FeedbackFindManyArgsSchema)])
       .optional(),
@@ -1487,7 +1567,6 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     affiliates: z
       .union([z.boolean(), z.lazy(() => UserFindManyArgsSchema)])
       .optional(),
-    referer: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
     events: z
       .union([z.boolean(), z.lazy(() => EventFindManyArgsSchema)])
       .optional(),
@@ -3097,6 +3176,266 @@ export const EmailSelectSchema: z.ZodType<Prisma.EmailSelect> = z
   })
   .strict();
 
+// NAF SECTION
+//------------------------------------------------------
+
+export const NafSectionIncludeSchema: z.ZodType<Prisma.NafSectionInclude> = z
+  .object({
+    divisions: z
+      .union([z.boolean(), z.lazy(() => NafDivisionFindManyArgsSchema)])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafSectionCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+export const NafSectionArgsSchema: z.ZodType<Prisma.NafSectionDefaultArgs> = z
+  .object({
+    select: z.lazy(() => NafSectionSelectSchema).optional(),
+    include: z.lazy(() => NafSectionIncludeSchema).optional()
+  })
+  .strict();
+
+export const NafSectionCountOutputTypeArgsSchema: z.ZodType<Prisma.NafSectionCountOutputTypeDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => NafSectionCountOutputTypeSelectSchema).nullish()
+    })
+    .strict();
+
+export const NafSectionCountOutputTypeSelectSchema: z.ZodType<Prisma.NafSectionCountOutputTypeSelect> =
+  z
+    .object({
+      divisions: z.boolean().optional()
+    })
+    .strict();
+
+export const NafSectionSelectSchema: z.ZodType<Prisma.NafSectionSelect> = z
+  .object({
+    id: z.boolean().optional(),
+    title: z.boolean().optional(),
+    divisions: z
+      .union([z.boolean(), z.lazy(() => NafDivisionFindManyArgsSchema)])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafSectionCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+// NAF DIVISION
+//------------------------------------------------------
+
+export const NafDivisionIncludeSchema: z.ZodType<Prisma.NafDivisionInclude> = z
+  .object({
+    groups: z
+      .union([z.boolean(), z.lazy(() => NafGroupFindManyArgsSchema)])
+      .optional(),
+    section: z
+      .union([z.boolean(), z.lazy(() => NafSectionArgsSchema)])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafDivisionCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+export const NafDivisionArgsSchema: z.ZodType<Prisma.NafDivisionDefaultArgs> = z
+  .object({
+    select: z.lazy(() => NafDivisionSelectSchema).optional(),
+    include: z.lazy(() => NafDivisionIncludeSchema).optional()
+  })
+  .strict();
+
+export const NafDivisionCountOutputTypeArgsSchema: z.ZodType<Prisma.NafDivisionCountOutputTypeDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => NafDivisionCountOutputTypeSelectSchema).nullish()
+    })
+    .strict();
+
+export const NafDivisionCountOutputTypeSelectSchema: z.ZodType<Prisma.NafDivisionCountOutputTypeSelect> =
+  z
+    .object({
+      groups: z.boolean().optional()
+    })
+    .strict();
+
+export const NafDivisionSelectSchema: z.ZodType<Prisma.NafDivisionSelect> = z
+  .object({
+    id: z.boolean().optional(),
+    title: z.boolean().optional(),
+    sectionId: z.boolean().optional(),
+    groups: z
+      .union([z.boolean(), z.lazy(() => NafGroupFindManyArgsSchema)])
+      .optional(),
+    section: z
+      .union([z.boolean(), z.lazy(() => NafSectionArgsSchema)])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafDivisionCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+// NAF GROUP
+//------------------------------------------------------
+
+export const NafGroupIncludeSchema: z.ZodType<Prisma.NafGroupInclude> = z
+  .object({
+    classes: z
+      .union([z.boolean(), z.lazy(() => NafClassFindManyArgsSchema)])
+      .optional(),
+    division: z
+      .union([z.boolean(), z.lazy(() => NafDivisionArgsSchema)])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafGroupCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+export const NafGroupArgsSchema: z.ZodType<Prisma.NafGroupDefaultArgs> = z
+  .object({
+    select: z.lazy(() => NafGroupSelectSchema).optional(),
+    include: z.lazy(() => NafGroupIncludeSchema).optional()
+  })
+  .strict();
+
+export const NafGroupCountOutputTypeArgsSchema: z.ZodType<Prisma.NafGroupCountOutputTypeDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => NafGroupCountOutputTypeSelectSchema).nullish()
+    })
+    .strict();
+
+export const NafGroupCountOutputTypeSelectSchema: z.ZodType<Prisma.NafGroupCountOutputTypeSelect> =
+  z
+    .object({
+      classes: z.boolean().optional()
+    })
+    .strict();
+
+export const NafGroupSelectSchema: z.ZodType<Prisma.NafGroupSelect> = z
+  .object({
+    id: z.boolean().optional(),
+    title: z.boolean().optional(),
+    divisionId: z.boolean().optional(),
+    classes: z
+      .union([z.boolean(), z.lazy(() => NafClassFindManyArgsSchema)])
+      .optional(),
+    division: z
+      .union([z.boolean(), z.lazy(() => NafDivisionArgsSchema)])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafGroupCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+// NAF CLASS
+//------------------------------------------------------
+
+export const NafClassIncludeSchema: z.ZodType<Prisma.NafClassInclude> = z
+  .object({
+    codes: z
+      .union([z.boolean(), z.lazy(() => NafCodeFindManyArgsSchema)])
+      .optional(),
+    group: z.union([z.boolean(), z.lazy(() => NafGroupArgsSchema)]).optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafClassCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+export const NafClassArgsSchema: z.ZodType<Prisma.NafClassDefaultArgs> = z
+  .object({
+    select: z.lazy(() => NafClassSelectSchema).optional(),
+    include: z.lazy(() => NafClassIncludeSchema).optional()
+  })
+  .strict();
+
+export const NafClassCountOutputTypeArgsSchema: z.ZodType<Prisma.NafClassCountOutputTypeDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => NafClassCountOutputTypeSelectSchema).nullish()
+    })
+    .strict();
+
+export const NafClassCountOutputTypeSelectSchema: z.ZodType<Prisma.NafClassCountOutputTypeSelect> =
+  z
+    .object({
+      codes: z.boolean().optional()
+    })
+    .strict();
+
+export const NafClassSelectSchema: z.ZodType<Prisma.NafClassSelect> = z
+  .object({
+    id: z.boolean().optional(),
+    title: z.boolean().optional(),
+    groupId: z.boolean().optional(),
+    codes: z
+      .union([z.boolean(), z.lazy(() => NafCodeFindManyArgsSchema)])
+      .optional(),
+    group: z.union([z.boolean(), z.lazy(() => NafGroupArgsSchema)]).optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafClassCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+// NAF CODE
+//------------------------------------------------------
+
+export const NafCodeIncludeSchema: z.ZodType<Prisma.NafCodeInclude> = z
+  .object({
+    class: z.union([z.boolean(), z.lazy(() => NafClassArgsSchema)]).optional(),
+    users: z
+      .union([z.boolean(), z.lazy(() => UserFindManyArgsSchema)])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafCodeCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+export const NafCodeArgsSchema: z.ZodType<Prisma.NafCodeDefaultArgs> = z
+  .object({
+    select: z.lazy(() => NafCodeSelectSchema).optional(),
+    include: z.lazy(() => NafCodeIncludeSchema).optional()
+  })
+  .strict();
+
+export const NafCodeCountOutputTypeArgsSchema: z.ZodType<Prisma.NafCodeCountOutputTypeDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => NafCodeCountOutputTypeSelectSchema).nullish()
+    })
+    .strict();
+
+export const NafCodeCountOutputTypeSelectSchema: z.ZodType<Prisma.NafCodeCountOutputTypeSelect> =
+  z
+    .object({
+      users: z.boolean().optional()
+    })
+    .strict();
+
+export const NafCodeSelectSchema: z.ZodType<Prisma.NafCodeSelect> = z
+  .object({
+    id: z.boolean().optional(),
+    title: z.boolean().optional(),
+    classId: z.boolean().optional(),
+    class: z.union([z.boolean(), z.lazy(() => NafClassArgsSchema)]).optional(),
+    users: z
+      .union([z.boolean(), z.lazy(() => UserFindManyArgsSchema)])
+      .optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => NafCodeCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
 /////////////////////////////////////////
 // INPUT TYPES
 /////////////////////////////////////////
@@ -3158,10 +3497,6 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
       .optional()
       .nullable(),
-    codeNaf: z
-      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-      .optional()
-      .nullable(),
     activity: z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
       .optional()
@@ -3191,6 +3526,10 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
       .optional()
       .nullable(),
+    codeNaf: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
     accounts: z.lazy(() => AccountListRelationFilterSchema).optional(),
     sessions: z.lazy(() => SessionListRelationFilterSchema).optional(),
     sites: z.lazy(() => SiteListRelationFilterSchema).optional(),
@@ -3215,9 +3554,6 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
       ])
       .optional()
       .nullable(),
-    feedback: z.lazy(() => FeedbackListRelationFilterSchema).optional(),
-    likes: z.lazy(() => LikeListRelationFilterSchema).optional(),
-    affiliates: z.lazy(() => UserListRelationFilterSchema).optional(),
     referer: z
       .union([
         z.lazy(() => UserNullableScalarRelationFilterSchema),
@@ -3225,6 +3561,16 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
       ])
       .optional()
       .nullable(),
+    naf: z
+      .union([
+        z.lazy(() => NafCodeNullableScalarRelationFilterSchema),
+        z.lazy(() => NafCodeWhereInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    feedback: z.lazy(() => FeedbackListRelationFilterSchema).optional(),
+    likes: z.lazy(() => LikeListRelationFilterSchema).optional(),
+    affiliates: z.lazy(() => UserListRelationFilterSchema).optional(),
     events: z.lazy(() => EventListRelationFilterSchema).optional(),
     workflowStates: z
       .lazy(() => WorkflowStateListRelationFilterSchema)
@@ -3302,12 +3648,6 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
           z.lazy(() => SortOrderInputSchema)
         ])
         .optional(),
-      codeNaf: z
-        .union([
-          z.lazy(() => SortOrderSchema),
-          z.lazy(() => SortOrderInputSchema)
-        ])
-        .optional(),
       activity: z
         .union([
           z.lazy(() => SortOrderSchema),
@@ -3336,6 +3676,12 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
           z.lazy(() => SortOrderInputSchema)
         ])
         .optional(),
+      codeNaf: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
       accounts: z
         .lazy(() => AccountOrderByRelationAggregateInputSchema)
         .optional(),
@@ -3354,6 +3700,8 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationOrderByWithRelationInputSchema)
         .optional(),
+      referer: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+      naf: z.lazy(() => NafCodeOrderByWithRelationInputSchema).optional(),
       feedback: z
         .lazy(() => FeedbackOrderByRelationAggregateInputSchema)
         .optional(),
@@ -3361,7 +3709,6 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
       affiliates: z
         .lazy(() => UserOrderByRelationAggregateInputSchema)
         .optional(),
-      referer: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
       events: z.lazy(() => EventOrderByRelationAggregateInputSchema).optional(),
       workflowStates: z
         .lazy(() => WorkflowStateOrderByRelationAggregateInputSchema)
@@ -3468,10 +3815,6 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
             .union([z.lazy(() => StringNullableFilterSchema), z.string()])
             .optional()
             .nullable(),
-          codeNaf: z
-            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-            .optional()
-            .nullable(),
           activity: z
             .union([z.lazy(() => StringNullableFilterSchema), z.string()])
             .optional()
@@ -3503,6 +3846,10 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
             .union([z.lazy(() => StringNullableFilterSchema), z.string()])
             .optional()
             .nullable(),
+          codeNaf: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
           accounts: z.lazy(() => AccountListRelationFilterSchema).optional(),
           sessions: z.lazy(() => SessionListRelationFilterSchema).optional(),
           sites: z.lazy(() => SiteListRelationFilterSchema).optional(),
@@ -3529,9 +3876,6 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
             ])
             .optional()
             .nullable(),
-          feedback: z.lazy(() => FeedbackListRelationFilterSchema).optional(),
-          likes: z.lazy(() => LikeListRelationFilterSchema).optional(),
-          affiliates: z.lazy(() => UserListRelationFilterSchema).optional(),
           referer: z
             .union([
               z.lazy(() => UserNullableScalarRelationFilterSchema),
@@ -3539,6 +3883,16 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
             ])
             .optional()
             .nullable(),
+          naf: z
+            .union([
+              z.lazy(() => NafCodeNullableScalarRelationFilterSchema),
+              z.lazy(() => NafCodeWhereInputSchema)
+            ])
+            .optional()
+            .nullable(),
+          feedback: z.lazy(() => FeedbackListRelationFilterSchema).optional(),
+          likes: z.lazy(() => LikeListRelationFilterSchema).optional(),
+          affiliates: z.lazy(() => UserListRelationFilterSchema).optional(),
           events: z.lazy(() => EventListRelationFilterSchema).optional(),
           workflowStates: z
             .lazy(() => WorkflowStateListRelationFilterSchema)
@@ -3621,12 +3975,6 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
           z.lazy(() => SortOrderInputSchema)
         ])
         .optional(),
-      codeNaf: z
-        .union([
-          z.lazy(() => SortOrderSchema),
-          z.lazy(() => SortOrderInputSchema)
-        ])
-        .optional(),
       activity: z
         .union([
           z.lazy(() => SortOrderSchema),
@@ -3650,6 +3998,12 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       role: z.lazy(() => SortOrderSchema).optional(),
       refererId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      codeNaf: z
         .union([
           z.lazy(() => SortOrderSchema),
           z.lazy(() => SortOrderInputSchema)
@@ -3746,13 +4100,6 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.lazy(() => StringNullableWithAggregatesFilterSchema),
-          z.string()
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.lazy(() => StringNullableWithAggregatesFilterSchema),
@@ -3796,6 +4143,13 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
         ])
         .optional(),
       refererId: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.lazy(() => StringNullableWithAggregatesFilterSchema),
           z.string()
@@ -12904,6 +13258,641 @@ export const EmailScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.EmailSc
     })
     .strict();
 
+export const NafSectionWhereInputSchema: z.ZodType<Prisma.NafSectionWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafSectionWhereInputSchema),
+          z.lazy(() => NafSectionWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafSectionWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafSectionWhereInputSchema),
+          z.lazy(() => NafSectionWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      divisions: z.lazy(() => NafDivisionListRelationFilterSchema).optional()
+    })
+    .strict();
+
+export const NafSectionOrderByWithRelationInputSchema: z.ZodType<Prisma.NafSectionOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      divisions: z
+        .lazy(() => NafDivisionOrderByRelationAggregateInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafSectionWhereUniqueInputSchema: z.ZodType<Prisma.NafSectionWhereUniqueInput> =
+  z
+    .object({
+      id: z.string()
+    })
+    .and(
+      z
+        .object({
+          id: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => NafSectionWhereInputSchema),
+              z.lazy(() => NafSectionWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => NafSectionWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => NafSectionWhereInputSchema),
+              z.lazy(() => NafSectionWhereInputSchema).array()
+            ])
+            .optional(),
+          title: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          divisions: z
+            .lazy(() => NafDivisionListRelationFilterSchema)
+            .optional()
+        })
+        .strict()
+    );
+
+export const NafSectionOrderByWithAggregationInputSchema: z.ZodType<Prisma.NafSectionOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      _count: z
+        .lazy(() => NafSectionCountOrderByAggregateInputSchema)
+        .optional(),
+      _max: z.lazy(() => NafSectionMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => NafSectionMinOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const NafSectionScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.NafSectionScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafSectionScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafSectionScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafSectionScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafSectionScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafSectionScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      title: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionWhereInputSchema: z.ZodType<Prisma.NafDivisionWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafDivisionWhereInputSchema),
+          z.lazy(() => NafDivisionWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafDivisionWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafDivisionWhereInputSchema),
+          z.lazy(() => NafDivisionWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      sectionId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      groups: z.lazy(() => NafGroupListRelationFilterSchema).optional(),
+      section: z
+        .union([
+          z.lazy(() => NafSectionScalarRelationFilterSchema),
+          z.lazy(() => NafSectionWhereInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionOrderByWithRelationInputSchema: z.ZodType<Prisma.NafDivisionOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      sectionId: z.lazy(() => SortOrderSchema).optional(),
+      groups: z
+        .lazy(() => NafGroupOrderByRelationAggregateInputSchema)
+        .optional(),
+      section: z.lazy(() => NafSectionOrderByWithRelationInputSchema).optional()
+    })
+    .strict();
+
+export const NafDivisionWhereUniqueInputSchema: z.ZodType<Prisma.NafDivisionWhereUniqueInput> =
+  z
+    .object({
+      id: z.string()
+    })
+    .and(
+      z
+        .object({
+          id: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => NafDivisionWhereInputSchema),
+              z.lazy(() => NafDivisionWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => NafDivisionWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => NafDivisionWhereInputSchema),
+              z.lazy(() => NafDivisionWhereInputSchema).array()
+            ])
+            .optional(),
+          title: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          sectionId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          groups: z.lazy(() => NafGroupListRelationFilterSchema).optional(),
+          section: z
+            .union([
+              z.lazy(() => NafSectionScalarRelationFilterSchema),
+              z.lazy(() => NafSectionWhereInputSchema)
+            ])
+            .optional()
+        })
+        .strict()
+    );
+
+export const NafDivisionOrderByWithAggregationInputSchema: z.ZodType<Prisma.NafDivisionOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      sectionId: z.lazy(() => SortOrderSchema).optional(),
+      _count: z
+        .lazy(() => NafDivisionCountOrderByAggregateInputSchema)
+        .optional(),
+      _max: z.lazy(() => NafDivisionMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => NafDivisionMinOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const NafDivisionScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.NafDivisionScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafDivisionScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafDivisionScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafDivisionScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafDivisionScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafDivisionScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      title: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      sectionId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupWhereInputSchema: z.ZodType<Prisma.NafGroupWhereInput> = z
+  .object({
+    AND: z
+      .union([
+        z.lazy(() => NafGroupWhereInputSchema),
+        z.lazy(() => NafGroupWhereInputSchema).array()
+      ])
+      .optional(),
+    OR: z
+      .lazy(() => NafGroupWhereInputSchema)
+      .array()
+      .optional(),
+    NOT: z
+      .union([
+        z.lazy(() => NafGroupWhereInputSchema),
+        z.lazy(() => NafGroupWhereInputSchema).array()
+      ])
+      .optional(),
+    id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    divisionId: z
+      .union([z.lazy(() => StringFilterSchema), z.string()])
+      .optional(),
+    classes: z.lazy(() => NafClassListRelationFilterSchema).optional(),
+    division: z
+      .union([
+        z.lazy(() => NafDivisionScalarRelationFilterSchema),
+        z.lazy(() => NafDivisionWhereInputSchema)
+      ])
+      .optional()
+  })
+  .strict();
+
+export const NafGroupOrderByWithRelationInputSchema: z.ZodType<Prisma.NafGroupOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      divisionId: z.lazy(() => SortOrderSchema).optional(),
+      classes: z
+        .lazy(() => NafClassOrderByRelationAggregateInputSchema)
+        .optional(),
+      division: z
+        .lazy(() => NafDivisionOrderByWithRelationInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupWhereUniqueInputSchema: z.ZodType<Prisma.NafGroupWhereUniqueInput> =
+  z
+    .object({
+      id: z.string()
+    })
+    .and(
+      z
+        .object({
+          id: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => NafGroupWhereInputSchema),
+              z.lazy(() => NafGroupWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => NafGroupWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => NafGroupWhereInputSchema),
+              z.lazy(() => NafGroupWhereInputSchema).array()
+            ])
+            .optional(),
+          title: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          divisionId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          classes: z.lazy(() => NafClassListRelationFilterSchema).optional(),
+          division: z
+            .union([
+              z.lazy(() => NafDivisionScalarRelationFilterSchema),
+              z.lazy(() => NafDivisionWhereInputSchema)
+            ])
+            .optional()
+        })
+        .strict()
+    );
+
+export const NafGroupOrderByWithAggregationInputSchema: z.ZodType<Prisma.NafGroupOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      divisionId: z.lazy(() => SortOrderSchema).optional(),
+      _count: z.lazy(() => NafGroupCountOrderByAggregateInputSchema).optional(),
+      _max: z.lazy(() => NafGroupMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => NafGroupMinOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const NafGroupScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.NafGroupScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafGroupScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafGroupScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafGroupScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafGroupScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafGroupScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      title: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      divisionId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const NafClassWhereInputSchema: z.ZodType<Prisma.NafClassWhereInput> = z
+  .object({
+    AND: z
+      .union([
+        z.lazy(() => NafClassWhereInputSchema),
+        z.lazy(() => NafClassWhereInputSchema).array()
+      ])
+      .optional(),
+    OR: z
+      .lazy(() => NafClassWhereInputSchema)
+      .array()
+      .optional(),
+    NOT: z
+      .union([
+        z.lazy(() => NafClassWhereInputSchema),
+        z.lazy(() => NafClassWhereInputSchema).array()
+      ])
+      .optional(),
+    id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    groupId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    codes: z.lazy(() => NafCodeListRelationFilterSchema).optional(),
+    group: z
+      .union([
+        z.lazy(() => NafGroupScalarRelationFilterSchema),
+        z.lazy(() => NafGroupWhereInputSchema)
+      ])
+      .optional()
+  })
+  .strict();
+
+export const NafClassOrderByWithRelationInputSchema: z.ZodType<Prisma.NafClassOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      groupId: z.lazy(() => SortOrderSchema).optional(),
+      codes: z
+        .lazy(() => NafCodeOrderByRelationAggregateInputSchema)
+        .optional(),
+      group: z.lazy(() => NafGroupOrderByWithRelationInputSchema).optional()
+    })
+    .strict();
+
+export const NafClassWhereUniqueInputSchema: z.ZodType<Prisma.NafClassWhereUniqueInput> =
+  z
+    .object({
+      id: z.string()
+    })
+    .and(
+      z
+        .object({
+          id: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => NafClassWhereInputSchema),
+              z.lazy(() => NafClassWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => NafClassWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => NafClassWhereInputSchema),
+              z.lazy(() => NafClassWhereInputSchema).array()
+            ])
+            .optional(),
+          title: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          groupId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          codes: z.lazy(() => NafCodeListRelationFilterSchema).optional(),
+          group: z
+            .union([
+              z.lazy(() => NafGroupScalarRelationFilterSchema),
+              z.lazy(() => NafGroupWhereInputSchema)
+            ])
+            .optional()
+        })
+        .strict()
+    );
+
+export const NafClassOrderByWithAggregationInputSchema: z.ZodType<Prisma.NafClassOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      groupId: z.lazy(() => SortOrderSchema).optional(),
+      _count: z.lazy(() => NafClassCountOrderByAggregateInputSchema).optional(),
+      _max: z.lazy(() => NafClassMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => NafClassMinOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const NafClassScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.NafClassScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafClassScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafClassScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafClassScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafClassScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafClassScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      title: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      groupId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeWhereInputSchema: z.ZodType<Prisma.NafCodeWhereInput> = z
+  .object({
+    AND: z
+      .union([
+        z.lazy(() => NafCodeWhereInputSchema),
+        z.lazy(() => NafCodeWhereInputSchema).array()
+      ])
+      .optional(),
+    OR: z
+      .lazy(() => NafCodeWhereInputSchema)
+      .array()
+      .optional(),
+    NOT: z
+      .union([
+        z.lazy(() => NafCodeWhereInputSchema),
+        z.lazy(() => NafCodeWhereInputSchema).array()
+      ])
+      .optional(),
+    id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    classId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    class: z
+      .union([
+        z.lazy(() => NafClassScalarRelationFilterSchema),
+        z.lazy(() => NafClassWhereInputSchema)
+      ])
+      .optional(),
+    users: z.lazy(() => UserListRelationFilterSchema).optional()
+  })
+  .strict();
+
+export const NafCodeOrderByWithRelationInputSchema: z.ZodType<Prisma.NafCodeOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      classId: z.lazy(() => SortOrderSchema).optional(),
+      class: z.lazy(() => NafClassOrderByWithRelationInputSchema).optional(),
+      users: z.lazy(() => UserOrderByRelationAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeWhereUniqueInputSchema: z.ZodType<Prisma.NafCodeWhereUniqueInput> =
+  z
+    .object({
+      id: z.string()
+    })
+    .and(
+      z
+        .object({
+          id: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => NafCodeWhereInputSchema),
+              z.lazy(() => NafCodeWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => NafCodeWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => NafCodeWhereInputSchema),
+              z.lazy(() => NafCodeWhereInputSchema).array()
+            ])
+            .optional(),
+          title: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          classId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          class: z
+            .union([
+              z.lazy(() => NafClassScalarRelationFilterSchema),
+              z.lazy(() => NafClassWhereInputSchema)
+            ])
+            .optional(),
+          users: z.lazy(() => UserListRelationFilterSchema).optional()
+        })
+        .strict()
+    );
+
+export const NafCodeOrderByWithAggregationInputSchema: z.ZodType<Prisma.NafCodeOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      classId: z.lazy(() => SortOrderSchema).optional(),
+      _count: z.lazy(() => NafCodeCountOrderByAggregateInputSchema).optional(),
+      _max: z.lazy(() => NafCodeMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => NafCodeMinOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.NafCodeScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafCodeScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafCodeScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafCodeScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafCodeScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => NafCodeScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      title: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      classId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
 export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
   .object({
     id: z.string().cuid().optional(),
@@ -12929,7 +13918,6 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
     postcode: z.string().optional().nullable(),
     city: z.string().optional().nullable(),
     phone: z.string().optional().nullable(),
-    codeNaf: z.string().optional().nullable(),
     activity: z.string().optional().nullable(),
     bounced: z.number().int().optional(),
     affiliateRate: z.number().optional().nullable(),
@@ -12957,15 +13945,16 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
     twoFactorConfirmation: z
       .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
       .optional(),
+    referer: z
+      .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+      .optional(),
+    naf: z.lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema).optional(),
     feedback: z
       .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
       .optional(),
     likes: z.lazy(() => LikeCreateNestedManyWithoutUserInputSchema).optional(),
     affiliates: z
       .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-      .optional(),
-    referer: z
-      .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
       .optional(),
     events: z
       .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -13037,7 +14026,6 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -13046,6 +14034,7 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -13214,13 +14203,6 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
       ])
       .optional()
       .nullable(),
-    codeNaf: z
-      .union([
-        z.string(),
-        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-      ])
-      .optional()
-      .nullable(),
     activity: z
       .union([
         z.string(),
@@ -13286,15 +14268,16 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
     twoFactorConfirmation: z
       .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
       .optional(),
+    referer: z
+      .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+      .optional(),
+    naf: z.lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema).optional(),
     feedback: z
       .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
       .optional(),
     likes: z.lazy(() => LikeUpdateManyWithoutUserNestedInputSchema).optional(),
     affiliates: z
       .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-      .optional(),
-    referer: z
-      .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
       .optional(),
     events: z
       .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -13428,13 +14411,6 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -13481,6 +14457,13 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -13603,7 +14586,6 @@ export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> =
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -13611,7 +14593,8 @@ export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> =
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
-      refererId: z.string().optional().nullable()
+      refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable()
     })
     .strict();
 
@@ -13697,13 +14680,6 @@ export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyM
         .optional()
         .nullable(),
       phone: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -13846,13 +14822,6 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -13899,6 +14868,13 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -23741,6 +24717,614 @@ export const EmailUncheckedUpdateManyInputSchema: z.ZodType<Prisma.EmailUnchecke
     })
     .strict();
 
+export const NafSectionCreateInputSchema: z.ZodType<Prisma.NafSectionCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      divisions: z
+        .lazy(() => NafDivisionCreateNestedManyWithoutSectionInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafSectionUncheckedCreateInputSchema: z.ZodType<Prisma.NafSectionUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      divisions: z
+        .lazy(
+          () => NafDivisionUncheckedCreateNestedManyWithoutSectionInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const NafSectionUpdateInputSchema: z.ZodType<Prisma.NafSectionUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      divisions: z
+        .lazy(() => NafDivisionUpdateManyWithoutSectionNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafSectionUncheckedUpdateInputSchema: z.ZodType<Prisma.NafSectionUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      divisions: z
+        .lazy(
+          () => NafDivisionUncheckedUpdateManyWithoutSectionNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const NafSectionCreateManyInputSchema: z.ZodType<Prisma.NafSectionCreateManyInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string()
+    })
+    .strict();
+
+export const NafSectionUpdateManyMutationInputSchema: z.ZodType<Prisma.NafSectionUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafSectionUncheckedUpdateManyInputSchema: z.ZodType<Prisma.NafSectionUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionCreateInputSchema: z.ZodType<Prisma.NafDivisionCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      groups: z
+        .lazy(() => NafGroupCreateNestedManyWithoutDivisionInputSchema)
+        .optional(),
+      section: z.lazy(
+        () => NafSectionCreateNestedOneWithoutDivisionsInputSchema
+      )
+    })
+    .strict();
+
+export const NafDivisionUncheckedCreateInputSchema: z.ZodType<Prisma.NafDivisionUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      sectionId: z.string(),
+      groups: z
+        .lazy(() => NafGroupUncheckedCreateNestedManyWithoutDivisionInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUpdateInputSchema: z.ZodType<Prisma.NafDivisionUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      groups: z
+        .lazy(() => NafGroupUpdateManyWithoutDivisionNestedInputSchema)
+        .optional(),
+      section: z
+        .lazy(
+          () => NafSectionUpdateOneRequiredWithoutDivisionsNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUncheckedUpdateInputSchema: z.ZodType<Prisma.NafDivisionUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sectionId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      groups: z
+        .lazy(() => NafGroupUncheckedUpdateManyWithoutDivisionNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionCreateManyInputSchema: z.ZodType<Prisma.NafDivisionCreateManyInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      sectionId: z.string()
+    })
+    .strict();
+
+export const NafDivisionUpdateManyMutationInputSchema: z.ZodType<Prisma.NafDivisionUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUncheckedUpdateManyInputSchema: z.ZodType<Prisma.NafDivisionUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sectionId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupCreateInputSchema: z.ZodType<Prisma.NafGroupCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      classes: z
+        .lazy(() => NafClassCreateNestedManyWithoutGroupInputSchema)
+        .optional(),
+      division: z.lazy(() => NafDivisionCreateNestedOneWithoutGroupsInputSchema)
+    })
+    .strict();
+
+export const NafGroupUncheckedCreateInputSchema: z.ZodType<Prisma.NafGroupUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      divisionId: z.string(),
+      classes: z
+        .lazy(() => NafClassUncheckedCreateNestedManyWithoutGroupInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUpdateInputSchema: z.ZodType<Prisma.NafGroupUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      classes: z
+        .lazy(() => NafClassUpdateManyWithoutGroupNestedInputSchema)
+        .optional(),
+      division: z
+        .lazy(() => NafDivisionUpdateOneRequiredWithoutGroupsNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUncheckedUpdateInputSchema: z.ZodType<Prisma.NafGroupUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      divisionId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      classes: z
+        .lazy(() => NafClassUncheckedUpdateManyWithoutGroupNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupCreateManyInputSchema: z.ZodType<Prisma.NafGroupCreateManyInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      divisionId: z.string()
+    })
+    .strict();
+
+export const NafGroupUpdateManyMutationInputSchema: z.ZodType<Prisma.NafGroupUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUncheckedUpdateManyInputSchema: z.ZodType<Prisma.NafGroupUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      divisionId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassCreateInputSchema: z.ZodType<Prisma.NafClassCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      codes: z
+        .lazy(() => NafCodeCreateNestedManyWithoutClassInputSchema)
+        .optional(),
+      group: z.lazy(() => NafGroupCreateNestedOneWithoutClassesInputSchema)
+    })
+    .strict();
+
+export const NafClassUncheckedCreateInputSchema: z.ZodType<Prisma.NafClassUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      groupId: z.string(),
+      codes: z
+        .lazy(() => NafCodeUncheckedCreateNestedManyWithoutClassInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafClassUpdateInputSchema: z.ZodType<Prisma.NafClassUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      codes: z
+        .lazy(() => NafCodeUpdateManyWithoutClassNestedInputSchema)
+        .optional(),
+      group: z
+        .lazy(() => NafGroupUpdateOneRequiredWithoutClassesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafClassUncheckedUpdateInputSchema: z.ZodType<Prisma.NafClassUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      groupId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      codes: z
+        .lazy(() => NafCodeUncheckedUpdateManyWithoutClassNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafClassCreateManyInputSchema: z.ZodType<Prisma.NafClassCreateManyInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      groupId: z.string()
+    })
+    .strict();
+
+export const NafClassUpdateManyMutationInputSchema: z.ZodType<Prisma.NafClassUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassUncheckedUpdateManyInputSchema: z.ZodType<Prisma.NafClassUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      groupId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeCreateInputSchema: z.ZodType<Prisma.NafCodeCreateInput> = z
+  .object({
+    id: z.string(),
+    title: z.string(),
+    class: z.lazy(() => NafClassCreateNestedOneWithoutCodesInputSchema),
+    users: z.lazy(() => UserCreateNestedManyWithoutNafInputSchema).optional()
+  })
+  .strict();
+
+export const NafCodeUncheckedCreateInputSchema: z.ZodType<Prisma.NafCodeUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      classId: z.string(),
+      users: z
+        .lazy(() => UserUncheckedCreateNestedManyWithoutNafInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafCodeUpdateInputSchema: z.ZodType<Prisma.NafCodeUpdateInput> = z
+  .object({
+    id: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    title: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    class: z
+      .lazy(() => NafClassUpdateOneRequiredWithoutCodesNestedInputSchema)
+      .optional(),
+    users: z.lazy(() => UserUpdateManyWithoutNafNestedInputSchema).optional()
+  })
+  .strict();
+
+export const NafCodeUncheckedUpdateInputSchema: z.ZodType<Prisma.NafCodeUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      classId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      users: z
+        .lazy(() => UserUncheckedUpdateManyWithoutNafNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafCodeCreateManyInputSchema: z.ZodType<Prisma.NafCodeCreateManyInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      classId: z.string()
+    })
+    .strict();
+
+export const NafCodeUpdateManyMutationInputSchema: z.ZodType<Prisma.NafCodeUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeUncheckedUpdateManyInputSchema: z.ZodType<Prisma.NafCodeUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      classId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
 export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z
   .object({
     equals: z.string().optional(),
@@ -23983,6 +25567,34 @@ export const TwoFactorConfirmationNullableScalarRelationFilterSchema: z.ZodType<
     })
     .strict();
 
+export const UserNullableScalarRelationFilterSchema: z.ZodType<Prisma.UserNullableScalarRelationFilter> =
+  z
+    .object({
+      is: z
+        .lazy(() => UserWhereInputSchema)
+        .optional()
+        .nullable(),
+      isNot: z
+        .lazy(() => UserWhereInputSchema)
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const NafCodeNullableScalarRelationFilterSchema: z.ZodType<Prisma.NafCodeNullableScalarRelationFilter> =
+  z
+    .object({
+      is: z
+        .lazy(() => NafCodeWhereInputSchema)
+        .optional()
+        .nullable(),
+      isNot: z
+        .lazy(() => NafCodeWhereInputSchema)
+        .optional()
+        .nullable()
+    })
+    .strict();
+
 export const FeedbackListRelationFilterSchema: z.ZodType<Prisma.FeedbackListRelationFilter> =
   z
     .object({
@@ -24007,20 +25619,6 @@ export const UserListRelationFilterSchema: z.ZodType<Prisma.UserListRelationFilt
       every: z.lazy(() => UserWhereInputSchema).optional(),
       some: z.lazy(() => UserWhereInputSchema).optional(),
       none: z.lazy(() => UserWhereInputSchema).optional()
-    })
-    .strict();
-
-export const UserNullableScalarRelationFilterSchema: z.ZodType<Prisma.UserNullableScalarRelationFilter> =
-  z
-    .object({
-      is: z
-        .lazy(() => UserWhereInputSchema)
-        .optional()
-        .nullable(),
-      isNot: z
-        .lazy(() => UserWhereInputSchema)
-        .optional()
-        .nullable()
     })
     .strict();
 
@@ -24303,7 +25901,6 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
       postcode: z.lazy(() => SortOrderSchema).optional(),
       city: z.lazy(() => SortOrderSchema).optional(),
       phone: z.lazy(() => SortOrderSchema).optional(),
-      codeNaf: z.lazy(() => SortOrderSchema).optional(),
       activity: z.lazy(() => SortOrderSchema).optional(),
       bounced: z.lazy(() => SortOrderSchema).optional(),
       affiliateRate: z.lazy(() => SortOrderSchema).optional(),
@@ -24311,7 +25908,8 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       role: z.lazy(() => SortOrderSchema).optional(),
-      refererId: z.lazy(() => SortOrderSchema).optional()
+      refererId: z.lazy(() => SortOrderSchema).optional(),
+      codeNaf: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -24337,7 +25935,6 @@ export const UserMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserMaxOrderBy
       postcode: z.lazy(() => SortOrderSchema).optional(),
       city: z.lazy(() => SortOrderSchema).optional(),
       phone: z.lazy(() => SortOrderSchema).optional(),
-      codeNaf: z.lazy(() => SortOrderSchema).optional(),
       activity: z.lazy(() => SortOrderSchema).optional(),
       bounced: z.lazy(() => SortOrderSchema).optional(),
       affiliateRate: z.lazy(() => SortOrderSchema).optional(),
@@ -24345,7 +25942,8 @@ export const UserMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserMaxOrderBy
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       role: z.lazy(() => SortOrderSchema).optional(),
-      refererId: z.lazy(() => SortOrderSchema).optional()
+      refererId: z.lazy(() => SortOrderSchema).optional(),
+      codeNaf: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -24363,7 +25961,6 @@ export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderBy
       postcode: z.lazy(() => SortOrderSchema).optional(),
       city: z.lazy(() => SortOrderSchema).optional(),
       phone: z.lazy(() => SortOrderSchema).optional(),
-      codeNaf: z.lazy(() => SortOrderSchema).optional(),
       activity: z.lazy(() => SortOrderSchema).optional(),
       bounced: z.lazy(() => SortOrderSchema).optional(),
       affiliateRate: z.lazy(() => SortOrderSchema).optional(),
@@ -24371,7 +25968,8 @@ export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderBy
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       role: z.lazy(() => SortOrderSchema).optional(),
-      refererId: z.lazy(() => SortOrderSchema).optional()
+      refererId: z.lazy(() => SortOrderSchema).optional(),
+      codeNaf: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -27156,6 +28754,234 @@ export const EmailMinOrderByAggregateInputSchema: z.ZodType<Prisma.EmailMinOrder
     })
     .strict();
 
+export const NafDivisionListRelationFilterSchema: z.ZodType<Prisma.NafDivisionListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => NafDivisionWhereInputSchema).optional(),
+      some: z.lazy(() => NafDivisionWhereInputSchema).optional(),
+      none: z.lazy(() => NafDivisionWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafDivisionOrderByRelationAggregateInputSchema: z.ZodType<Prisma.NafDivisionOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafSectionCountOrderByAggregateInputSchema: z.ZodType<Prisma.NafSectionCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafSectionMaxOrderByAggregateInputSchema: z.ZodType<Prisma.NafSectionMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafSectionMinOrderByAggregateInputSchema: z.ZodType<Prisma.NafSectionMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafGroupListRelationFilterSchema: z.ZodType<Prisma.NafGroupListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => NafGroupWhereInputSchema).optional(),
+      some: z.lazy(() => NafGroupWhereInputSchema).optional(),
+      none: z.lazy(() => NafGroupWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafSectionScalarRelationFilterSchema: z.ZodType<Prisma.NafSectionScalarRelationFilter> =
+  z
+    .object({
+      is: z.lazy(() => NafSectionWhereInputSchema).optional(),
+      isNot: z.lazy(() => NafSectionWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafGroupOrderByRelationAggregateInputSchema: z.ZodType<Prisma.NafGroupOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafDivisionCountOrderByAggregateInputSchema: z.ZodType<Prisma.NafDivisionCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      sectionId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafDivisionMaxOrderByAggregateInputSchema: z.ZodType<Prisma.NafDivisionMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      sectionId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafDivisionMinOrderByAggregateInputSchema: z.ZodType<Prisma.NafDivisionMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      sectionId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafClassListRelationFilterSchema: z.ZodType<Prisma.NafClassListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => NafClassWhereInputSchema).optional(),
+      some: z.lazy(() => NafClassWhereInputSchema).optional(),
+      none: z.lazy(() => NafClassWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafDivisionScalarRelationFilterSchema: z.ZodType<Prisma.NafDivisionScalarRelationFilter> =
+  z
+    .object({
+      is: z.lazy(() => NafDivisionWhereInputSchema).optional(),
+      isNot: z.lazy(() => NafDivisionWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafClassOrderByRelationAggregateInputSchema: z.ZodType<Prisma.NafClassOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafGroupCountOrderByAggregateInputSchema: z.ZodType<Prisma.NafGroupCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      divisionId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafGroupMaxOrderByAggregateInputSchema: z.ZodType<Prisma.NafGroupMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      divisionId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafGroupMinOrderByAggregateInputSchema: z.ZodType<Prisma.NafGroupMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      divisionId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafCodeListRelationFilterSchema: z.ZodType<Prisma.NafCodeListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => NafCodeWhereInputSchema).optional(),
+      some: z.lazy(() => NafCodeWhereInputSchema).optional(),
+      none: z.lazy(() => NafCodeWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafGroupScalarRelationFilterSchema: z.ZodType<Prisma.NafGroupScalarRelationFilter> =
+  z
+    .object({
+      is: z.lazy(() => NafGroupWhereInputSchema).optional(),
+      isNot: z.lazy(() => NafGroupWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeOrderByRelationAggregateInputSchema: z.ZodType<Prisma.NafCodeOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafClassCountOrderByAggregateInputSchema: z.ZodType<Prisma.NafClassCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      groupId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafClassMaxOrderByAggregateInputSchema: z.ZodType<Prisma.NafClassMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      groupId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafClassMinOrderByAggregateInputSchema: z.ZodType<Prisma.NafClassMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      groupId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafClassScalarRelationFilterSchema: z.ZodType<Prisma.NafClassScalarRelationFilter> =
+  z
+    .object({
+      is: z.lazy(() => NafClassWhereInputSchema).optional(),
+      isNot: z.lazy(() => NafClassWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeCountOrderByAggregateInputSchema: z.ZodType<Prisma.NafCodeCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      classId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafCodeMaxOrderByAggregateInputSchema: z.ZodType<Prisma.NafCodeMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      classId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const NafCodeMinOrderByAggregateInputSchema: z.ZodType<Prisma.NafCodeMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      title: z.lazy(() => SortOrderSchema).optional(),
+      classId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
 export const AccountCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.AccountCreateNestedManyWithoutUserInput> =
   z
     .object({
@@ -27374,6 +29200,38 @@ export const TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema: z.ZodTy
     })
     .strict();
 
+export const UserCreateNestedOneWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutAffiliatesInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutAffiliatesInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutAffiliatesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => UserCreateOrConnectWithoutAffiliatesInputSchema)
+        .optional(),
+      connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeCreateNestedOneWithoutUsersInputSchema: z.ZodType<Prisma.NafCodeCreateNestedOneWithoutUsersInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafCodeCreateWithoutUsersInputSchema),
+          z.lazy(() => NafCodeUncheckedCreateWithoutUsersInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafCodeCreateOrConnectWithoutUsersInputSchema)
+        .optional(),
+      connect: z.lazy(() => NafCodeWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
 export const FeedbackCreateNestedManyWithoutUserInputSchema: z.ZodType<Prisma.FeedbackCreateNestedManyWithoutUserInput> =
   z
     .object({
@@ -27458,22 +29316,6 @@ export const UserCreateNestedManyWithoutRefererInputSchema: z.ZodType<Prisma.Use
           z.lazy(() => UserWhereUniqueInputSchema).array()
         ])
         .optional()
-    })
-    .strict();
-
-export const UserCreateNestedOneWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutAffiliatesInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => UserCreateWithoutAffiliatesInputSchema),
-          z.lazy(() => UserUncheckedCreateWithoutAffiliatesInputSchema)
-        ])
-        .optional(),
-      connectOrCreate: z
-        .lazy(() => UserCreateOrConnectWithoutAffiliatesInputSchema)
-        .optional(),
-      connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
     })
     .strict();
 
@@ -29259,6 +31101,66 @@ export const TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema: z.ZodTy
     })
     .strict();
 
+export const UserUpdateOneWithoutAffiliatesNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutAffiliatesNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutAffiliatesInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutAffiliatesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => UserCreateOrConnectWithoutAffiliatesInputSchema)
+        .optional(),
+      upsert: z.lazy(() => UserUpsertWithoutAffiliatesInputSchema).optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => UserUpdateToOneWithWhereWithoutAffiliatesInputSchema),
+          z.lazy(() => UserUpdateWithoutAffiliatesInputSchema),
+          z.lazy(() => UserUncheckedUpdateWithoutAffiliatesInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeUpdateOneWithoutUsersNestedInputSchema: z.ZodType<Prisma.NafCodeUpdateOneWithoutUsersNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafCodeCreateWithoutUsersInputSchema),
+          z.lazy(() => NafCodeUncheckedCreateWithoutUsersInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafCodeCreateOrConnectWithoutUsersInputSchema)
+        .optional(),
+      upsert: z.lazy(() => NafCodeUpsertWithoutUsersInputSchema).optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => NafCodeWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => NafCodeWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => NafCodeWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => NafCodeUpdateToOneWithWhereWithoutUsersInputSchema),
+          z.lazy(() => NafCodeUpdateWithoutUsersInputSchema),
+          z.lazy(() => NafCodeUncheckedUpdateWithoutUsersInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
 export const FeedbackUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.FeedbackUpdateManyWithoutUserNestedInput> =
   z
     .object({
@@ -29477,36 +31379,6 @@ export const UserUpdateManyWithoutRefererNestedInputSchema: z.ZodType<Prisma.Use
         .union([
           z.lazy(() => UserScalarWhereInputSchema),
           z.lazy(() => UserScalarWhereInputSchema).array()
-        ])
-        .optional()
-    })
-    .strict();
-
-export const UserUpdateOneWithoutAffiliatesNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutAffiliatesNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => UserCreateWithoutAffiliatesInputSchema),
-          z.lazy(() => UserUncheckedCreateWithoutAffiliatesInputSchema)
-        ])
-        .optional(),
-      connectOrCreate: z
-        .lazy(() => UserCreateOrConnectWithoutAffiliatesInputSchema)
-        .optional(),
-      upsert: z.lazy(() => UserUpsertWithoutAffiliatesInputSchema).optional(),
-      disconnect: z
-        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
-        .optional(),
-      delete: z
-        .union([z.boolean(), z.lazy(() => UserWhereInputSchema)])
-        .optional(),
-      connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
-      update: z
-        .union([
-          z.lazy(() => UserUpdateToOneWithWhereWithoutAffiliatesInputSchema),
-          z.lazy(() => UserUpdateWithoutAffiliatesInputSchema),
-          z.lazy(() => UserUncheckedUpdateWithoutAffiliatesInputSchema)
         ])
         .optional()
     })
@@ -39951,6 +41823,1260 @@ export const CampaignUncheckedUpdateManyWithoutEmailNestedInputSchema: z.ZodType
     })
     .strict();
 
+export const NafDivisionCreateNestedManyWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionCreateNestedManyWithoutSectionInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafDivisionCreateWithoutSectionInputSchema),
+          z.lazy(() => NafDivisionCreateWithoutSectionInputSchema).array(),
+          z.lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafDivisionCreateOrConnectWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionCreateOrConnectWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafDivisionCreateManySectionInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUncheckedCreateNestedManyWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionUncheckedCreateNestedManyWithoutSectionInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafDivisionCreateWithoutSectionInputSchema),
+          z.lazy(() => NafDivisionCreateWithoutSectionInputSchema).array(),
+          z.lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafDivisionCreateOrConnectWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionCreateOrConnectWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafDivisionCreateManySectionInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUpdateManyWithoutSectionNestedInputSchema: z.ZodType<Prisma.NafDivisionUpdateManyWithoutSectionNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafDivisionCreateWithoutSectionInputSchema),
+          z.lazy(() => NafDivisionCreateWithoutSectionInputSchema).array(),
+          z.lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafDivisionCreateOrConnectWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionCreateOrConnectWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () => NafDivisionUpsertWithWhereUniqueWithoutSectionInputSchema
+          ),
+          z
+            .lazy(
+              () => NafDivisionUpsertWithWhereUniqueWithoutSectionInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafDivisionCreateManySectionInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () => NafDivisionUpdateWithWhereUniqueWithoutSectionInputSchema
+          ),
+          z
+            .lazy(
+              () => NafDivisionUpdateWithWhereUniqueWithoutSectionInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => NafDivisionUpdateManyWithWhereWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionUpdateManyWithWhereWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => NafDivisionScalarWhereInputSchema),
+          z.lazy(() => NafDivisionScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUncheckedUpdateManyWithoutSectionNestedInputSchema: z.ZodType<Prisma.NafDivisionUncheckedUpdateManyWithoutSectionNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafDivisionCreateWithoutSectionInputSchema),
+          z.lazy(() => NafDivisionCreateWithoutSectionInputSchema).array(),
+          z.lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafDivisionCreateOrConnectWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionCreateOrConnectWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () => NafDivisionUpsertWithWhereUniqueWithoutSectionInputSchema
+          ),
+          z
+            .lazy(
+              () => NafDivisionUpsertWithWhereUniqueWithoutSectionInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafDivisionCreateManySectionInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafDivisionWhereUniqueInputSchema),
+          z.lazy(() => NafDivisionWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () => NafDivisionUpdateWithWhereUniqueWithoutSectionInputSchema
+          ),
+          z
+            .lazy(
+              () => NafDivisionUpdateWithWhereUniqueWithoutSectionInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => NafDivisionUpdateManyWithWhereWithoutSectionInputSchema),
+          z
+            .lazy(() => NafDivisionUpdateManyWithWhereWithoutSectionInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => NafDivisionScalarWhereInputSchema),
+          z.lazy(() => NafDivisionScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupCreateNestedManyWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupCreateNestedManyWithoutDivisionInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafGroupCreateWithoutDivisionInputSchema),
+          z.lazy(() => NafGroupCreateWithoutDivisionInputSchema).array(),
+          z.lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafGroupCreateOrConnectWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupCreateOrConnectWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafGroupCreateManyDivisionInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafSectionCreateNestedOneWithoutDivisionsInputSchema: z.ZodType<Prisma.NafSectionCreateNestedOneWithoutDivisionsInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafSectionCreateWithoutDivisionsInputSchema),
+          z.lazy(() => NafSectionUncheckedCreateWithoutDivisionsInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafSectionCreateOrConnectWithoutDivisionsInputSchema)
+        .optional(),
+      connect: z.lazy(() => NafSectionWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const NafGroupUncheckedCreateNestedManyWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupUncheckedCreateNestedManyWithoutDivisionInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafGroupCreateWithoutDivisionInputSchema),
+          z.lazy(() => NafGroupCreateWithoutDivisionInputSchema).array(),
+          z.lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafGroupCreateOrConnectWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupCreateOrConnectWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafGroupCreateManyDivisionInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUpdateManyWithoutDivisionNestedInputSchema: z.ZodType<Prisma.NafGroupUpdateManyWithoutDivisionNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafGroupCreateWithoutDivisionInputSchema),
+          z.lazy(() => NafGroupCreateWithoutDivisionInputSchema).array(),
+          z.lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafGroupCreateOrConnectWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupCreateOrConnectWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => NafGroupUpsertWithWhereUniqueWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUpsertWithWhereUniqueWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafGroupCreateManyDivisionInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => NafGroupUpdateWithWhereUniqueWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUpdateWithWhereUniqueWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => NafGroupUpdateManyWithWhereWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUpdateManyWithWhereWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => NafGroupScalarWhereInputSchema),
+          z.lazy(() => NafGroupScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafSectionUpdateOneRequiredWithoutDivisionsNestedInputSchema: z.ZodType<Prisma.NafSectionUpdateOneRequiredWithoutDivisionsNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafSectionCreateWithoutDivisionsInputSchema),
+          z.lazy(() => NafSectionUncheckedCreateWithoutDivisionsInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafSectionCreateOrConnectWithoutDivisionsInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => NafSectionUpsertWithoutDivisionsInputSchema)
+        .optional(),
+      connect: z.lazy(() => NafSectionWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(
+            () => NafSectionUpdateToOneWithWhereWithoutDivisionsInputSchema
+          ),
+          z.lazy(() => NafSectionUpdateWithoutDivisionsInputSchema),
+          z.lazy(() => NafSectionUncheckedUpdateWithoutDivisionsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUncheckedUpdateManyWithoutDivisionNestedInputSchema: z.ZodType<Prisma.NafGroupUncheckedUpdateManyWithoutDivisionNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafGroupCreateWithoutDivisionInputSchema),
+          z.lazy(() => NafGroupCreateWithoutDivisionInputSchema).array(),
+          z.lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafGroupCreateOrConnectWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupCreateOrConnectWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => NafGroupUpsertWithWhereUniqueWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUpsertWithWhereUniqueWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafGroupCreateManyDivisionInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafGroupWhereUniqueInputSchema),
+          z.lazy(() => NafGroupWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => NafGroupUpdateWithWhereUniqueWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUpdateWithWhereUniqueWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => NafGroupUpdateManyWithWhereWithoutDivisionInputSchema),
+          z
+            .lazy(() => NafGroupUpdateManyWithWhereWithoutDivisionInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => NafGroupScalarWhereInputSchema),
+          z.lazy(() => NafGroupScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassCreateNestedManyWithoutGroupInputSchema: z.ZodType<Prisma.NafClassCreateNestedManyWithoutGroupInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafClassCreateWithoutGroupInputSchema),
+          z.lazy(() => NafClassCreateWithoutGroupInputSchema).array(),
+          z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema),
+          z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafClassCreateOrConnectWithoutGroupInputSchema),
+          z.lazy(() => NafClassCreateOrConnectWithoutGroupInputSchema).array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafClassCreateManyGroupInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionCreateNestedOneWithoutGroupsInputSchema: z.ZodType<Prisma.NafDivisionCreateNestedOneWithoutGroupsInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafDivisionCreateWithoutGroupsInputSchema),
+          z.lazy(() => NafDivisionUncheckedCreateWithoutGroupsInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafDivisionCreateOrConnectWithoutGroupsInputSchema)
+        .optional(),
+      connect: z.lazy(() => NafDivisionWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const NafClassUncheckedCreateNestedManyWithoutGroupInputSchema: z.ZodType<Prisma.NafClassUncheckedCreateNestedManyWithoutGroupInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafClassCreateWithoutGroupInputSchema),
+          z.lazy(() => NafClassCreateWithoutGroupInputSchema).array(),
+          z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema),
+          z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafClassCreateOrConnectWithoutGroupInputSchema),
+          z.lazy(() => NafClassCreateOrConnectWithoutGroupInputSchema).array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafClassCreateManyGroupInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassUpdateManyWithoutGroupNestedInputSchema: z.ZodType<Prisma.NafClassUpdateManyWithoutGroupNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafClassCreateWithoutGroupInputSchema),
+          z.lazy(() => NafClassCreateWithoutGroupInputSchema).array(),
+          z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema),
+          z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafClassCreateOrConnectWithoutGroupInputSchema),
+          z.lazy(() => NafClassCreateOrConnectWithoutGroupInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => NafClassUpsertWithWhereUniqueWithoutGroupInputSchema),
+          z
+            .lazy(() => NafClassUpsertWithWhereUniqueWithoutGroupInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafClassCreateManyGroupInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => NafClassUpdateWithWhereUniqueWithoutGroupInputSchema),
+          z
+            .lazy(() => NafClassUpdateWithWhereUniqueWithoutGroupInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => NafClassUpdateManyWithWhereWithoutGroupInputSchema),
+          z
+            .lazy(() => NafClassUpdateManyWithWhereWithoutGroupInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => NafClassScalarWhereInputSchema),
+          z.lazy(() => NafClassScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUpdateOneRequiredWithoutGroupsNestedInputSchema: z.ZodType<Prisma.NafDivisionUpdateOneRequiredWithoutGroupsNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafDivisionCreateWithoutGroupsInputSchema),
+          z.lazy(() => NafDivisionUncheckedCreateWithoutGroupsInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafDivisionCreateOrConnectWithoutGroupsInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => NafDivisionUpsertWithoutGroupsInputSchema)
+        .optional(),
+      connect: z.lazy(() => NafDivisionWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => NafDivisionUpdateToOneWithWhereWithoutGroupsInputSchema),
+          z.lazy(() => NafDivisionUpdateWithoutGroupsInputSchema),
+          z.lazy(() => NafDivisionUncheckedUpdateWithoutGroupsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassUncheckedUpdateManyWithoutGroupNestedInputSchema: z.ZodType<Prisma.NafClassUncheckedUpdateManyWithoutGroupNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafClassCreateWithoutGroupInputSchema),
+          z.lazy(() => NafClassCreateWithoutGroupInputSchema).array(),
+          z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema),
+          z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafClassCreateOrConnectWithoutGroupInputSchema),
+          z.lazy(() => NafClassCreateOrConnectWithoutGroupInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => NafClassUpsertWithWhereUniqueWithoutGroupInputSchema),
+          z
+            .lazy(() => NafClassUpsertWithWhereUniqueWithoutGroupInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafClassCreateManyGroupInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafClassWhereUniqueInputSchema),
+          z.lazy(() => NafClassWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => NafClassUpdateWithWhereUniqueWithoutGroupInputSchema),
+          z
+            .lazy(() => NafClassUpdateWithWhereUniqueWithoutGroupInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => NafClassUpdateManyWithWhereWithoutGroupInputSchema),
+          z
+            .lazy(() => NafClassUpdateManyWithWhereWithoutGroupInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => NafClassScalarWhereInputSchema),
+          z.lazy(() => NafClassScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeCreateNestedManyWithoutClassInputSchema: z.ZodType<Prisma.NafCodeCreateNestedManyWithoutClassInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafCodeCreateWithoutClassInputSchema),
+          z.lazy(() => NafCodeCreateWithoutClassInputSchema).array(),
+          z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema),
+          z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafCodeCreateOrConnectWithoutClassInputSchema),
+          z.lazy(() => NafCodeCreateOrConnectWithoutClassInputSchema).array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafCodeCreateManyClassInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupCreateNestedOneWithoutClassesInputSchema: z.ZodType<Prisma.NafGroupCreateNestedOneWithoutClassesInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafGroupCreateWithoutClassesInputSchema),
+          z.lazy(() => NafGroupUncheckedCreateWithoutClassesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafGroupCreateOrConnectWithoutClassesInputSchema)
+        .optional(),
+      connect: z.lazy(() => NafGroupWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeUncheckedCreateNestedManyWithoutClassInputSchema: z.ZodType<Prisma.NafCodeUncheckedCreateNestedManyWithoutClassInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafCodeCreateWithoutClassInputSchema),
+          z.lazy(() => NafCodeCreateWithoutClassInputSchema).array(),
+          z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema),
+          z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafCodeCreateOrConnectWithoutClassInputSchema),
+          z.lazy(() => NafCodeCreateOrConnectWithoutClassInputSchema).array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafCodeCreateManyClassInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeUpdateManyWithoutClassNestedInputSchema: z.ZodType<Prisma.NafCodeUpdateManyWithoutClassNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafCodeCreateWithoutClassInputSchema),
+          z.lazy(() => NafCodeCreateWithoutClassInputSchema).array(),
+          z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema),
+          z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafCodeCreateOrConnectWithoutClassInputSchema),
+          z.lazy(() => NafCodeCreateOrConnectWithoutClassInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => NafCodeUpsertWithWhereUniqueWithoutClassInputSchema),
+          z
+            .lazy(() => NafCodeUpsertWithWhereUniqueWithoutClassInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafCodeCreateManyClassInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => NafCodeUpdateWithWhereUniqueWithoutClassInputSchema),
+          z
+            .lazy(() => NafCodeUpdateWithWhereUniqueWithoutClassInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => NafCodeUpdateManyWithWhereWithoutClassInputSchema),
+          z
+            .lazy(() => NafCodeUpdateManyWithWhereWithoutClassInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => NafCodeScalarWhereInputSchema),
+          z.lazy(() => NafCodeScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUpdateOneRequiredWithoutClassesNestedInputSchema: z.ZodType<Prisma.NafGroupUpdateOneRequiredWithoutClassesNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafGroupCreateWithoutClassesInputSchema),
+          z.lazy(() => NafGroupUncheckedCreateWithoutClassesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafGroupCreateOrConnectWithoutClassesInputSchema)
+        .optional(),
+      upsert: z.lazy(() => NafGroupUpsertWithoutClassesInputSchema).optional(),
+      connect: z.lazy(() => NafGroupWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => NafGroupUpdateToOneWithWhereWithoutClassesInputSchema),
+          z.lazy(() => NafGroupUpdateWithoutClassesInputSchema),
+          z.lazy(() => NafGroupUncheckedUpdateWithoutClassesInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeUncheckedUpdateManyWithoutClassNestedInputSchema: z.ZodType<Prisma.NafCodeUncheckedUpdateManyWithoutClassNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafCodeCreateWithoutClassInputSchema),
+          z.lazy(() => NafCodeCreateWithoutClassInputSchema).array(),
+          z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema),
+          z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => NafCodeCreateOrConnectWithoutClassInputSchema),
+          z.lazy(() => NafCodeCreateOrConnectWithoutClassInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => NafCodeUpsertWithWhereUniqueWithoutClassInputSchema),
+          z
+            .lazy(() => NafCodeUpsertWithWhereUniqueWithoutClassInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => NafCodeCreateManyClassInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => NafCodeWhereUniqueInputSchema),
+          z.lazy(() => NafCodeWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => NafCodeUpdateWithWhereUniqueWithoutClassInputSchema),
+          z
+            .lazy(() => NafCodeUpdateWithWhereUniqueWithoutClassInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => NafCodeUpdateManyWithWhereWithoutClassInputSchema),
+          z
+            .lazy(() => NafCodeUpdateManyWithWhereWithoutClassInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => NafCodeScalarWhereInputSchema),
+          z.lazy(() => NafCodeScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassCreateNestedOneWithoutCodesInputSchema: z.ZodType<Prisma.NafClassCreateNestedOneWithoutCodesInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafClassCreateWithoutCodesInputSchema),
+          z.lazy(() => NafClassUncheckedCreateWithoutCodesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafClassCreateOrConnectWithoutCodesInputSchema)
+        .optional(),
+      connect: z.lazy(() => NafClassWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const UserCreateNestedManyWithoutNafInputSchema: z.ZodType<Prisma.UserCreateNestedManyWithoutNafInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutNafInputSchema),
+          z.lazy(() => UserCreateWithoutNafInputSchema).array(),
+          z.lazy(() => UserUncheckedCreateWithoutNafInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => UserCreateOrConnectWithoutNafInputSchema),
+          z.lazy(() => UserCreateOrConnectWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      createMany: z.lazy(() => UserCreateManyNafInputEnvelopeSchema).optional(),
+      connect: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedCreateNestedManyWithoutNafInputSchema: z.ZodType<Prisma.UserUncheckedCreateNestedManyWithoutNafInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutNafInputSchema),
+          z.lazy(() => UserCreateWithoutNafInputSchema).array(),
+          z.lazy(() => UserUncheckedCreateWithoutNafInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => UserCreateOrConnectWithoutNafInputSchema),
+          z.lazy(() => UserCreateOrConnectWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      createMany: z.lazy(() => UserCreateManyNafInputEnvelopeSchema).optional(),
+      connect: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassUpdateOneRequiredWithoutCodesNestedInputSchema: z.ZodType<Prisma.NafClassUpdateOneRequiredWithoutCodesNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => NafClassCreateWithoutCodesInputSchema),
+          z.lazy(() => NafClassUncheckedCreateWithoutCodesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => NafClassCreateOrConnectWithoutCodesInputSchema)
+        .optional(),
+      upsert: z.lazy(() => NafClassUpsertWithoutCodesInputSchema).optional(),
+      connect: z.lazy(() => NafClassWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => NafClassUpdateToOneWithWhereWithoutCodesInputSchema),
+          z.lazy(() => NafClassUpdateWithoutCodesInputSchema),
+          z.lazy(() => NafClassUncheckedUpdateWithoutCodesInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserUpdateManyWithoutNafNestedInputSchema: z.ZodType<Prisma.UserUpdateManyWithoutNafNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutNafInputSchema),
+          z.lazy(() => UserCreateWithoutNafInputSchema).array(),
+          z.lazy(() => UserUncheckedCreateWithoutNafInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => UserCreateOrConnectWithoutNafInputSchema),
+          z.lazy(() => UserCreateOrConnectWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => UserUpsertWithWhereUniqueWithoutNafInputSchema),
+          z.lazy(() => UserUpsertWithWhereUniqueWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      createMany: z.lazy(() => UserCreateManyNafInputEnvelopeSchema).optional(),
+      set: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => UserUpdateWithWhereUniqueWithoutNafInputSchema),
+          z.lazy(() => UserUpdateWithWhereUniqueWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => UserUpdateManyWithWhereWithoutNafInputSchema),
+          z.lazy(() => UserUpdateManyWithWhereWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => UserScalarWhereInputSchema),
+          z.lazy(() => UserScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedUpdateManyWithoutNafNestedInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutNafNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => UserCreateWithoutNafInputSchema),
+          z.lazy(() => UserCreateWithoutNafInputSchema).array(),
+          z.lazy(() => UserUncheckedCreateWithoutNafInputSchema),
+          z.lazy(() => UserUncheckedCreateWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => UserCreateOrConnectWithoutNafInputSchema),
+          z.lazy(() => UserCreateOrConnectWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => UserUpsertWithWhereUniqueWithoutNafInputSchema),
+          z.lazy(() => UserUpsertWithWhereUniqueWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      createMany: z.lazy(() => UserCreateManyNafInputEnvelopeSchema).optional(),
+      set: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => UserWhereUniqueInputSchema),
+          z.lazy(() => UserWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => UserUpdateWithWhereUniqueWithoutNafInputSchema),
+          z.lazy(() => UserUpdateWithWhereUniqueWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => UserUpdateManyWithWhereWithoutNafInputSchema),
+          z.lazy(() => UserUpdateManyWithWhereWithoutNafInputSchema).array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => UserScalarWhereInputSchema),
+          z.lazy(() => UserScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
 export const NestedStringFilterSchema: z.ZodType<Prisma.NestedStringFilter> = z
   .object({
     equals: z.string().optional(),
@@ -41223,6 +44349,283 @@ export const TwoFactorConfirmationCreateOrConnectWithoutUserInputSchema: z.ZodTy
     })
     .strict();
 
+export const UserCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreateWithoutAffiliatesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.boolean().optional(),
+      image: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z.string().optional().nullable(),
+      address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z.string().optional().nullable(),
+      city: z.string().optional().nullable(),
+      phone: z.string().optional().nullable(),
+      activity: z.string().optional().nullable(),
+      bounced: z.number().int().optional(),
+      affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      accounts: z
+        .lazy(() => AccountCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
+      comments: z
+        .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationCreateNestedManyWithoutAffiliateInputSchema)
+        .optional(),
+      lists: z
+        .lazy(() => ListCreateNestedManyWithoutContactsInputSchema)
+        .optional(),
+      listsManage: z
+        .lazy(() => ListCreateNestedManyWithoutOwnersInputSchema)
+        .optional(),
+      emails: z
+        .lazy(() => EmailCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      clicks: z
+        .lazy(() => ClickCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      referrals: z
+        .lazy(() => ClickCreateNestedManyWithoutRefererInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutAffiliatesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.boolean().optional(),
+      image: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z.string().optional().nullable(),
+      address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z.string().optional().nullable(),
+      city: z.string().optional().nullable(),
+      phone: z.string().optional().nullable(),
+      activity: z.string().optional().nullable(),
+      bounced: z.number().int().optional(),
+      affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedCreateNestedOneWithoutUserInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      comments: z
+        .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(
+          () => ReservationUncheckedCreateNestedManyWithoutAffiliateInputSchema
+        )
+        .optional(),
+      lists: z
+        .lazy(() => ListUncheckedCreateNestedManyWithoutContactsInputSchema)
+        .optional(),
+      listsManage: z
+        .lazy(() => ListUncheckedCreateNestedManyWithoutOwnersInputSchema)
+        .optional(),
+      emails: z
+        .lazy(() => EmailUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      referrals: z
+        .lazy(() => ClickUncheckedCreateNestedManyWithoutRefererInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserCreateOrConnectWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutAffiliatesInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutAffiliatesInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutAffiliatesInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafCodeCreateWithoutUsersInputSchema: z.ZodType<Prisma.NafCodeCreateWithoutUsersInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      class: z.lazy(() => NafClassCreateNestedOneWithoutCodesInputSchema)
+    })
+    .strict();
+
+export const NafCodeUncheckedCreateWithoutUsersInputSchema: z.ZodType<Prisma.NafCodeUncheckedCreateWithoutUsersInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      classId: z.string()
+    })
+    .strict();
+
+export const NafCodeCreateOrConnectWithoutUsersInputSchema: z.ZodType<Prisma.NafCodeCreateOrConnectWithoutUsersInput> =
+  z
+    .object({
+      where: z.lazy(() => NafCodeWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafCodeCreateWithoutUsersInputSchema),
+        z.lazy(() => NafCodeUncheckedCreateWithoutUsersInputSchema)
+      ])
+    })
+    .strict();
+
 export const FeedbackCreateWithoutUserInputSchema: z.ZodType<Prisma.FeedbackCreateWithoutUserInput> =
   z
     .object({
@@ -41335,7 +44738,6 @@ export const UserCreateWithoutRefererInputSchema: z.ZodType<Prisma.UserCreateWit
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -41366,6 +44768,9 @@ export const UserCreateWithoutRefererInputSchema: z.ZodType<Prisma.UserCreateWit
         .optional(),
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
         .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
@@ -41448,7 +44853,6 @@ export const UserUncheckedCreateWithoutRefererInputSchema: z.ZodType<Prisma.User
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -41456,6 +44860,7 @@ export const UserUncheckedCreateWithoutRefererInputSchema: z.ZodType<Prisma.User
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -41565,252 +44970,6 @@ export const UserCreateManyRefererInputEnvelopeSchema: z.ZodType<Prisma.UserCrea
         z.lazy(() => UserCreateManyRefererInputSchema).array()
       ]),
       skipDuplicates: z.boolean().optional()
-    })
-    .strict();
-
-export const UserCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreateWithoutAffiliatesInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      name: z.string().optional().nullable(),
-      email: z.string(),
-      emailVerified: z.boolean().optional(),
-      image: z.string().optional().nullable(),
-      isTwoFactorEnabled: z.boolean().optional(),
-      billing_address: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      payment_method: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      company: z.string().optional().nullable(),
-      address: z.string().optional().nullable(),
-      location: z
-        .union([
-          z.lazy(() => NullableJsonNullValueInputSchema),
-          InputJsonValueSchema
-        ])
-        .optional(),
-      postcode: z.string().optional().nullable(),
-      city: z.string().optional().nullable(),
-      phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
-      activity: z.string().optional().nullable(),
-      bounced: z.number().int().optional(),
-      affiliateRate: z.number().optional().nullable(),
-      isAnonymous: z.boolean().optional().nullable(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      role: z.lazy(() => UserRoleSchema).optional(),
-      accounts: z
-        .lazy(() => AccountCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sessions: z
-        .lazy(() => SessionCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sites: z
-        .lazy(() => SiteCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscriptions: z
-        .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      Authenticator: z
-        .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      links: z
-        .lazy(() => LinkCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      customer: z
-        .lazy(() => CustomerCreateNestedOneWithoutUserInputSchema)
-        .optional(),
-      twoFactorConfirmation: z
-        .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
-        .optional(),
-      feedback: z
-        .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      likes: z
-        .lazy(() => LikeCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
-        .optional(),
-      events: z
-        .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      workflowStates: z
-        .lazy(() => WorkflowStateCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      executions: z
-        .lazy(() => ExecutionCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      jobs: z
-        .lazy(() => QueueCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      outbox: z
-        .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
-      comments: z
-        .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sent: z
-        .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
-        .optional(),
-      received: z
-        .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
-        .optional(),
-      reservations: z
-        .lazy(() => ReservationCreateNestedManyWithoutAffiliateInputSchema)
-        .optional(),
-      lists: z
-        .lazy(() => ListCreateNestedManyWithoutContactsInputSchema)
-        .optional(),
-      listsManage: z
-        .lazy(() => ListCreateNestedManyWithoutOwnersInputSchema)
-        .optional(),
-      emails: z
-        .lazy(() => EmailCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      clicks: z
-        .lazy(() => ClickCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      referrals: z
-        .lazy(() => ClickCreateNestedManyWithoutRefererInputSchema)
-        .optional()
-    })
-    .strict();
-
-export const UserUncheckedCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutAffiliatesInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      name: z.string().optional().nullable(),
-      email: z.string(),
-      emailVerified: z.boolean().optional(),
-      image: z.string().optional().nullable(),
-      isTwoFactorEnabled: z.boolean().optional(),
-      billing_address: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      payment_method: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      company: z.string().optional().nullable(),
-      address: z.string().optional().nullable(),
-      location: z
-        .union([
-          z.lazy(() => NullableJsonNullValueInputSchema),
-          InputJsonValueSchema
-        ])
-        .optional(),
-      postcode: z.string().optional().nullable(),
-      city: z.string().optional().nullable(),
-      phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
-      activity: z.string().optional().nullable(),
-      bounced: z.number().int().optional(),
-      affiliateRate: z.number().optional().nullable(),
-      isAnonymous: z.boolean().optional().nullable(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      role: z.lazy(() => UserRoleSchema).optional(),
-      refererId: z.string().optional().nullable(),
-      accounts: z
-        .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sessions: z
-        .lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sites: z
-        .lazy(() => SiteUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      subscriptions: z
-        .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      Authenticator: z
-        .lazy(
-          () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
-        )
-        .optional(),
-      links: z
-        .lazy(() => LinkUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      customer: z
-        .lazy(() => CustomerUncheckedCreateNestedOneWithoutUserInputSchema)
-        .optional(),
-      twoFactorConfirmation: z
-        .lazy(
-          () =>
-            TwoFactorConfirmationUncheckedCreateNestedOneWithoutUserInputSchema
-        )
-        .optional(),
-      feedback: z
-        .lazy(() => FeedbackUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      likes: z
-        .lazy(() => LikeUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      events: z
-        .lazy(() => EventUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      workflowStates: z
-        .lazy(
-          () => WorkflowStateUncheckedCreateNestedManyWithoutUserInputSchema
-        )
-        .optional(),
-      executions: z
-        .lazy(() => ExecutionUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      jobs: z
-        .lazy(() => QueueUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      outbox: z
-        .lazy(() => OutboxUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      feed: z
-        .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      comments: z
-        .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      sent: z
-        .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
-        .optional(),
-      received: z
-        .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
-        .optional(),
-      reservations: z
-        .lazy(
-          () => ReservationUncheckedCreateNestedManyWithoutAffiliateInputSchema
-        )
-        .optional(),
-      lists: z
-        .lazy(() => ListUncheckedCreateNestedManyWithoutContactsInputSchema)
-        .optional(),
-      listsManage: z
-        .lazy(() => ListUncheckedCreateNestedManyWithoutOwnersInputSchema)
-        .optional(),
-      emails: z
-        .lazy(() => EmailUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      clicks: z
-        .lazy(() => ClickUncheckedCreateNestedManyWithoutUserInputSchema)
-        .optional(),
-      referrals: z
-        .lazy(() => ClickUncheckedCreateNestedManyWithoutRefererInputSchema)
-        .optional()
-    })
-    .strict();
-
-export const UserCreateOrConnectWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutAffiliatesInput> =
-  z
-    .object({
-      where: z.lazy(() => UserWhereUniqueInputSchema),
-      create: z.union([
-        z.lazy(() => UserCreateWithoutAffiliatesInputSchema),
-        z.lazy(() => UserUncheckedCreateWithoutAffiliatesInputSchema)
-      ])
     })
     .strict();
 
@@ -43292,6 +46451,552 @@ export const TwoFactorConfirmationUncheckedUpdateWithoutUserInputSchema: z.ZodTy
     })
     .strict();
 
+export const UserUpsertWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpsertWithoutAffiliatesInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => UserUpdateWithoutAffiliatesInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutAffiliatesInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutAffiliatesInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutAffiliatesInputSchema)
+      ]),
+      where: z.lazy(() => UserWhereInputSchema).optional()
+    })
+    .strict();
+
+export const UserUpdateToOneWithWhereWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutAffiliatesInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => UserUpdateWithoutAffiliatesInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutAffiliatesInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdateWithoutAffiliatesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      address: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      city: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      phone: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activity: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      bounced: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      affiliateRate: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      accounts: z
+        .lazy(() => AccountUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
+      comments: z
+        .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationUpdateManyWithoutAffiliateNestedInputSchema)
+        .optional(),
+      lists: z
+        .lazy(() => ListUpdateManyWithoutContactsNestedInputSchema)
+        .optional(),
+      listsManage: z
+        .lazy(() => ListUpdateManyWithoutOwnersNestedInputSchema)
+        .optional(),
+      emails: z
+        .lazy(() => EmailUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      referrals: z
+        .lazy(() => ClickUpdateManyWithoutRefererNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutAffiliatesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      address: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      city: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      phone: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activity: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      bounced: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      affiliateRate: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedUpdateOneWithoutUserNestedInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      comments: z
+        .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(
+          () => ReservationUncheckedUpdateManyWithoutAffiliateNestedInputSchema
+        )
+        .optional(),
+      lists: z
+        .lazy(() => ListUncheckedUpdateManyWithoutContactsNestedInputSchema)
+        .optional(),
+      listsManage: z
+        .lazy(() => ListUncheckedUpdateManyWithoutOwnersNestedInputSchema)
+        .optional(),
+      emails: z
+        .lazy(() => EmailUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      referrals: z
+        .lazy(() => ClickUncheckedUpdateManyWithoutRefererNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafCodeUpsertWithoutUsersInputSchema: z.ZodType<Prisma.NafCodeUpsertWithoutUsersInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => NafCodeUpdateWithoutUsersInputSchema),
+        z.lazy(() => NafCodeUncheckedUpdateWithoutUsersInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafCodeCreateWithoutUsersInputSchema),
+        z.lazy(() => NafCodeUncheckedCreateWithoutUsersInputSchema)
+      ]),
+      where: z.lazy(() => NafCodeWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeUpdateToOneWithWhereWithoutUsersInputSchema: z.ZodType<Prisma.NafCodeUpdateToOneWithWhereWithoutUsersInput> =
+  z
+    .object({
+      where: z.lazy(() => NafCodeWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => NafCodeUpdateWithoutUsersInputSchema),
+        z.lazy(() => NafCodeUncheckedUpdateWithoutUsersInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafCodeUpdateWithoutUsersInputSchema: z.ZodType<Prisma.NafCodeUpdateWithoutUsersInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      class: z
+        .lazy(() => NafClassUpdateOneRequiredWithoutCodesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafCodeUncheckedUpdateWithoutUsersInputSchema: z.ZodType<Prisma.NafCodeUncheckedUpdateWithoutUsersInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      classId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
 export const FeedbackUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.FeedbackUpsertWithWhereUniqueWithoutUserInput> =
   z
     .object({
@@ -43535,10 +47240,6 @@ export const UserScalarWhereInputSchema: z.ZodType<Prisma.UserScalarWhereInput> 
         .union([z.lazy(() => StringNullableFilterSchema), z.string()])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-        .optional()
-        .nullable(),
       activity: z
         .union([z.lazy(() => StringNullableFilterSchema), z.string()])
         .optional()
@@ -43567,486 +47268,11 @@ export const UserScalarWhereInputSchema: z.ZodType<Prisma.UserScalarWhereInput> 
       refererId: z
         .union([z.lazy(() => StringNullableFilterSchema), z.string()])
         .optional()
+        .nullable(),
+      codeNaf: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
         .nullable()
-    })
-    .strict();
-
-export const UserUpsertWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpsertWithoutAffiliatesInput> =
-  z
-    .object({
-      update: z.union([
-        z.lazy(() => UserUpdateWithoutAffiliatesInputSchema),
-        z.lazy(() => UserUncheckedUpdateWithoutAffiliatesInputSchema)
-      ]),
-      create: z.union([
-        z.lazy(() => UserCreateWithoutAffiliatesInputSchema),
-        z.lazy(() => UserUncheckedCreateWithoutAffiliatesInputSchema)
-      ]),
-      where: z.lazy(() => UserWhereInputSchema).optional()
-    })
-    .strict();
-
-export const UserUpdateToOneWithWhereWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutAffiliatesInput> =
-  z
-    .object({
-      where: z.lazy(() => UserWhereInputSchema).optional(),
-      data: z.union([
-        z.lazy(() => UserUpdateWithoutAffiliatesInputSchema),
-        z.lazy(() => UserUncheckedUpdateWithoutAffiliatesInputSchema)
-      ])
-    })
-    .strict();
-
-export const UserUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdateWithoutAffiliatesInput> =
-  z
-    .object({
-      id: z
-        .union([
-          z.string().cuid(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      name: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      email: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      emailVerified: z
-        .union([
-          z.boolean(),
-          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      image: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      isTwoFactorEnabled: z
-        .union([
-          z.boolean(),
-          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      billing_address: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      payment_method: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      company: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      address: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      location: z
-        .union([
-          z.lazy(() => NullableJsonNullValueInputSchema),
-          InputJsonValueSchema
-        ])
-        .optional(),
-      postcode: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      city: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      phone: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      activity: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      bounced: z
-        .union([
-          z.number().int(),
-          z.lazy(() => IntFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      affiliateRate: z
-        .union([
-          z.number(),
-          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      isAnonymous: z
-        .union([
-          z.boolean(),
-          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      createdAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      updatedAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      role: z
-        .union([
-          z.lazy(() => UserRoleSchema),
-          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      accounts: z
-        .lazy(() => AccountUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sessions: z
-        .lazy(() => SessionUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sites: z
-        .lazy(() => SiteUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscriptions: z
-        .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      Authenticator: z
-        .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      links: z
-        .lazy(() => LinkUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      customer: z
-        .lazy(() => CustomerUpdateOneWithoutUserNestedInputSchema)
-        .optional(),
-      twoFactorConfirmation: z
-        .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
-        .optional(),
-      feedback: z
-        .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      likes: z
-        .lazy(() => LikeUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
-        .optional(),
-      events: z
-        .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      workflowStates: z
-        .lazy(() => WorkflowStateUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      executions: z
-        .lazy(() => ExecutionUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      jobs: z
-        .lazy(() => QueueUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      outbox: z
-        .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
-      comments: z
-        .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sent: z
-        .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
-        .optional(),
-      received: z
-        .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
-        .optional(),
-      reservations: z
-        .lazy(() => ReservationUpdateManyWithoutAffiliateNestedInputSchema)
-        .optional(),
-      lists: z
-        .lazy(() => ListUpdateManyWithoutContactsNestedInputSchema)
-        .optional(),
-      listsManage: z
-        .lazy(() => ListUpdateManyWithoutOwnersNestedInputSchema)
-        .optional(),
-      emails: z
-        .lazy(() => EmailUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      clicks: z
-        .lazy(() => ClickUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      referrals: z
-        .lazy(() => ClickUpdateManyWithoutRefererNestedInputSchema)
-        .optional()
-    })
-    .strict();
-
-export const UserUncheckedUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutAffiliatesInput> =
-  z
-    .object({
-      id: z
-        .union([
-          z.string().cuid(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      name: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      email: z
-        .union([
-          z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      emailVerified: z
-        .union([
-          z.boolean(),
-          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      image: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      isTwoFactorEnabled: z
-        .union([
-          z.boolean(),
-          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      billing_address: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      payment_method: z
-        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
-        .optional(),
-      company: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      address: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      location: z
-        .union([
-          z.lazy(() => NullableJsonNullValueInputSchema),
-          InputJsonValueSchema
-        ])
-        .optional(),
-      postcode: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      city: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      phone: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      activity: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      bounced: z
-        .union([
-          z.number().int(),
-          z.lazy(() => IntFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      affiliateRate: z
-        .union([
-          z.number(),
-          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      isAnonymous: z
-        .union([
-          z.boolean(),
-          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      createdAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      updatedAt: z
-        .union([
-          z.coerce.date(),
-          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      role: z
-        .union([
-          z.lazy(() => UserRoleSchema),
-          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
-        ])
-        .optional(),
-      refererId: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
-      accounts: z
-        .lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sessions: z
-        .lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sites: z
-        .lazy(() => SiteUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      subscriptions: z
-        .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      Authenticator: z
-        .lazy(
-          () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
-        )
-        .optional(),
-      links: z
-        .lazy(() => LinkUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      customer: z
-        .lazy(() => CustomerUncheckedUpdateOneWithoutUserNestedInputSchema)
-        .optional(),
-      twoFactorConfirmation: z
-        .lazy(
-          () =>
-            TwoFactorConfirmationUncheckedUpdateOneWithoutUserNestedInputSchema
-        )
-        .optional(),
-      feedback: z
-        .lazy(() => FeedbackUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      likes: z
-        .lazy(() => LikeUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      events: z
-        .lazy(() => EventUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      workflowStates: z
-        .lazy(
-          () => WorkflowStateUncheckedUpdateManyWithoutUserNestedInputSchema
-        )
-        .optional(),
-      executions: z
-        .lazy(() => ExecutionUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      jobs: z
-        .lazy(() => QueueUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      outbox: z
-        .lazy(() => OutboxUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      feed: z
-        .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      comments: z
-        .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      sent: z
-        .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
-        .optional(),
-      received: z
-        .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
-        .optional(),
-      reservations: z
-        .lazy(
-          () => ReservationUncheckedUpdateManyWithoutAffiliateNestedInputSchema
-        )
-        .optional(),
-      lists: z
-        .lazy(() => ListUncheckedUpdateManyWithoutContactsNestedInputSchema)
-        .optional(),
-      listsManage: z
-        .lazy(() => ListUncheckedUpdateManyWithoutOwnersNestedInputSchema)
-        .optional(),
-      emails: z
-        .lazy(() => EmailUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      clicks: z
-        .lazy(() => ClickUncheckedUpdateManyWithoutUserNestedInputSchema)
-        .optional(),
-      referrals: z
-        .lazy(() => ClickUncheckedUpdateManyWithoutRefererNestedInputSchema)
-        .optional()
     })
     .strict();
 
@@ -45166,7 +48392,6 @@ export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithou
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -45198,6 +48423,12 @@ export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithou
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -45206,9 +48437,6 @@ export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -45279,7 +48507,6 @@ export const UserUncheckedCreateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -45288,6 +48515,7 @@ export const UserUncheckedCreateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -45412,7 +48640,6 @@ export const UserCreateWithoutReceivedInputSchema: z.ZodType<Prisma.UserCreateWi
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -45444,6 +48671,12 @@ export const UserCreateWithoutReceivedInputSchema: z.ZodType<Prisma.UserCreateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -45452,9 +48685,6 @@ export const UserCreateWithoutReceivedInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -45525,7 +48755,6 @@ export const UserUncheckedCreateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -45534,6 +48763,7 @@ export const UserUncheckedCreateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -45746,13 +48976,6 @@ export const UserUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -45822,6 +49045,12 @@ export const UserUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUpdateWithou
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -45830,9 +49059,6 @@ export const UserUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUpdateWithou
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -45965,13 +49191,6 @@ export const UserUncheckedUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -46018,6 +49237,13 @@ export const UserUncheckedUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -46225,13 +49451,6 @@ export const UserUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -46301,6 +49520,12 @@ export const UserUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.UserUpdateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -46309,9 +49534,6 @@ export const UserUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -46444,13 +49666,6 @@ export const UserUncheckedUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -46497,6 +49712,13 @@ export const UserUncheckedUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -46616,7 +49838,6 @@ export const UserCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserCreateWi
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -46648,14 +49869,17 @@ export const UserCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserCreateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       likes: z
         .lazy(() => LikeCreateNestedManyWithoutUserInputSchema)
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -46729,7 +49953,6 @@ export const UserUncheckedCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -46738,6 +49961,7 @@ export const UserUncheckedCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -46950,13 +50174,6 @@ export const UserUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -47026,14 +50243,17 @@ export const UserUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserUpdateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       likes: z
         .lazy(() => LikeUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -47169,13 +50389,6 @@ export const UserUncheckedUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -47222,6 +50435,13 @@ export const UserUncheckedUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -47341,7 +50561,6 @@ export const UserCreateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -47370,6 +50589,12 @@ export const UserCreateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
       customer: z
         .lazy(() => CustomerCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -47378,9 +50603,6 @@ export const UserCreateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -47454,7 +50676,6 @@ export const UserUncheckedCreateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -47463,6 +50684,7 @@ export const UserUncheckedCreateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -47672,13 +50894,6 @@ export const UserUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -47745,6 +50960,12 @@ export const UserUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
       customer: z
         .lazy(() => CustomerUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -47753,9 +50974,6 @@ export const UserUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -47891,13 +51109,6 @@ export const UserUncheckedUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -47944,6 +51155,13 @@ export const UserUncheckedUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -48060,7 +51278,6 @@ export const UserCreateWithoutCustomerInputSchema: z.ZodType<Prisma.UserCreateWi
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -48089,6 +51306,12 @@ export const UserCreateWithoutCustomerInputSchema: z.ZodType<Prisma.UserCreateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -48097,9 +51320,6 @@ export const UserCreateWithoutCustomerInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -48173,7 +51393,6 @@ export const UserUncheckedCreateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -48182,6 +51401,7 @@ export const UserUncheckedCreateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -48394,13 +51614,6 @@ export const UserUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -48467,6 +51680,12 @@ export const UserUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.UserUpdateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -48475,9 +51694,6 @@ export const UserUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -48613,13 +51829,6 @@ export const UserUncheckedUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -48666,6 +51875,13 @@ export const UserUncheckedUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -49254,7 +52470,6 @@ export const UserCreateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserCre
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -49283,6 +52498,12 @@ export const UserCreateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserCre
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -49291,9 +52512,6 @@ export const UserCreateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserCre
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -49367,7 +52585,6 @@ export const UserUncheckedCreateWithoutSubscriptionsInputSchema: z.ZodType<Prism
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -49376,6 +52593,7 @@ export const UserUncheckedCreateWithoutSubscriptionsInputSchema: z.ZodType<Prism
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -49763,13 +52981,6 @@ export const UserUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserUpd
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -49836,6 +53047,12 @@ export const UserUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserUpd
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -49844,9 +53061,6 @@ export const UserUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserUpd
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -49982,13 +53196,6 @@ export const UserUncheckedUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prism
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -50035,6 +53242,13 @@ export const UserUncheckedUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prism
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -50154,7 +53368,6 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -50183,6 +53396,12 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -50191,9 +53410,6 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -50267,7 +53483,6 @@ export const UserUncheckedCreateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -50276,6 +53491,7 @@ export const UserUncheckedCreateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       sessions: z
         .lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -50488,13 +53704,6 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -50561,6 +53770,12 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -50569,9 +53784,6 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -50707,13 +53919,6 @@ export const UserUncheckedUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -50760,6 +53965,13 @@ export const UserUncheckedUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -50879,7 +54091,6 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -50908,6 +54119,12 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -50916,9 +54133,6 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -50992,7 +54206,6 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -51001,6 +54214,7 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -51213,13 +54427,6 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -51286,6 +54493,12 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -51294,9 +54507,6 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -51432,13 +54642,6 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -51485,6 +54688,13 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -51604,7 +54814,6 @@ export const UserCreateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserCre
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -51633,6 +54842,12 @@ export const UserCreateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserCre
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -51641,9 +54856,6 @@ export const UserCreateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserCre
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -51717,7 +54929,6 @@ export const UserUncheckedCreateWithoutAuthenticatorInputSchema: z.ZodType<Prism
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -51726,6 +54937,7 @@ export const UserUncheckedCreateWithoutAuthenticatorInputSchema: z.ZodType<Prism
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -51936,13 +55148,6 @@ export const UserUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserUpd
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -52009,6 +55214,12 @@ export const UserUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserUpd
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -52017,9 +55228,6 @@ export const UserUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prisma.UserUpd
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -52155,13 +55363,6 @@ export const UserUncheckedUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -52208,6 +55409,13 @@ export const UserUncheckedUpdateWithoutAuthenticatorInputSchema: z.ZodType<Prism
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -52508,7 +55716,6 @@ export const UserCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserCreateWith
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -52540,6 +55747,12 @@ export const UserCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserCreateWith
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -52548,9 +55761,6 @@ export const UserCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -52621,7 +55831,6 @@ export const UserUncheckedCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -52630,6 +55839,7 @@ export const UserUncheckedCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -52754,7 +55964,6 @@ export const UserCreateWithoutReferralsInputSchema: z.ZodType<Prisma.UserCreateW
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -52786,6 +55995,12 @@ export const UserCreateWithoutReferralsInputSchema: z.ZodType<Prisma.UserCreateW
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -52794,9 +56009,6 @@ export const UserCreateWithoutReferralsInputSchema: z.ZodType<Prisma.UserCreateW
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -52867,7 +56079,6 @@ export const UserUncheckedCreateWithoutReferralsInputSchema: z.ZodType<Prisma.Us
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -52876,6 +56087,7 @@ export const UserUncheckedCreateWithoutReferralsInputSchema: z.ZodType<Prisma.Us
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -53645,13 +56857,6 @@ export const UserUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -53721,6 +56926,12 @@ export const UserUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserUpdateWith
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -53729,9 +56940,6 @@ export const UserUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserUpdateWith
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -53864,13 +57072,6 @@ export const UserUncheckedUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -53917,6 +57118,13 @@ export const UserUncheckedUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -54124,13 +57332,6 @@ export const UserUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.UserUpdateW
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -54200,6 +57401,12 @@ export const UserUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.UserUpdateW
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -54208,9 +57415,6 @@ export const UserUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.UserUpdateW
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -54343,13 +57547,6 @@ export const UserUncheckedUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.Us
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -54396,6 +57593,13 @@ export const UserUncheckedUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.Us
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -54585,7 +57789,6 @@ export const UserCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserCreateWitho
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -54614,6 +57817,12 @@ export const UserCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserCreateWitho
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -54622,9 +57831,6 @@ export const UserCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -54698,7 +57904,6 @@ export const UserUncheckedCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -54707,6 +57912,7 @@ export const UserUncheckedCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -54956,13 +58162,6 @@ export const UserUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -55029,6 +58228,12 @@ export const UserUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUpdateWitho
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -55037,9 +58242,6 @@ export const UserUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -55175,13 +58377,6 @@ export const UserUncheckedUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -55228,6 +58423,13 @@ export const UserUncheckedUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -55953,7 +59155,6 @@ export const UserCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserCreateWitho
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -55985,14 +59186,17 @@ export const UserCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserCreateWitho
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -56066,7 +59270,6 @@ export const UserUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -56075,6 +59278,7 @@ export const UserUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -56592,13 +59796,6 @@ export const UserUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -56668,14 +59865,17 @@ export const UserUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUpdateWitho
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -56811,13 +60011,6 @@ export const UserUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -56864,6 +60057,13 @@ export const UserUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -57111,7 +60311,6 @@ export const UserCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserCreateWitho
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -57140,6 +60339,12 @@ export const UserCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserCreateWitho
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -57148,9 +60353,6 @@ export const UserCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -57224,7 +60426,6 @@ export const UserUncheckedCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -57233,6 +60434,7 @@ export const UserUncheckedCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -57749,13 +60951,6 @@ export const UserUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -57822,6 +61017,12 @@ export const UserUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUpdateWitho
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -57830,9 +61031,6 @@ export const UserUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -57968,13 +61166,6 @@ export const UserUncheckedUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -58021,6 +61212,13 @@ export const UserUncheckedUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -58477,7 +61675,6 @@ export const UserCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserCreateWithou
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -58509,6 +61706,12 @@ export const UserCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserCreateWithou
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -58517,9 +61720,6 @@ export const UserCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -58592,7 +61792,6 @@ export const UserUncheckedCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -58601,6 +61800,7 @@ export const UserUncheckedCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -59157,13 +62357,6 @@ export const UserUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -59233,6 +62426,12 @@ export const UserUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUpdateWithou
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -59241,9 +62440,6 @@ export const UserUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUpdateWithou
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -59378,13 +62574,6 @@ export const UserUncheckedUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -59431,6 +62620,13 @@ export const UserUncheckedUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -59671,7 +62867,6 @@ export const UserCreateWithoutCommentsInputSchema: z.ZodType<Prisma.UserCreateWi
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -59703,6 +62898,12 @@ export const UserCreateWithoutCommentsInputSchema: z.ZodType<Prisma.UserCreateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -59711,9 +62912,6 @@ export const UserCreateWithoutCommentsInputSchema: z.ZodType<Prisma.UserCreateWi
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -59784,7 +62982,6 @@ export const UserUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -59793,6 +62990,7 @@ export const UserUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -60131,13 +63329,6 @@ export const UserUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.UserUpdateWi
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -60207,6 +63398,12 @@ export const UserUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.UserUpdateWi
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -60215,9 +63412,6 @@ export const UserUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.UserUpdateWi
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -60350,13 +63544,6 @@ export const UserUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -60403,6 +63590,13 @@ export const UserUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -60924,7 +64118,6 @@ export const UserCreateWithoutReservationsInputSchema: z.ZodType<Prisma.UserCrea
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -60956,6 +64149,12 @@ export const UserCreateWithoutReservationsInputSchema: z.ZodType<Prisma.UserCrea
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -60964,9 +64163,6 @@ export const UserCreateWithoutReservationsInputSchema: z.ZodType<Prisma.UserCrea
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -61037,7 +64233,6 @@ export const UserUncheckedCreateWithoutReservationsInputSchema: z.ZodType<Prisma
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -61046,6 +64241,7 @@ export const UserUncheckedCreateWithoutReservationsInputSchema: z.ZodType<Prisma
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -61435,13 +64631,6 @@ export const UserUpdateWithoutReservationsInputSchema: z.ZodType<Prisma.UserUpda
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -61511,6 +64700,12 @@ export const UserUpdateWithoutReservationsInputSchema: z.ZodType<Prisma.UserUpda
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -61519,9 +64714,6 @@ export const UserUpdateWithoutReservationsInputSchema: z.ZodType<Prisma.UserUpda
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -61654,13 +64846,6 @@ export const UserUncheckedUpdateWithoutReservationsInputSchema: z.ZodType<Prisma
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -61707,6 +64892,13 @@ export const UserUncheckedUpdateWithoutReservationsInputSchema: z.ZodType<Prisma
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -61824,7 +65016,6 @@ export const UserCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserCreateWithou
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -61856,6 +65047,12 @@ export const UserCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserCreateWithou
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -61864,9 +65061,6 @@ export const UserCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserCreateWithou
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -61937,7 +65131,6 @@ export const UserUncheckedCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -61946,6 +65139,7 @@ export const UserUncheckedCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -62158,13 +65352,6 @@ export const UserUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUpdateWithou
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -62234,6 +65421,12 @@ export const UserUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUpdateWithou
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -62242,9 +65435,6 @@ export const UserUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUpdateWithou
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -62377,13 +65567,6 @@ export const UserUncheckedUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -62430,6 +65613,13 @@ export const UserUncheckedUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -64174,7 +67364,6 @@ export const UserCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserCreateWith
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -64206,6 +67395,12 @@ export const UserCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserCreateWith
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -64214,9 +67409,6 @@ export const UserCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       workflowStates: z
         .lazy(() => WorkflowStateCreateNestedManyWithoutUserInputSchema)
@@ -64287,7 +67479,6 @@ export const UserUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -64296,6 +67487,7 @@ export const UserUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -64508,13 +67700,6 @@ export const UserUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -64584,6 +67769,12 @@ export const UserUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserUpdateWith
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -64592,9 +67783,6 @@ export const UserUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserUpdateWith
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       workflowStates: z
         .lazy(() => WorkflowStateUpdateManyWithoutUserNestedInputSchema)
@@ -64727,13 +67915,6 @@ export const UserUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -64780,6 +67961,13 @@ export const UserUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -64899,7 +68087,6 @@ export const UserCreateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserCr
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -64931,6 +68118,12 @@ export const UserCreateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserCr
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -64939,9 +68132,6 @@ export const UserCreateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserCr
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -65012,7 +68202,6 @@ export const UserUncheckedCreateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -65021,6 +68210,7 @@ export const UserUncheckedCreateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -65274,13 +68464,6 @@ export const UserUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserUp
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -65350,6 +68533,12 @@ export const UserUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserUp
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -65358,9 +68547,6 @@ export const UserUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserUp
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -65493,13 +68679,6 @@ export const UserUncheckedUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -65546,6 +68725,13 @@ export const UserUncheckedUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -65793,7 +68979,6 @@ export const UserCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserCreate
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -65825,6 +69010,12 @@ export const UserCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserCreate
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -65833,9 +69024,6 @@ export const UserCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserCreate
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -65906,7 +69094,6 @@ export const UserUncheckedCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -65915,6 +69102,7 @@ export const UserUncheckedCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -66227,13 +69415,6 @@ export const UserUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserUpdate
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -66303,6 +69484,12 @@ export const UserUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserUpdate
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -66311,9 +69498,6 @@ export const UserUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserUpdate
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -66446,13 +69630,6 @@ export const UserUncheckedUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -66499,6 +69676,13 @@ export const UserUncheckedUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -66940,7 +70124,6 @@ export const UserCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserCreateWith
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -66972,6 +70155,12 @@ export const UserCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserCreateWith
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -66980,9 +70169,6 @@ export const UserCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -67053,7 +70239,6 @@ export const UserUncheckedCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -67062,6 +70247,7 @@ export const UserUncheckedCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -67416,13 +70602,6 @@ export const UserUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -67492,6 +70671,12 @@ export const UserUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserUpdateWith
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -67500,9 +70685,6 @@ export const UserUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserUpdateWith
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -67635,13 +70817,6 @@ export const UserUncheckedUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -67688,6 +70863,13 @@ export const UserUncheckedUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -67807,7 +70989,6 @@ export const UserCreateWithoutListsManageInputSchema: z.ZodType<Prisma.UserCreat
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -67839,6 +71020,12 @@ export const UserCreateWithoutListsManageInputSchema: z.ZodType<Prisma.UserCreat
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -67847,9 +71034,6 @@ export const UserCreateWithoutListsManageInputSchema: z.ZodType<Prisma.UserCreat
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -67920,7 +71104,6 @@ export const UserUncheckedCreateWithoutListsManageInputSchema: z.ZodType<Prisma.
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -67929,6 +71112,7 @@ export const UserUncheckedCreateWithoutListsManageInputSchema: z.ZodType<Prisma.
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -68053,7 +71237,6 @@ export const UserCreateWithoutListsInputSchema: z.ZodType<Prisma.UserCreateWitho
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -68085,6 +71268,12 @@ export const UserCreateWithoutListsInputSchema: z.ZodType<Prisma.UserCreateWitho
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -68093,9 +71282,6 @@ export const UserCreateWithoutListsInputSchema: z.ZodType<Prisma.UserCreateWitho
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -68166,7 +71352,6 @@ export const UserUncheckedCreateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -68175,6 +71360,7 @@ export const UserUncheckedCreateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -68949,7 +72135,6 @@ export const UserCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserCreateWith
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -68981,6 +72166,12 @@ export const UserCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserCreateWith
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeCreateNestedOneWithoutUsersInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -68989,9 +72180,6 @@ export const UserCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserCreateWith
         .optional(),
       affiliates: z
         .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
         .optional(),
       events: z
         .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
@@ -69062,7 +72250,6 @@ export const UserUncheckedCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
@@ -69071,6 +72258,7 @@ export const UserUncheckedCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
       updatedAt: z.coerce.date().optional(),
       role: z.lazy(() => UserRoleSchema).optional(),
       refererId: z.string().optional().nullable(),
+      codeNaf: z.string().optional().nullable(),
       accounts: z
         .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
@@ -69339,13 +72527,6 @@ export const UserUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserUpdateWith
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -69415,6 +72596,12 @@ export const UserUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserUpdateWith
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -69423,9 +72610,6 @@ export const UserUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserUpdateWith
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -69558,13 +72742,6 @@ export const UserUncheckedUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -69611,6 +72788,13 @@ export const UserUncheckedUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -69737,6 +72921,1127 @@ export const CampaignUpdateManyWithWhereWithoutEmailInputSchema: z.ZodType<Prism
       data: z.union([
         z.lazy(() => CampaignUpdateManyMutationInputSchema),
         z.lazy(() => CampaignUncheckedUpdateManyWithoutEmailInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafDivisionCreateWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionCreateWithoutSectionInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      groups: z
+        .lazy(() => NafGroupCreateNestedManyWithoutDivisionInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUncheckedCreateWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionUncheckedCreateWithoutSectionInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      groups: z
+        .lazy(() => NafGroupUncheckedCreateNestedManyWithoutDivisionInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionCreateOrConnectWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionCreateOrConnectWithoutSectionInput> =
+  z
+    .object({
+      where: z.lazy(() => NafDivisionWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafDivisionCreateWithoutSectionInputSchema),
+        z.lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafDivisionCreateManySectionInputEnvelopeSchema: z.ZodType<Prisma.NafDivisionCreateManySectionInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => NafDivisionCreateManySectionInputSchema),
+        z.lazy(() => NafDivisionCreateManySectionInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafDivisionUpsertWithWhereUniqueWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionUpsertWithWhereUniqueWithoutSectionInput> =
+  z
+    .object({
+      where: z.lazy(() => NafDivisionWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => NafDivisionUpdateWithoutSectionInputSchema),
+        z.lazy(() => NafDivisionUncheckedUpdateWithoutSectionInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafDivisionCreateWithoutSectionInputSchema),
+        z.lazy(() => NafDivisionUncheckedCreateWithoutSectionInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafDivisionUpdateWithWhereUniqueWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionUpdateWithWhereUniqueWithoutSectionInput> =
+  z
+    .object({
+      where: z.lazy(() => NafDivisionWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => NafDivisionUpdateWithoutSectionInputSchema),
+        z.lazy(() => NafDivisionUncheckedUpdateWithoutSectionInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafDivisionUpdateManyWithWhereWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionUpdateManyWithWhereWithoutSectionInput> =
+  z
+    .object({
+      where: z.lazy(() => NafDivisionScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => NafDivisionUpdateManyMutationInputSchema),
+        z.lazy(() => NafDivisionUncheckedUpdateManyWithoutSectionInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafDivisionScalarWhereInputSchema: z.ZodType<Prisma.NafDivisionScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafDivisionScalarWhereInputSchema),
+          z.lazy(() => NafDivisionScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafDivisionScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafDivisionScalarWhereInputSchema),
+          z.lazy(() => NafDivisionScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      sectionId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupCreateWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupCreateWithoutDivisionInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      classes: z
+        .lazy(() => NafClassCreateNestedManyWithoutGroupInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUncheckedCreateWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupUncheckedCreateWithoutDivisionInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      classes: z
+        .lazy(() => NafClassUncheckedCreateNestedManyWithoutGroupInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupCreateOrConnectWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupCreateOrConnectWithoutDivisionInput> =
+  z
+    .object({
+      where: z.lazy(() => NafGroupWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafGroupCreateWithoutDivisionInputSchema),
+        z.lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafGroupCreateManyDivisionInputEnvelopeSchema: z.ZodType<Prisma.NafGroupCreateManyDivisionInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => NafGroupCreateManyDivisionInputSchema),
+        z.lazy(() => NafGroupCreateManyDivisionInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafSectionCreateWithoutDivisionsInputSchema: z.ZodType<Prisma.NafSectionCreateWithoutDivisionsInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string()
+    })
+    .strict();
+
+export const NafSectionUncheckedCreateWithoutDivisionsInputSchema: z.ZodType<Prisma.NafSectionUncheckedCreateWithoutDivisionsInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string()
+    })
+    .strict();
+
+export const NafSectionCreateOrConnectWithoutDivisionsInputSchema: z.ZodType<Prisma.NafSectionCreateOrConnectWithoutDivisionsInput> =
+  z
+    .object({
+      where: z.lazy(() => NafSectionWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafSectionCreateWithoutDivisionsInputSchema),
+        z.lazy(() => NafSectionUncheckedCreateWithoutDivisionsInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafGroupUpsertWithWhereUniqueWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupUpsertWithWhereUniqueWithoutDivisionInput> =
+  z
+    .object({
+      where: z.lazy(() => NafGroupWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => NafGroupUpdateWithoutDivisionInputSchema),
+        z.lazy(() => NafGroupUncheckedUpdateWithoutDivisionInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafGroupCreateWithoutDivisionInputSchema),
+        z.lazy(() => NafGroupUncheckedCreateWithoutDivisionInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafGroupUpdateWithWhereUniqueWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupUpdateWithWhereUniqueWithoutDivisionInput> =
+  z
+    .object({
+      where: z.lazy(() => NafGroupWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => NafGroupUpdateWithoutDivisionInputSchema),
+        z.lazy(() => NafGroupUncheckedUpdateWithoutDivisionInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafGroupUpdateManyWithWhereWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupUpdateManyWithWhereWithoutDivisionInput> =
+  z
+    .object({
+      where: z.lazy(() => NafGroupScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => NafGroupUpdateManyMutationInputSchema),
+        z.lazy(() => NafGroupUncheckedUpdateManyWithoutDivisionInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafGroupScalarWhereInputSchema: z.ZodType<Prisma.NafGroupScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafGroupScalarWhereInputSchema),
+          z.lazy(() => NafGroupScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafGroupScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafGroupScalarWhereInputSchema),
+          z.lazy(() => NafGroupScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      divisionId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const NafSectionUpsertWithoutDivisionsInputSchema: z.ZodType<Prisma.NafSectionUpsertWithoutDivisionsInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => NafSectionUpdateWithoutDivisionsInputSchema),
+        z.lazy(() => NafSectionUncheckedUpdateWithoutDivisionsInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafSectionCreateWithoutDivisionsInputSchema),
+        z.lazy(() => NafSectionUncheckedCreateWithoutDivisionsInputSchema)
+      ]),
+      where: z.lazy(() => NafSectionWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafSectionUpdateToOneWithWhereWithoutDivisionsInputSchema: z.ZodType<Prisma.NafSectionUpdateToOneWithWhereWithoutDivisionsInput> =
+  z
+    .object({
+      where: z.lazy(() => NafSectionWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => NafSectionUpdateWithoutDivisionsInputSchema),
+        z.lazy(() => NafSectionUncheckedUpdateWithoutDivisionsInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafSectionUpdateWithoutDivisionsInputSchema: z.ZodType<Prisma.NafSectionUpdateWithoutDivisionsInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafSectionUncheckedUpdateWithoutDivisionsInputSchema: z.ZodType<Prisma.NafSectionUncheckedUpdateWithoutDivisionsInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassCreateWithoutGroupInputSchema: z.ZodType<Prisma.NafClassCreateWithoutGroupInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      codes: z
+        .lazy(() => NafCodeCreateNestedManyWithoutClassInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafClassUncheckedCreateWithoutGroupInputSchema: z.ZodType<Prisma.NafClassUncheckedCreateWithoutGroupInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      codes: z
+        .lazy(() => NafCodeUncheckedCreateNestedManyWithoutClassInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafClassCreateOrConnectWithoutGroupInputSchema: z.ZodType<Prisma.NafClassCreateOrConnectWithoutGroupInput> =
+  z
+    .object({
+      where: z.lazy(() => NafClassWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafClassCreateWithoutGroupInputSchema),
+        z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafClassCreateManyGroupInputEnvelopeSchema: z.ZodType<Prisma.NafClassCreateManyGroupInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => NafClassCreateManyGroupInputSchema),
+        z.lazy(() => NafClassCreateManyGroupInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafDivisionCreateWithoutGroupsInputSchema: z.ZodType<Prisma.NafDivisionCreateWithoutGroupsInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      section: z.lazy(
+        () => NafSectionCreateNestedOneWithoutDivisionsInputSchema
+      )
+    })
+    .strict();
+
+export const NafDivisionUncheckedCreateWithoutGroupsInputSchema: z.ZodType<Prisma.NafDivisionUncheckedCreateWithoutGroupsInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      sectionId: z.string()
+    })
+    .strict();
+
+export const NafDivisionCreateOrConnectWithoutGroupsInputSchema: z.ZodType<Prisma.NafDivisionCreateOrConnectWithoutGroupsInput> =
+  z
+    .object({
+      where: z.lazy(() => NafDivisionWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafDivisionCreateWithoutGroupsInputSchema),
+        z.lazy(() => NafDivisionUncheckedCreateWithoutGroupsInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafClassUpsertWithWhereUniqueWithoutGroupInputSchema: z.ZodType<Prisma.NafClassUpsertWithWhereUniqueWithoutGroupInput> =
+  z
+    .object({
+      where: z.lazy(() => NafClassWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => NafClassUpdateWithoutGroupInputSchema),
+        z.lazy(() => NafClassUncheckedUpdateWithoutGroupInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafClassCreateWithoutGroupInputSchema),
+        z.lazy(() => NafClassUncheckedCreateWithoutGroupInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafClassUpdateWithWhereUniqueWithoutGroupInputSchema: z.ZodType<Prisma.NafClassUpdateWithWhereUniqueWithoutGroupInput> =
+  z
+    .object({
+      where: z.lazy(() => NafClassWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => NafClassUpdateWithoutGroupInputSchema),
+        z.lazy(() => NafClassUncheckedUpdateWithoutGroupInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafClassUpdateManyWithWhereWithoutGroupInputSchema: z.ZodType<Prisma.NafClassUpdateManyWithWhereWithoutGroupInput> =
+  z
+    .object({
+      where: z.lazy(() => NafClassScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => NafClassUpdateManyMutationInputSchema),
+        z.lazy(() => NafClassUncheckedUpdateManyWithoutGroupInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafClassScalarWhereInputSchema: z.ZodType<Prisma.NafClassScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafClassScalarWhereInputSchema),
+          z.lazy(() => NafClassScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafClassScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafClassScalarWhereInputSchema),
+          z.lazy(() => NafClassScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      groupId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUpsertWithoutGroupsInputSchema: z.ZodType<Prisma.NafDivisionUpsertWithoutGroupsInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => NafDivisionUpdateWithoutGroupsInputSchema),
+        z.lazy(() => NafDivisionUncheckedUpdateWithoutGroupsInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafDivisionCreateWithoutGroupsInputSchema),
+        z.lazy(() => NafDivisionUncheckedCreateWithoutGroupsInputSchema)
+      ]),
+      where: z.lazy(() => NafDivisionWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafDivisionUpdateToOneWithWhereWithoutGroupsInputSchema: z.ZodType<Prisma.NafDivisionUpdateToOneWithWhereWithoutGroupsInput> =
+  z
+    .object({
+      where: z.lazy(() => NafDivisionWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => NafDivisionUpdateWithoutGroupsInputSchema),
+        z.lazy(() => NafDivisionUncheckedUpdateWithoutGroupsInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafDivisionUpdateWithoutGroupsInputSchema: z.ZodType<Prisma.NafDivisionUpdateWithoutGroupsInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      section: z
+        .lazy(
+          () => NafSectionUpdateOneRequiredWithoutDivisionsNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUncheckedUpdateWithoutGroupsInputSchema: z.ZodType<Prisma.NafDivisionUncheckedUpdateWithoutGroupsInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sectionId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeCreateWithoutClassInputSchema: z.ZodType<Prisma.NafCodeCreateWithoutClassInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      users: z.lazy(() => UserCreateNestedManyWithoutNafInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeUncheckedCreateWithoutClassInputSchema: z.ZodType<Prisma.NafCodeUncheckedCreateWithoutClassInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      users: z
+        .lazy(() => UserUncheckedCreateNestedManyWithoutNafInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafCodeCreateOrConnectWithoutClassInputSchema: z.ZodType<Prisma.NafCodeCreateOrConnectWithoutClassInput> =
+  z
+    .object({
+      where: z.lazy(() => NafCodeWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafCodeCreateWithoutClassInputSchema),
+        z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafCodeCreateManyClassInputEnvelopeSchema: z.ZodType<Prisma.NafCodeCreateManyClassInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => NafCodeCreateManyClassInputSchema),
+        z.lazy(() => NafCodeCreateManyClassInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafGroupCreateWithoutClassesInputSchema: z.ZodType<Prisma.NafGroupCreateWithoutClassesInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      division: z.lazy(() => NafDivisionCreateNestedOneWithoutGroupsInputSchema)
+    })
+    .strict();
+
+export const NafGroupUncheckedCreateWithoutClassesInputSchema: z.ZodType<Prisma.NafGroupUncheckedCreateWithoutClassesInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      divisionId: z.string()
+    })
+    .strict();
+
+export const NafGroupCreateOrConnectWithoutClassesInputSchema: z.ZodType<Prisma.NafGroupCreateOrConnectWithoutClassesInput> =
+  z
+    .object({
+      where: z.lazy(() => NafGroupWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafGroupCreateWithoutClassesInputSchema),
+        z.lazy(() => NafGroupUncheckedCreateWithoutClassesInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafCodeUpsertWithWhereUniqueWithoutClassInputSchema: z.ZodType<Prisma.NafCodeUpsertWithWhereUniqueWithoutClassInput> =
+  z
+    .object({
+      where: z.lazy(() => NafCodeWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => NafCodeUpdateWithoutClassInputSchema),
+        z.lazy(() => NafCodeUncheckedUpdateWithoutClassInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafCodeCreateWithoutClassInputSchema),
+        z.lazy(() => NafCodeUncheckedCreateWithoutClassInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafCodeUpdateWithWhereUniqueWithoutClassInputSchema: z.ZodType<Prisma.NafCodeUpdateWithWhereUniqueWithoutClassInput> =
+  z
+    .object({
+      where: z.lazy(() => NafCodeWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => NafCodeUpdateWithoutClassInputSchema),
+        z.lazy(() => NafCodeUncheckedUpdateWithoutClassInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafCodeUpdateManyWithWhereWithoutClassInputSchema: z.ZodType<Prisma.NafCodeUpdateManyWithWhereWithoutClassInput> =
+  z
+    .object({
+      where: z.lazy(() => NafCodeScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => NafCodeUpdateManyMutationInputSchema),
+        z.lazy(() => NafCodeUncheckedUpdateManyWithoutClassInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafCodeScalarWhereInputSchema: z.ZodType<Prisma.NafCodeScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => NafCodeScalarWhereInputSchema),
+          z.lazy(() => NafCodeScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => NafCodeScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => NafCodeScalarWhereInputSchema),
+          z.lazy(() => NafCodeScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      classId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUpsertWithoutClassesInputSchema: z.ZodType<Prisma.NafGroupUpsertWithoutClassesInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => NafGroupUpdateWithoutClassesInputSchema),
+        z.lazy(() => NafGroupUncheckedUpdateWithoutClassesInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafGroupCreateWithoutClassesInputSchema),
+        z.lazy(() => NafGroupUncheckedCreateWithoutClassesInputSchema)
+      ]),
+      where: z.lazy(() => NafGroupWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafGroupUpdateToOneWithWhereWithoutClassesInputSchema: z.ZodType<Prisma.NafGroupUpdateToOneWithWhereWithoutClassesInput> =
+  z
+    .object({
+      where: z.lazy(() => NafGroupWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => NafGroupUpdateWithoutClassesInputSchema),
+        z.lazy(() => NafGroupUncheckedUpdateWithoutClassesInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafGroupUpdateWithoutClassesInputSchema: z.ZodType<Prisma.NafGroupUpdateWithoutClassesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      division: z
+        .lazy(() => NafDivisionUpdateOneRequiredWithoutGroupsNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUncheckedUpdateWithoutClassesInputSchema: z.ZodType<Prisma.NafGroupUncheckedUpdateWithoutClassesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      divisionId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassCreateWithoutCodesInputSchema: z.ZodType<Prisma.NafClassCreateWithoutCodesInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      group: z.lazy(() => NafGroupCreateNestedOneWithoutClassesInputSchema)
+    })
+    .strict();
+
+export const NafClassUncheckedCreateWithoutCodesInputSchema: z.ZodType<Prisma.NafClassUncheckedCreateWithoutCodesInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      groupId: z.string()
+    })
+    .strict();
+
+export const NafClassCreateOrConnectWithoutCodesInputSchema: z.ZodType<Prisma.NafClassCreateOrConnectWithoutCodesInput> =
+  z
+    .object({
+      where: z.lazy(() => NafClassWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => NafClassCreateWithoutCodesInputSchema),
+        z.lazy(() => NafClassUncheckedCreateWithoutCodesInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserCreateWithoutNafInputSchema: z.ZodType<Prisma.UserCreateWithoutNafInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.boolean().optional(),
+      image: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z.string().optional().nullable(),
+      address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z.string().optional().nullable(),
+      city: z.string().optional().nullable(),
+      phone: z.string().optional().nullable(),
+      activity: z.string().optional().nullable(),
+      bounced: z.number().int().optional(),
+      affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      accounts: z
+        .lazy(() => AccountCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserCreateNestedOneWithoutAffiliatesInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserCreateNestedManyWithoutRefererInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedCreateNestedManyWithoutUserInputSchema).optional(),
+      comments: z
+        .lazy(() => CommentCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationCreateNestedManyWithoutAffiliateInputSchema)
+        .optional(),
+      lists: z
+        .lazy(() => ListCreateNestedManyWithoutContactsInputSchema)
+        .optional(),
+      listsManage: z
+        .lazy(() => ListCreateNestedManyWithoutOwnersInputSchema)
+        .optional(),
+      emails: z
+        .lazy(() => EmailCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      clicks: z
+        .lazy(() => ClickCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      referrals: z
+        .lazy(() => ClickCreateNestedManyWithoutRefererInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedCreateWithoutNafInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutNafInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.boolean().optional(),
+      image: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z.string().optional().nullable(),
+      address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z.string().optional().nullable(),
+      city: z.string().optional().nullable(),
+      phone: z.string().optional().nullable(),
+      activity: z.string().optional().nullable(),
+      bounced: z.number().int().optional(),
+      affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      refererId: z.string().optional().nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedCreateNestedOneWithoutUserInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedCreateNestedOneWithoutUserInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUncheckedCreateNestedManyWithoutRefererInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedCreateNestedManyWithoutUserInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      comments: z
+        .lazy(() => CommentUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutSenderInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedCreateNestedManyWithoutReceiverInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(
+          () => ReservationUncheckedCreateNestedManyWithoutAffiliateInputSchema
+        )
+        .optional(),
+      lists: z
+        .lazy(() => ListUncheckedCreateNestedManyWithoutContactsInputSchema)
+        .optional(),
+      listsManage: z
+        .lazy(() => ListUncheckedCreateNestedManyWithoutOwnersInputSchema)
+        .optional(),
+      emails: z
+        .lazy(() => EmailUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUncheckedCreateNestedManyWithoutUserInputSchema)
+        .optional(),
+      referrals: z
+        .lazy(() => ClickUncheckedCreateNestedManyWithoutRefererInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserCreateOrConnectWithoutNafInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutNafInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutNafInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutNafInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserCreateManyNafInputEnvelopeSchema: z.ZodType<Prisma.UserCreateManyNafInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => UserCreateManyNafInputSchema),
+        z.lazy(() => UserCreateManyNafInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafClassUpsertWithoutCodesInputSchema: z.ZodType<Prisma.NafClassUpsertWithoutCodesInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => NafClassUpdateWithoutCodesInputSchema),
+        z.lazy(() => NafClassUncheckedUpdateWithoutCodesInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => NafClassCreateWithoutCodesInputSchema),
+        z.lazy(() => NafClassUncheckedCreateWithoutCodesInputSchema)
+      ]),
+      where: z.lazy(() => NafClassWhereInputSchema).optional()
+    })
+    .strict();
+
+export const NafClassUpdateToOneWithWhereWithoutCodesInputSchema: z.ZodType<Prisma.NafClassUpdateToOneWithWhereWithoutCodesInput> =
+  z
+    .object({
+      where: z.lazy(() => NafClassWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => NafClassUpdateWithoutCodesInputSchema),
+        z.lazy(() => NafClassUncheckedUpdateWithoutCodesInputSchema)
+      ])
+    })
+    .strict();
+
+export const NafClassUpdateWithoutCodesInputSchema: z.ZodType<Prisma.NafClassUpdateWithoutCodesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      group: z
+        .lazy(() => NafGroupUpdateOneRequiredWithoutClassesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafClassUncheckedUpdateWithoutCodesInputSchema: z.ZodType<Prisma.NafClassUncheckedUpdateWithoutCodesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      groupId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserUpsertWithWhereUniqueWithoutNafInputSchema: z.ZodType<Prisma.UserUpsertWithWhereUniqueWithoutNafInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => UserUpdateWithoutNafInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutNafInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => UserCreateWithoutNafInputSchema),
+        z.lazy(() => UserUncheckedCreateWithoutNafInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserUpdateWithWhereUniqueWithoutNafInputSchema: z.ZodType<Prisma.UserUpdateWithWhereUniqueWithoutNafInput> =
+  z
+    .object({
+      where: z.lazy(() => UserWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => UserUpdateWithoutNafInputSchema),
+        z.lazy(() => UserUncheckedUpdateWithoutNafInputSchema)
+      ])
+    })
+    .strict();
+
+export const UserUpdateManyWithWhereWithoutNafInputSchema: z.ZodType<Prisma.UserUpdateManyWithWhereWithoutNafInput> =
+  z
+    .object({
+      where: z.lazy(() => UserScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => UserUpdateManyMutationInputSchema),
+        z.lazy(() => UserUncheckedUpdateManyWithoutNafInputSchema)
       ])
     })
     .strict();
@@ -69886,14 +74191,14 @@ export const UserCreateManyRefererInputSchema: z.ZodType<Prisma.UserCreateManyRe
       postcode: z.string().optional().nullable(),
       city: z.string().optional().nullable(),
       phone: z.string().optional().nullable(),
-      codeNaf: z.string().optional().nullable(),
       activity: z.string().optional().nullable(),
       bounced: z.number().int().optional(),
       affiliateRate: z.number().optional().nullable(),
       isAnonymous: z.boolean().optional().nullable(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      role: z.lazy(() => UserRoleSchema).optional()
+      role: z.lazy(() => UserRoleSchema).optional(),
+      codeNaf: z.string().optional().nullable()
     })
     .strict();
 
@@ -71673,13 +75978,6 @@ export const UserUpdateWithoutRefererInputSchema: z.ZodType<Prisma.UserUpdateWit
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -71748,6 +76046,9 @@ export const UserUpdateWithoutRefererInputSchema: z.ZodType<Prisma.UserUpdateWit
         .optional(),
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
         .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
@@ -71892,13 +76193,6 @@ export const UserUncheckedUpdateWithoutRefererInputSchema: z.ZodType<Prisma.User
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -71944,6 +76238,13 @@ export const UserUncheckedUpdateWithoutRefererInputSchema: z.ZodType<Prisma.User
           z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
         ])
         .optional(),
+      codeNaf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
       accounts: z
         .lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -72122,13 +76423,6 @@ export const UserUncheckedUpdateManyWithoutRefererInputSchema: z.ZodType<Prisma.
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -72173,7 +76467,14 @@ export const UserUncheckedUpdateManyWithoutRefererInputSchema: z.ZodType<Prisma.
           z.lazy(() => UserRoleSchema),
           z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
         ])
+        .optional(),
+      codeNaf: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
         .optional()
+        .nullable()
     })
     .strict();
 
@@ -77844,13 +82145,6 @@ export const UserUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.UserUpdat
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -77920,6 +82214,12 @@ export const UserUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.UserUpdat
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -77928,9 +82228,6 @@ export const UserUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.UserUpdat
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -78063,13 +82360,6 @@ export const UserUncheckedUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -78116,6 +82406,13 @@ export const UserUncheckedUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -78297,13 +82594,6 @@ export const UserUncheckedUpdateManyWithoutListsManageInputSchema: z.ZodType<Pri
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -78350,6 +82640,13 @@ export const UserUncheckedUpdateManyWithoutListsManageInputSchema: z.ZodType<Pri
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -78447,13 +82744,6 @@ export const UserUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUpdateWitho
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -78523,6 +82813,12 @@ export const UserUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUpdateWitho
       twoFactorConfirmation: z
         .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
         .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      naf: z
+        .lazy(() => NafCodeUpdateOneWithoutUsersNestedInputSchema)
+        .optional(),
       feedback: z
         .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
         .optional(),
@@ -78531,9 +82827,6 @@ export const UserUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUpdateWitho
         .optional(),
       affiliates: z
         .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
-        .optional(),
-      referer: z
-        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
         .optional(),
       events: z
         .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
@@ -78666,13 +82959,6 @@ export const UserUncheckedUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -78719,6 +83005,13 @@ export const UserUncheckedUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -78900,13 +83193,6 @@ export const UserUncheckedUpdateManyWithoutListsInputSchema: z.ZodType<Prisma.Us
         ])
         .optional()
         .nullable(),
-      codeNaf: z
-        .union([
-          z.string(),
-          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
-        ])
-        .optional()
-        .nullable(),
       activity: z
         .union([
           z.string(),
@@ -78953,6 +83239,13 @@ export const UserUncheckedUpdateManyWithoutListsInputSchema: z.ZodType<Prisma.Us
         ])
         .optional(),
       refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      codeNaf: z
         .union([
           z.string(),
           z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
@@ -79466,6 +83759,901 @@ export const CampaignUncheckedUpdateManyWithoutEmailInputSchema: z.ZodType<Prism
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional()
+    })
+    .strict();
+
+export const NafDivisionCreateManySectionInputSchema: z.ZodType<Prisma.NafDivisionCreateManySectionInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string()
+    })
+    .strict();
+
+export const NafDivisionUpdateWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionUpdateWithoutSectionInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      groups: z
+        .lazy(() => NafGroupUpdateManyWithoutDivisionNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUncheckedUpdateWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionUncheckedUpdateWithoutSectionInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      groups: z
+        .lazy(() => NafGroupUncheckedUpdateManyWithoutDivisionNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionUncheckedUpdateManyWithoutSectionInputSchema: z.ZodType<Prisma.NafDivisionUncheckedUpdateManyWithoutSectionInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupCreateManyDivisionInputSchema: z.ZodType<Prisma.NafGroupCreateManyDivisionInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string()
+    })
+    .strict();
+
+export const NafGroupUpdateWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupUpdateWithoutDivisionInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      classes: z
+        .lazy(() => NafClassUpdateManyWithoutGroupNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUncheckedUpdateWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupUncheckedUpdateWithoutDivisionInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      classes: z
+        .lazy(() => NafClassUncheckedUpdateManyWithoutGroupNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafGroupUncheckedUpdateManyWithoutDivisionInputSchema: z.ZodType<Prisma.NafGroupUncheckedUpdateManyWithoutDivisionInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassCreateManyGroupInputSchema: z.ZodType<Prisma.NafClassCreateManyGroupInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string()
+    })
+    .strict();
+
+export const NafClassUpdateWithoutGroupInputSchema: z.ZodType<Prisma.NafClassUpdateWithoutGroupInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      codes: z
+        .lazy(() => NafCodeUpdateManyWithoutClassNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafClassUncheckedUpdateWithoutGroupInputSchema: z.ZodType<Prisma.NafClassUncheckedUpdateWithoutGroupInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      codes: z
+        .lazy(() => NafCodeUncheckedUpdateManyWithoutClassNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafClassUncheckedUpdateManyWithoutGroupInputSchema: z.ZodType<Prisma.NafClassUncheckedUpdateManyWithoutGroupInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeCreateManyClassInputSchema: z.ZodType<Prisma.NafCodeCreateManyClassInput> =
+  z
+    .object({
+      id: z.string(),
+      title: z.string()
+    })
+    .strict();
+
+export const NafCodeUpdateWithoutClassInputSchema: z.ZodType<Prisma.NafCodeUpdateWithoutClassInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      users: z.lazy(() => UserUpdateManyWithoutNafNestedInputSchema).optional()
+    })
+    .strict();
+
+export const NafCodeUncheckedUpdateWithoutClassInputSchema: z.ZodType<Prisma.NafCodeUncheckedUpdateWithoutClassInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      users: z
+        .lazy(() => UserUncheckedUpdateManyWithoutNafNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const NafCodeUncheckedUpdateManyWithoutClassInputSchema: z.ZodType<Prisma.NafCodeUncheckedUpdateManyWithoutClassInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      title: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const UserCreateManyNafInputSchema: z.ZodType<Prisma.UserCreateManyNafInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string().optional().nullable(),
+      email: z.string(),
+      emailVerified: z.boolean().optional(),
+      image: z.string().optional().nullable(),
+      isTwoFactorEnabled: z.boolean().optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z.string().optional().nullable(),
+      address: z.string().optional().nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z.string().optional().nullable(),
+      city: z.string().optional().nullable(),
+      phone: z.string().optional().nullable(),
+      activity: z.string().optional().nullable(),
+      bounced: z.number().int().optional(),
+      affiliateRate: z.number().optional().nullable(),
+      isAnonymous: z.boolean().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      role: z.lazy(() => UserRoleSchema).optional(),
+      refererId: z.string().optional().nullable()
+    })
+    .strict();
+
+export const UserUpdateWithoutNafInputSchema: z.ZodType<Prisma.UserUpdateWithoutNafInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      address: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      city: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      phone: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activity: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      bounced: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      affiliateRate: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      accounts: z
+        .lazy(() => AccountUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      links: z
+        .lazy(() => LinkUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(() => TwoFactorConfirmationUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      referer: z
+        .lazy(() => UserUpdateOneWithoutAffiliatesNestedInputSchema)
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUpdateManyWithoutRefererNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(() => WorkflowStateUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z.lazy(() => FeedUpdateManyWithoutUserNestedInputSchema).optional(),
+      comments: z
+        .lazy(() => CommentUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationUpdateManyWithoutAffiliateNestedInputSchema)
+        .optional(),
+      lists: z
+        .lazy(() => ListUpdateManyWithoutContactsNestedInputSchema)
+        .optional(),
+      listsManage: z
+        .lazy(() => ListUpdateManyWithoutOwnersNestedInputSchema)
+        .optional(),
+      emails: z
+        .lazy(() => EmailUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      referrals: z
+        .lazy(() => ClickUpdateManyWithoutRefererNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedUpdateWithoutNafInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutNafInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      address: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      city: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      phone: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activity: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      bounced: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      affiliateRate: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      accounts: z
+        .lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sessions: z
+        .lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sites: z
+        .lazy(() => SiteUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      subscriptions: z
+        .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      Authenticator: z
+        .lazy(
+          () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      links: z
+        .lazy(() => LinkUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      customer: z
+        .lazy(() => CustomerUncheckedUpdateOneWithoutUserNestedInputSchema)
+        .optional(),
+      twoFactorConfirmation: z
+        .lazy(
+          () =>
+            TwoFactorConfirmationUncheckedUpdateOneWithoutUserNestedInputSchema
+        )
+        .optional(),
+      feedback: z
+        .lazy(() => FeedbackUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      likes: z
+        .lazy(() => LikeUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      affiliates: z
+        .lazy(() => UserUncheckedUpdateManyWithoutRefererNestedInputSchema)
+        .optional(),
+      events: z
+        .lazy(() => EventUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      workflowStates: z
+        .lazy(
+          () => WorkflowStateUncheckedUpdateManyWithoutUserNestedInputSchema
+        )
+        .optional(),
+      executions: z
+        .lazy(() => ExecutionUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      jobs: z
+        .lazy(() => QueueUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      outbox: z
+        .lazy(() => OutboxUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      feed: z
+        .lazy(() => FeedUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      comments: z
+        .lazy(() => CommentUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      sent: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutSenderNestedInputSchema)
+        .optional(),
+      received: z
+        .lazy(() => MessageUncheckedUpdateManyWithoutReceiverNestedInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(
+          () => ReservationUncheckedUpdateManyWithoutAffiliateNestedInputSchema
+        )
+        .optional(),
+      lists: z
+        .lazy(() => ListUncheckedUpdateManyWithoutContactsNestedInputSchema)
+        .optional(),
+      listsManage: z
+        .lazy(() => ListUncheckedUpdateManyWithoutOwnersNestedInputSchema)
+        .optional(),
+      emails: z
+        .lazy(() => EmailUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUncheckedUpdateManyWithoutUserNestedInputSchema)
+        .optional(),
+      referrals: z
+        .lazy(() => ClickUncheckedUpdateManyWithoutRefererNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const UserUncheckedUpdateManyWithoutNafInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutNafInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      email: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      emailVerified: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      image: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isTwoFactorEnabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      billing_address: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      payment_method: z
+        .union([z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema])
+        .optional(),
+      company: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      address: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      location: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      postcode: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      city: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      phone: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      activity: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      bounced: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      affiliateRate: z
+        .union([
+          z.number(),
+          z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      isAnonymous: z
+        .union([
+          z.boolean(),
+          z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      role: z
+        .union([
+          z.lazy(() => UserRoleSchema),
+          z.lazy(() => EnumUserRoleFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      refererId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
     })
     .strict();
 
@@ -83922,6 +89110,620 @@ export const EmailFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.EmailFindUniqueO
     })
     .strict();
 
+export const NafSectionFindFirstArgsSchema: z.ZodType<Prisma.NafSectionFindFirstArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      where: NafSectionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafSectionOrderByWithRelationInputSchema.array(),
+          NafSectionOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafSectionWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafSectionScalarFieldEnumSchema,
+          NafSectionScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafSectionFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NafSectionFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      where: NafSectionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafSectionOrderByWithRelationInputSchema.array(),
+          NafSectionOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafSectionWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafSectionScalarFieldEnumSchema,
+          NafSectionScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafSectionFindManyArgsSchema: z.ZodType<Prisma.NafSectionFindManyArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      where: NafSectionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafSectionOrderByWithRelationInputSchema.array(),
+          NafSectionOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafSectionWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafSectionScalarFieldEnumSchema,
+          NafSectionScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafSectionAggregateArgsSchema: z.ZodType<Prisma.NafSectionAggregateArgs> =
+  z
+    .object({
+      where: NafSectionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafSectionOrderByWithRelationInputSchema.array(),
+          NafSectionOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafSectionWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafSectionGroupByArgsSchema: z.ZodType<Prisma.NafSectionGroupByArgs> =
+  z
+    .object({
+      where: NafSectionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafSectionOrderByWithAggregationInputSchema.array(),
+          NafSectionOrderByWithAggregationInputSchema
+        ])
+        .optional(),
+      by: NafSectionScalarFieldEnumSchema.array(),
+      having: NafSectionScalarWhereWithAggregatesInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafSectionFindUniqueArgsSchema: z.ZodType<Prisma.NafSectionFindUniqueArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      where: NafSectionWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafSectionFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.NafSectionFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      where: NafSectionWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafDivisionFindFirstArgsSchema: z.ZodType<Prisma.NafDivisionFindFirstArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      where: NafDivisionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafDivisionOrderByWithRelationInputSchema.array(),
+          NafDivisionOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafDivisionWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafDivisionScalarFieldEnumSchema,
+          NafDivisionScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NafDivisionFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      where: NafDivisionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafDivisionOrderByWithRelationInputSchema.array(),
+          NafDivisionOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafDivisionWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafDivisionScalarFieldEnumSchema,
+          NafDivisionScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionFindManyArgsSchema: z.ZodType<Prisma.NafDivisionFindManyArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      where: NafDivisionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafDivisionOrderByWithRelationInputSchema.array(),
+          NafDivisionOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafDivisionWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafDivisionScalarFieldEnumSchema,
+          NafDivisionScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafDivisionAggregateArgsSchema: z.ZodType<Prisma.NafDivisionAggregateArgs> =
+  z
+    .object({
+      where: NafDivisionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafDivisionOrderByWithRelationInputSchema.array(),
+          NafDivisionOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafDivisionWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafDivisionGroupByArgsSchema: z.ZodType<Prisma.NafDivisionGroupByArgs> =
+  z
+    .object({
+      where: NafDivisionWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafDivisionOrderByWithAggregationInputSchema.array(),
+          NafDivisionOrderByWithAggregationInputSchema
+        ])
+        .optional(),
+      by: NafDivisionScalarFieldEnumSchema.array(),
+      having: NafDivisionScalarWhereWithAggregatesInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafDivisionFindUniqueArgsSchema: z.ZodType<Prisma.NafDivisionFindUniqueArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      where: NafDivisionWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafDivisionFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.NafDivisionFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      where: NafDivisionWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafGroupFindFirstArgsSchema: z.ZodType<Prisma.NafGroupFindFirstArgs> =
+  z
+    .object({
+      select: NafGroupSelectSchema.optional(),
+      include: NafGroupIncludeSchema.optional(),
+      where: NafGroupWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafGroupOrderByWithRelationInputSchema.array(),
+          NafGroupOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafGroupWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafGroupScalarFieldEnumSchema,
+          NafGroupScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NafGroupFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: NafGroupSelectSchema.optional(),
+      include: NafGroupIncludeSchema.optional(),
+      where: NafGroupWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafGroupOrderByWithRelationInputSchema.array(),
+          NafGroupOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafGroupWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafGroupScalarFieldEnumSchema,
+          NafGroupScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupFindManyArgsSchema: z.ZodType<Prisma.NafGroupFindManyArgs> =
+  z
+    .object({
+      select: NafGroupSelectSchema.optional(),
+      include: NafGroupIncludeSchema.optional(),
+      where: NafGroupWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafGroupOrderByWithRelationInputSchema.array(),
+          NafGroupOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafGroupWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafGroupScalarFieldEnumSchema,
+          NafGroupScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafGroupAggregateArgsSchema: z.ZodType<Prisma.NafGroupAggregateArgs> =
+  z
+    .object({
+      where: NafGroupWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafGroupOrderByWithRelationInputSchema.array(),
+          NafGroupOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafGroupWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafGroupGroupByArgsSchema: z.ZodType<Prisma.NafGroupGroupByArgs> =
+  z
+    .object({
+      where: NafGroupWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafGroupOrderByWithAggregationInputSchema.array(),
+          NafGroupOrderByWithAggregationInputSchema
+        ])
+        .optional(),
+      by: NafGroupScalarFieldEnumSchema.array(),
+      having: NafGroupScalarWhereWithAggregatesInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafGroupFindUniqueArgsSchema: z.ZodType<Prisma.NafGroupFindUniqueArgs> =
+  z
+    .object({
+      select: NafGroupSelectSchema.optional(),
+      include: NafGroupIncludeSchema.optional(),
+      where: NafGroupWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafGroupFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.NafGroupFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: NafGroupSelectSchema.optional(),
+      include: NafGroupIncludeSchema.optional(),
+      where: NafGroupWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafClassFindFirstArgsSchema: z.ZodType<Prisma.NafClassFindFirstArgs> =
+  z
+    .object({
+      select: NafClassSelectSchema.optional(),
+      include: NafClassIncludeSchema.optional(),
+      where: NafClassWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafClassOrderByWithRelationInputSchema.array(),
+          NafClassOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafClassWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafClassScalarFieldEnumSchema,
+          NafClassScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NafClassFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: NafClassSelectSchema.optional(),
+      include: NafClassIncludeSchema.optional(),
+      where: NafClassWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafClassOrderByWithRelationInputSchema.array(),
+          NafClassOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafClassWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafClassScalarFieldEnumSchema,
+          NafClassScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassFindManyArgsSchema: z.ZodType<Prisma.NafClassFindManyArgs> =
+  z
+    .object({
+      select: NafClassSelectSchema.optional(),
+      include: NafClassIncludeSchema.optional(),
+      where: NafClassWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafClassOrderByWithRelationInputSchema.array(),
+          NafClassOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafClassWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafClassScalarFieldEnumSchema,
+          NafClassScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafClassAggregateArgsSchema: z.ZodType<Prisma.NafClassAggregateArgs> =
+  z
+    .object({
+      where: NafClassWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafClassOrderByWithRelationInputSchema.array(),
+          NafClassOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafClassWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafClassGroupByArgsSchema: z.ZodType<Prisma.NafClassGroupByArgs> =
+  z
+    .object({
+      where: NafClassWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafClassOrderByWithAggregationInputSchema.array(),
+          NafClassOrderByWithAggregationInputSchema
+        ])
+        .optional(),
+      by: NafClassScalarFieldEnumSchema.array(),
+      having: NafClassScalarWhereWithAggregatesInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafClassFindUniqueArgsSchema: z.ZodType<Prisma.NafClassFindUniqueArgs> =
+  z
+    .object({
+      select: NafClassSelectSchema.optional(),
+      include: NafClassIncludeSchema.optional(),
+      where: NafClassWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafClassFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.NafClassFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: NafClassSelectSchema.optional(),
+      include: NafClassIncludeSchema.optional(),
+      where: NafClassWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafCodeFindFirstArgsSchema: z.ZodType<Prisma.NafCodeFindFirstArgs> =
+  z
+    .object({
+      select: NafCodeSelectSchema.optional(),
+      include: NafCodeIncludeSchema.optional(),
+      where: NafCodeWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafCodeOrderByWithRelationInputSchema.array(),
+          NafCodeOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafCodeWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafCodeScalarFieldEnumSchema,
+          NafCodeScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NafCodeFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: NafCodeSelectSchema.optional(),
+      include: NafCodeIncludeSchema.optional(),
+      where: NafCodeWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafCodeOrderByWithRelationInputSchema.array(),
+          NafCodeOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafCodeWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafCodeScalarFieldEnumSchema,
+          NafCodeScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeFindManyArgsSchema: z.ZodType<Prisma.NafCodeFindManyArgs> =
+  z
+    .object({
+      select: NafCodeSelectSchema.optional(),
+      include: NafCodeIncludeSchema.optional(),
+      where: NafCodeWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafCodeOrderByWithRelationInputSchema.array(),
+          NafCodeOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafCodeWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          NafCodeScalarFieldEnumSchema,
+          NafCodeScalarFieldEnumSchema.array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NafCodeAggregateArgsSchema: z.ZodType<Prisma.NafCodeAggregateArgs> =
+  z
+    .object({
+      where: NafCodeWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          NafCodeOrderByWithRelationInputSchema.array(),
+          NafCodeOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: NafCodeWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const NafCodeGroupByArgsSchema: z.ZodType<Prisma.NafCodeGroupByArgs> = z
+  .object({
+    where: NafCodeWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        NafCodeOrderByWithAggregationInputSchema.array(),
+        NafCodeOrderByWithAggregationInputSchema
+      ])
+      .optional(),
+    by: NafCodeScalarFieldEnumSchema.array(),
+    having: NafCodeScalarWhereWithAggregatesInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional()
+  })
+  .strict();
+
+export const NafCodeFindUniqueArgsSchema: z.ZodType<Prisma.NafCodeFindUniqueArgs> =
+  z
+    .object({
+      select: NafCodeSelectSchema.optional(),
+      include: NafCodeIncludeSchema.optional(),
+      where: NafCodeWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafCodeFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.NafCodeFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: NafCodeSelectSchema.optional(),
+      include: NafCodeIncludeSchema.optional(),
+      where: NafCodeWhereUniqueInputSchema
+    })
+    .strict();
+
 export const UserCreateArgsSchema: z.ZodType<Prisma.UserCreateArgs> = z
   .object({
     select: UserSelectSchema.optional(),
@@ -87562,6 +93364,516 @@ export const EmailDeleteManyArgsSchema: z.ZodType<Prisma.EmailDeleteManyArgs> =
   z
     .object({
       where: EmailWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafSectionCreateArgsSchema: z.ZodType<Prisma.NafSectionCreateArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      data: z.union([
+        NafSectionCreateInputSchema,
+        NafSectionUncheckedCreateInputSchema
+      ])
+    })
+    .strict();
+
+export const NafSectionUpsertArgsSchema: z.ZodType<Prisma.NafSectionUpsertArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      where: NafSectionWhereUniqueInputSchema,
+      create: z.union([
+        NafSectionCreateInputSchema,
+        NafSectionUncheckedCreateInputSchema
+      ]),
+      update: z.union([
+        NafSectionUpdateInputSchema,
+        NafSectionUncheckedUpdateInputSchema
+      ])
+    })
+    .strict();
+
+export const NafSectionCreateManyArgsSchema: z.ZodType<Prisma.NafSectionCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafSectionCreateManyInputSchema,
+        NafSectionCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafSectionCreateManyAndReturnArgsSchema: z.ZodType<Prisma.NafSectionCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafSectionCreateManyInputSchema,
+        NafSectionCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafSectionDeleteArgsSchema: z.ZodType<Prisma.NafSectionDeleteArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      where: NafSectionWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafSectionUpdateArgsSchema: z.ZodType<Prisma.NafSectionUpdateArgs> =
+  z
+    .object({
+      select: NafSectionSelectSchema.optional(),
+      include: NafSectionIncludeSchema.optional(),
+      data: z.union([
+        NafSectionUpdateInputSchema,
+        NafSectionUncheckedUpdateInputSchema
+      ]),
+      where: NafSectionWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafSectionUpdateManyArgsSchema: z.ZodType<Prisma.NafSectionUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafSectionUpdateManyMutationInputSchema,
+        NafSectionUncheckedUpdateManyInputSchema
+      ]),
+      where: NafSectionWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafSectionUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.NafSectionUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafSectionUpdateManyMutationInputSchema,
+        NafSectionUncheckedUpdateManyInputSchema
+      ]),
+      where: NafSectionWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafSectionDeleteManyArgsSchema: z.ZodType<Prisma.NafSectionDeleteManyArgs> =
+  z
+    .object({
+      where: NafSectionWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafDivisionCreateArgsSchema: z.ZodType<Prisma.NafDivisionCreateArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      data: z.union([
+        NafDivisionCreateInputSchema,
+        NafDivisionUncheckedCreateInputSchema
+      ])
+    })
+    .strict();
+
+export const NafDivisionUpsertArgsSchema: z.ZodType<Prisma.NafDivisionUpsertArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      where: NafDivisionWhereUniqueInputSchema,
+      create: z.union([
+        NafDivisionCreateInputSchema,
+        NafDivisionUncheckedCreateInputSchema
+      ]),
+      update: z.union([
+        NafDivisionUpdateInputSchema,
+        NafDivisionUncheckedUpdateInputSchema
+      ])
+    })
+    .strict();
+
+export const NafDivisionCreateManyArgsSchema: z.ZodType<Prisma.NafDivisionCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafDivisionCreateManyInputSchema,
+        NafDivisionCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafDivisionCreateManyAndReturnArgsSchema: z.ZodType<Prisma.NafDivisionCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafDivisionCreateManyInputSchema,
+        NafDivisionCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafDivisionDeleteArgsSchema: z.ZodType<Prisma.NafDivisionDeleteArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      where: NafDivisionWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafDivisionUpdateArgsSchema: z.ZodType<Prisma.NafDivisionUpdateArgs> =
+  z
+    .object({
+      select: NafDivisionSelectSchema.optional(),
+      include: NafDivisionIncludeSchema.optional(),
+      data: z.union([
+        NafDivisionUpdateInputSchema,
+        NafDivisionUncheckedUpdateInputSchema
+      ]),
+      where: NafDivisionWhereUniqueInputSchema
+    })
+    .strict();
+
+export const NafDivisionUpdateManyArgsSchema: z.ZodType<Prisma.NafDivisionUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafDivisionUpdateManyMutationInputSchema,
+        NafDivisionUncheckedUpdateManyInputSchema
+      ]),
+      where: NafDivisionWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafDivisionUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.NafDivisionUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafDivisionUpdateManyMutationInputSchema,
+        NafDivisionUncheckedUpdateManyInputSchema
+      ]),
+      where: NafDivisionWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafDivisionDeleteManyArgsSchema: z.ZodType<Prisma.NafDivisionDeleteManyArgs> =
+  z
+    .object({
+      where: NafDivisionWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafGroupCreateArgsSchema: z.ZodType<Prisma.NafGroupCreateArgs> = z
+  .object({
+    select: NafGroupSelectSchema.optional(),
+    include: NafGroupIncludeSchema.optional(),
+    data: z.union([
+      NafGroupCreateInputSchema,
+      NafGroupUncheckedCreateInputSchema
+    ])
+  })
+  .strict();
+
+export const NafGroupUpsertArgsSchema: z.ZodType<Prisma.NafGroupUpsertArgs> = z
+  .object({
+    select: NafGroupSelectSchema.optional(),
+    include: NafGroupIncludeSchema.optional(),
+    where: NafGroupWhereUniqueInputSchema,
+    create: z.union([
+      NafGroupCreateInputSchema,
+      NafGroupUncheckedCreateInputSchema
+    ]),
+    update: z.union([
+      NafGroupUpdateInputSchema,
+      NafGroupUncheckedUpdateInputSchema
+    ])
+  })
+  .strict();
+
+export const NafGroupCreateManyArgsSchema: z.ZodType<Prisma.NafGroupCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafGroupCreateManyInputSchema,
+        NafGroupCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafGroupCreateManyAndReturnArgsSchema: z.ZodType<Prisma.NafGroupCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafGroupCreateManyInputSchema,
+        NafGroupCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafGroupDeleteArgsSchema: z.ZodType<Prisma.NafGroupDeleteArgs> = z
+  .object({
+    select: NafGroupSelectSchema.optional(),
+    include: NafGroupIncludeSchema.optional(),
+    where: NafGroupWhereUniqueInputSchema
+  })
+  .strict();
+
+export const NafGroupUpdateArgsSchema: z.ZodType<Prisma.NafGroupUpdateArgs> = z
+  .object({
+    select: NafGroupSelectSchema.optional(),
+    include: NafGroupIncludeSchema.optional(),
+    data: z.union([
+      NafGroupUpdateInputSchema,
+      NafGroupUncheckedUpdateInputSchema
+    ]),
+    where: NafGroupWhereUniqueInputSchema
+  })
+  .strict();
+
+export const NafGroupUpdateManyArgsSchema: z.ZodType<Prisma.NafGroupUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafGroupUpdateManyMutationInputSchema,
+        NafGroupUncheckedUpdateManyInputSchema
+      ]),
+      where: NafGroupWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafGroupUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.NafGroupUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafGroupUpdateManyMutationInputSchema,
+        NafGroupUncheckedUpdateManyInputSchema
+      ]),
+      where: NafGroupWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafGroupDeleteManyArgsSchema: z.ZodType<Prisma.NafGroupDeleteManyArgs> =
+  z
+    .object({
+      where: NafGroupWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafClassCreateArgsSchema: z.ZodType<Prisma.NafClassCreateArgs> = z
+  .object({
+    select: NafClassSelectSchema.optional(),
+    include: NafClassIncludeSchema.optional(),
+    data: z.union([
+      NafClassCreateInputSchema,
+      NafClassUncheckedCreateInputSchema
+    ])
+  })
+  .strict();
+
+export const NafClassUpsertArgsSchema: z.ZodType<Prisma.NafClassUpsertArgs> = z
+  .object({
+    select: NafClassSelectSchema.optional(),
+    include: NafClassIncludeSchema.optional(),
+    where: NafClassWhereUniqueInputSchema,
+    create: z.union([
+      NafClassCreateInputSchema,
+      NafClassUncheckedCreateInputSchema
+    ]),
+    update: z.union([
+      NafClassUpdateInputSchema,
+      NafClassUncheckedUpdateInputSchema
+    ])
+  })
+  .strict();
+
+export const NafClassCreateManyArgsSchema: z.ZodType<Prisma.NafClassCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafClassCreateManyInputSchema,
+        NafClassCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafClassCreateManyAndReturnArgsSchema: z.ZodType<Prisma.NafClassCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafClassCreateManyInputSchema,
+        NafClassCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafClassDeleteArgsSchema: z.ZodType<Prisma.NafClassDeleteArgs> = z
+  .object({
+    select: NafClassSelectSchema.optional(),
+    include: NafClassIncludeSchema.optional(),
+    where: NafClassWhereUniqueInputSchema
+  })
+  .strict();
+
+export const NafClassUpdateArgsSchema: z.ZodType<Prisma.NafClassUpdateArgs> = z
+  .object({
+    select: NafClassSelectSchema.optional(),
+    include: NafClassIncludeSchema.optional(),
+    data: z.union([
+      NafClassUpdateInputSchema,
+      NafClassUncheckedUpdateInputSchema
+    ]),
+    where: NafClassWhereUniqueInputSchema
+  })
+  .strict();
+
+export const NafClassUpdateManyArgsSchema: z.ZodType<Prisma.NafClassUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafClassUpdateManyMutationInputSchema,
+        NafClassUncheckedUpdateManyInputSchema
+      ]),
+      where: NafClassWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafClassUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.NafClassUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafClassUpdateManyMutationInputSchema,
+        NafClassUncheckedUpdateManyInputSchema
+      ]),
+      where: NafClassWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafClassDeleteManyArgsSchema: z.ZodType<Prisma.NafClassDeleteManyArgs> =
+  z
+    .object({
+      where: NafClassWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafCodeCreateArgsSchema: z.ZodType<Prisma.NafCodeCreateArgs> = z
+  .object({
+    select: NafCodeSelectSchema.optional(),
+    include: NafCodeIncludeSchema.optional(),
+    data: z.union([NafCodeCreateInputSchema, NafCodeUncheckedCreateInputSchema])
+  })
+  .strict();
+
+export const NafCodeUpsertArgsSchema: z.ZodType<Prisma.NafCodeUpsertArgs> = z
+  .object({
+    select: NafCodeSelectSchema.optional(),
+    include: NafCodeIncludeSchema.optional(),
+    where: NafCodeWhereUniqueInputSchema,
+    create: z.union([
+      NafCodeCreateInputSchema,
+      NafCodeUncheckedCreateInputSchema
+    ]),
+    update: z.union([
+      NafCodeUpdateInputSchema,
+      NafCodeUncheckedUpdateInputSchema
+    ])
+  })
+  .strict();
+
+export const NafCodeCreateManyArgsSchema: z.ZodType<Prisma.NafCodeCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafCodeCreateManyInputSchema,
+        NafCodeCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafCodeCreateManyAndReturnArgsSchema: z.ZodType<Prisma.NafCodeCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafCodeCreateManyInputSchema,
+        NafCodeCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const NafCodeDeleteArgsSchema: z.ZodType<Prisma.NafCodeDeleteArgs> = z
+  .object({
+    select: NafCodeSelectSchema.optional(),
+    include: NafCodeIncludeSchema.optional(),
+    where: NafCodeWhereUniqueInputSchema
+  })
+  .strict();
+
+export const NafCodeUpdateArgsSchema: z.ZodType<Prisma.NafCodeUpdateArgs> = z
+  .object({
+    select: NafCodeSelectSchema.optional(),
+    include: NafCodeIncludeSchema.optional(),
+    data: z.union([
+      NafCodeUpdateInputSchema,
+      NafCodeUncheckedUpdateInputSchema
+    ]),
+    where: NafCodeWhereUniqueInputSchema
+  })
+  .strict();
+
+export const NafCodeUpdateManyArgsSchema: z.ZodType<Prisma.NafCodeUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        NafCodeUpdateManyMutationInputSchema,
+        NafCodeUncheckedUpdateManyInputSchema
+      ]),
+      where: NafCodeWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafCodeUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.NafCodeUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        NafCodeUpdateManyMutationInputSchema,
+        NafCodeUncheckedUpdateManyInputSchema
+      ]),
+      where: NafCodeWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const NafCodeDeleteManyArgsSchema: z.ZodType<Prisma.NafCodeDeleteManyArgs> =
+  z
+    .object({
+      where: NafCodeWhereInputSchema.optional(),
       limit: z.number().optional()
     })
     .strict();

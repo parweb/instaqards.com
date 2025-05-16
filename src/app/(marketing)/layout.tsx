@@ -6,7 +6,7 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col">
+    <div id="layout" className="flex flex-col">
       <Header />
 
       {children}

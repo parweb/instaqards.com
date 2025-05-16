@@ -230,7 +230,7 @@ class ProtectedHandler implements MiddlewareHandler {
       isApiAuthRoute;
 
     if (
-      marketingRoutes.includes(ctx.url.pathname) &&
+      marketingRoutes.some(route => ctx.url.pathname.includes(route)) &&
       ctx.hostname?.startsWith('app.') === false
     ) {
       return {
@@ -286,7 +286,7 @@ class PublicHandler implements MiddlewareHandler {
       ctx.hostname?.includes(':11000') ||
       ctx.hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
     ) {
-      if (marketingRoutes.includes(ctx.url.pathname)) {
+      if (marketingRoutes.some(route => ctx.url.pathname.includes(route))) {
         return {
           action: 'break',
           name: 'PublicHandler',
