@@ -1,16 +1,22 @@
 'use client';
 
-import L from 'leaflet';
-import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
-import { isEqual } from 'lodash';
-import * as z from 'zod';
-import ReactDOMServer from 'react-dom/server';
-import { Prisma, Site } from '@prisma/client';
-import { atomFamily } from 'jotai/utils';
+import { Block, Prisma, Site } from '@prisma/client';
 import { atom, useAtomValue } from 'jotai';
+import { atomFamily } from 'jotai/utils';
+import L from 'leaflet';
+import { isEqual } from 'lodash';
+import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
+import ReactDOMServer from 'react-dom/server';
+import { LuLoader } from 'react-icons/lu';
+import * as z from 'zod';
 
-import { WebSite } from 'components/editor/WebSite';
+import { BlockList } from 'app/[domain]/client';
+import { Background } from 'components/website/background';
+import { Content } from 'components/website/content';
+import { Footer } from 'components/website/footer';
+import { Main } from 'components/website/main';
+import { Wrapper } from 'components/website/wrapper';
 import { BlockSchema, SiteSchema } from '../../../../prisma/generated/zod';
 
 import 'leaflet-defaulticon-compatibility';
@@ -244,9 +250,9 @@ const SiteWithBlocks = SiteSchema.merge(
 );
 
 const $site = atomFamily(
-  (params: Prisma.SiteFindManyArgs) =>
+  (params: Prisma.SiteFindUniqueArgs) =>
     atom(() =>
-      fetch('/api/lake/site/findFirst', {
+      fetch('/api/lake/site/findUnique', {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(params)
@@ -257,17 +263,44 @@ const $site = atomFamily(
   isEqual
 );
 
-const Qards = ({ userId }: { userId: Site['id'] }) => {
+const Qards = ({ siteId }: { siteId: Site['id'] }) => {
   const site = useAtomValue(
     $site({
-      where: { userId },
+      where: { id: siteId },
       include: { blocks: true }
     })
   );
 
+  const data: Record<Block['type'], Block[]> = {
+    main: [],
+    social: [],
+
+    ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
+  };
+
   return (
-    <div className="yyyyooooolllllooooo relative w-full aspect-[9/16] max-w-xl mx-auto flex">
-      <WebSite site={site} />
+    <div className="relative w-full aspect-[2/3] max-w-xl mx-auto flex overflow-hidden rounded-2xl">
+      <Wrapper>
+        <Suspense fallback={null}>
+          <Background background={site.background} />
+        </Suspense>
+
+        <Content>
+          <Main length={data.main.length}>
+            <Suspense fallback={null}>
+              <BlockList blocks={data.main} />
+            </Suspense>
+          </Main>
+
+          <Footer>
+            <div className="flex gap-3 items-center justify-center">
+              <Suspense fallback={null}>
+                <BlockList blocks={data.social} />
+              </Suspense>
+            </div>
+          </Footer>
+        </Content>
+      </Wrapper>
     </div>
   );
 };
@@ -278,20 +311,28 @@ const CustomPopupContentQards = ({
   marker: { id: string; position: [number, number]; name?: string };
 }) => {
   return (
-    <div className="yolo-container">
-      <Suspense fallback={<div className="yolo-loading">Loading...</div>}>
-        <Qards userId={marker.id} />
+    <div>
+      <Suspense
+        fallback={
+          <div>
+            <LuLoader className="animate-spin" />
+          </div>
+        }
+      >
+        <Qards siteId={marker.id} />
       </Suspense>
     </div>
   );
 };
 
 const MapViewInner = ({
+  boundsPositions,
   position,
   zoom = 13,
   markers
 }: {
-  position: [number, number];
+  boundsPositions?: [number, number][];
+  position?: [number, number];
   zoom?: number;
   markers: { id: string; position: [number, number]; name?: string }[];
 }) => {
@@ -299,7 +340,7 @@ const MapViewInner = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markerClusterRef = useRef<MarkerClusterGroup | null>(null);
   const isInitialRender = useRef(true);
-  const lastKnownPosition = useRef(position);
+  const lastKnownPosition = useRef(position || [48.8566, 2.3522]);
 
   // Memoize marker positions to avoid unnecessary rerenders
   const markerPositions = useMemo(
@@ -428,7 +469,7 @@ const MapViewInner = ({
       document.head.appendChild(styleElement);
 
       const mapInstance = L.map(mapRef.current, {
-        center: position,
+        center: position || [48.8566, 2.3522],
         zoom: zoom,
         zoomControl: false,
         fadeAnimation: true,
@@ -450,7 +491,13 @@ const MapViewInner = ({
 
       mapInstanceRef.current = mapInstance;
       isInitialRender.current = false;
-      lastKnownPosition.current = position;
+      lastKnownPosition.current = position || [48.8566, 2.3522];
+
+      // Fit bounds if boundsPositions is provided
+      if (boundsPositions && boundsPositions.length > 1) {
+        const bounds = L.latLngBounds(boundsPositions);
+        mapInstance.fitBounds(bounds, { padding: [50, 50] });
+      }
 
       // Initialize markers after map is ready
       setTimeout(() => {
@@ -480,26 +527,35 @@ const MapViewInner = ({
     };
   }, []);
 
+  // Fit bounds on markers change
+  useEffect(() => {
+    const mapInstance = mapInstanceRef.current;
+    if (!mapInstance || !boundsPositions || boundsPositions.length < 2) return;
+    const bounds = L.latLngBounds(boundsPositions);
+    mapInstance.fitBounds(bounds, { padding: [50, 50] });
+  }, [boundsPositions]);
+
   // Update view when position changes, but keep markers
   useEffect(() => {
     const mapInstance = mapInstanceRef.current;
     if (!mapInstance || isInitialRender.current) return;
 
     // Only update if position actually changed
+    const safePosition = position || [48.8566, 2.3522];
     if (
-      position[0] === lastKnownPosition.current[0] &&
-      position[1] === lastKnownPosition.current[1]
+      safePosition[0] === lastKnownPosition.current[0] &&
+      safePosition[1] === lastKnownPosition.current[1]
     ) {
       return;
     }
 
-    lastKnownPosition.current = position;
+    lastKnownPosition.current = safePosition;
 
     // First ensure markers are placed and visible
     updateMarkers();
 
     // Then animate map to new position
-    mapInstance.flyTo(position, zoom, animationConfig);
+    mapInstance.flyTo(safePosition, zoom, animationConfig);
   }, [position, zoom, animationConfig, updateMarkers]);
 
   // Update markers when they change, independent of position changes

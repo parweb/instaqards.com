@@ -6,17 +6,24 @@ import dynamic from 'next/dynamic';
 const LeafletMap = dynamic(() => import('./MapViewInner'), { ssr: false });
 
 const MapView = ({
+  boundsPositions,
   position,
   zoom = 13,
   markers
 }: {
-  position: [number, number];
+  boundsPositions: [number, number][];
+  position?: [number, number];
   zoom?: number;
   markers: { id: string; position: [number, number] }[];
 }) => {
   return (
     <div className="h-full w-full relative">
-      <LeafletMap position={position} zoom={zoom} markers={markers} />
+      <LeafletMap
+        boundsPositions={boundsPositions}
+        position={position}
+        zoom={zoom}
+        markers={markers}
+      />
     </div>
   );
 };
