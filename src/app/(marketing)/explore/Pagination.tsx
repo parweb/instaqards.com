@@ -1,9 +1,10 @@
 'use client';
 
-import { parseAsInteger, useQueryState } from 'nuqs';
+import { useQueryState } from 'nuqs';
 
 import { Input } from 'components/ui/input';
 import { clamp } from 'helpers/clamp';
+import { pagination } from './QuerySchema';
 
 import {
   PaginationContent,
@@ -20,15 +21,22 @@ import {
   SelectTrigger,
   SelectValue
 } from 'components/ui/select';
+import { useTransition } from 'react';
+import { LucideLoader2 } from 'lucide-react';
 
 export const Pagination = ({ total }: { total: number }) => {
+  const [isMutating, startTransition] = useTransition();
+
   const [page, setPage] = useQueryState('page', {
-    ...parseAsInteger.withDefault(1),
-    shallow: false
+    ...pagination.page,
+    shallow: false,
+    startTransition
   });
+
   const [take, setTake] = useQueryState('take', {
-    ...parseAsInteger.withDefault(9),
-    shallow: false
+    ...pagination.take,
+    shallow: false,
+    startTransition
   });
 
   if (!total) return null;
@@ -37,6 +45,12 @@ export const Pagination = ({ total }: { total: number }) => {
 
   return (
     <div className="flex items-center justify-between gap-4">
+      {isMutating && (
+        <div>
+          <LucideLoader2 className="animate-spin" />
+        </div>
+      )}
+
       <PaginationUI>
         <PaginationContent className="flex gap-4">
           <PaginationItem>
@@ -75,23 +89,26 @@ export const Pagination = ({ total }: { total: number }) => {
         </PaginationContent>
       </PaginationUI>
 
-      <Select
-        value={take.toString()}
-        onValueChange={async value => {
-          await setTake(Number(value));
-        }}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Résultats" />
-        </SelectTrigger>
+      {false && (
+        <Select
+          value={take.toString()}
+          onValueChange={async value => {
+            await setTake(Number(value));
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Résultats" />
+          </SelectTrigger>
 
-        <SelectContent>
-          <SelectItem value="9">9</SelectItem>
-          <SelectItem value="12">12</SelectItem>
-          <SelectItem value="15">15</SelectItem>
-          <SelectItem value="18">18</SelectItem>
-        </SelectContent>
-      </Select>
+          <SelectContent>
+            <SelectItem value="6">6</SelectItem>
+            <SelectItem value="9">9</SelectItem>
+            <SelectItem value="12">12</SelectItem>
+            <SelectItem value="15">15</SelectItem>
+            <SelectItem value="18">18</SelectItem>
+          </SelectContent>
+        </Select>
+      )}
     </div>
   );
 };

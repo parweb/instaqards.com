@@ -1,37 +1,137 @@
+import { Prisma } from '@prisma/client';
+import type { SearchParams } from 'nuqs/server';
+import { LuFilter } from 'react-icons/lu';
+
+import { FilterModal } from 'app/(marketing)/explore/FilterModal';
+import { InputSearch } from 'app/(marketing)/explore/InputSearch';
+import { List } from 'app/(marketing)/explore/List';
+import { Map } from 'app/(marketing)/explore/Map';
+import { Pagination } from 'app/(marketing)/explore/Pagination';
+import { paginate } from 'app/(marketing)/explore/QuerySchema';
+import ModalButton from 'components/modal-button';
 import { db } from 'helpers/db';
-import { UserCard } from 'components/UserCard';
-import { FiltersBar } from 'components/FiltersBar';
 
 export default async function SectionPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ section: string }>;
+  searchParams: Promise<SearchParams>;
 }) {
   const [section] = (await params).section.split('-');
-  const users = await db.user.findMany({
-    where: {
-      codeNaf: {
-        startsWith: section
+
+  const { page, take, search } = paginate(await searchParams);
+
+  const searchFilter =
+    search !== ''
+      ? {
+          OR: [
+            {
+              subdomain: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive
+              }
+            },
+            {
+              user: {
+                name: { contains: search, mode: Prisma.QueryMode.insensitive }
+              }
+            },
+            {
+              user: {
+                naf: {
+                  title: {
+                    contains: search,
+                    mode: Prisma.QueryMode.insensitive
+                  }
+                }
+              }
+            }
+          ]
+        }
+      : undefined;
+
+  const where: Prisma.SiteWhereInput = {
+    AND: [
+      ...(searchFilter ? [searchFilter] : []),
+      {
+        user: {
+          naf: {
+            class: {
+              group: {
+                division: {
+                  section: {
+                    id: section
+                  }
+                }
+              }
+            }
+          }
+        }
       }
-    }
-  });
+    ]
+  };
+
+  const [sites, total] = await db.$transaction([
+    db.site.findMany({
+      take,
+      skip: (page - 1) * take,
+      where,
+      include: {
+        user: {
+          include: {
+            naf: {
+              include: {
+                class: {
+                  include: {
+                    group: {
+                      include: { division: { include: { section: true } } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+      }
+    }),
+    db.site.count({
+      where
+    })
+  ]);
 
   return (
-    <section className="max-w-6xl mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-4">
-        Annuaire des entreprises pour la section {section}
-      </h1>
-      <FiltersBar name="section" value={section} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {users.map((user: any) => (
-          <UserCard key={user.id} user={user} />
-        ))}
-      </div>
-      {users.length === 0 && (
-        <div className="text-center text-gray-500 mt-8">
-          Aucun commerce trouvé pour cette section.
+    <div className="flex-1 flex self-stretch gap-0">
+      <div className="relative flex-3/5 flex self-stretch">
+        <div className="isolate flex-1 self-stretch flex flex-col absolute inset-0 overflow-y-auto m-0 bg-stone-100">
+          <div className="z-10 sticky top-0 bg-stone-100/70 drop-shadow-lg backdrop-blur-md">
+            <div className="p-4 flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <InputSearch />
+              </div>
+
+              <div>
+                <ModalButton
+                  size="icon"
+                  className=" rounded-full"
+                  label={<LuFilter />}
+                >
+                  <FilterModal />
+                </ModalButton>
+              </div>
+
+              <Pagination total={total} />
+            </div>
+          </div>
+
+          <List sites={sites} />
         </div>
-      )}
-    </section>
+      </div>
+
+      <div className="hidden sm:flex flex-2/5 self-stretch">
+        <Map sites={sites} />
+      </div>
+    </div>
   );
 }

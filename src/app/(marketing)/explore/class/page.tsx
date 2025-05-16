@@ -34,9 +34,7 @@ export default async function ActivityPage() {
             </div>
 
             <h2 className="text-lg font-semibold text-gray-800 mb-2">
-              <Link
-                href={`/explore/class/${item.id.replace('.', '')}-${slugify(item.title)}`}
-              >
+              <Link href={`/explore/class/${item.id}-${slugify(item.title)}`}>
                 {item.title}
               </Link>
             </h2>
@@ -45,7 +43,7 @@ export default async function ActivityPage() {
               <p className="flex gap-1 items-center">
                 <span className="font-medium">Section:</span>
                 <Link
-                  href={`/explore/section/${item.group.division.section.id.replace('.', '')}-${slugify(item.group.division.section.title)}`}
+                  href={`/explore/section/${item.group.division.section.id}-${slugify(item.group.division.section.title)}`}
                 >
                   {item.group.division.section.title}
                 </Link>
@@ -54,7 +52,7 @@ export default async function ActivityPage() {
               <p className="flex gap-1 items-center">
                 <span className="font-medium">Division:</span>
                 <Link
-                  href={`/explore/division/${item.group.division.id.replace('.', '')}-${slugify(item.group.division.title)}`}
+                  href={`/explore/division/${item.group.division.id}-${slugify(item.group.division.title)}`}
                 >
                   {item.group.division.title}
                 </Link>
@@ -63,7 +61,7 @@ export default async function ActivityPage() {
               <p className="flex gap-1 items-center">
                 <span className="font-medium">Groupe:</span>
                 <Link
-                  href={`/explore/group/${item.group.id.replace('.', '')}-${slugify(item.group.title)}`}
+                  href={`/explore/group/${item.group.id}-${slugify(item.group.title)}`}
                 >
                   {item.group.title}
                 </Link>

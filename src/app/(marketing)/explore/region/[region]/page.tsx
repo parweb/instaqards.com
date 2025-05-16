@@ -9,16 +9,21 @@ import { Map } from 'app/(marketing)/explore/Map';
 import { Pagination } from 'app/(marketing)/explore/Pagination';
 import { paginate } from 'app/(marketing)/explore/QuerySchema';
 import ModalButton from 'components/modal-button';
+import * as departement from 'data/departements-region';
 import { db } from 'helpers/db';
 
-export default async function GroupPage({
+export default async function StatePage({
   params,
   searchParams
 }: {
-  params: Promise<{ group: string }>;
+  params: Promise<{ region: string }>;
   searchParams: Promise<SearchParams>;
 }) {
-  const [group] = (await params).group.split('-');
+  const region = (await params).region;
+
+  const states = departement.all
+    .filter(state => state.region === region)
+    .map(state => state.id);
 
   const { page, take, search } = paginate(await searchParams);
 
@@ -56,13 +61,9 @@ export default async function GroupPage({
       ...(searchFilter ? [searchFilter] : []),
       {
         user: {
-          naf: {
-            class: {
-              group: {
-                id: group
-              }
-            }
-          }
+          OR: states.map(state => ({
+            postcode: { startsWith: state }
+          }))
         }
       }
     ]
