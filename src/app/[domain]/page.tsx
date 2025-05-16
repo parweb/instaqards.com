@@ -12,7 +12,7 @@ import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
 import { getSiteData } from 'lib/fetchers';
 import { uri } from 'settings';
-import { BlockList } from './client';
+import { BlockList } from 'app/[domain]/client';
 
 import 'array-grouping-polyfill';
 

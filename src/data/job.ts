@@ -129,7 +129,6 @@ export const all = [
 
 export type Job = (typeof all)[number];
 
-// Improved get function with better type safety
 export const get = <T extends Job['id']>(id: T): Extract<Job, { id: T }> => {
   const job = all.find((j): j is Extract<Job, { id: T }> => j.id === id);
 
