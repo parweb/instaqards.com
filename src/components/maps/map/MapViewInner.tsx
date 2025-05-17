@@ -1,7 +1,7 @@
 'use client';
 
 import L from 'leaflet'; // Import L for latLngBounds and other Leaflet utilities if needed
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server'; // Réintroduit
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
@@ -57,8 +57,10 @@ const MapViewAdjuster = ({
   animationConfig: { duration: number; easeLinearity: number };
 }) => {
   const map = useMap();
+  const prevPositionRef = useRef<[number, number] | undefined>(undefined);
+  const prevZoomRef = useRef<number | undefined>(undefined);
 
-  useMemo(() => {
+  useEffect(() => {
     if (boundsPositions && boundsPositions.length > 0) {
       const validBounds = boundsPositions.filter(isValidLatLngTuple);
       if (validBounds.length > 0) {
@@ -67,13 +69,29 @@ const MapViewAdjuster = ({
         );
         map.fitBounds(leafletBounds, { padding: [50, 50] });
       }
+      prevPositionRef.current = undefined;
+      prevZoomRef.current = undefined;
     } else if (
       position &&
       isValidLatLngTuple(position) &&
       typeof zoom === 'number'
     ) {
-      // Ensure position is valid before flyTo
-      map.flyTo(position, zoom, animationConfig);
+      // Calcul de la distance entre l'ancienne et la nouvelle position
+      const prev = prevPositionRef.current;
+      const prevZoom = prevZoomRef.current;
+      const curr = position;
+      const distance = prev
+        ? map.distance(L.latLng(prev), L.latLng(curr))
+        : undefined;
+      // Seuil pour choisir entre panTo (rapide) et flyTo (plus smooth)
+      const PAN_THRESHOLD_METERS = 500; // Ajuste selon le ressenti
+      if (prev && distance !== undefined && distance < PAN_THRESHOLD_METERS && prevZoom === zoom) {
+        map.panTo(curr, { animate: true, duration: 0.3, easeLinearity: 0.5 });
+      } else {
+        map.flyTo(curr, zoom, { duration: 0.4, easeLinearity: 0.5 });
+      }
+      prevPositionRef.current = curr;
+      prevZoomRef.current = zoom;
     }
   }, [map, boundsPositions, position, zoom, animationConfig]);
 
