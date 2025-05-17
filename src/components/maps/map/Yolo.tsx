@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 const MapViewComponent = dynamic(() => import('./MapView'), { ssr: false });
 
 const Yolo = (props: {
-  boundsPositions: [number, number][];
+  boundsPositions?: [number, number][];
   position?: [number, number];
   zoom?: number;
   markers: { id: string; position: [number, number] }[];

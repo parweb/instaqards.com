@@ -2,8 +2,10 @@
 
 import dynamic from 'next/dynamic';
 
-// Dynamically import the Leaflet map component with SSR disabled
-const LeafletMap = dynamic(() => import('./MapViewInner'), { ssr: false });
+const LeafletMap = dynamic(
+  () => import('./MapViewInner').then(mod => mod.MapViewInner),
+  { ssr: false }
+);
 
 const MapView = ({
   boundsPositions,
@@ -11,7 +13,7 @@ const MapView = ({
   zoom = 13,
   markers
 }: {
-  boundsPositions: [number, number][];
+  boundsPositions?: [number, number][];
   position?: [number, number];
   zoom?: number;
   markers: { id: string; position: [number, number] }[];

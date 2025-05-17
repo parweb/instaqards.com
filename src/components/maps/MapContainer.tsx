@@ -43,12 +43,6 @@ const MapContainer = ({
     [markerPosition]
   );
 
-  const boundsPositions = useMemo(
-    (): [number, number][] =>
-      markers.length ? markers.map(m => m.position) : [[48.8566, 2.3522]],
-    [markers]
-  );
-
   return (
     <div className="group w-full aspect-video relative overflow-hidden rounded-lg transition-all">
       <Suspense
@@ -58,7 +52,7 @@ const MapContainer = ({
           </div>
         }
       >
-        <Yolo boundsPositions={boundsPositions} markers={markers} />
+        <Yolo position={mapPosition} markers={markers} />
 
         <div
           className={cn(

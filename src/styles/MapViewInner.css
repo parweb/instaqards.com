@@ -1,0 +1,87 @@
+.leaflet-marker-icon {
+  border: none !important;
+  background: transparent !important;
+}
+.custom-popup-class .leaflet-popup-content-wrapper {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+.custom-popup-class .leaflet-popup-tip-container {
+  display: none;
+}
+.custom-popup-class .leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+}
+.custom-popup-class .leaflet-popup-close-button {
+  color: white;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+  z-index: 30;
+  top: 5px;
+  right: 5px;
+}
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes shine {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.leaflet-marker-icon {
+  display: none;
+}
+
+.custom-popup-class .leaflet-popup-content-wrapper {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+.custom-popup-class .leaflet-popup-tip-container {
+  display: none;
+}
+.custom-popup-class .leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+}
+.custom-popup-class .leaflet-popup-close-button {
+  color: white;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+  z-index: 30;
+  top: 5px;
+  right: 5px;
+}
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes shine {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
