@@ -14,7 +14,11 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['framer-motion', 'lucide-react', 'react-icons'],
     serverActions: {
       bodySizeLimit: '200mb',
-      allowedOrigins: ['app.localhost:11000', 'app.qards.local:11000']
+      allowedOrigins: [
+        'app.localhost:11000',
+        'app.qards.local:11000',
+        'app.qards.local'
+      ]
     }
   },
   images: {

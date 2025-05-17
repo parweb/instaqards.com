@@ -108,6 +108,8 @@ export const auth = betterAuth({
   trustedOrigins: [
     'http://app.qards.local:11000',
     'http://qards.local:11000',
+    'http://app.qards.local',
+    'http://qards.local',
     'https://app.qards.link',
     'https://qards.link'
   ],

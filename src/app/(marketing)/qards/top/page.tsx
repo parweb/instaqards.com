@@ -7,7 +7,7 @@ import { SiteCard } from '../SiteCard';
 const QardsPage = async () => {
   const headersList = await headers();
 
-  const ip = ['qards.local:11000', 'localhost:11000'].includes(
+  const ip = ['qards.local', 'qards.local:11000', 'localhost:11000'].includes(
     String(headersList.get('x-forwarded-host'))
   )
     ? '127.0.0.1'

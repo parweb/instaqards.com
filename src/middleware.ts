@@ -22,6 +22,7 @@ function normalizeHostname(req: NextRequest): string | undefined {
   let hostname = req.headers
     .get('host')
     ?.replace('.qards.local:11000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
+    ?.replace('.qards.local', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
     ?.replace('.localhost:11000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
 
   if (
@@ -284,6 +285,7 @@ class PublicHandler implements MiddlewareHandler {
   ): Promise<HandlerResult> {
     if (
       ctx.hostname?.includes(':11000') ||
+      ctx.hostname?.includes('.local') ||
       ctx.hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
     ) {
       if (marketingRoutes.some(route => ctx.url.pathname.includes(route))) {
