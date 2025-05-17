@@ -2,10 +2,10 @@
 
 import { Outbox, Prisma, Queue } from '@prisma/client';
 import { LucideLoader2 } from 'lucide-react';
-import Link from 'next/link';
-import { useActionState, useState } from 'react';
-import { IconType } from 'react-icons';
 import { interpolate } from 'motion';
+import Link from 'next/link';
+import { Suspense, use, useActionState, useState } from 'react';
+import { IconType } from 'react-icons';
 
 import {
   LuChevronDown,
@@ -13,6 +13,7 @@ import {
   LuCopy,
   LuEllipsisVertical,
   LuExternalLink,
+  LuLoader,
   LuPause,
   LuPencil,
   LuPlay,
@@ -82,10 +83,80 @@ const Stat = ({
   </div>
 );
 
+function CampaignItemDetails({
+  campaign,
+  $details
+}: {
+  campaign: Prisma.CampaignGetPayload<{
+    include: { list: { include: { contacts: true } } };
+  }>;
+  $details: Promise<
+    [
+      Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
+      Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[]
+    ]
+  >;
+}) {
+  // const outboxes = use($outboxes);
+  // const queues = use($queues);
+
+  const [outboxes, queues] = use($details);
+
+  return (
+    <div className="flex flex-col gap-1">
+      {campaign.list.contacts.map(contact => {
+        const outbox = outboxes.find(
+          outbox =>
+            outbox.email === contact.email && outbox.campaignId === campaign.id
+        );
+
+        const queue = queues.find(
+          q =>
+            // @ts-ignore
+            q.payload?.contact?.email === contact.email &&
+            q.correlationId === campaign.id
+        );
+
+        return (
+          <div
+            key={contact.id}
+            className="flex items-center gap-4 border rounded-md p-2"
+          >
+            <Badge
+              // @ts-ignore
+              variant={
+                { pending: 'outline', completed: 'success' }?.[
+                  queue?.status ?? 'pending'
+                ] ?? 'pending'
+              }
+            >
+              {queue?.status}
+            </Badge>
+
+            <Link href={`/user/${contact.id}/outbox/${outbox?.id}`}>
+              {contact.email}
+            </Link>
+
+            <div className="flex gap-2 items-center">
+              {outbox?.status === 'opened' && (
+                <Badge variant="secondary">{outbox?.status}</Badge>
+              )}
+              {/* @ts-ignore */}
+              {outbox?.metadata?.events?.some(
+                // @ts-ignore
+                event => event.type === 'click'
+              ) && <Badge variant="default">clicked</Badge>}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export const CampaignItem = ({
   campaign,
-  outboxes,
-  queues
+  $details
 }: {
   campaign: Prisma.CampaignGetPayload<{
     include: {
@@ -94,8 +165,12 @@ export const CampaignItem = ({
       outboxes: true;
     };
   }>;
-  outboxes: Outbox[];
-  queues: Queue[];
+  $details: Promise<
+    [
+      Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
+      Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[]
+    ]
+  >;
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -104,10 +179,7 @@ export const CampaignItem = ({
     campaign.active
   );
 
-  const [stateDelete, actionDelete, loadingDelete] = useActionState(
-    deleteCampaign,
-    false
-  );
+  const [, actionDelete, loadingDelete] = useActionState(deleteCampaign, false);
 
   return (
     <div
@@ -245,55 +317,9 @@ export const CampaignItem = ({
       </div>
 
       {open && (
-        <div className="flex flex-col gap-1">
-          {campaign.list.contacts.map(contact => {
-            const outbox = outboxes.find(
-              outbox =>
-                outbox.email === contact.email &&
-                outbox.campaignId === campaign.id
-            );
-
-            const queue = queues.find(
-              q =>
-                // @ts-ignore
-                q.payload?.contact?.email === contact.email &&
-                q.correlationId === campaign.id
-            );
-
-            return (
-              <div
-                key={contact.id}
-                className="flex items-center gap-4 border rounded-md p-2"
-              >
-                <Badge
-                  // @ts-ignore
-                  variant={
-                    { pending: 'outline', completed: 'success' }?.[
-                      queue?.status ?? 'pending'
-                    ] ?? 'pending'
-                  }
-                >
-                  {queue?.status}
-                </Badge>
-
-                <Link href={`/user/${contact.id}/outbox/${outbox?.id}`}>
-                  {contact.email}
-                </Link>
-
-                <div className="flex gap-2 items-center">
-                  {outbox?.status === 'opened' && (
-                    <Badge variant="secondary">{outbox?.status}</Badge>
-                  )}
-                  {/* @ts-ignore */}
-                  {outbox?.metadata?.events?.some(
-                    // @ts-ignore
-                    event => event.type === 'click'
-                  ) && <Badge variant="default">clicked</Badge>}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <Suspense fallback={<div><LuLoader className="animate-spin" /></div>}>
+          <CampaignItemDetails {...{ campaign, $details }} />
+        </Suspense>
       )}
     </div>
   );

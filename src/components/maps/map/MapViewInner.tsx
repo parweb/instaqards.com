@@ -85,7 +85,12 @@ const MapViewAdjuster = ({
         : undefined;
       // Seuil pour choisir entre panTo (rapide) et flyTo (plus smooth)
       const PAN_THRESHOLD_METERS = 500; // Ajuste selon le ressenti
-      if (prev && distance !== undefined && distance < PAN_THRESHOLD_METERS && prevZoom === zoom) {
+      if (
+        prev &&
+        distance !== undefined &&
+        distance < PAN_THRESHOLD_METERS &&
+        prevZoom === zoom
+      ) {
         map.panTo(curr, { animate: true, duration: 0.3, easeLinearity: 0.5 });
       } else {
         map.flyTo(curr, zoom, { duration: 0.4, easeLinearity: 0.5 });

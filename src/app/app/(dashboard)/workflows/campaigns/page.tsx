@@ -15,13 +15,27 @@ export default async function WorkflowsCampaigns() {
     orderBy: { updatedAt: 'desc' }
   });
 
-  const outboxes = await db.outbox.findMany({
-    where: { campaignId: { in: campaigns.map(c => c.id) } }
-  });
-
-  const queues = await db.queue.findMany({
-    where: { correlationId: { in: campaigns.map(c => c.id) } }
-  });
+  const $details = db.$transaction([
+    db.outbox.findMany({
+      select: {
+        id: true,
+        status: true,
+        metadata: true,
+        email: true,
+        campaignId: true
+      },
+      where: { campaignId: { in: campaigns.map(c => c.id) } }
+    }),
+    db.queue.findMany({
+      select: {
+        id: true,
+        status: true,
+        payload: true,
+        correlationId: true
+      },
+      where: { correlationId: { in: campaigns.map(c => c.id) } }
+    })
+  ]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -42,8 +56,7 @@ export default async function WorkflowsCampaigns() {
           <CampaignItem
             key={campaign.id}
             campaign={campaign}
-            outboxes={outboxes}
-            queues={queues}
+            $details={$details}
           />
         ))}
       </div>

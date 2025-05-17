@@ -13,9 +13,9 @@ import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
 import * as lead from 'services/lead';
+import { uri } from 'settings';
 import { AffiliationChart } from './affiliation-chart';
 import { parser } from './utils';
-import { uri } from 'settings';
 
 export default async function AllAffiliation({
   searchParams
