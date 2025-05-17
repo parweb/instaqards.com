@@ -2,12 +2,13 @@
 
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { cache, useEffect, useRef, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 import { LuLoader } from 'react-icons/lu';
 import * as z from 'zod';
 
 import type { input as galleryInput } from 'components/editor/blocks/picture/gallery';
+import { trySafe } from 'helpers/trySafe';
 import { json } from 'lib/utils';
 
 import {
@@ -19,8 +20,14 @@ import {
 export const input = z.object({
   url: z
     .string()
-    .url()
-    .describe(json({ label: 'Video URL', kind: 'string' }))
+    .regex(
+      /v=[\w-]+(?:&\S*)?|\/(?:c\/[\w.-]+|@[\w.-]+|channel\/[\w-]+)\/?(?:\?\S*)?$/,
+      {
+        message:
+          "L\'URL doit être une vidéo YouTube valide (contenant v=VIDEO_ID) ou une chaîne YouTube valide (ex: /c/NOM, /@HANDLE, /channel/ID)."
+      }
+    )
+    .describe(json({ label: 'Video URL', kind: 'link', just: 'url' }))
 });
 
 type FeedItem = {
@@ -43,13 +50,38 @@ function YoutubeVideo({
 }: z.infer<typeof input> & { title?: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const videoId = url.split('v=')[1];
+  const [titleFetched, setTitleFetched] = useState<string | null>(null);
+
+  const videoId = new URL(url).searchParams.get('v');
 
   const [playing, setPlaying] = useState(false);
 
   const activatePlayer = () => {
     setPlaying(true);
   };
+
+  useEffect(() => {
+    if (!!title) return;
+
+    const controller = new AbortController();
+
+    (async () => {
+      const response = await fetch(
+        `https://www.youtube.com/oembed?format=json&url=${url}`,
+        {
+          signal: controller.signal
+        }
+      );
+
+      const data = await response.json();
+
+      setTitleFetched(data.title);
+    })();
+
+    return () => {
+      controller.abort();
+    };
+  }, [title]);
 
   return (
     <div className="relative rounded-md overflow-hidden min-h-40 w-full aspect-video">
@@ -100,10 +132,10 @@ function YoutubeVideo({
             <FaYoutube className="text-red-600 w-24 h-24" />
           </div>
 
-          {title && (
+          {(title || titleFetched) && (
             <div className="absolute inset-0 flex items-end justify-start bg-gradient-to-t from-black/50 to-transparent p-2">
               <p className="text-white text-md font-bold text-left text-balance">
-                {title}
+                {title || titleFetched}
               </p>
             </div>
           )}
@@ -117,7 +149,6 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
   const [videos, setVideos] = useState<
     (z.infer<typeof galleryInput>['medias'][number] & { title: string })[]
   >([]);
-  // https://www.youtube.com/feeds/videos.xml?channel_id=UCLOAPb7ATQUs_nDs9ViLcMw
 
   const handle = url.includes('/c/')
     ? url.split('/c/').at(-1)
@@ -157,7 +188,6 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
         );
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
-          // Ignore abort errors as they are expected when component unmounts
           return;
         }
         console.error('Error fetching YouTube channel:', error);
@@ -211,9 +241,27 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
   );
 }
 
+const placeholder = 'https://www.youtube.com/watch?v=VCyuZhnm71I';
+
+const getValidatedUrl = cache(
+  async (urlToValidate: string, fallbackUrl: string): Promise<string> => {
+    const [, result] = await trySafe(async () => {
+      new URL(urlToValidate);
+      return urlToValidate;
+    }, fallbackUrl);
+
+    return result as string;
+  }
+);
+
 export default function Youtube({
-  url = 'https://www.youtube.com/watch?v=VCyuZhnm71I'
+  url = placeholder
 }: Partial<z.infer<typeof input>>) {
+  [, url] = trySafe(() => {
+    new URL(url);
+    return url;
+  }, placeholder);
+
   if (url.includes('/c/') || url.includes('/@') || url.includes('/channel/')) {
     return <YoutubeChannel url={url} />;
   }
