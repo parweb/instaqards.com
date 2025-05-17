@@ -185,7 +185,7 @@ export default function CampaignsMutateModal({
 
   return (
     <form
-    className="grid grid-rows-[1fr,auto] flex-col w-full rounded-md bg-white max-w-3xl md:border md:border-stone-200 md:shadow-sm max-h-[90dvh] overflow-y-scroll"
+      className="grid grid-rows-[1fr,auto] flex-col w-full rounded-md bg-white max-w-3xl md:border md:border-stone-200 md:shadow-sm max-h-[90dvh] overflow-y-scroll"
       action={async (data: FormData) =>
         mutateCampaigns(data).then(res => {
           if ('error' in res) {
