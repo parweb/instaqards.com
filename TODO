@@ -8,7 +8,9 @@ TODO
           login -> no account found -> retry
           login -> email not verify -> resend email
 
-     -> vue kanban par campaign
+     -> /explore lien direct vers la qards
+     -> /explore version mobile a revoir
+     -> vue kanban par campaign (envoyé - opened - one more action - gagné - perdu)
      -> intégration externe clean url before (icon check vert si tout va bien)
      -> share my qard on (iphone, android)
      -> qards par default préremplis stylé / neutre (modal blank or template)
