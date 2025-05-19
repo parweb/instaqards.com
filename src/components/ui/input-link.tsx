@@ -35,7 +35,7 @@ const getTypeFromValue = (
 
 export function InputLink(
   props: React.ComponentProps<typeof Input> & {
-    shape: Extract<Block, { kind: 'link' }>;
+    shape?: Extract<Block, { kind: 'link' }>;
   }
 ) {
   const id = useId();
@@ -128,7 +128,7 @@ export function InputLink(
   return (
     <div className="flex items-center border border-input rounded-md p-0 w-full max-w-md text-sm focus-within:ring-2 focus-within:ring-offset-2">
       <div className="mr-2">
-        {props.shape?.just === 'url' ? null : (
+        {props?.shape?.just === 'url' ? null : (
           <Select value={type} onValueChange={handleTypeChange}>
             <SelectTrigger className="px-2 py-0 leading-none m-[-1px] bg-stone-800 text-white [&_svg:not([class*='text-'])]:text-white">
               <SelectValue placeholder="Type" />
