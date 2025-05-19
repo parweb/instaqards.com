@@ -317,7 +317,13 @@ export const CampaignItem = ({
       </div>
 
       {open && (
-        <Suspense fallback={<div><LuLoader className="animate-spin" /></div>}>
+        <Suspense
+          fallback={
+            <div>
+              <LuLoader className="animate-spin" />
+            </div>
+          }
+        >
           <CampaignItemDetails {...{ campaign, $details }} />
         </Suspense>
       )}
