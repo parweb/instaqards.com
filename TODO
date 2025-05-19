@@ -9,7 +9,6 @@ TODO
           login -> email not verify -> resend email
 
      -> vue kanban par campaign
-     -> page annuaire
      -> intégration externe clean url before (icon check vert si tout va bien)
      -> share my qard on (iphone, android)
      -> qards par default préremplis stylé / neutre (modal blank or template)
@@ -51,7 +50,6 @@ TODO
           https://github.com/ValentinH/react-easy-crop
           https://github.com/mosch/react-avatar-editor
      -> menu button faire mieux
-     -> armoniser les youtubes block (titre par dessus)
      -> tiktok garder que le lecteur (+ bug sur ilias)
      -> avis google ? peut on les recupéré ?
      -> tiktok prend en compte les url mobile (m.tiktok.com)
@@ -61,6 +59,8 @@ TODO
      -> twitch integration
      -> univers music, girly (template)
 
+DONE -> page annuaire
+DONE -> armoniser les youtubes block (titre par dessus)
 DONE -> editor page pro soit editable (pas besoin d'etre logué)
 DONE -> template dans page pro
 
