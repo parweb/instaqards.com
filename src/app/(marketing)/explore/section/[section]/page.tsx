@@ -106,19 +106,21 @@ export default async function SectionPage({
       <div className="relative flex-3/5 flex self-stretch">
         <div className="isolate flex-1 self-stretch flex flex-col absolute inset-0 overflow-y-auto m-0 bg-stone-100">
           <div className="z-10 sticky top-0 bg-stone-100/70 drop-shadow-lg backdrop-blur-md">
-            <div className="p-4 flex items-center justify-between gap-4">
-              <div className="flex-1">
-                <InputSearch />
-              </div>
+            <div className="p-4 flex flex-col lg:flex-row items-center justify-between gap-4">
+              <div className="flex-1 self-stretch flex flex-wrap items-center justify-between gap-4">
+                <div className="flex-1">
+                  <InputSearch />
+                </div>
 
-              <div>
-                <ModalButton
-                  size="icon"
-                  className=" rounded-full"
-                  label={<LuFilter />}
-                >
-                  <FilterModal />
-                </ModalButton>
+                <div>
+                  <ModalButton
+                    size="icon"
+                    className=" rounded-full"
+                    label={<LuFilter />}
+                  >
+                    <FilterModal />
+                  </ModalButton>
+                </div>
               </div>
 
               <Pagination total={total} />

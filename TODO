@@ -8,10 +8,7 @@ TODO
           login -> no account found -> retry
           login -> email not verify -> resend email
 
-     -> /explore lien direct vers la qards
-     -> /explore version mobile a revoir
      -> vue kanban par campaign (envoyé - opened - one more action - gagné - perdu)
-     -> intégration externe clean url before (icon check vert si tout va bien)
      -> share my qard on (iphone, android)
      -> qards par default préremplis stylé / neutre (modal blank or template)
      ->  widgets « site web » - Quand on fais un hover au dessus on pourrait avoir un bouton « voir le site » (apercu seulement, hauteur configurable)
@@ -37,9 +34,8 @@ TODO
           - kanban
 
      -> preview qards mobile / desktop
-     -> insta reel, possible ?
      -> generator flingué
-     -> feed
+     -> feed (reseau social)
      -> ecommerce (stripe connect) https://youtu.be/dllIBXa0nlE?t=19089
      -> qards dropshiping / affiliation 
           -> flippa 
@@ -61,6 +57,10 @@ TODO
      -> twitch integration
      -> univers music, girly (template)
 
+DONE -> /explore lien direct vers la qards
+DONE -> /explore version mobile a revoir
+DONE -> insta reel, possible ?
+DONE -> intégration externe clean url before (icon check vert si tout va bien)
 DONE -> page annuaire
 DONE -> armoniser les youtubes block (titre par dessus)
 DONE -> editor page pro soit editable (pas besoin d'etre logué)

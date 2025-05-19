@@ -11,7 +11,7 @@ export default function ExploreLayout({
     <div className="flex-1 flex flex-col self-stretch gap-0">
       <div className="flex-1 flex flex-col self-stretch">{children}</div>
 
-      <div className="p-2 flex items-center justify-around gap-4">
+      <div className="p-2 flex flex-wrap items-center justify-around gap-4">
         <Link href="/explore/region">Régions</Link>
         <Link href="/explore/state">Départements</Link>
         <Link href="/explore/city">Villes</Link>

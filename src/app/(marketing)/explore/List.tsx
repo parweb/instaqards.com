@@ -9,7 +9,6 @@ import { Content } from 'components/website/content';
 import { Footer } from 'components/website/footer';
 import { Main } from 'components/website/main';
 import { Wrapper } from 'components/website/wrapper';
-import useTranslation from 'hooks/use-translation';
 
 import 'array-grouping-polyfill';
 
@@ -37,13 +36,9 @@ interface ListProps {
 }
 
 export const List = ({ sites }: ListProps) => {
-  const translate = useTranslation();
-
   return (
     <div className="flex-1 self-stretch grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 p-4">
       {sites.map(site => {
-        const user = site.user;
-
         const data: Record<Block['type'], Block[]> = {
           main: [],
           social: [],
@@ -56,7 +51,7 @@ export const List = ({ sites }: ListProps) => {
             key={site.id}
             className="flex-1 self-stretch group transition-all duration-300 hover:scale-[1.025] hover:shadow-2xl rounded-md cursor-pointer flex flex-col"
           >
-            <div className="flex-1 self-stretch relative flex flex-col justify-center items-center overflow-hidden border bg-muted/60 rounded-md">
+            <div className="flex-1 self-stretch aspect-square relative flex flex-col justify-center items-center overflow-hidden border bg-muted/60 rounded-md">
               <Wrapper>
                 <Suspense fallback={null}>
                   <Background background={site.background} />
