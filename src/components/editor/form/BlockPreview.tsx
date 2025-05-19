@@ -99,7 +99,7 @@ export function BlockPreview({
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, touchedFields },
     setValue
   } = useForm({
     defaultValues: {
@@ -420,6 +420,7 @@ export function BlockPreview({
                             <InputLink
                               id={key}
                               {...field}
+                              isValid={touchedFields[key] && !errors[key]}
                               shape={
                                 property.shape as Extract<
                                   Block,

@@ -1,9 +1,8 @@
 'use client';
 
 import { useId, useState } from 'react';
-import { LuLink, LuMail, LuPhone } from 'react-icons/lu';
+import { LuCheck, LuLink, LuMail, LuPhone } from 'react-icons/lu';
 
-import { Badge } from 'components/ui/badge';
 import { Input } from 'components/ui/input';
 import { Block } from 'lib/utils';
 
@@ -36,6 +35,7 @@ const getTypeFromValue = (
 export function InputLink(
   props: React.ComponentProps<typeof Input> & {
     shape?: Extract<Block, { kind: 'link' }>;
+    isValid?: boolean;
   }
 ) {
   const id = useId();
@@ -125,6 +125,8 @@ export function InputLink(
     handleValueChange(newFullValue);
   };
 
+  console.log({ isValid: props.isValid });
+
   return (
     <div className="flex items-center border border-input rounded-md p-0 w-full max-w-md text-sm focus-within:ring-2 focus-within:ring-offset-2">
       <div className="mr-2">
@@ -165,7 +167,13 @@ export function InputLink(
         />
       </div>
 
-      {current?.icon && <div className="px-2">{current?.icon}</div>}
+      {props.isValid ? (
+        <div className="px-2">
+          <LuCheck className="text-green-600" />
+        </div>
+      ) : (
+        <>{current?.icon && <div className="px-2">{current?.icon}</div>}</>
+      )}
     </div>
   );
 }
