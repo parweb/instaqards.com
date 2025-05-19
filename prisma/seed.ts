@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { importCodeNaf } from './seed/importCodeNaf';
+
+import { importContactsParis } from './seed/importContactsParis';
+
 export const prisma = new PrismaClient();
 
 (async () => {
@@ -7,6 +9,7 @@ export const prisma = new PrismaClient();
   // await populateAllLeadWithDefaultSite(prisma);
   // await testGuestUser(prisma);
   // await importCodeNaf(prisma);
+  // await importContactsParis(prisma);
 })()
   .then(async () => {
     await prisma.$disconnect();
