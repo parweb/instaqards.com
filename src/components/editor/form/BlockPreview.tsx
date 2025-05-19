@@ -417,7 +417,16 @@ export function BlockPreview({
                           control={control}
                           name={key}
                           render={({ field }) => (
-                            <InputLink id={key} {...field} />
+                            <InputLink
+                              id={key}
+                              {...field}
+                              shape={
+                                property.shape as Extract<
+                                  Block,
+                                  { kind: 'link' }
+                                >
+                              }
+                            />
                           )}
                         />
 

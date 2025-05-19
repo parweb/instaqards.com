@@ -149,7 +149,7 @@ export type Block = Share &
         accept: Record<string, string[]>;
       }
     | { kind: 'string' }
-    | { kind: 'link' }
+    | { kind: 'link'; just?: 'url' }
     | { kind: 'socials' }
     | { kind: 'hidden' }
     | { kind: 'color'; default: string }

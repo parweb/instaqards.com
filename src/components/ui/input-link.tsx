@@ -3,7 +3,9 @@
 import { useId, useState } from 'react';
 import { LuLink, LuMail, LuPhone } from 'react-icons/lu';
 
+import { Badge } from 'components/ui/badge';
 import { Input } from 'components/ui/input';
+import { Block } from 'lib/utils';
 
 import {
   Select,
@@ -31,7 +33,11 @@ const getTypeFromValue = (
   return types.find(t => value.startsWith(t.label))?.value ?? 'http';
 };
 
-export function InputLink(props: React.ComponentProps<typeof Input>) {
+export function InputLink(
+  props: React.ComponentProps<typeof Input> & {
+    shape: Extract<Block, { kind: 'link' }>;
+  }
+) {
   const id = useId();
 
   const initialValue = typeof props.value === 'string' ? props.value : '';
@@ -122,19 +128,21 @@ export function InputLink(props: React.ComponentProps<typeof Input>) {
   return (
     <div className="flex items-center border border-input rounded-md p-0 w-full max-w-md text-sm focus-within:ring-2 focus-within:ring-offset-2">
       <div className="mr-2">
-        <Select value={type} onValueChange={handleTypeChange}>
-          <SelectTrigger className="px-2 py-0 leading-none m-[-1px] bg-stone-800 text-white [&_svg:not([class*='text-'])]:text-white">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
+        {props.shape?.just === 'url' ? null : (
+          <Select value={type} onValueChange={handleTypeChange}>
+            <SelectTrigger className="px-2 py-0 leading-none m-[-1px] bg-stone-800 text-white [&_svg:not([class*='text-'])]:text-white">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
 
-          <SelectContent>
-            {types.map(t => (
-              <SelectItem key={t.value} value={t.value} className="text-sm">
-                {t.title}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+            <SelectContent>
+              {types.map(t => (
+                <SelectItem key={t.value} value={t.value} className="text-sm">
+                  {t.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       {prefix && (
