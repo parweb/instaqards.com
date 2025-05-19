@@ -1,20 +1,27 @@
 'use client';
 
-import * as z from 'zod';
 import { XEmbed } from 'react-social-media-embed';
+import * as z from 'zod';
 
+import { trySafe } from 'helpers/trySafe';
 import { json } from 'lib/utils';
 
 export const input = z.object({
   url: z
     .string()
     .url()
-    .describe(json({ label: 'Tweet URL', kind: 'string' }))
+    .describe(json({ label: 'Tweet URL', kind: 'link', just: 'url' }))
 });
 
+const placeholder = 'https://x.com/mckaywrigley/status/1898756745545252866';
 export default function Twitter({
-  url = 'https://x.com/mckaywrigley/status/1898756745545252866'
+  url = placeholder
 }: Partial<z.infer<typeof input>>) {
+  [, url] = trySafe(() => {
+    const query = new URL(url);
+    return query.origin + query.pathname;
+  }, placeholder);
+
   const tweetId = url.split('/').pop();
   const username = url.split('/')[3];
 
