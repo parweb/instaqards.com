@@ -1,26 +1,36 @@
 'use client';
 
-import * as z from 'zod';
 import { FacebookEmbed } from 'react-social-media-embed';
+import * as z from 'zod';
 
+import { trySafe } from 'helpers/trySafe';
 import { json } from 'lib/utils';
 
 export const input = z.object({
   url: z
     .string()
     .url()
-    .describe(json({ label: 'Post URL', kind: 'string' }))
+    .describe(json({ label: 'Post URL', kind: 'link', just: 'url' }))
 });
 
+const placeholder =
+  'https://www.facebook.com/andrewismusic/posts/451971596293956';
+
 export default function Facebook({
-  url = 'https://www.facebook.com/andrewismusic/posts/451971596293956'
+  url = placeholder
 }: Partial<z.infer<typeof input>>) {
-  const postId = url.split('/').pop();
+  [, url] = trySafe(() => {
+    const urlObj = new URL(url);
+    return urlObj.pathname;
+  }, placeholder);
 
   return (
-    <FacebookEmbed
-      url={`https://www.facebook.com/andrewismusic/posts/${postId}`}
-      width="100%"
-    />
+    <div className="w-full rounded-md overflow-hidden border border-white bg-white">
+      <FacebookEmbed
+        className="w-full "
+        url={`https://www.facebook.com/${url}`}
+        width="100%"
+      />
+    </div>
   );
 }
