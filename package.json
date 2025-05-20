@@ -116,6 +116,7 @@
     "slugify": "1.6.6",
     "sonner": "2.0.3",
     "stripe": "17",
+    "svix": "1.65.0",
     "swr": "2.3.3",
     "tailwind-merge": "3.3.0",
     "tailwind-variants": "1.0.0",
