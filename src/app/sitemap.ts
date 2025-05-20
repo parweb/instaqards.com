@@ -46,5 +46,5 @@ export default async function Sitemap() {
     lastModified: new Date()
   }));
 
-  return [...marketingUrls, ...siteUrls, ...jobUrls, ...featureUrls];
+  return [...marketingUrls /*, ...siteUrls*/, ...jobUrls, ...featureUrls];
 }

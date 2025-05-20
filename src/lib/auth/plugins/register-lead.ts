@@ -61,7 +61,7 @@ export const registerLead = () => {
 
               const session = await internalAdapter.createSession(
                 existingUser.id,
-                ctx.headers
+                ctx
               );
 
               await setSessionCookie(ctx, {
