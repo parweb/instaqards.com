@@ -2,16 +2,16 @@ import { UserRole, PrismaClient } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 export const populateAllLeadWithDefaultSite = async (prisma: PrismaClient) => {
-  await prisma.site.deleteMany({
-    where: {
-      display_name: 'auto-generated'
-    }
-  });
+  // await prisma.site.deleteMany({
+  //   where: {
+  //     display_name: 'auto-generated'
+  //   }
+  // });
 
   const leads = await prisma.user.findMany({
     // take: 100,
     where: {
-      bounced: { lte: 0 },
+      // bounced: { lte: 0 },
       role: UserRole.LEAD,
       sites: {
         none: {}
@@ -21,12 +21,14 @@ export const populateAllLeadWithDefaultSite = async (prisma: PrismaClient) => {
 
   console.info({ leads: leads.map(({ id }) => id) });
 
-  for (const lead of leads) {
+  for (const [i, lead] of leads.entries()) {
+    console.info('progress', ((i / leads.length) * 100).toFixed(4));
+
     const name = lead.name || lead.email.split('@')[0].replaceAll('.', ' ');
     const subdomain = (
       name.trim().replace(/[\W_]+/g, '-') +
       '-' +
-      nanoid(3)
+      nanoid(7)
     ).toLowerCase();
 
     // format with a . every 2 characters
@@ -51,7 +53,7 @@ export const populateAllLeadWithDefaultSite = async (prisma: PrismaClient) => {
               widget: {
                 id: 'logo-circle',
                 data: {
-                  size: 163,
+                  size: 125,
                   corner: 100,
                   medias: [
                     {

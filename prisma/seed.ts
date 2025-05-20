@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
-import { importContactsParis } from './seed/importContactsParis';
+// import { importContactsParis } from './seed/importContactsParis';
+// import { populateAllLeadWithDefaultSite } from './seed/populateAllLeadWithDefaultSite';
 
 export const prisma = new PrismaClient();
 
