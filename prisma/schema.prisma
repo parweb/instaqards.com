@@ -870,7 +870,7 @@ model NafCode {
 }
 
 model Cron {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
 
   name           String    @unique
   cronExpr       String
@@ -883,6 +883,25 @@ model Cron {
   lastDurationMs Int?
   lockedAt       DateTime?
 
+  history History[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+model History {
+  id String @id @default(cuid())
+
+  status     String
+  startedAt  DateTime
+  endedAt    DateTime
+  durationMs Int
+  message    Json?    @default("{}")
+
+  cron   Cron   @relation(fields: [cronId], references: [id])
+  cronId String
+
+  createdAt DateTime @default(now())
+
+  @@index([cronId])
 }

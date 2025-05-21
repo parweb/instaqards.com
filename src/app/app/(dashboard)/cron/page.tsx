@@ -10,7 +10,10 @@ export default async function CronDashboard() {
   const session = await getSession();
   if (!session?.user) return null;
 
-  const crons = await db.cron.findMany({ orderBy: { id: 'desc' } });
+  const crons = await db.cron.findMany({
+    orderBy: { id: 'desc' },
+    include: { history: { orderBy: { createdAt: 'desc' } } }
+  });
 
   return (
     <div className="flex flex-col p-8">

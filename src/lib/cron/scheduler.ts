@@ -1,15 +1,14 @@
+import { Cron } from '@prisma/client';
 import { DateTime } from 'luxon';
-import { PrismaClient, Cron } from '@prisma/client';
-// @ts-ignore
-const parseExpression = require('cron-parser').parseExpression;
+import { CronExpressionParser } from 'cron-parser';
 
-const prisma = new PrismaClient();
+import { db } from 'helpers/db';
 
 export async function runScheduler() {
   const now = DateTime.utc();
 
   // 1. Sélectionne et locke les jobs éligibles (SKIP LOCKED simulé)
-  const jobs = await prisma.$transaction(async tx => {
+  const jobs = await db.$transaction(async tx => {
     // Jobs non lockés ou lockés depuis > 5 min (crash recovery)
     const candidates = await tx.cron.findMany({
       where: {
@@ -21,8 +20,12 @@ export async function runScheduler() {
       }
     });
 
+    console.log('candidates', candidates);
+
     // On ne locke que ceux qui sont dus
     const dueJobs = candidates.filter(j => isDue(j, now)).slice(0, 5);
+
+    console.log('dueJobs', dueJobs);
 
     // On locke les jobs sélectionnés
     await Promise.all(
@@ -37,33 +40,105 @@ export async function runScheduler() {
     return dueJobs;
   });
 
+  console.log('jobs', jobs);
+
   // 2. Exécute les jobs
   for (const job of jobs) {
-    const started = Date.now();
+    const started = new Date();
+    let executionId: string | null = null;
+
     try {
-      const mod = await import(job.modulePath);
-      await mod[job.functionName]();
-      await markSuccess(job.id, Date.now() - started);
-    } catch (e: any) {
-      await markFailure(job.id, e, Date.now() - started);
+      // Crée une entrée d'exécution (status: running)
+      const exec = await db.history.create({
+        data: {
+          cronId: job.id,
+          status: 'running',
+          startedAt: started,
+          endedAt: started,
+          durationMs: 0,
+          message: {}
+        }
+      });
+
+      executionId = exec.id;
+
+      const mod = await import(`crons/${job.modulePath}`);
+      const result = await mod[job.functionName]();
+
+      const ended = new Date();
+
+      await db.history.update({
+        where: { id: executionId },
+        data: {
+          status: 'ok',
+          endedAt: ended,
+          durationMs: ended.getTime() - started.getTime(),
+          message: JSON.stringify(result)
+        }
+      });
+
+      await markSuccess(job.id, ended.getTime() - started.getTime());
+    } catch (error: unknown) {
+      console.error(error);
+
+      const ended = new Date();
+
+      if (executionId) {
+        await db.history.update({
+          where: { id: executionId },
+          data: {
+            status: 'error',
+            endedAt: ended,
+            durationMs: ended.getTime() - started.getTime(),
+            message: {
+              error:
+                error instanceof Error
+                  ? error.message.slice(0, 255)
+                  : 'Erreur inconnue'
+            }
+          }
+        });
+      }
+
+      await markFailure(
+        job.id,
+        error as Error,
+        ended.getTime() - started.getTime()
+      );
     } finally {
       await unlockJob(job.id);
     }
   }
+
+  return jobs;
 }
 
 function isDue(job: Cron, now: DateTime) {
-  const options = {
-    currentDate: job.lastRunAt ?? new Date(0),
-    tz: job.timezone
-  };
-  const it = parseExpression(job.cronExpr, options);
-  const next = DateTime.fromJSDate(it.next().toDate());
-  return next <= now && now.diff(next, 'seconds').seconds < 60;
+  let prev;
+
+  try {
+    prev = DateTime.fromJSDate(
+      CronExpressionParser.parse(job.cronExpr, {
+        currentDate: now.toJSDate(), // On part toujours de maintenant
+        tz: job.timezone
+      })
+        .prev()
+        .toDate()
+    );
+  } catch {
+    return true;
+  }
+
+  if (job.lastRunAt) {
+    const lastRun = DateTime.fromJSDate(job.lastRunAt);
+    return prev > lastRun && now.diff(prev, 'seconds').seconds < 60;
+  }
+
+  return now.diff(prev, 'seconds').seconds < 60;
 }
 
-async function markSuccess(id: number, dur: number) {
-  await prisma.cron.update({
+async function markSuccess(id: string, dur: number) {
+  await db.cron.update({
     where: { id },
     data: {
       lastRunAt: new Date(),
@@ -72,8 +147,8 @@ async function markSuccess(id: number, dur: number) {
     }
   });
 }
-async function markFailure(id: number, err: Error, dur: number) {
-  await prisma.cron.update({
+async function markFailure(id: string, err: Error, dur: number) {
+  await db.cron.update({
     where: { id },
     data: {
       lastRunAt: new Date(),
@@ -82,8 +157,8 @@ async function markFailure(id: number, err: Error, dur: number) {
     }
   });
 }
-async function unlockJob(id: number) {
-  await prisma.cron.update({
+async function unlockJob(id: string) {
+  await db.cron.update({
     where: { id },
     data: { lockedAt: null }
   });

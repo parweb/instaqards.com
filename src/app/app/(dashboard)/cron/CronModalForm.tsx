@@ -29,7 +29,7 @@ interface CronFormValues {
 const defaultValues: CronFormValues = {
   name: '',
   cronExpr: '',
-  timezone: 'UTC',
+  timezone: 'Europe/Paris',
   modulePath: '',
   functionName: ''
 };
