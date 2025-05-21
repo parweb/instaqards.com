@@ -20,6 +20,7 @@ import {
   Play,
   Send,
   Settings,
+  Timer,
   Users,
   Workflow
 } from 'lucide-react';
@@ -101,6 +102,12 @@ export function AppSidebar(
               url: '/referals',
               icon: Workflow,
               isActive: segments[0] === 'referals'
+            },
+            {
+              title: translate('menu.cron'),
+              url: '/cron',
+              icon: Timer,
+              isActive: segments[0] === 'cron'
             }
           ]
         : []),

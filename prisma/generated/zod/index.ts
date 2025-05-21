@@ -523,6 +523,20 @@ export const NafClassScalarFieldEnumSchema = z.enum(['id', 'title', 'groupId']);
 
 export const NafCodeScalarFieldEnumSchema = z.enum(['id', 'title', 'classId']);
 
+export const CronScalarFieldEnumSchema = z.enum([
+  'id',
+  'name',
+  'cronExpr',
+  'timezone',
+  'modulePath',
+  'functionName',
+  'enabled',
+  'lastRunAt',
+  'lastStatus',
+  'lastDurationMs',
+  'lockedAt'
+]);
+
 export const SortOrderSchema = z.enum(['asc', 'desc']);
 
 export const JsonNullValueInputSchema = z
@@ -1367,6 +1381,26 @@ export const NafCodeSchema = z.object({
 });
 
 export type NafCode = z.infer<typeof NafCodeSchema>;
+
+/////////////////////////////////////////
+// CRON SCHEMA
+/////////////////////////////////////////
+
+export const CronSchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  cronExpr: z.string(),
+  timezone: z.string(),
+  modulePath: z.string(),
+  functionName: z.string(),
+  enabled: z.boolean(),
+  lastRunAt: z.coerce.date().nullable(),
+  lastStatus: z.string().nullable(),
+  lastDurationMs: z.number().int().nullable(),
+  lockedAt: z.coerce.date().nullable()
+});
+
+export type Cron = z.infer<typeof CronSchema>;
 
 /////////////////////////////////////////
 // SELECT & INCLUDE
@@ -3433,6 +3467,25 @@ export const NafCodeSelectSchema: z.ZodType<Prisma.NafCodeSelect> = z
     _count: z
       .union([z.boolean(), z.lazy(() => NafCodeCountOutputTypeArgsSchema)])
       .optional()
+  })
+  .strict();
+
+// CRON
+//------------------------------------------------------
+
+export const CronSelectSchema: z.ZodType<Prisma.CronSelect> = z
+  .object({
+    id: z.boolean().optional(),
+    name: z.boolean().optional(),
+    cronExpr: z.boolean().optional(),
+    timezone: z.boolean().optional(),
+    modulePath: z.boolean().optional(),
+    functionName: z.boolean().optional(),
+    enabled: z.boolean().optional(),
+    lastRunAt: z.boolean().optional(),
+    lastStatus: z.boolean().optional(),
+    lastDurationMs: z.boolean().optional(),
+    lockedAt: z.boolean().optional()
   })
   .strict();
 
@@ -13870,6 +13923,284 @@ export const NafCodeScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.NafCo
       classId: z
         .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
         .optional()
+    })
+    .strict();
+
+export const CronWhereInputSchema: z.ZodType<Prisma.CronWhereInput> = z
+  .object({
+    AND: z
+      .union([
+        z.lazy(() => CronWhereInputSchema),
+        z.lazy(() => CronWhereInputSchema).array()
+      ])
+      .optional(),
+    OR: z
+      .lazy(() => CronWhereInputSchema)
+      .array()
+      .optional(),
+    NOT: z
+      .union([
+        z.lazy(() => CronWhereInputSchema),
+        z.lazy(() => CronWhereInputSchema).array()
+      ])
+      .optional(),
+    id: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+    name: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    cronExpr: z
+      .union([z.lazy(() => StringFilterSchema), z.string()])
+      .optional(),
+    timezone: z
+      .union([z.lazy(() => StringFilterSchema), z.string()])
+      .optional(),
+    modulePath: z
+      .union([z.lazy(() => StringFilterSchema), z.string()])
+      .optional(),
+    functionName: z
+      .union([z.lazy(() => StringFilterSchema), z.string()])
+      .optional(),
+    enabled: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
+    lastRunAt: z
+      .union([z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date()])
+      .optional()
+      .nullable(),
+    lastStatus: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    lastDurationMs: z
+      .union([z.lazy(() => IntNullableFilterSchema), z.number()])
+      .optional()
+      .nullable(),
+    lockedAt: z
+      .union([z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date()])
+      .optional()
+      .nullable()
+  })
+  .strict();
+
+export const CronOrderByWithRelationInputSchema: z.ZodType<Prisma.CronOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      cronExpr: z.lazy(() => SortOrderSchema).optional(),
+      timezone: z.lazy(() => SortOrderSchema).optional(),
+      modulePath: z.lazy(() => SortOrderSchema).optional(),
+      functionName: z.lazy(() => SortOrderSchema).optional(),
+      enabled: z.lazy(() => SortOrderSchema).optional(),
+      lastRunAt: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      lastStatus: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      lastDurationMs: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      lockedAt: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CronWhereUniqueInputSchema: z.ZodType<Prisma.CronWhereUniqueInput> =
+  z
+    .union([
+      z.object({
+        id: z.number().int(),
+        name: z.string()
+      }),
+      z.object({
+        id: z.number().int()
+      }),
+      z.object({
+        name: z.string()
+      })
+    ])
+    .and(
+      z
+        .object({
+          id: z.number().int().optional(),
+          name: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => CronWhereInputSchema),
+              z.lazy(() => CronWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => CronWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => CronWhereInputSchema),
+              z.lazy(() => CronWhereInputSchema).array()
+            ])
+            .optional(),
+          cronExpr: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          timezone: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          modulePath: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          functionName: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          enabled: z
+            .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+            .optional(),
+          lastRunAt: z
+            .union([
+              z.lazy(() => DateTimeNullableFilterSchema),
+              z.coerce.date()
+            ])
+            .optional()
+            .nullable(),
+          lastStatus: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          lastDurationMs: z
+            .union([z.lazy(() => IntNullableFilterSchema), z.number().int()])
+            .optional()
+            .nullable(),
+          lockedAt: z
+            .union([
+              z.lazy(() => DateTimeNullableFilterSchema),
+              z.coerce.date()
+            ])
+            .optional()
+            .nullable()
+        })
+        .strict()
+    );
+
+export const CronOrderByWithAggregationInputSchema: z.ZodType<Prisma.CronOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      cronExpr: z.lazy(() => SortOrderSchema).optional(),
+      timezone: z.lazy(() => SortOrderSchema).optional(),
+      modulePath: z.lazy(() => SortOrderSchema).optional(),
+      functionName: z.lazy(() => SortOrderSchema).optional(),
+      enabled: z.lazy(() => SortOrderSchema).optional(),
+      lastRunAt: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      lastStatus: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      lastDurationMs: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      lockedAt: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => CronCountOrderByAggregateInputSchema).optional(),
+      _avg: z.lazy(() => CronAvgOrderByAggregateInputSchema).optional(),
+      _max: z.lazy(() => CronMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => CronMinOrderByAggregateInputSchema).optional(),
+      _sum: z.lazy(() => CronSumOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const CronScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CronScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => CronScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => CronScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => CronScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => CronScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => CronScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => IntWithAggregatesFilterSchema), z.number()])
+        .optional(),
+      name: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      cronExpr: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      timezone: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      modulePath: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      functionName: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      enabled: z
+        .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
+        .optional(),
+      lastRunAt: z
+        .union([
+          z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional()
+        .nullable(),
+      lastStatus: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      lastDurationMs: z
+        .union([
+          z.lazy(() => IntNullableWithAggregatesFilterSchema),
+          z.number()
+        ])
+        .optional()
+        .nullable(),
+      lockedAt: z
+        .union([
+          z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional()
+        .nullable()
     })
     .strict();
 
@@ -25305,6 +25636,328 @@ export const NafCodeUncheckedUpdateManyInputSchema: z.ZodType<Prisma.NafCodeUnch
     })
     .strict();
 
+export const CronCreateInputSchema: z.ZodType<Prisma.CronCreateInput> = z
+  .object({
+    name: z.string(),
+    cronExpr: z.string(),
+    timezone: z.string().optional(),
+    modulePath: z.string(),
+    functionName: z.string(),
+    enabled: z.boolean().optional(),
+    lastRunAt: z.coerce.date().optional().nullable(),
+    lastStatus: z.string().optional().nullable(),
+    lastDurationMs: z.number().int().optional().nullable(),
+    lockedAt: z.coerce.date().optional().nullable()
+  })
+  .strict();
+
+export const CronUncheckedCreateInputSchema: z.ZodType<Prisma.CronUncheckedCreateInput> =
+  z
+    .object({
+      id: z.number().int().optional(),
+      name: z.string(),
+      cronExpr: z.string(),
+      timezone: z.string().optional(),
+      modulePath: z.string(),
+      functionName: z.string(),
+      enabled: z.boolean().optional(),
+      lastRunAt: z.coerce.date().optional().nullable(),
+      lastStatus: z.string().optional().nullable(),
+      lastDurationMs: z.number().int().optional().nullable(),
+      lockedAt: z.coerce.date().optional().nullable()
+    })
+    .strict();
+
+export const CronUpdateInputSchema: z.ZodType<Prisma.CronUpdateInput> = z
+  .object({
+    name: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    cronExpr: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    timezone: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    modulePath: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    functionName: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    enabled: z
+      .union([z.boolean(), z.lazy(() => BoolFieldUpdateOperationsInputSchema)])
+      .optional(),
+    lastRunAt: z
+      .union([
+        z.coerce.date(),
+        z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    lastStatus: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    lastDurationMs: z
+      .union([
+        z.number().int(),
+        z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    lockedAt: z
+      .union([
+        z.coerce.date(),
+        z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable()
+  })
+  .strict();
+
+export const CronUncheckedUpdateInputSchema: z.ZodType<Prisma.CronUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      cronExpr: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      timezone: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      modulePath: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      functionName: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      enabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      lastRunAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lastStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lastDurationMs: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lockedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const CronCreateManyInputSchema: z.ZodType<Prisma.CronCreateManyInput> =
+  z
+    .object({
+      id: z.number().int().optional(),
+      name: z.string(),
+      cronExpr: z.string(),
+      timezone: z.string().optional(),
+      modulePath: z.string(),
+      functionName: z.string(),
+      enabled: z.boolean().optional(),
+      lastRunAt: z.coerce.date().optional().nullable(),
+      lastStatus: z.string().optional().nullable(),
+      lastDurationMs: z.number().int().optional().nullable(),
+      lockedAt: z.coerce.date().optional().nullable()
+    })
+    .strict();
+
+export const CronUpdateManyMutationInputSchema: z.ZodType<Prisma.CronUpdateManyMutationInput> =
+  z
+    .object({
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      cronExpr: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      timezone: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      modulePath: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      functionName: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      enabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      lastRunAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lastStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lastDurationMs: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lockedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const CronUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CronUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      cronExpr: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      timezone: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      modulePath: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      functionName: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      enabled: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      lastRunAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lastStatus: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lastDurationMs: z
+        .union([
+          z.number().int(),
+          z.lazy(() => NullableIntFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      lockedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
 export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z
   .object({
     equals: z.string().optional(),
@@ -28959,6 +29612,73 @@ export const NafCodeMinOrderByAggregateInputSchema: z.ZodType<Prisma.NafCodeMinO
       id: z.lazy(() => SortOrderSchema).optional(),
       title: z.lazy(() => SortOrderSchema).optional(),
       classId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CronCountOrderByAggregateInputSchema: z.ZodType<Prisma.CronCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      cronExpr: z.lazy(() => SortOrderSchema).optional(),
+      timezone: z.lazy(() => SortOrderSchema).optional(),
+      modulePath: z.lazy(() => SortOrderSchema).optional(),
+      functionName: z.lazy(() => SortOrderSchema).optional(),
+      enabled: z.lazy(() => SortOrderSchema).optional(),
+      lastRunAt: z.lazy(() => SortOrderSchema).optional(),
+      lastStatus: z.lazy(() => SortOrderSchema).optional(),
+      lastDurationMs: z.lazy(() => SortOrderSchema).optional(),
+      lockedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CronAvgOrderByAggregateInputSchema: z.ZodType<Prisma.CronAvgOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      lastDurationMs: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CronMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CronMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      cronExpr: z.lazy(() => SortOrderSchema).optional(),
+      timezone: z.lazy(() => SortOrderSchema).optional(),
+      modulePath: z.lazy(() => SortOrderSchema).optional(),
+      functionName: z.lazy(() => SortOrderSchema).optional(),
+      enabled: z.lazy(() => SortOrderSchema).optional(),
+      lastRunAt: z.lazy(() => SortOrderSchema).optional(),
+      lastStatus: z.lazy(() => SortOrderSchema).optional(),
+      lastDurationMs: z.lazy(() => SortOrderSchema).optional(),
+      lockedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CronMinOrderByAggregateInputSchema: z.ZodType<Prisma.CronMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      cronExpr: z.lazy(() => SortOrderSchema).optional(),
+      timezone: z.lazy(() => SortOrderSchema).optional(),
+      modulePath: z.lazy(() => SortOrderSchema).optional(),
+      functionName: z.lazy(() => SortOrderSchema).optional(),
+      enabled: z.lazy(() => SortOrderSchema).optional(),
+      lastRunAt: z.lazy(() => SortOrderSchema).optional(),
+      lastStatus: z.lazy(() => SortOrderSchema).optional(),
+      lastDurationMs: z.lazy(() => SortOrderSchema).optional(),
+      lockedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CronSumOrderByAggregateInputSchema: z.ZodType<Prisma.CronSumOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      lastDurationMs: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -89700,6 +90420,110 @@ export const NafCodeFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.NafCodeFindUni
     })
     .strict();
 
+export const CronFindFirstArgsSchema: z.ZodType<Prisma.CronFindFirstArgs> = z
+  .object({
+    select: CronSelectSchema.optional(),
+    where: CronWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        CronOrderByWithRelationInputSchema.array(),
+        CronOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: CronWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional(),
+    distinct: z
+      .union([CronScalarFieldEnumSchema, CronScalarFieldEnumSchema.array()])
+      .optional()
+  })
+  .strict();
+
+export const CronFindFirstOrThrowArgsSchema: z.ZodType<Prisma.CronFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: CronSelectSchema.optional(),
+      where: CronWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          CronOrderByWithRelationInputSchema.array(),
+          CronOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: CronWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([CronScalarFieldEnumSchema, CronScalarFieldEnumSchema.array()])
+        .optional()
+    })
+    .strict();
+
+export const CronFindManyArgsSchema: z.ZodType<Prisma.CronFindManyArgs> = z
+  .object({
+    select: CronSelectSchema.optional(),
+    where: CronWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        CronOrderByWithRelationInputSchema.array(),
+        CronOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: CronWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional(),
+    distinct: z
+      .union([CronScalarFieldEnumSchema, CronScalarFieldEnumSchema.array()])
+      .optional()
+  })
+  .strict();
+
+export const CronAggregateArgsSchema: z.ZodType<Prisma.CronAggregateArgs> = z
+  .object({
+    where: CronWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        CronOrderByWithRelationInputSchema.array(),
+        CronOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: CronWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional()
+  })
+  .strict();
+
+export const CronGroupByArgsSchema: z.ZodType<Prisma.CronGroupByArgs> = z
+  .object({
+    where: CronWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        CronOrderByWithAggregationInputSchema.array(),
+        CronOrderByWithAggregationInputSchema
+      ])
+      .optional(),
+    by: CronScalarFieldEnumSchema.array(),
+    having: CronScalarWhereWithAggregatesInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional()
+  })
+  .strict();
+
+export const CronFindUniqueArgsSchema: z.ZodType<Prisma.CronFindUniqueArgs> = z
+  .object({
+    select: CronSelectSchema.optional(),
+    where: CronWhereUniqueInputSchema
+  })
+  .strict();
+
+export const CronFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CronFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: CronSelectSchema.optional(),
+      where: CronWhereUniqueInputSchema
+    })
+    .strict();
+
 export const UserCreateArgsSchema: z.ZodType<Prisma.UserCreateArgs> = z
   .object({
     select: UserSelectSchema.optional(),
@@ -93853,3 +94677,85 @@ export const NafCodeDeleteManyArgsSchema: z.ZodType<Prisma.NafCodeDeleteManyArgs
       limit: z.number().optional()
     })
     .strict();
+
+export const CronCreateArgsSchema: z.ZodType<Prisma.CronCreateArgs> = z
+  .object({
+    select: CronSelectSchema.optional(),
+    data: z.union([CronCreateInputSchema, CronUncheckedCreateInputSchema])
+  })
+  .strict();
+
+export const CronUpsertArgsSchema: z.ZodType<Prisma.CronUpsertArgs> = z
+  .object({
+    select: CronSelectSchema.optional(),
+    where: CronWhereUniqueInputSchema,
+    create: z.union([CronCreateInputSchema, CronUncheckedCreateInputSchema]),
+    update: z.union([CronUpdateInputSchema, CronUncheckedUpdateInputSchema])
+  })
+  .strict();
+
+export const CronCreateManyArgsSchema: z.ZodType<Prisma.CronCreateManyArgs> = z
+  .object({
+    data: z.union([
+      CronCreateManyInputSchema,
+      CronCreateManyInputSchema.array()
+    ]),
+    skipDuplicates: z.boolean().optional()
+  })
+  .strict();
+
+export const CronCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CronCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        CronCreateManyInputSchema,
+        CronCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const CronDeleteArgsSchema: z.ZodType<Prisma.CronDeleteArgs> = z
+  .object({
+    select: CronSelectSchema.optional(),
+    where: CronWhereUniqueInputSchema
+  })
+  .strict();
+
+export const CronUpdateArgsSchema: z.ZodType<Prisma.CronUpdateArgs> = z
+  .object({
+    select: CronSelectSchema.optional(),
+    data: z.union([CronUpdateInputSchema, CronUncheckedUpdateInputSchema]),
+    where: CronWhereUniqueInputSchema
+  })
+  .strict();
+
+export const CronUpdateManyArgsSchema: z.ZodType<Prisma.CronUpdateManyArgs> = z
+  .object({
+    data: z.union([
+      CronUpdateManyMutationInputSchema,
+      CronUncheckedUpdateManyInputSchema
+    ]),
+    where: CronWhereInputSchema.optional(),
+    limit: z.number().optional()
+  })
+  .strict();
+
+export const CronUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CronUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        CronUpdateManyMutationInputSchema,
+        CronUncheckedUpdateManyInputSchema
+      ]),
+      where: CronWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const CronDeleteManyArgsSchema: z.ZodType<Prisma.CronDeleteManyArgs> = z
+  .object({
+    where: CronWhereInputSchema.optional(),
+    limit: z.number().optional()
+  })
+  .strict();

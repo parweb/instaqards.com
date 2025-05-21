@@ -868,3 +868,17 @@ model NafCode {
 
   users User[]
 }
+
+model Cron {
+  id             Int      @id @default(autoincrement())
+  name           String   @unique
+  cronExpr       String
+  timezone       String   @default("UTC")
+  modulePath     String
+  functionName   String
+  enabled        Boolean  @default(true)
+  lastRunAt      DateTime?
+  lastStatus     String?
+  lastDurationMs Int?
+  lockedAt       DateTime?
+}

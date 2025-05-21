@@ -702,6 +702,12 @@ const translations = {
     it: 'Marketing',
     es: 'Marketing'
   },
+  'menu.cron': {
+    fr: 'Cron',
+    en: 'Cron',
+    it: 'Cron',
+    es: 'Cron'
+  },
   'menu.design': {
     fr: 'Design',
     en: 'Design',
