@@ -1,12 +1,4 @@
-
 TODO
-
-     auth
-          register -> email already in use -> retry
-          register          -> page info email send -> valide email confirmation -> dashboard logged
-          register -> login -> page info email send -> valide email confirmation -> dashboard logged
-          login -> no account found -> retry
-          login -> email not verify -> resend email
 
      -> vue kanban par campaign (envoyé - opened - one more action - gagné - perdu)
      -> share my qard on (iphone, android)
@@ -65,7 +57,12 @@ DONE -> page annuaire
 DONE -> armoniser les youtubes block (titre par dessus)
 DONE -> editor page pro soit editable (pas besoin d'etre logué)
 DONE -> template dans page pro
-
+DONE auth
+          register -> email already in use -> retry
+          register          -> page info email send -> valide email confirmation -> dashboard logged
+          register -> login -> page info email send -> valide email confirmation -> dashboard logged
+          login -> no account found -> retry
+          login -> email not verify -> resend email
 DONE -> campaign lien direct vers le profile user
 DONE -> espace membre au lieu register dans la home marketing
 DONE -> on tombe dans les SPAM regarde si on peut faire quelque chose
