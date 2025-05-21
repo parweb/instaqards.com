@@ -534,7 +534,9 @@ export const CronScalarFieldEnumSchema = z.enum([
   'lastRunAt',
   'lastStatus',
   'lastDurationMs',
-  'lockedAt'
+  'lockedAt',
+  'createdAt',
+  'updatedAt'
 ]);
 
 export const SortOrderSchema = z.enum(['asc', 'desc']);
@@ -1397,7 +1399,9 @@ export const CronSchema = z.object({
   lastRunAt: z.coerce.date().nullable(),
   lastStatus: z.string().nullable(),
   lastDurationMs: z.number().int().nullable(),
-  lockedAt: z.coerce.date().nullable()
+  lockedAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
 });
 
 export type Cron = z.infer<typeof CronSchema>;
@@ -3485,7 +3489,9 @@ export const CronSelectSchema: z.ZodType<Prisma.CronSelect> = z
     lastRunAt: z.boolean().optional(),
     lastStatus: z.boolean().optional(),
     lastDurationMs: z.boolean().optional(),
-    lockedAt: z.boolean().optional()
+    lockedAt: z.boolean().optional(),
+    createdAt: z.boolean().optional(),
+    updatedAt: z.boolean().optional()
   })
   .strict();
 
@@ -13974,7 +13980,13 @@ export const CronWhereInputSchema: z.ZodType<Prisma.CronWhereInput> = z
     lockedAt: z
       .union([z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date()])
       .optional()
-      .nullable()
+      .nullable(),
+    createdAt: z
+      .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+      .optional(),
+    updatedAt: z
+      .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+      .optional()
   })
   .strict();
 
@@ -14011,7 +14023,9 @@ export const CronOrderByWithRelationInputSchema: z.ZodType<Prisma.CronOrderByWit
           z.lazy(() => SortOrderSchema),
           z.lazy(() => SortOrderInputSchema)
         ])
-        .optional()
+        .optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -14086,7 +14100,13 @@ export const CronWhereUniqueInputSchema: z.ZodType<Prisma.CronWhereUniqueInput> 
               z.coerce.date()
             ])
             .optional()
-            .nullable()
+            .nullable(),
+          createdAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          updatedAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional()
         })
         .strict()
     );
@@ -14125,6 +14145,8 @@ export const CronOrderByWithAggregationInputSchema: z.ZodType<Prisma.CronOrderBy
           z.lazy(() => SortOrderInputSchema)
         ])
         .optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
       _count: z.lazy(() => CronCountOrderByAggregateInputSchema).optional(),
       _avg: z.lazy(() => CronAvgOrderByAggregateInputSchema).optional(),
       _max: z.lazy(() => CronMaxOrderByAggregateInputSchema).optional(),
@@ -14200,7 +14222,19 @@ export const CronScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CronScal
           z.coerce.date()
         ])
         .optional()
-        .nullable()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional()
     })
     .strict();
 
@@ -25647,7 +25681,9 @@ export const CronCreateInputSchema: z.ZodType<Prisma.CronCreateInput> = z
     lastRunAt: z.coerce.date().optional().nullable(),
     lastStatus: z.string().optional().nullable(),
     lastDurationMs: z.number().int().optional().nullable(),
-    lockedAt: z.coerce.date().optional().nullable()
+    lockedAt: z.coerce.date().optional().nullable(),
+    createdAt: z.coerce.date().optional(),
+    updatedAt: z.coerce.date().optional()
   })
   .strict();
 
@@ -25664,7 +25700,9 @@ export const CronUncheckedCreateInputSchema: z.ZodType<Prisma.CronUncheckedCreat
       lastRunAt: z.coerce.date().optional().nullable(),
       lastStatus: z.string().optional().nullable(),
       lastDurationMs: z.number().int().optional().nullable(),
-      lockedAt: z.coerce.date().optional().nullable()
+      lockedAt: z.coerce.date().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
     })
     .strict();
 
@@ -25715,7 +25753,19 @@ export const CronUpdateInputSchema: z.ZodType<Prisma.CronUpdateInput> = z
         z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
       ])
       .optional()
-      .nullable()
+      .nullable(),
+    createdAt: z
+      .union([
+        z.coerce.date(),
+        z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+      ])
+      .optional(),
+    updatedAt: z
+      .union([
+        z.coerce.date(),
+        z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
   })
   .strict();
 
@@ -25791,7 +25841,19 @@ export const CronUncheckedUpdateInputSchema: z.ZodType<Prisma.CronUncheckedUpdat
           z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional()
-        .nullable()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
     })
     .strict();
 
@@ -25808,7 +25870,9 @@ export const CronCreateManyInputSchema: z.ZodType<Prisma.CronCreateManyInput> =
       lastRunAt: z.coerce.date().optional().nullable(),
       lastStatus: z.string().optional().nullable(),
       lastDurationMs: z.number().int().optional().nullable(),
-      lockedAt: z.coerce.date().optional().nullable()
+      lockedAt: z.coerce.date().optional().nullable(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
     })
     .strict();
 
@@ -25878,7 +25942,19 @@ export const CronUpdateManyMutationInputSchema: z.ZodType<Prisma.CronUpdateManyM
           z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional()
-        .nullable()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
     })
     .strict();
 
@@ -25954,7 +26030,19 @@ export const CronUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CronUncheckedU
           z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional()
-        .nullable()
+        .nullable(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
     })
     .strict();
 
@@ -29628,7 +29716,9 @@ export const CronCountOrderByAggregateInputSchema: z.ZodType<Prisma.CronCountOrd
       lastRunAt: z.lazy(() => SortOrderSchema).optional(),
       lastStatus: z.lazy(() => SortOrderSchema).optional(),
       lastDurationMs: z.lazy(() => SortOrderSchema).optional(),
-      lockedAt: z.lazy(() => SortOrderSchema).optional()
+      lockedAt: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -29653,7 +29743,9 @@ export const CronMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CronMaxOrderBy
       lastRunAt: z.lazy(() => SortOrderSchema).optional(),
       lastStatus: z.lazy(() => SortOrderSchema).optional(),
       lastDurationMs: z.lazy(() => SortOrderSchema).optional(),
-      lockedAt: z.lazy(() => SortOrderSchema).optional()
+      lockedAt: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -29670,7 +29762,9 @@ export const CronMinOrderByAggregateInputSchema: z.ZodType<Prisma.CronMinOrderBy
       lastRunAt: z.lazy(() => SortOrderSchema).optional(),
       lastStatus: z.lazy(() => SortOrderSchema).optional(),
       lastDurationMs: z.lazy(() => SortOrderSchema).optional(),
-      lockedAt: z.lazy(() => SortOrderSchema).optional()
+      lockedAt: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 

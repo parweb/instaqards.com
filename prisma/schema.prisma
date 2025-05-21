@@ -870,15 +870,19 @@ model NafCode {
 }
 
 model Cron {
-  id             Int      @id @default(autoincrement())
-  name           String   @unique
+  id Int @id @default(autoincrement())
+
+  name           String    @unique
   cronExpr       String
-  timezone       String   @default("UTC")
+  timezone       String    @default("UTC")
   modulePath     String
   functionName   String
-  enabled        Boolean  @default(true)
+  enabled        Boolean   @default(true)
   lastRunAt      DateTime?
   lastStatus     String?
   lastDurationMs Int?
   lockedAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
