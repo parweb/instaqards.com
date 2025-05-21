@@ -7,10 +7,12 @@ import { z } from 'zod';
 
 import {
   type Block,
+  type CampaignType,
+  type Cron,
   type Link,
+  type Prisma,
   type Site,
   type User,
-  CampaignType,
   UserRole
 } from '@prisma/client';
 
@@ -1504,4 +1506,19 @@ export const mutateEmails = async (form: FormData) => {
             : 'An unknown error occurred'
     };
   }
+};
+
+export const addCron = async (data: Prisma.CronCreateInput) => {
+  return db.cron.create({ data });
+};
+
+export const deleteCron = async (id: Cron['id']) => {
+  return db.cron.delete({ where: { id } });
+};
+
+export const editCron = async (
+  id: Cron['id'],
+  data: Prisma.CronUpdateInput
+) => {
+  return db.cron.update({ where: { id }, data });
 };
