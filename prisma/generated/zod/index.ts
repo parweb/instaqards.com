@@ -484,6 +484,7 @@ export const ListScalarFieldEnumSchema = z.enum([
 export const CampaignScalarFieldEnumSchema = z.enum([
   'id',
   'type',
+  'smart',
   'title',
   'description',
   'active',
@@ -1307,6 +1308,7 @@ export type List = z.infer<typeof ListSchema>;
 export const CampaignSchema = z.object({
   type: CampaignTypeSchema,
   id: z.string().cuid(),
+  smart: z.boolean(),
   title: z.string(),
   description: z.string().nullable(),
   active: z.boolean(),
@@ -3167,6 +3169,7 @@ export const CampaignSelectSchema: z.ZodType<Prisma.CampaignSelect> = z
   .object({
     id: z.boolean().optional(),
     type: z.boolean().optional(),
+    smart: z.boolean().optional(),
     title: z.boolean().optional(),
     description: z.boolean().optional(),
     active: z.boolean().optional(),
@@ -12976,6 +12979,7 @@ export const CampaignWhereInputSchema: z.ZodType<Prisma.CampaignWhereInput> = z
         z.lazy(() => CampaignTypeSchema)
       ])
       .optional(),
+    smart: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
     title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
     description: z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
@@ -13011,6 +13015,7 @@ export const CampaignOrderByWithRelationInputSchema: z.ZodType<Prisma.CampaignOr
     .object({
       id: z.lazy(() => SortOrderSchema).optional(),
       type: z.lazy(() => SortOrderSchema).optional(),
+      smart: z.lazy(() => SortOrderSchema).optional(),
       title: z.lazy(() => SortOrderSchema).optional(),
       description: z
         .union([
@@ -13062,6 +13067,9 @@ export const CampaignWhereUniqueInputSchema: z.ZodType<Prisma.CampaignWhereUniqu
               z.lazy(() => CampaignTypeSchema)
             ])
             .optional(),
+          smart: z
+            .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+            .optional(),
           title: z
             .union([z.lazy(() => StringFilterSchema), z.string()])
             .optional(),
@@ -13106,6 +13114,7 @@ export const CampaignOrderByWithAggregationInputSchema: z.ZodType<Prisma.Campaig
     .object({
       id: z.lazy(() => SortOrderSchema).optional(),
       type: z.lazy(() => SortOrderSchema).optional(),
+      smart: z.lazy(() => SortOrderSchema).optional(),
       title: z.lazy(() => SortOrderSchema).optional(),
       description: z
         .union([
@@ -13151,6 +13160,9 @@ export const CampaignScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Camp
           z.lazy(() => EnumCampaignTypeWithAggregatesFilterSchema),
           z.lazy(() => CampaignTypeSchema)
         ])
+        .optional(),
+      smart: z
+        .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
         .optional(),
       title: z
         .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
@@ -24802,6 +24814,7 @@ export const CampaignCreateInputSchema: z.ZodType<Prisma.CampaignCreateInput> =
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -24820,6 +24833,7 @@ export const CampaignUncheckedCreateInputSchema: z.ZodType<Prisma.CampaignUnchec
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -24846,6 +24860,12 @@ export const CampaignUpdateInputSchema: z.ZodType<Prisma.CampaignUpdateInput> =
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z
@@ -24906,6 +24926,12 @@ export const CampaignUncheckedUpdateInputSchema: z.ZodType<Prisma.CampaignUnchec
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
         ])
         .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
       title: z
         .union([
           z.string(),
@@ -24960,6 +24986,7 @@ export const CampaignCreateManyInputSchema: z.ZodType<Prisma.CampaignCreateManyI
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -24983,6 +25010,12 @@ export const CampaignUpdateManyMutationInputSchema: z.ZodType<Prisma.CampaignUpd
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z
@@ -25032,6 +25065,12 @@ export const CampaignUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CampaignUn
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z
@@ -29945,6 +29984,7 @@ export const CampaignCountOrderByAggregateInputSchema: z.ZodType<Prisma.Campaign
     .object({
       id: z.lazy(() => SortOrderSchema).optional(),
       type: z.lazy(() => SortOrderSchema).optional(),
+      smart: z.lazy(() => SortOrderSchema).optional(),
       title: z.lazy(() => SortOrderSchema).optional(),
       description: z.lazy(() => SortOrderSchema).optional(),
       active: z.lazy(() => SortOrderSchema).optional(),
@@ -29960,6 +30000,7 @@ export const CampaignMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CampaignMa
     .object({
       id: z.lazy(() => SortOrderSchema).optional(),
       type: z.lazy(() => SortOrderSchema).optional(),
+      smart: z.lazy(() => SortOrderSchema).optional(),
       title: z.lazy(() => SortOrderSchema).optional(),
       description: z.lazy(() => SortOrderSchema).optional(),
       active: z.lazy(() => SortOrderSchema).optional(),
@@ -29975,6 +30016,7 @@ export const CampaignMinOrderByAggregateInputSchema: z.ZodType<Prisma.CampaignMi
     .object({
       id: z.lazy(() => SortOrderSchema).optional(),
       type: z.lazy(() => SortOrderSchema).optional(),
+      smart: z.lazy(() => SortOrderSchema).optional(),
       title: z.lazy(() => SortOrderSchema).optional(),
       description: z.lazy(() => SortOrderSchema).optional(),
       active: z.lazy(() => SortOrderSchema).optional(),
@@ -71753,6 +71795,7 @@ export const CampaignCreateWithoutOutboxesInputSchema: z.ZodType<Prisma.Campaign
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -71768,6 +71811,7 @@ export const CampaignUncheckedCreateWithoutOutboxesInputSchema: z.ZodType<Prisma
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -72078,6 +72122,12 @@ export const CampaignUpdateWithoutOutboxesInputSchema: z.ZodType<Prisma.Campaign
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
         ])
         .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
       title: z
         .union([
           z.string(),
@@ -72131,6 +72181,12 @@ export const CampaignUncheckedUpdateWithoutOutboxesInputSchema: z.ZodType<Prisma
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z
@@ -73155,6 +73211,7 @@ export const CampaignCreateWithoutListInputSchema: z.ZodType<Prisma.CampaignCrea
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -73172,6 +73229,7 @@ export const CampaignUncheckedCreateWithoutListInputSchema: z.ZodType<Prisma.Cam
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -73343,6 +73401,7 @@ export const CampaignScalarWhereInputSchema: z.ZodType<Prisma.CampaignScalarWher
           z.lazy(() => CampaignTypeSchema)
         ])
         .optional(),
+      smart: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
       title: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
       description: z
         .union([z.lazy(() => StringNullableFilterSchema), z.string()])
@@ -74053,6 +74112,7 @@ export const CampaignCreateWithoutEmailInputSchema: z.ZodType<Prisma.CampaignCre
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -74070,6 +74130,7 @@ export const CampaignUncheckedCreateWithoutEmailInputSchema: z.ZodType<Prisma.Ca
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -84127,6 +84188,7 @@ export const CampaignCreateManyListInputSchema: z.ZodType<Prisma.CampaignCreateM
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -85349,6 +85411,12 @@ export const CampaignUpdateWithoutListInputSchema: z.ZodType<Prisma.CampaignUpda
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
         ])
         .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
       title: z
         .union([
           z.string(),
@@ -85402,6 +85470,12 @@ export const CampaignUncheckedUpdateWithoutListInputSchema: z.ZodType<Prisma.Cam
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z
@@ -85460,6 +85534,12 @@ export const CampaignUncheckedUpdateManyWithoutListInputSchema: z.ZodType<Prisma
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z
@@ -85664,6 +85744,7 @@ export const CampaignCreateManyEmailInputSchema: z.ZodType<Prisma.CampaignCreate
     .object({
       id: z.string().cuid().optional(),
       type: z.lazy(() => CampaignTypeSchema).optional(),
+      smart: z.boolean().optional(),
       title: z.string(),
       description: z.string().optional().nullable(),
       active: z.boolean().optional(),
@@ -85686,6 +85767,12 @@ export const CampaignUpdateWithoutEmailInputSchema: z.ZodType<Prisma.CampaignUpd
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z
@@ -85741,6 +85828,12 @@ export const CampaignUncheckedUpdateWithoutEmailInputSchema: z.ZodType<Prisma.Ca
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z
@@ -85799,6 +85892,12 @@ export const CampaignUncheckedUpdateManyWithoutEmailInputSchema: z.ZodType<Prism
         .union([
           z.lazy(() => CampaignTypeSchema),
           z.lazy(() => EnumCampaignTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      smart: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       title: z

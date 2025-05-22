@@ -794,6 +794,7 @@ model Campaign {
   id String @id @default(cuid())
 
   type        CampaignType @default(email)
+  smart       Boolean      @default(false)
   title       String
   description String?
   active      Boolean      @default(false)
@@ -898,7 +899,7 @@ model History {
   durationMs Int
   message    Json?    @default("{}")
 
-  cron   Cron   @relation(fields: [cronId], references: [id])
+  cron   Cron   @relation(fields: [cronId], references: [id], onDelete: Cascade)
   cronId String
 
   createdAt DateTime @default(now())
