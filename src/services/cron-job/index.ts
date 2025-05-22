@@ -64,5 +64,5 @@ export const get = async () => {
 
   console.log({ result });
 
-  return result.jobDetails;
+  return result?.jobDetails ?? false;
 };
