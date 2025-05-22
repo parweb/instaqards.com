@@ -122,7 +122,7 @@ export const BlockTypesItem = ({
           <div className="flex flex-col gap-0">
             <AccordionTrigger className="p-2" style={{ color: color[2] }}>
               <hgroup className="flex flex-col gap-2 items-start justify-between flex-1 pr-2">
-                <div className="flex-1 self-stretch flex gap-2 items-center justify-between flex-1 pr-2">
+                <div className="flex-1 self-stretch flex gap-2 items-center justify-between pr-2">
                   {Icon && <Icon className="w-4 h-4" />}
 
                   <label

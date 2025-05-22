@@ -3,19 +3,19 @@
 import { History } from '@prisma/client';
 import { useState } from 'react';
 
-import { Badge } from 'components/ui/badge';
-import { cn } from 'lib/utils';
-import { Button } from 'components/ui/button';
 import {
+  CalendarIcon,
+  CheckCircle2Icon,
   ChevronDownIcon,
   ChevronUpIcon,
   ClockIcon,
-  CheckCircle2Icon,
-  XCircleIcon,
+  HashIcon,
   InfoIcon,
-  CalendarIcon,
-  HashIcon
+  XCircleIcon
 } from 'lucide-react';
+
+import { Button } from 'components/ui/button';
+import { cn } from 'lib/utils';
 
 const statusMap = {
   ok: {
@@ -37,6 +37,7 @@ const statusMap = {
 
 const HistoryItem = ({ item }: { item: History }) => {
   const [open, setOpen] = useState(false);
+  
   const status =
     statusMap[item.status as keyof typeof statusMap] || statusMap['ok'];
 
@@ -139,6 +140,7 @@ export default function CronHistoryModal({ history }: { history: History[] }) {
           <ClockIcon className="w-6 h-6 text-blue-500" />
           Historique d'exécution
         </h2>
+
         <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
           Toutes les exécutions passées de votre cron, avec détails et statut.
         </p>
