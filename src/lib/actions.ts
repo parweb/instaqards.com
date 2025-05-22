@@ -1389,6 +1389,7 @@ export const mutateCampaigns = async (form: FormData) => {
   const description = String(form.get('description'));
   const list = String(form.get('list'));
   const email = String(form.get('email'));
+  const smart = form.get('smart') === 'on';
 
   try {
     const response = await db.campaign.upsert({
@@ -1397,12 +1398,14 @@ export const mutateCampaigns = async (form: FormData) => {
         type,
         title,
         description,
+        smart,
         email: { connect: { id: email } },
         list: { connect: { id: list } }
       },
       update: {
         title,
         description,
+        smart,
         email: { connect: { id: email } },
         list: { connect: { id: list } }
       }

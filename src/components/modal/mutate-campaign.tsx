@@ -6,6 +6,7 @@ import { atom, useAtom, useAtomValue } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
+import { FaMagic } from 'react-icons/fa';
 import { Suspense, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
@@ -20,6 +21,7 @@ import { RadioGroup, RadioGroupItem } from 'components/ui/radio-group';
 import useTranslation from 'hooks/use-translation';
 import { mutateCampaigns } from 'lib/actions';
 import { LucideLoader2 } from 'lucide-react';
+import { Switch } from 'components/ui/switch';
 import { useModal } from './provider';
 
 import {
@@ -35,6 +37,8 @@ import {
   ListSchema,
   UserSchema
 } from '../../../prisma/generated/zod';
+import { Badge } from 'components/ui/badge';
+import { cn } from 'lib/utils';
 
 export const ListsSchema = z.object({
   data: z.array(
@@ -231,6 +235,29 @@ export default function CampaignsMutateModal({
             ))}
           </SelectContent>
         </Select>
+
+        <div className="group flex items-center">
+          <Button
+            variant="outline"
+            className={
+              'flex items-center space-x-2 has-[.peer[data-state=checked]]:bg-green-100 has-[.peer[data-state=checked]]:text-white'
+            }
+            asChild
+          >
+            <Label>
+              <Switch name="smart" className="peer" />
+
+              <Badge
+                className={cn(
+                  'flex items-center gap-1 rounded-full peer-data-[state=checked]:bg-green-500 hover:peer-data-[state=checked]:bg-green-700  peer-data-[state=checked]:text-green-900',
+                  'peer-data-[state=checked]:text-white'
+                )}
+              >
+                <FaMagic /> Smart
+              </Badge>
+            </Label>
+          </Button>
+        </div>
 
         <div className="flex flex-col space-y-2">
           <label

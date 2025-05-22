@@ -36,6 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from 'components/ui/dropdown-menu';
+import { FaMagic } from 'react-icons/fa';
 
 const Stat = ({
   label,
@@ -193,11 +194,22 @@ export const CampaignItem = ({
             {open ? <LuChevronUp /> : <LuChevronDown />}
           </Button>
         </div>
+
         <div className="aspect-square w-15 border rounded-md p-4 flex items-center justify-center">
           {campaign.list.contacts.length}
         </div>
 
         <div className="flex-1">
+          {campaign.smart && (
+            <Badge
+              className={cn(
+                'w-auto inline-flex items-center gap-1 rounded-full bg-green-500 hover:bg-green-700 text-green-900',
+                'text-white'
+              )}
+            >
+              <FaMagic /> Smart
+            </Badge>
+          )}
           <div className="font-medium">{campaign.title}</div>
           <div className="text-muted-foreground">{campaign.description}</div>
         </div>
