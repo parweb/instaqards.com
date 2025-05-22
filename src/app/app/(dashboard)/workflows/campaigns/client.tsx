@@ -196,7 +196,7 @@ export const CampaignItem = ({
         </div>
 
         <div className="aspect-square w-15 border rounded-md p-4 flex items-center justify-center">
-          {campaign.list?.contacts.length}
+          {campaign.list?.contacts.length ?? <span className='scale-200'>∞</span>}
         </div>
 
         <div className="flex-1">
