@@ -58,11 +58,11 @@ ALTER TABLE "NafCode" ADD CONSTRAINT "NafCode_classId_fkey" FOREIGN KEY ("classI
 ALTER TABLE "User" ADD CONSTRAINT "User_codeNaf_fkey" FOREIGN KEY ("codeNaf") REFERENCES "NafCode"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 
-INSERT INTO "public"."NafSection" ("id", "title") VALUES ('Z', 'N.C.');
-INSERT INTO "public"."NafDivision" ("id", "title", "sectionId") VALUES ('00', 'N.C.', 'Z');
-INSERT INTO "public"."NafGroup" ("id", "title", "divisionId") VALUES ('00.0', 'N.C.', '00');
-INSERT INTO "public"."NafClass" ("id", "title", "groupId") VALUES ('00.00', 'N.C.', '00.0');
-INSERT INTO "public"."NafCode" ("id", "title", "classId") VALUES ('00.00Z', 'N.C.', '00.00');
+-- INSERT INTO "public"."NafSection" ("id", "title") VALUES ('Z', 'N.C.');
+-- INSERT INTO "public"."NafDivision" ("id", "title", "sectionId") VALUES ('00', 'N.C.', 'Z');
+-- INSERT INTO "public"."NafGroup" ("id", "title", "divisionId") VALUES ('00.0', 'N.C.', '00');
+-- INSERT INTO "public"."NafClass" ("id", "title", "groupId") VALUES ('00.00', 'N.C.', '00.0');
+-- INSERT INTO "public"."NafCode" ("id", "title", "classId") VALUES ('00.00Z', 'N.C.', '00.00');
 
 UPDATE "User"
 SET    "codeNaf" = 
@@ -71,3 +71,12 @@ SET    "codeNaf" =
        || right("codeNaf", 3)    
 WHERE  length("codeNaf") = 5      
   AND  position('.' in "codeNaf") = 0;
+
+/*
+  Warnings:
+
+  - Made the column `userId` on table `Site` required. This step will fail if there are existing NULL values in that column.
+
+*/
+-- AlterTable
+ALTER TABLE "Site" ALTER COLUMN "userId" SET NOT NULL;
