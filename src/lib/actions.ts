@@ -34,6 +34,8 @@ import {
   validDomainRegex
 } from 'lib/domains';
 
+import { CronExecutor } from 'lib/cron/executor';
+
 const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
   7
@@ -1524,4 +1526,12 @@ export const editCron = async (
   data: Prisma.CronUpdateInput
 ) => {
   return db.cron.update({ where: { id }, data });
+};
+
+export const executeCronManually = async (id: string) => {
+  const cron = await db.cron.findUnique({ where: { id } });
+
+  if (!cron) throw new Error(`Cron with ID ${id} not found`);
+
+  return await CronExecutor.run(cron, { manual: true });
 };

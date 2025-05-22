@@ -3,12 +3,14 @@
 import { History, Prisma } from '@prisma/client';
 import { eachDayOfInterval, format, subDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useTransition } from 'react';
+import { GiThrowingBall } from 'react-icons/gi';
+import { LuLoader } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
 import { Button } from 'components/ui/button';
 import { Switch } from 'components/ui/switch';
-import { editCron } from 'lib/actions';
+import { editCron, executeCronManually } from 'lib/actions';
 import { cn } from 'lib/utils';
 import CronDeleteConfirmModal from './CronDeleteConfirmModal';
 import CronHistoryModal from './CronHistoryModal';
@@ -156,8 +158,9 @@ export default function CronTable({
     include: { history: true };
   }>[];
 }) {
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const [executionsPerDay, setExecutionsPerDay] = useState(72);
+
   return (
     <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white shadow-sm">
       <table className="min-w-full divide-y divide-zinc-200">
@@ -165,7 +168,6 @@ export default function CronTable({
           <tr>
             <Th>Nom</Th>
             <Th>Expression</Th>
-            <Th>Timezone</Th>
             <Th>Module</Th>
             <Th>Fonction</Th>
             <Th>Active</Th>
@@ -192,26 +194,6 @@ export default function CronTable({
 
             const days = eachDayOfInterval({ start: startDate, end: endDate });
 
-            // const chartData = days.map(date => {
-            //   const dateStr = format(date, 'dd MMM');
-            //   const dayHistory = history.filter(item => {
-            //     const d = new Date(item.startedAt);
-
-            //     return (
-            //       d.getFullYear() === date.getFullYear() &&
-            //       d.getMonth() === date.getMonth() &&
-            //       d.getDate() === date.getDate()
-            //     );
-            //   });
-
-            //   return {
-            //     date: dateStr,
-            //     Succès: dayHistory.filter(item => item.status === 'ok').length,
-            //     Échecs: dayHistory.filter(item => item.status === 'error')
-            //       .length
-            //   };
-            // });
-
             return (
               <React.Fragment key={cron.id}>
                 <tr
@@ -226,8 +208,11 @@ export default function CronTable({
                   <td className="px-4 py-2 text-zinc-700 whitespace-nowrap">
                     {cron.cronExpr}
                   </td>
-                  <td className="px-4 py-2 text-zinc-700">{cron.timezone}</td>
-                  <td className="px-4 py-2 text-zinc-700">{cron.modulePath}</td>
+
+                  <td className="px-4 py-2 text-zinc-700 whitespace-nowrap">
+                    {cron.modulePath}
+                  </td>
+
                   <td className="px-4 py-2 text-zinc-700">
                     {cron.functionName}
                   </td>
@@ -258,39 +243,66 @@ export default function CronTable({
                       <CronDeleteConfirmModal cron={cron} />
                     </ModalButton>
 
+                    <Button
+                      onClick={() =>
+                        startTransition(async () => {
+                          try {
+                            await executeCronManually(cron.id);
+                            router.refresh();
+                          } catch (error) {
+                            console.error(
+                              "Erreur lors de l'exécution manuelle:",
+                              error
+                            );
+
+                            // Amélioration: Affichage d'erreur utilisateur
+                            const errorMessage =
+                              error instanceof Error
+                                ? error.message
+                                : 'Erreur inconnue';
+                            if (errorMessage.includes('rate limit')) {
+                              alert(
+                                "⚠️ Trop d'exécutions rapprochées. Veuillez attendre 30 secondes."
+                              );
+                            } else if (
+                              errorMessage.includes('already running')
+                            ) {
+                              alert(
+                                "⚠️ Ce cron est déjà en cours d'exécution."
+                              );
+                            } else if (errorMessage.includes('timeout')) {
+                              alert(
+                                "⚠️ Timeout: l'exécution a pris trop de temps."
+                              );
+                            } else {
+                              alert(`❌ Erreur: ${errorMessage}`);
+                            }
+                          }
+                        })
+                      }
+                      disabled={isPending}
+                      className="bg-blue-600 hover:bg-blue-700"
+                      title="Exécuter manuellement"
+                    >
+                      {isPending ? (
+                        <LuLoader className="animate-spin" />
+                      ) : (
+                        <GiThrowingBall />
+                      )}
+                    </Button>
+
                     {/* <ModalButton label="Historique">
                       <CronHistoryModal history={cron.history} />
                     </ModalButton> */}
                   </td>
                 </tr>
 
-                {/* <tr>
-                  <td colSpan={7} className="p-0 bg-transparent border-none">
-                    <Card className="rounded-none border-0 shadow-none bg-transparent">
-                      <AreaChart
-                        className="w-full"
-                        data={chartData}
-                        index="date"
-                        categories={['Succès', 'Échecs']}
-                        colors={['emerald', 'rose']}
-                        showXAxis={true}
-                        showGridLines={true}
-                        startEndOnly={true}
-                        showYAxis={false}
-                        showLegend={false}
-                        valueFormatter={v => v.toString()}
-                        noDataText="Aucune exécution enregistrée."
-                      />
-                    </Card>
-                  </td>
-                </tr> */}
-
                 <tr
                   className={cn('', {
                     'bg-red-100 border border-red-200': !cron.enabled
                   })}
                 >
-                  <td colSpan={7} className="bg-transparent border-none p-0">
+                  <td colSpan={6} className="bg-transparent border-none p-0">
                     <GithubStyleGrid
                       history={cron.history}
                       days={days}

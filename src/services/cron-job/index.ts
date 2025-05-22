@@ -6,6 +6,8 @@ export const request = async (
   method: 'GET' | 'POST' | 'PATCH',
   options: any = {}
 ) => {
+  console.log('api/cron::request()', { path, method, options });
+
   const params = [
     `${endpoint}${path}`,
     {
