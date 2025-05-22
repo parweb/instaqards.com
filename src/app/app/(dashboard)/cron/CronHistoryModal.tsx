@@ -1,7 +1,7 @@
 'use client';
 
 import { History } from '@prisma/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   CalendarIcon,
@@ -16,6 +16,7 @@ import {
 
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
+import useOnScreen from 'hooks/use-on-screen';
 
 const statusMap = {
   ok: {
@@ -37,12 +38,20 @@ const statusMap = {
 
 const HistoryItem = ({ item }: { item: History }) => {
   const [open, setOpen] = useState(false);
-  
+  const [ref, isVisible] = useOnScreen<HTMLDivElement>();
+
   const status =
     statusMap[item.status as keyof typeof statusMap] || statusMap['ok'];
 
+  if (!isVisible) {
+    return <div ref={ref} style={{ minHeight: 62 }} />;
+  }
+
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm transition-all hover:shadow-md">
+    <div
+      ref={ref}
+      className="rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm transition-all hover:shadow-md"
+    >
       <div
         className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
         onClick={() => setOpen(!open)}
@@ -113,7 +122,7 @@ const HistoryItem = ({ item }: { item: History }) => {
               style={{ maxHeight: 200 }}
             >
               {typeof item.message === 'string'
-                ? item.message
+                ? JSON.stringify(JSON.parse(item.message), null, 2)
                 : JSON.stringify(item.message, null, 2)}
             </pre>
 
@@ -138,7 +147,7 @@ export default function CronHistoryModal({ history }: { history: History[] }) {
       <div className="sticky top-0 z-10 bg-white dark:bg-zinc-900 rounded-t-2xl pb-2">
         <h2 className="font-extrabold text-2xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
           <ClockIcon className="w-6 h-6 text-blue-500" />
-          Historique d'exécution
+          {"Historique d'exécution"}
         </h2>
 
         <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">

@@ -14,6 +14,7 @@ export default async function CronDashboard() {
   if (!session?.user) return null;
 
   const crons = await db.cron.findMany({
+    orderBy: { createdAt: 'desc' },
     include: {
       history: {
         orderBy: { startedAt: 'desc' },
