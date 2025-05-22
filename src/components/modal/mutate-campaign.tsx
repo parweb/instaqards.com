@@ -183,7 +183,8 @@ export default function CampaignsMutateModal({
     campaign ?? {
       title: '',
       description: '',
-      type: CampaignType.email
+      type: CampaignType.email,
+      smart: false
     }
   );
 
@@ -245,7 +246,14 @@ export default function CampaignsMutateModal({
             asChild
           >
             <Label>
-              <Switch name="smart" className="peer" />
+              <Switch
+                name="smart"
+                className="peer"
+                checked={data.smart}
+                onCheckedChange={checked =>
+                  setData({ ...data, smart: checked })
+                }
+              />
 
               <Badge
                 className={cn(
@@ -302,15 +310,17 @@ export default function CampaignsMutateModal({
           }
         >
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <h4 className="text-xl font-medium">
-                {translate('components.campaign.mutate.list')}
-              </h4>
+            {data.smart === false && (
+              <div className="flex flex-col gap-2">
+                <h4 className="text-xl font-medium">
+                  {translate('components.campaign.mutate.list')}
+                </h4>
 
-              <div className="max-h-[150px] overflow-y-auto">
-                <Lists defaultValue={campaign?.list?.id} />
+                <div className="max-h-[150px] overflow-y-auto">
+                  <Lists defaultValue={campaign?.list?.id} />
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="flex flex-col gap-2">
               <h4 className="text-xl font-medium">

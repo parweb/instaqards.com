@@ -1314,7 +1314,7 @@ export const CampaignSchema = z.object({
   active: z.boolean(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  listId: z.string(),
+  listId: z.string().nullable(),
   emailId: z.string()
 });
 
@@ -12992,14 +12992,18 @@ export const CampaignWhereInputSchema: z.ZodType<Prisma.CampaignWhereInput> = z
     updatedAt: z
       .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
       .optional(),
-    listId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    listId: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
     emailId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
     list: z
       .union([
-        z.lazy(() => ListScalarRelationFilterSchema),
+        z.lazy(() => ListNullableScalarRelationFilterSchema),
         z.lazy(() => ListWhereInputSchema)
       ])
-      .optional(),
+      .optional()
+      .nullable(),
     email: z
       .union([
         z.lazy(() => EmailScalarRelationFilterSchema),
@@ -13026,7 +13030,12 @@ export const CampaignOrderByWithRelationInputSchema: z.ZodType<Prisma.CampaignOr
       active: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
-      listId: z.lazy(() => SortOrderSchema).optional(),
+      listId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
       emailId: z.lazy(() => SortOrderSchema).optional(),
       list: z.lazy(() => ListOrderByWithRelationInputSchema).optional(),
       email: z.lazy(() => EmailOrderByWithRelationInputSchema).optional(),
@@ -13087,17 +13096,19 @@ export const CampaignWhereUniqueInputSchema: z.ZodType<Prisma.CampaignWhereUniqu
             .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
             .optional(),
           listId: z
-            .union([z.lazy(() => StringFilterSchema), z.string()])
-            .optional(),
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
           emailId: z
             .union([z.lazy(() => StringFilterSchema), z.string()])
             .optional(),
           list: z
             .union([
-              z.lazy(() => ListScalarRelationFilterSchema),
+              z.lazy(() => ListNullableScalarRelationFilterSchema),
               z.lazy(() => ListWhereInputSchema)
             ])
-            .optional(),
+            .optional()
+            .nullable(),
           email: z
             .union([
               z.lazy(() => EmailScalarRelationFilterSchema),
@@ -13125,7 +13136,12 @@ export const CampaignOrderByWithAggregationInputSchema: z.ZodType<Prisma.Campaig
       active: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
-      listId: z.lazy(() => SortOrderSchema).optional(),
+      listId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
       emailId: z.lazy(() => SortOrderSchema).optional(),
       _count: z.lazy(() => CampaignCountOrderByAggregateInputSchema).optional(),
       _max: z.lazy(() => CampaignMaxOrderByAggregateInputSchema).optional(),
@@ -13190,8 +13206,12 @@ export const CampaignScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Camp
         ])
         .optional(),
       listId: z
-        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
-        .optional(),
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
       emailId: z
         .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
         .optional()
@@ -24820,7 +24840,9 @@ export const CampaignCreateInputSchema: z.ZodType<Prisma.CampaignCreateInput> =
       active: z.boolean().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      list: z.lazy(() => ListCreateNestedOneWithoutCampaignsInputSchema),
+      list: z
+        .lazy(() => ListCreateNestedOneWithoutCampaignsInputSchema)
+        .optional(),
       email: z.lazy(() => EmailCreateNestedOneWithoutCampaignsInputSchema),
       outboxes: z
         .lazy(() => OutboxCreateNestedManyWithoutCampaignInputSchema)
@@ -24839,7 +24861,7 @@ export const CampaignUncheckedCreateInputSchema: z.ZodType<Prisma.CampaignUnchec
       active: z.boolean().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      listId: z.string(),
+      listId: z.string().optional().nullable(),
       emailId: z.string(),
       outboxes: z
         .lazy(() => OutboxUncheckedCreateNestedManyWithoutCampaignInputSchema)
@@ -24900,7 +24922,7 @@ export const CampaignUpdateInputSchema: z.ZodType<Prisma.CampaignUpdateInput> =
         ])
         .optional(),
       list: z
-        .lazy(() => ListUpdateOneRequiredWithoutCampaignsNestedInputSchema)
+        .lazy(() => ListUpdateOneWithoutCampaignsNestedInputSchema)
         .optional(),
       email: z
         .lazy(() => EmailUpdateOneRequiredWithoutCampaignsNestedInputSchema)
@@ -24966,9 +24988,10 @@ export const CampaignUncheckedUpdateInputSchema: z.ZodType<Prisma.CampaignUnchec
       listId: z
         .union([
           z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
         ])
-        .optional(),
+        .optional()
+        .nullable(),
       emailId: z
         .union([
           z.string(),
@@ -24992,7 +25015,7 @@ export const CampaignCreateManyInputSchema: z.ZodType<Prisma.CampaignCreateManyI
       active: z.boolean().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      listId: z.string(),
+      listId: z.string().optional().nullable(),
       emailId: z.string()
     })
     .strict();
@@ -25107,9 +25130,10 @@ export const CampaignUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CampaignUn
       listId: z
         .union([
           z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
         ])
-        .optional(),
+        .optional()
+        .nullable(),
       emailId: z
         .union([
           z.string(),
@@ -29963,11 +29987,17 @@ export const EnumCampaignTypeFilterSchema: z.ZodType<Prisma.EnumCampaignTypeFilt
     })
     .strict();
 
-export const ListScalarRelationFilterSchema: z.ZodType<Prisma.ListScalarRelationFilter> =
+export const ListNullableScalarRelationFilterSchema: z.ZodType<Prisma.ListNullableScalarRelationFilter> =
   z
     .object({
-      is: z.lazy(() => ListWhereInputSchema).optional(),
-      isNot: z.lazy(() => ListWhereInputSchema).optional()
+      is: z
+        .lazy(() => ListWhereInputSchema)
+        .optional()
+        .nullable(),
+      isNot: z
+        .lazy(() => ListWhereInputSchema)
+        .optional()
+        .nullable()
     })
     .strict();
 
@@ -42852,7 +42882,7 @@ export const EnumCampaignTypeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.
     })
     .strict();
 
-export const ListUpdateOneRequiredWithoutCampaignsNestedInputSchema: z.ZodType<Prisma.ListUpdateOneRequiredWithoutCampaignsNestedInput> =
+export const ListUpdateOneWithoutCampaignsNestedInputSchema: z.ZodType<Prisma.ListUpdateOneWithoutCampaignsNestedInput> =
   z
     .object({
       create: z
@@ -42865,6 +42895,12 @@ export const ListUpdateOneRequiredWithoutCampaignsNestedInputSchema: z.ZodType<P
         .lazy(() => ListCreateOrConnectWithoutCampaignsInputSchema)
         .optional(),
       upsert: z.lazy(() => ListUpsertWithoutCampaignsInputSchema).optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => ListWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => ListWhereInputSchema)])
+        .optional(),
       connect: z.lazy(() => ListWhereUniqueInputSchema).optional(),
       update: z
         .union([
@@ -71801,7 +71837,9 @@ export const CampaignCreateWithoutOutboxesInputSchema: z.ZodType<Prisma.Campaign
       active: z.boolean().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      list: z.lazy(() => ListCreateNestedOneWithoutCampaignsInputSchema),
+      list: z
+        .lazy(() => ListCreateNestedOneWithoutCampaignsInputSchema)
+        .optional(),
       email: z.lazy(() => EmailCreateNestedOneWithoutCampaignsInputSchema)
     })
     .strict();
@@ -71817,7 +71855,7 @@ export const CampaignUncheckedCreateWithoutOutboxesInputSchema: z.ZodType<Prisma
       active: z.boolean().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      listId: z.string(),
+      listId: z.string().optional().nullable(),
       emailId: z.string()
     })
     .strict();
@@ -72160,7 +72198,7 @@ export const CampaignUpdateWithoutOutboxesInputSchema: z.ZodType<Prisma.Campaign
         ])
         .optional(),
       list: z
-        .lazy(() => ListUpdateOneRequiredWithoutCampaignsNestedInputSchema)
+        .lazy(() => ListUpdateOneWithoutCampaignsNestedInputSchema)
         .optional(),
       email: z
         .lazy(() => EmailUpdateOneRequiredWithoutCampaignsNestedInputSchema)
@@ -72223,9 +72261,10 @@ export const CampaignUncheckedUpdateWithoutOutboxesInputSchema: z.ZodType<Prisma
       listId: z
         .union([
           z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
         ])
-        .optional(),
+        .optional()
+        .nullable(),
       emailId: z
         .union([
           z.string(),
@@ -73415,8 +73454,9 @@ export const CampaignScalarWhereInputSchema: z.ZodType<Prisma.CampaignScalarWher
         .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
         .optional(),
       listId: z
-        .union([z.lazy(() => StringFilterSchema), z.string()])
-        .optional(),
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
       emailId: z
         .union([z.lazy(() => StringFilterSchema), z.string()])
         .optional()
@@ -74118,7 +74158,9 @@ export const CampaignCreateWithoutEmailInputSchema: z.ZodType<Prisma.CampaignCre
       active: z.boolean().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      list: z.lazy(() => ListCreateNestedOneWithoutCampaignsInputSchema),
+      list: z
+        .lazy(() => ListCreateNestedOneWithoutCampaignsInputSchema)
+        .optional(),
       outboxes: z
         .lazy(() => OutboxCreateNestedManyWithoutCampaignInputSchema)
         .optional()
@@ -74136,7 +74178,7 @@ export const CampaignUncheckedCreateWithoutEmailInputSchema: z.ZodType<Prisma.Ca
       active: z.boolean().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      listId: z.string(),
+      listId: z.string().optional().nullable(),
       outboxes: z
         .lazy(() => OutboxUncheckedCreateNestedManyWithoutCampaignInputSchema)
         .optional()
@@ -85750,7 +85792,7 @@ export const CampaignCreateManyEmailInputSchema: z.ZodType<Prisma.CampaignCreate
       active: z.boolean().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
-      listId: z.string()
+      listId: z.string().optional().nullable()
     })
     .strict();
 
@@ -85807,7 +85849,7 @@ export const CampaignUpdateWithoutEmailInputSchema: z.ZodType<Prisma.CampaignUpd
         ])
         .optional(),
       list: z
-        .lazy(() => ListUpdateOneRequiredWithoutCampaignsNestedInputSchema)
+        .lazy(() => ListUpdateOneWithoutCampaignsNestedInputSchema)
         .optional(),
       outboxes: z
         .lazy(() => OutboxUpdateManyWithoutCampaignNestedInputSchema)
@@ -85870,9 +85912,10 @@ export const CampaignUncheckedUpdateWithoutEmailInputSchema: z.ZodType<Prisma.Ca
       listId: z
         .union([
           z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
         ])
-        .optional(),
+        .optional()
+        .nullable(),
       outboxes: z
         .lazy(() => OutboxUncheckedUpdateManyWithoutCampaignNestedInputSchema)
         .optional()
@@ -85934,9 +85977,10 @@ export const CampaignUncheckedUpdateManyWithoutEmailInputSchema: z.ZodType<Prism
       listId: z
         .union([
           z.string(),
-          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
         ])
         .optional()
+        .nullable()
     })
     .strict();
 

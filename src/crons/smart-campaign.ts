@@ -6,7 +6,8 @@ export async function run() {
   try {
     const campaign = await db.campaign.findFirst({
       where: {
-        smart: true
+        smart: true,
+        active: true
       },
       include: {
         list: {

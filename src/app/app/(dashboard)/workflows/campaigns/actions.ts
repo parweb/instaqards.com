@@ -38,6 +38,8 @@ export const toggleCampaign = async (previous: boolean, form: FormData) => {
         data: { active }
       });
 
+      if (campaign.smart === true) return;
+
       const alreadies = await tx.queue.findMany({
         where: { correlationId: campaign.id }
       });
@@ -52,6 +54,8 @@ export const toggleCampaign = async (previous: boolean, form: FormData) => {
         });
       } else {
         const { list, ...data } = campaign;
+
+        if (list === null) return;
 
         await tx.queue.createMany({
           data: list.contacts.map(contact => ({

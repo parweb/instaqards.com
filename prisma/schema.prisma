@@ -802,9 +802,9 @@ model Campaign {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  list     List     @relation(fields: [listId], references: [id])
-  listId   String
-  email    Email    @relation(fields: [emailId], references: [id])
+  list     List?     @relation(fields: [listId], references: [id])
+  listId   String?
+  email    Email     @relation(fields: [emailId], references: [id])
   emailId  String
   outboxes Outbox[]
 }

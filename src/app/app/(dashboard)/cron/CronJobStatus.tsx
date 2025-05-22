@@ -26,7 +26,7 @@ export const CronJobStatus = () => {
 
       return await cronJob.get().then(job => job.enabled);
     },
-    cron.enabled
+    cron?.enabled ?? false
   );
 
   return (

@@ -105,7 +105,7 @@ function CampaignItemDetails({
 
   return (
     <div className="flex flex-col gap-1">
-      {campaign.list.contacts.map(contact => {
+      {campaign.list?.contacts.map(contact => {
         const outbox = outboxes.find(
           outbox =>
             outbox.email === contact.email && outbox.campaignId === campaign.id
@@ -196,7 +196,7 @@ export const CampaignItem = ({
         </div>
 
         <div className="aspect-square w-15 border rounded-md p-4 flex items-center justify-center">
-          {campaign.list.contacts.length}
+          {campaign.list?.contacts.length}
         </div>
 
         <div className="flex-1">
@@ -217,14 +217,14 @@ export const CampaignItem = ({
         <div className="flex gap-4 items-center">
           <Stat
             label="Envoyé"
-            total={campaign.list.contacts.length}
+            total={campaign.list?.contacts.length}
             value={campaign.outboxes.length}
             Icon={LuUser}
           />
 
           <Stat
             label="Ouverture"
-            total={campaign.list.contacts.length}
+            total={campaign.list?.contacts.length}
             value={
               campaign.outboxes.filter(({ metadata }) =>
                 // @ts-expect-error
