@@ -61,8 +61,15 @@ export const sendHtmlWithCampaign = async (
   campaignId: Campaign['id'],
   from: string = sender
 ) => {
-  const sent = await resend.emails.send({ from, to, subject, html });
-
+  const sent = await resend.emails.send({
+    from,
+    to:
+      process.env.NODE_ENV === 'development'
+        ? `parweb+${btoa(to).replaceAll('=', '')}@gmail.com`
+        : to,
+    subject,
+    html
+  });
   if (sent.error) {
     console.error(`Failed to send email:`, sent);
     throw new Error(`Failed to send email: ${sent.error.message}`);
@@ -163,7 +170,15 @@ const sendTemplateReact = async (
     <Template lang={lang} subject={subject} id={id} {...variables} />
   );
 
-  const sent = await resend.emails.send({ from, to, subject, react });
+  const sent = await resend.emails.send({
+    from,
+    to:
+      process.env.NODE_ENV === 'development'
+        ? `parweb+${btoa(to).replaceAll('=', '')}@gmail.com`
+        : to,
+    subject,
+    react
+  });
 
   if (sent.error) {
     console.error(`Failed to send email:`, sent);
