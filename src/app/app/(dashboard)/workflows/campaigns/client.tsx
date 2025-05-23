@@ -1,11 +1,11 @@
 'use client';
 
 import { Outbox, Prisma, Queue, User } from '@prisma/client';
-import { LucideLoader2 } from 'lucide-react';
 import { interpolate } from 'motion';
 import Link from 'next/link';
 import { Suspense, use, useActionState, useState } from 'react';
 import { IconType } from 'react-icons';
+import { FaMagic } from 'react-icons/fa';
 
 import {
   LuChevronDown,
@@ -13,13 +13,17 @@ import {
   LuCopy,
   LuEllipsisVertical,
   LuExternalLink,
+  LuEye,
   LuLoader,
+  LuMousePointer,
   LuPause,
   LuPencil,
   LuPlay,
   LuPointer,
+  LuTarget,
   LuTrash,
-  LuUser
+  LuUser,
+  LuUsers
 } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
@@ -36,7 +40,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from 'components/ui/dropdown-menu';
-import { FaMagic } from 'react-icons/fa';
 
 const Stat = ({
   label,
@@ -244,6 +247,58 @@ export const CampaignItem = ({
 
   const [, actionDelete, loadingDelete] = useActionState(deleteCampaign, false);
 
+  const funnelData = [
+    {
+      id: 'sent',
+      name: 'Envoyé',
+      icon: <LuUsers />,
+      value: campaign.outboxes.length,
+      total: campaign.list?.contacts.length ?? 0,
+      color: '#10b981'
+    },
+    {
+      id: 'delivered',
+      name: 'Délivré',
+      icon: <LuTarget />,
+      value: campaign.outboxes.filter(
+        ({ metadata }) =>
+          // @ts-expect-error
+          metadata?.events?.find(e => e.type === 'bounced') === undefined
+      ).length,
+      total: campaign.outboxes.length,
+      color: '#3b82f6'
+    },
+    {
+      id: 'opened',
+      name: 'Ouvert',
+      icon: <LuEye />,
+      value: campaign.outboxes.filter(({ metadata }) =>
+        // @ts-expect-error
+        metadata?.events?.find(e => e.type === 'open')
+      ).length,
+      total: campaign.outboxes.filter(
+        ({ metadata }) =>
+          // @ts-expect-error
+          metadata?.events?.find(e => e.type === 'bounced') === undefined
+      ).length,
+      color: '#f59e0b'
+    },
+    {
+      id: 'clicked',
+      name: 'Cliqué',
+      icon: <LuMousePointer />,
+      value: campaign.outboxes.filter(({ metadata }) =>
+        // @ts-expect-error
+        metadata?.events?.find(e => e.type === 'click')
+      ).length,
+      total: campaign.outboxes.filter(({ metadata }) =>
+        // @ts-expect-error
+        metadata?.events?.find(e => e.type === 'open')
+      ).length,
+      color: '#8b5cf6'
+    }
+  ];
+
   return (
     <div
       className={cn('flex flex-col gap-4 border p-4 rounded-md', {
@@ -277,6 +332,16 @@ export const CampaignItem = ({
           <div className="font-medium">{campaign.title}</div>
           <div className="text-muted-foreground">{campaign.description}</div>
         </div>
+
+        {/* <div className="w-100">
+          <FunnelHoverChart data={funnelData} variant="trend-indicator" />
+        </div> */}
+
+        {/* <div className="flex items-center">
+          {funnelData.map((data, index) => {
+            return <div style={{ width: `${70 * Math.pow(0.90, index)}px`, backgroundColor:data.color }} className="aspect-square text-white/80 flex items-center justify-center rounded-md">{data.value}</div>;
+          })}
+        </div> */}
 
         <div className="flex gap-4 items-center">
           <Stat
@@ -345,7 +410,7 @@ export const CampaignItem = ({
               })}
             >
               {loadingToggle ? (
-                <LucideLoader2 className="animate-spin" />
+                <LuLoader className="animate-spin" />
               ) : (
                 <>{stateToggle === true ? <LuPause /> : <LuPlay />}</>
               )}
@@ -386,7 +451,7 @@ export const CampaignItem = ({
                 <DropdownMenuItem variant="destructive" asChild>
                   <button type="submit" className="w-full">
                     {loadingDelete ? (
-                      <LucideLoader2 className="animate-spin" />
+                      <LuLoader className="animate-spin" />
                     ) : (
                       <LuTrash />
                     )}
