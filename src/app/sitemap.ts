@@ -1,5 +1,3 @@
-'use cache';
-
 import * as city from 'data/city';
 import * as feature from 'data/features';
 import * as job from 'data/job';
