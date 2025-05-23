@@ -1,6 +1,6 @@
 'use client';
 
-import { Outbox, Prisma, Queue } from '@prisma/client';
+import { Outbox, Prisma, Queue, User } from '@prisma/client';
 import { LucideLoader2 } from 'lucide-react';
 import { interpolate } from 'motion';
 import Link from 'next/link';
@@ -86,26 +86,107 @@ const Stat = ({
   </div>
 );
 
+const ContactItem = ({
+  user: user,
+  status,
+  outbox
+}: {
+  user: Pick<User, 'id' | 'email'>;
+  status: string | undefined;
+  outbox: Pick<Outbox, 'id' | 'status' | 'metadata'> | undefined;
+}) => {
+  return (
+    <div
+      key={user.id}
+      className="flex items-center gap-4 border rounded-md p-2"
+    >
+      <Badge
+        variant={
+          (
+            {
+              pending: 'outline',
+              completed: 'success'
+            } as const
+          )?.[status ?? 'pending']
+        }
+      >
+        {status}
+      </Badge>
+
+      <Link href={`/user/${user.id}/outbox/${outbox?.id}`}>{user.email}</Link>
+
+      <div className="flex gap-2 items-center">
+        {outbox?.status === 'opened' && (
+          <Badge variant="secondary">{outbox?.status}</Badge>
+        )}
+
+        {/* @ts-ignore */}
+        {outbox?.metadata?.events?.some(
+          // @ts-ignore
+          event => event.type === 'click'
+        ) && <Badge variant="default">clicked</Badge>}
+
+        {/* @ts-ignore */}
+        {outbox?.metadata?.events?.some(
+          // @ts-ignore
+          event => event.type === 'bounced'
+        ) && <Badge variant="destructive">bounced</Badge>}
+      </div>
+    </div>
+  );
+};
+
 function CampaignItemDetails({
   campaign,
   $details
 }: {
   campaign: Prisma.CampaignGetPayload<{
-    include: { list: { include: { contacts: true } } };
+    include: {
+      outboxes: true;
+      list: {
+        include: {
+          contacts: {
+            select: {
+              id: true;
+              email: true;
+            };
+          };
+        };
+      };
+    };
   }>;
   $details: Promise<
     [
       Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
-      Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[]
+      Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[],
+      Pick<User, 'id' | 'email'>[]
     ]
   >;
 }) {
-  // const outboxes = use($outboxes);
-  // const queues = use($queues);
+  const [outboxes, queues, users] = use($details);
 
-  const [outboxes, queues] = use($details);
+  if (campaign.smart) {
+    return (
+      <div className="flex flex-col gap-1">
+        {campaign.outboxes.map(outbox => {
+          const user = users.find(user => user.email === outbox.email);
 
-  console.log({ outboxes, queues });
+          if (!user) {
+            return null;
+          }
+
+          return (
+            <ContactItem
+              key={`${campaign.id}-${user.id}`}
+              user={user}
+              status="completed"
+              outbox={outbox}
+            />
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-1">
@@ -123,43 +204,12 @@ function CampaignItemDetails({
         );
 
         return (
-          <div
-            key={contact.id}
-            className="flex items-center gap-4 border rounded-md p-2"
-          >
-            <Badge
-              // @ts-ignore
-              variant={
-                { pending: 'outline', completed: 'success' }?.[
-                  queue?.status ?? 'pending'
-                ] ?? 'pending'
-              }
-            >
-              {queue?.status}
-            </Badge>
-
-            <Link href={`/user/${contact.id}/outbox/${outbox?.id}`}>
-              {contact.email}
-            </Link>
-
-            <div className="flex gap-2 items-center">
-              {outbox?.status === 'opened' && (
-                <Badge variant="secondary">{outbox?.status}</Badge>
-              )}
-
-              {/* @ts-ignore */}
-              {outbox?.metadata?.events?.some(
-                // @ts-ignore
-                event => event.type === 'click'
-              ) && <Badge variant="default">clicked</Badge>}
-
-              {/* @ts-ignore */}
-              {outbox?.metadata?.events?.some(
-                // @ts-ignore
-                event => event.type === 'bounced'
-              ) && <Badge variant="destructive">bounced</Badge>}
-            </div>
-          </div>
+          <ContactItem
+            key={`${campaign.id}-${contact.id}`}
+            user={contact}
+            status={queue?.status}
+            outbox={outbox}
+          />
         );
       })}
     </div>
@@ -180,7 +230,8 @@ export const CampaignItem = ({
   $details: Promise<
     [
       Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
-      Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[]
+      Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[],
+      Pick<User, 'id' | 'email'>[]
     ]
   >;
 }) => {
@@ -237,7 +288,7 @@ export const CampaignItem = ({
 
           <Stat
             label="Ouverture"
-            total={campaign.list?.contacts.length}
+            total={campaign.outboxes.length}
             value={
               campaign.outboxes.filter(({ metadata }) =>
                 // @ts-expect-error

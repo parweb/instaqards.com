@@ -24,7 +24,7 @@ export default async function WorkflowsCampaigns() {
         email: true,
         campaignId: true
       },
-      where: { campaignId: { in: campaigns.map(c => c.id) } }
+      where: { campaignId: { in: campaigns.map(campaign => campaign.id) } }
     }),
     db.queue.findMany({
       select: {
@@ -33,7 +33,26 @@ export default async function WorkflowsCampaigns() {
         payload: true,
         correlationId: true
       },
-      where: { correlationId: { in: campaigns.map(c => c.id) } }
+      where: { correlationId: { in: campaigns.map(campaign => campaign.id) } }
+    }),
+    db.user.findMany({
+      select: {
+        id: true,
+        email: true
+      },
+      where: {
+        email: {
+          in: Array.from(
+            new Set(
+              campaigns
+                .filter(({ smart }) => smart === true)
+                .flatMap(campaign =>
+                  campaign.outboxes.map(outbox => outbox.email)
+                )
+            )
+          )
+        }
+      }
     })
   ]);
 
