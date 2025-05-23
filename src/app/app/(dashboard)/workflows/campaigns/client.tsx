@@ -61,12 +61,14 @@ const Stat = ({
 
           <span className="font-medium">
             {value}{' '}
-            {total && `/${total} (${((value / total) * 100).toFixed(0)}%)`}
+            {!!total &&
+              total > 0 &&
+              `/${total} (${((value / total) * 100).toFixed(0)}%)`}
           </span>
         </div>
       </div>
 
-      {total && (
+      {!!total && total > 0 && (
         <div className="w-full h-2  bg-stone-200">
           <div
             className="h-full "
@@ -102,6 +104,8 @@ function CampaignItemDetails({
   // const queues = use($queues);
 
   const [outboxes, queues] = use($details);
+
+  console.log({ outboxes, queues });
 
   return (
     <div className="flex flex-col gap-1">
@@ -142,11 +146,18 @@ function CampaignItemDetails({
               {outbox?.status === 'opened' && (
                 <Badge variant="secondary">{outbox?.status}</Badge>
               )}
+
               {/* @ts-ignore */}
               {outbox?.metadata?.events?.some(
                 // @ts-ignore
                 event => event.type === 'click'
               ) && <Badge variant="default">clicked</Badge>}
+
+              {/* @ts-ignore */}
+              {outbox?.metadata?.events?.some(
+                // @ts-ignore
+                event => event.type === 'bounced'
+              ) && <Badge variant="destructive">bounced</Badge>}
             </div>
           </div>
         );
@@ -196,7 +207,9 @@ export const CampaignItem = ({
         </div>
 
         <div className="aspect-square w-15 border rounded-md p-4 flex items-center justify-center">
-          {campaign.list?.contacts.length ?? <span className='scale-200'>∞</span>}
+          {campaign.list?.contacts.length ?? (
+            <span className="scale-200">∞</span>
+          )}
         </div>
 
         <div className="flex-1">
