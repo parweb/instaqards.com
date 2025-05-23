@@ -288,7 +288,14 @@ export const CampaignItem = ({
 
           <Stat
             label="Ouverture"
-            total={campaign.outboxes.length}
+            total={
+              campaign.outboxes.filter(
+                ({ metadata }) =>
+                  // @ts-expect-error
+                  metadata?.events?.find(e => e.type === 'bounced') ===
+                  undefined
+              ).length
+            }
             value={
               campaign.outboxes.filter(({ metadata }) =>
                 // @ts-expect-error
