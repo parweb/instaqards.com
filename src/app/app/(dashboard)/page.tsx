@@ -9,7 +9,6 @@ import {
   LuLayoutDashboard,
   LuMousePointer,
   LuRocket,
-  LuSparkles,
   LuStar,
   LuUsers,
   LuWand
@@ -18,6 +17,7 @@ import {
 import CreateSiteButton from 'components/create-site-button';
 import { MetricCard } from 'components/MetricCard';
 import CreateSiteModal from 'components/modal/create-site';
+import { OnboardingAccordion } from 'components/OnboardingAccordion';
 import { OnboardingChecklist } from 'components/OnboardingChecklist';
 import { OnboardingSteps } from 'components/OnboardingSteps';
 import OverviewStats from 'components/overview-stats';
@@ -276,42 +276,23 @@ export default async function Overview() {
         </div>
       )}
 
-      <div className="">
-        <div className="w-full h-2 bg-gradient-to-r from-indigo-200/40 to-purple-200/40 dark:from-indigo-900/30 dark:to-purple-900/30">
-          <div className="h-full w-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" />
-        </div>
+      <OnboardingAccordion
+        startText={await translate('components.site.presence.start')}
+        titleText={await translate('components.site.presence.title')}
+        subtitleText={await translate('components.site.presence.subtitle')}
+      >
+        <OnboardingSteps
+          steps={steps.map(step => ({
+            ...step,
+            title: step.title[lang],
+            description: step.description[lang]
+          }))}
+        />
 
-        <div className="p-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
-          <div className="w-fit mb-4 px-4 py-1 bg-purple-100 dark:bg-purple-900/30 backdrop-blur-sm text-purple-800 dark:text-purple-300 text-sm font-medium rounded-full border border-purple-200 dark:border-purple-800/50 flex items-center">
-            <LuSparkles className="w-4 h-4 mr-2 text-purple-500" />
-            <span>{await translate('components.site.presence.start')}</span>
-          </div>
+        <ProgressBar value={percent} />
 
-          <h2 className="text-3xl font-cal font-bold text-zinc-900 dark:text-white">
-            {(await translate('components.site.presence.title')) + ' '}
-
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
-              {await translate('components.site.presence.subtitle')}
-            </span>
-          </h2>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-0">
-          <div className="flex flex-col gap-12 p-6">
-            <OnboardingSteps
-              steps={steps.map(step => ({
-                ...step,
-                title: step.title[lang],
-                description: step.description[lang]
-              }))}
-            />
-
-            <ProgressBar value={percent} />
-
-            <OnboardingChecklist state={checklistState} />
-          </div>
-        </div>
-      </div>
+        <OnboardingChecklist state={checklistState} />
+      </OnboardingAccordion>
 
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
