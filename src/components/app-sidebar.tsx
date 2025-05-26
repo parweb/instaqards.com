@@ -73,16 +73,10 @@ export function AppSidebar(
       ...(props.role === UserRole.CREATOR
         ? [
             {
-              title: 'Quêtes',
-              url: '/quests',
-              icon: Target,
-              isActive: segments[0] === 'quests'
-            },
-            {
-              title: 'Récompenses',
-              url: '/rewards',
-              icon: Trophy,
-              isActive: segments[0] === 'rewards'
+              title: translate('menu.affiliation'),
+              url: '/affiliation',
+              icon: DollarSign,
+              isActive: segments[0] === 'affiliation'
             }
           ]
         : [

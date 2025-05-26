@@ -3,6 +3,8 @@ import { eachDayOfInterval, format } from 'date-fns';
 import Link from 'next/link';
 import { LuArrowUpRight } from 'react-icons/lu';
 
+import { CreatorAffiliation } from 'components/creator-affiliation';
+
 import { UsersTable } from 'app/app/(dashboard)/users/users-table';
 import ProspectsKanbanWrapper from 'components/kanban/ProspectsKanbanWrapper';
 import ModalButton from 'components/modal-button';
@@ -30,6 +32,11 @@ export default async function AllAffiliation({
   }>;
 }) {
   const auth = await getAuth();
+
+  // Si l'utilisateur est un Creator, afficher l'interface d'affiliation Creator
+  if (session.user.role === UserRole.CREATOR) {
+    return <CreatorAffiliation />;
+  }
 
   const params = await searchParams;
   const range = rangeParser.parse(params.range);
