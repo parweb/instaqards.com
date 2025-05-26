@@ -42,3 +42,6 @@ bun.lockb
 bun.lock
 package-lock.json
 pnpm-lock.yaml
+
+prisma/seed/csv-code-naf
+prisma/seed/fichier-contacts
