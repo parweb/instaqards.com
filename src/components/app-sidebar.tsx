@@ -21,7 +21,9 @@ import {
   Send,
   Settings,
   ShoppingBag,
+  Target,
   Timer,
+  Trophy,
   Users,
   Workflow
 } from 'lucide-react';
@@ -68,24 +70,41 @@ export function AppSidebar(
         icon: LayoutDashboard,
         isActive: segments.length === 0
       },
-      {
-        title: translate('menu.sites'),
-        url: '/sites',
-        icon: Globe,
-        isActive: segments[0] === 'sites'
-      },
-      {
-        title: translate('menu.links'),
-        url: '/links',
-        icon: LinkIcon,
-        isActive: segments[0] === 'links'
-      },
-      {
-        title: translate('menu.affiliation'),
-        url: '/affiliation',
-        icon: DollarSign,
-        isActive: segments[0] === 'affiliation'
-      },
+      ...(props.role === UserRole.CREATOR
+        ? [
+            {
+              title: 'Quêtes',
+              url: '/quests',
+              icon: Target,
+              isActive: segments[0] === 'quests'
+            },
+            {
+              title: 'Récompenses',
+              url: '/rewards',
+              icon: Trophy,
+              isActive: segments[0] === 'rewards'
+            }
+          ]
+        : [
+            {
+              title: translate('menu.sites'),
+              url: '/sites',
+              icon: Globe,
+              isActive: segments[0] === 'sites'
+            },
+            {
+              title: translate('menu.links'),
+              url: '/links',
+              icon: LinkIcon,
+              isActive: segments[0] === 'links'
+            },
+            {
+              title: translate('menu.affiliation'),
+              url: '/affiliation',
+              icon: DollarSign,
+              isActive: segments[0] === 'affiliation'
+            }
+          ]),
       ...(([UserRole.ADMIN] as UserRole[]).includes(props.role)
         ? [
             {

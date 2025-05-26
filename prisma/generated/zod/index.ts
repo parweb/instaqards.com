@@ -743,7 +743,8 @@ export const UserRoleSchema = z.enum([
   'ADMIN',
   'SELLER',
   'LEAD',
-  'GUEST'
+  'GUEST',
+  'CREATOR'
 ]);
 
 export type UserRoleType = `${z.infer<typeof UserRoleSchema>}`;

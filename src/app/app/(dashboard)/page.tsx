@@ -3,6 +3,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from 'components/ui/tooltip';
 import { eachDayOfInterval, subDays } from 'date-fns';
 import { Suspense } from 'react';
 
+import { CreatorDashboard } from 'components/creator-dashboard';
+
 import {
   LuCalendar,
   LuLayoutDashboard,
@@ -104,6 +106,11 @@ export default async function Overview({
     siteId: true,
     blockId: true
   };
+
+  // Si l'utilisateur est un Creator, afficher le dashboard Creator
+  if (session.user.role === UserRole.CREATOR) {
+    return <CreatorDashboard />;
+  }
 
   const clicks = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
     auth.role
