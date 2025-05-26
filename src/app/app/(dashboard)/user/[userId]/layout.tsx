@@ -70,7 +70,8 @@ export default async function UserPage(props: {
                 [UserRole.SELLER]: 'secondary',
                 [UserRole.USER]: 'default',
                 [UserRole.LEAD]: 'outline',
-                [UserRole.GUEST]: 'outline'
+                [UserRole.GUEST]: 'outline',
+                [UserRole.CREATOR]: 'outline'
               } as const
             )[user.role]
           }
