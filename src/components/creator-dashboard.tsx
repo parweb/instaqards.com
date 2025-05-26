@@ -16,8 +16,11 @@ import {
   Calendar,
   Award,
   ArrowRight,
-  Zap
+  Zap,
+  DollarSign
 } from 'lucide-react';
+
+import { NotificationButton } from 'components/creator-notifications';
 
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
@@ -59,47 +62,47 @@ interface Achievement {
 
 // Fake data
 const mockStats: CreatorStats = {
-  followers: 1247,
-  totalEarnings: 156.50,
-  totalPoints: 2340,
-  completedQuests: 8,
-  activeQuests: 3,
-  engagementRate: 4.2,
-  monthlyViews: 15420,
-  totalLikes: 892
+  followers: 0, // Pas applicable pour les creators
+  totalEarnings: 0, // Remplacé par les points
+  totalPoints: 127, // Points gagnés en créant des sites
+  completedQuests: 4, // Sites créés et validés
+  activeQuests: 3, // Quêtes en cours
+  engagementRate: 85, // Taux de validation admin
+  monthlyViews: 2840, // Vues totales des sites créés
+  totalLikes: 0 // Pas applicable
 };
 
 const mockActiveQuests: Quest[] = [
   {
     id: '1',
-    title: 'Créateur actif',
-    description: 'Publiez votre premier contenu sur la plateforme',
-    progress: 75,
-    maxProgress: 100,
-    reward: 10,
-    currency: 'EUR',
+    title: 'Site Halloween 2024',
+    description: 'Créez un site avec le thème Halloween selon les critères admin',
+    progress: 2,
+    maxProgress: 5,
+    reward: 15,
+    currency: 'points',
     timeLeft: 24,
-    difficulty: 'easy'
+    difficulty: 'medium'
   },
   {
     id: '2',
-    title: 'Engagement communautaire',
-    description: 'Obtenez 100 likes sur vos contenus',
-    progress: 45,
-    maxProgress: 100,
-    reward: 25,
-    currency: 'EUR',
+    title: 'Modification Site Lead - Coiffeur',
+    description: 'Modernisez le site d\'un coiffeur prospect avec galerie et RDV',
+    progress: 1,
+    maxProgress: 6,
+    reward: 18,
+    currency: 'points',
     difficulty: 'medium'
   },
   {
     id: '3',
-    title: 'Créateur du mois',
-    description: 'Soyez dans le top 10 des créateurs les plus actifs',
-    progress: 12,
-    maxProgress: 100,
-    reward: 200,
-    currency: 'EUR',
-    timeLeft: 720,
+    title: 'Site Noël - Restaurant',
+    description: 'Créez un site restaurant avec thème de Noël complet',
+    progress: 0,
+    maxProgress: 8,
+    reward: 25,
+    currency: 'points',
+    timeLeft: 240,
     difficulty: 'hard'
   }
 ];
@@ -107,19 +110,27 @@ const mockActiveQuests: Quest[] = [
 const mockRecentAchievements: Achievement[] = [
   {
     id: '1',
-    title: 'Premier pas',
-    description: 'Profil complété avec succès',
+    title: 'Premier site validé',
+    description: 'Site Saint-Valentin approuvé par admin',
     icon: '🎯',
     rarity: 'common',
     unlockedAt: new Date('2024-01-15')
   },
   {
     id: '2',
-    title: 'Créateur débutant',
-    description: 'Première publication réalisée',
-    icon: '🚀',
+    title: 'Partage social',
+    description: 'Site partagé sur 3 réseaux sociaux',
+    icon: '📱',
     rarity: 'rare',
     unlockedAt: new Date('2024-01-16')
+  },
+  {
+    id: '3',
+    title: 'Modification Lead',
+    description: 'Premier site de prospect modifié',
+    icon: '🔧',
+    rarity: 'epic',
+    unlockedAt: new Date('2024-01-18')
   }
 ];
 
@@ -143,36 +154,41 @@ export function CreatorDashboard() {
     <div className="p-6 space-y-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
       {/* Welcome Header */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Bienvenue dans votre espace Creator
-        </h1>
-        <p className="text-muted-foreground">
-          Suivez vos progrès, accomplissez des quêtes et débloquez des récompenses.
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Bienvenue dans votre espace Creator
+            </h1>
+            <p className="text-muted-foreground">
+              Créez des sites selon les thèmes admin, partagez sur les réseaux sociaux et gagnez des points selon vos validations.
+            </p>
+          </div>
+          <NotificationButton />
+        </div>
       </div>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium opacity-90">Abonnés</CardTitle>
-            <Users className="h-4 w-4 opacity-90" />
+            <CardTitle className="text-sm font-medium opacity-90">Sites créés</CardTitle>
+            <Target className="h-4 w-4 opacity-90" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockStats.followers.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{mockStats.completedQuests}</div>
             <p className="text-xs opacity-75">
-              +12% ce mois-ci
+              sites validés par admin
             </p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium opacity-90">Gains totaux</CardTitle>
-            <Coins className="h-4 w-4 opacity-90" />
+            <CardTitle className="text-sm font-medium opacity-90">Points gagnés</CardTitle>
+            <Star className="h-4 w-4 opacity-90" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockStats.totalEarnings}€</div>
+            <div className="text-2xl font-bold">{mockStats.totalPoints}</div>
             <p className="text-xs opacity-75">
               +{mockStats.completedQuests} quêtes terminées
             </p>
@@ -181,26 +197,26 @@ export function CreatorDashboard() {
 
         <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium opacity-90">Points</CardTitle>
-            <Star className="h-4 w-4 opacity-90" />
+            <CardTitle className="text-sm font-medium opacity-90">Taux validation</CardTitle>
+            <CheckCircle className="h-4 w-4 opacity-90" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockStats.totalPoints.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{mockStats.engagementRate}%</div>
             <p className="text-xs opacity-75">
-              Niveau Creator Pro
+              sites approuvés par admin
             </p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium opacity-90">Engagement</CardTitle>
-            <Heart className="h-4 w-4 opacity-90" />
+            <CardTitle className="text-sm font-medium opacity-90">Vues totales</CardTitle>
+            <Eye className="h-4 w-4 opacity-90" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockStats.engagementRate}%</div>
+            <div className="text-2xl font-bold">{mockStats.monthlyViews.toLocaleString()}</div>
             <p className="text-xs opacity-75">
-              {mockStats.totalLikes} likes ce mois
+              sur tous vos sites
             </p>
           </CardContent>
         </Card>
@@ -222,7 +238,7 @@ export function CreatorDashboard() {
                     Terminez vos quêtes pour gagner des récompenses
                   </CardDescription>
                 </div>
-                <Link href="/app/quests">
+                <Link href="/app/affiliation">
                   <Button variant="outline" size="sm">
                     Voir toutes
                     <ArrowRight className="h-4 w-4 ml-1" />
@@ -285,22 +301,24 @@ export function CreatorDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Link href="/app/quests">
+              <Link href="/app/affiliation">
                 <Button className="w-full justify-start" variant="outline">
                   <Target className="h-4 w-4 mr-2" />
                   Voir mes quêtes
                 </Button>
               </Link>
-              <Link href="/app/rewards">
+              <Link href="/app/affiliation">
                 <Button className="w-full justify-start" variant="outline">
                   <Trophy className="h-4 w-4 mr-2" />
                   Réclamer récompenses
                 </Button>
               </Link>
-              <Button className="w-full justify-start" variant="outline">
-                <Users className="h-4 w-4 mr-2" />
-                Voir mes stats
-              </Button>
+              <Link href="/app/affiliation">
+                <Button className="w-full justify-start" variant="outline">
+                  <DollarSign className="h-4 w-4 mr-2" />
+                  Mon affiliation
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -345,22 +363,22 @@ export function CreatorDashboard() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Niveau Creator</span>
-                  <span>Pro (78%)</span>
+                  <span>Débutant (63%)</span>
                 </div>
-                <Progress value={78} className="h-2" />
+                <Progress value={63} className="h-2" />
                 <p className="text-xs text-muted-foreground">
-                  520 points pour le niveau Expert
+                  73 points pour le niveau Confirmé
                 </p>
               </div>
               
               <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="text-center">
                   <div className="text-lg font-bold text-green-600">{mockStats.completedQuests}</div>
-                  <div className="text-xs text-muted-foreground">Quêtes terminées</div>
+                  <div className="text-xs text-muted-foreground">Sites validés</div>
                 </div>
                 <div className="text-center">
                   <div className="text-lg font-bold text-blue-600">{mockStats.activeQuests}</div>
-                  <div className="text-xs text-muted-foreground">En cours</div>
+                  <div className="text-xs text-muted-foreground">Quêtes actives</div>
                 </div>
               </div>
             </CardContent>
