@@ -38,7 +38,8 @@ export default async function WorkflowsCampaigns() {
     db.user.findMany({
       select: {
         id: true,
-        email: true
+        email: true,
+        phone: true
       },
       where: {
         email: {

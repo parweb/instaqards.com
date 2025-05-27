@@ -266,7 +266,7 @@ const ProspectDetail = ({
             }
           >
             <ProspectReservationModal
-              user={{ id, email, name: company }}
+              user={{ id, email, name: company, phone }}
               type="PHONE"
             />
           </ModalButton>
@@ -281,7 +281,7 @@ const ProspectDetail = ({
             }
           >
             <ProspectReservationModal
-              user={{ id, email, name: company }}
+              user={{ id, email, name: company, phone }}
               type="REMINDER"
             />
           </ModalButton>
@@ -296,7 +296,7 @@ const ProspectDetail = ({
             }
           >
             <ProspectReservationModal
-              user={{ id, email, name: company }}
+              user={{ id, email, name: company, phone }}
               type="VISIO"
             />
           </ModalButton>
@@ -311,7 +311,7 @@ const ProspectDetail = ({
             }
           >
             <ProspectReservationModal
-              user={{ id, email, name: company }}
+              user={{ id, email, name: company, phone }}
               type="PHYSIC"
             />
           </ModalButton>

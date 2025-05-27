@@ -861,28 +861,48 @@ export default async function UserPage(props: {
             <div className="flex gap-2 items-center">
               <ModalButton label={<LuPhone />} size="sm">
                 <ProspectReservationModal
-                  user={{ id: user.id, email: user.email, name: user.name }}
+                  user={{
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    phone: user.phone
+                  }}
                   type="PHONE"
                 />
               </ModalButton>
 
               <ModalButton label={<LuVideo />} size="sm">
                 <ProspectReservationModal
-                  user={{ id: user.id, email: user.email, name: user.name }}
+                  user={{
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    phone: user.phone
+                  }}
                   type="VISIO"
                 />
               </ModalButton>
 
               <ModalButton label={<LuHandshake />} size="sm">
                 <ProspectReservationModal
-                  user={{ id: user.id, email: user.email, name: user.name }}
+                  user={{
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    phone: user.phone
+                  }}
                   type="PHYSIC"
                 />
               </ModalButton>
 
               <ModalButton label={<LuCalendar />} size="sm">
                 <ProspectReservationModal
-                  user={{ id: user.id, email: user.email, name: user.name }}
+                  user={{
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    phone: user.phone
+                  }}
                   type="REMINDER"
                 />
               </ModalButton>

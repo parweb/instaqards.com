@@ -8,26 +8,34 @@ import { IconType } from 'react-icons';
 import { FaMagic } from 'react-icons/fa';
 
 import {
+  LuActivity,
+  LuCalendar,
   LuChevronDown,
   LuChevronUp,
   LuCopy,
   LuEllipsisVertical,
   LuExternalLink,
   LuEye,
+  LuGlobe,
+  LuHandshake,
   LuLoader,
+  LuMail,
   LuMousePointer,
   LuPause,
   LuPencil,
+  LuPhone,
   LuPlay,
   LuPointer,
   LuTarget,
   LuTrash,
   LuUser,
-  LuUsers
+  LuUsers,
+  LuVideo
 } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
 import CampaignsMutateModal from 'components/modal/mutate-campaign';
+import ProspectReservationModal from 'components/modal/reservation-prospect';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
@@ -94,14 +102,14 @@ const ContactItem = ({
   status,
   outbox
 }: {
-  user: Pick<User, 'id' | 'email'>;
+  user: Pick<User, 'id' | 'email' | 'phone'>;
   status: string | undefined;
   outbox: Pick<Outbox, 'id' | 'status' | 'metadata'> | undefined;
 }) => {
   return (
     <div
       key={user.id}
-      className="flex items-center gap-4 border rounded-md p-2"
+      className="flex items-center gap-4 border rounded-md p-3"
     >
       <Badge
         variant={
@@ -116,24 +124,154 @@ const ContactItem = ({
         {status}
       </Badge>
 
-      <Link href={`/user/${user.id}/outbox/${outbox?.id}`}>{user.email}</Link>
+      <div className="flex-1">
+        <div className="font-medium">
+          <Link href={`/user/${user.id}`}>{user.email}</Link>
+        </div>
 
-      <div className="flex gap-2 items-center">
-        {outbox?.status === 'opened' && (
-          <Badge variant="secondary">{outbox?.status}</Badge>
+        <div className="flex gap-2 items-center mt-1">
+          {outbox?.status === 'opened' && (
+            <Badge variant="secondary">{outbox?.status}</Badge>
+          )}
+
+          {/* @ts-ignore */}
+          {outbox?.metadata?.events?.some(
+            // @ts-ignore
+            event => event.type === 'click'
+          ) && <Badge variant="default">clicked</Badge>}
+
+          {/* @ts-ignore */}
+          {outbox?.metadata?.events?.some(
+            // @ts-ignore
+            event => event.type === 'bounced'
+          ) && <Badge variant="destructive">bounced</Badge>}
+        </div>
+      </div>
+
+      <div className="flex gap-1 items-center">
+        {/* Lien vers la outbox */}
+        {outbox && (
+          <Button variant="ghost" size="sm" asChild>
+            <Link href={`/user/${user.id}/outbox/${outbox.id}`}>
+              <LuMail className="w-4 h-4" />
+            </Link>
+          </Button>
         )}
 
-        {/* @ts-ignore */}
-        {outbox?.metadata?.events?.some(
-          // @ts-ignore
-          event => event.type === 'click'
-        ) && <Badge variant="default">clicked</Badge>}
+        {/* Lien vers la fiche détail user */}
+        <Button variant="ghost" size="sm" asChild>
+          <Link href={`/user/${user.id}`}>
+            <LuUser className="w-4 h-4" />
+          </Link>
+        </Button>
 
-        {/* @ts-ignore */}
-        {outbox?.metadata?.events?.some(
-          // @ts-ignore
-          event => event.type === 'bounced'
-        ) && <Badge variant="destructive">bounced</Badge>}
+        {/* Bouton téléphone */}
+        <ModalButton
+          variant="ghost"
+          size="sm"
+          label={<LuPhone className="w-4 h-4" />}
+        >
+          <ProspectReservationModal
+            user={{
+              id: user.id,
+              email: user.email,
+              name: user.email,
+              phone: user.phone
+            }}
+            type="PHONE"
+          />
+        </ModalButton>
+
+        {/* Menu déroulant pour les rendez-vous */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <LuCalendar className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <ModalButton
+                variant="ghost"
+                className="w-full justify-start"
+                label={
+                  <>
+                    <LuVideo className="w-4 h-4 mr-2" />
+                    Visio
+                  </>
+                }
+              >
+                <ProspectReservationModal
+                  user={{
+                    id: user.id,
+                    email: user.email,
+                    name: user.email,
+                    phone: user.phone
+                  }}
+                  type="VISIO"
+                />
+              </ModalButton>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <ModalButton
+                variant="ghost"
+                className="w-full justify-start"
+                label={
+                  <>
+                    <LuHandshake className="w-4 h-4 mr-2" />
+                    En personne
+                  </>
+                }
+              >
+                <ProspectReservationModal
+                  user={{
+                    id: user.id,
+                    email: user.email,
+                    name: user.email,
+                    phone: user.phone
+                  }}
+                  type="PHYSIC"
+                />
+              </ModalButton>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <ModalButton
+                variant="ghost"
+                className="w-full justify-start"
+                label={
+                  <>
+                    <LuCalendar className="w-4 h-4 mr-2" />
+                    Rappel
+                  </>
+                }
+              >
+                <ProspectReservationModal
+                  user={{
+                    id: user.id,
+                    email: user.email,
+                    name: user.email,
+                    phone: user.phone
+                  }}
+                  type="REMINDER"
+                />
+              </ModalButton>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Lien vers Recent Activity */}
+        <Button variant="ghost" size="sm" asChild>
+          <Link href={`/user/${user.id}#recent-activity`}>
+            <LuActivity className="w-4 h-4" />
+          </Link>
+        </Button>
+
+        {/* Lien vers Pages visitées */}
+        <Button variant="ghost" size="sm" asChild>
+          <Link href={`/user/${user.id}#pages-visited`}>
+            <LuGlobe className="w-4 h-4" />
+          </Link>
+        </Button>
       </div>
     </div>
   );
@@ -152,6 +290,7 @@ function CampaignItemDetails({
             select: {
               id: true;
               email: true;
+              phone: true;
             };
           };
         };
@@ -162,7 +301,7 @@ function CampaignItemDetails({
     [
       Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
       Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[],
-      Pick<User, 'id' | 'email'>[]
+      Pick<User, 'id' | 'email' | 'phone'>[]
     ]
   >;
 }) {
@@ -234,7 +373,7 @@ export const CampaignItem = ({
     [
       Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
       Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[],
-      Pick<User, 'id' | 'email'>[]
+      Pick<User, 'id' | 'email' | 'phone'>[]
     ]
   >;
 }) => {

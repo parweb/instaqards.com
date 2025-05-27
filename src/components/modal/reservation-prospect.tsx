@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import LoadingDots from 'components/icons/loading-dots';
 import { AutosizeTextarea } from 'components/ui/autosize-textarea';
 import { Button } from 'components/ui/button';
+import { formatPhoneNumber } from 'helpers/formatPhoneNumber';
 import useTranslation from 'hooks/use-translation';
 import { bookProspect } from 'lib/actions';
 import { cn } from 'lib/utils';
@@ -187,7 +188,7 @@ export default function ProspectReservationModal({
   user,
   type
 }: {
-  user: Pick<User, 'id' | 'email' | 'name'>;
+  user: Pick<User, 'id' | 'email' | 'name' | 'phone'>;
   type: 'PHONE' | 'VISIO' | 'REMINDER' | 'PHYSIC';
 }) {
   const router = useRouter();
@@ -241,7 +242,7 @@ export default function ProspectReservationModal({
       <input type="hidden" name="time" value={data.selectedTimeSlot} />
 
       <div className="flex flex-col gap-2 p-4">
-        <div className="flex flex-col gap-2">
+        <div className="flex gap-2 items-center justify-between">
           <Select
             value={data.type}
             onValueChange={async value => {
@@ -279,6 +280,16 @@ export default function ProspectReservationModal({
               </SelectItem>
             </SelectContent>
           </Select>
+
+          {data.type === 'PHONE' && (
+            <div className="text-sm text-stone-700 bg-emerald-400 rounded-md p-2">
+              <a
+                href={`tel:${formatPhoneNumber(user.phone).replaceAll(' ', '')}`}
+              >
+                {formatPhoneNumber(user.phone)}
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="flex-1 flex flex-col gap-2">
