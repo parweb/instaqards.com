@@ -315,7 +315,8 @@ const ContactItem = ({
 // Fonction utilitaire pour déterminer les statuts d'un contact
 const getContactStatuses = (
   outbox: Pick<Outbox, 'id' | 'status' | 'metadata'> | undefined,
-  status: string | undefined
+  status: string | undefined,
+  phoneReservations?: Pick<Reservation, 'id' | 'type' | 'email' | 'dateStart' | 'dateEnd' | 'comment' | 'createdAt'>[]
 ) => {
   const statuses: string[] = [];
 
@@ -341,6 +342,11 @@ const getContactStatuses = (
     if (events.some(event => event.type === 'click')) {
       statuses.push('clicked');
     }
+  }
+
+  // Ajouter le statut "called" si il y a des réservations téléphoniques
+  if (phoneReservations && phoneReservations.length > 0) {
+    statuses.push('called');
   }
 
   return statuses;
@@ -403,7 +409,8 @@ function CampaignItemDetails({
     return contacts.filter(contact => {
       const contactStatuses = getContactStatuses(
         contact.outbox,
-        contact.status
+        contact.status,
+        getPhoneReservationsForUser(contact.user.email)
       );
       return selectedFilters.some(filter => contactStatuses.includes(filter));
     });
@@ -419,7 +426,8 @@ function CampaignItemDetails({
     { key: 'completed', label: 'Completed', variant: 'success' as const },
     { key: 'bounced', label: 'Bounced', variant: 'destructive' as const },
     { key: 'opened', label: 'Opened', variant: 'secondary' as const },
-    { key: 'clicked', label: 'Clicked', variant: 'default' as const }
+    { key: 'clicked', label: 'Clicked', variant: 'default' as const },
+    { key: 'called', label: 'Appelé', variant: 'outline' as const }
   ];
 
   if (campaign.smart) {
