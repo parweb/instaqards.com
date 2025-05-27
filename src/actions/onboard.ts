@@ -9,7 +9,6 @@ import { translate } from 'helpers/translate';
 import { auth } from 'lib/auth';
 import { OnboardSchema } from 'schemas';
 import { uri } from 'settings';
-import { redirect } from 'next/dist/server/api-utils';
 
 export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
   const validatedFields = OnboardSchema.safeParse(values);

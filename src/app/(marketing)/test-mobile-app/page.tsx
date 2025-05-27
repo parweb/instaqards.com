@@ -23,7 +23,7 @@ export default function TestMobileAppPage() {
               <div className="text-sm text-indigo-800 space-y-1">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
-                  <span>Vue d'ensemble - Indigo</span>
+                  <span>Vue d&apos;ensemble - Indigo</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
@@ -45,7 +45,7 @@ export default function TestMobileAppPage() {
                 📋 Menu complet inclut
               </h2>
               <ul className="text-sm text-emerald-800 space-y-1">
-                <li>• Vue d'ensemble & Sites & Liens</li>
+                <li>• Vue d&apos;ensemble & Sites & Liens</li>
                 <li>• Générateur (admin/seller)</li>
                 <li>• Affiliation & Paramètres</li>
                 <li>• Aide & Support</li>
@@ -101,9 +101,9 @@ export default function TestMobileAppPage() {
                 Fonctionnalité App {i + 1}
               </h3>
               <p className="text-gray-600 text-sm">
-                Interface d'application avec menu mobile adaptatif. Le bouton
-                "Plus" donne accès à toutes les fonctionnalités avancées dans un
-                overlay organisé et coloré.
+                Interface d&apos;application avec menu mobile adaptatif. Le
+                bouton &quot;Plus&quot; donne accès à toutes les fonctionnalités
+                avancées dans un overlay organisé et coloré.
               </p>
             </div>
           ))}
@@ -112,7 +112,7 @@ export default function TestMobileAppPage() {
       </div>
 
       {/* Menu mobile en mode app */}
-      <MobileBottomNavColorful isMarketing={false} />
+      <MobileBottomNavColorful />
     </div>
   );
 }

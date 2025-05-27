@@ -151,7 +151,7 @@ export const MenuVariation91: React.FC = () => {
           {/* Indicateur de commande vocale */}
           {isListening && (
             <div className="absolute top-12 right-4 bg-black/80 text-white text-xs px-2 py-1 rounded-lg">
-              Dites: "{tabs.map(t => t.voiceCommand).join('", "')}"
+              {`Dites: "${tabs.map(t => t.voiceCommand).join('", "')}"`}
             </div>
           )}
 
@@ -226,7 +226,7 @@ export const MenuVariation91: React.FC = () => {
                   {/* Commande vocale */}
                   {isListening && (
                     <span className="text-xs text-red-400 mt-1 opacity-75">
-                      "{tab.voiceCommand}"
+                      {`"${tab.voiceCommand}"`}
                     </span>
                   )}
                 </Link>

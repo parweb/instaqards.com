@@ -2,99 +2,9 @@
 
 import { useState } from 'react';
 import { MenuVariation1 } from 'components/menu-variations/menu-variation-1';
-import { MenuVariation2 } from 'components/menu-variations/menu-variation-2';
-import { MenuVariation3 } from 'components/menu-variations/menu-variation-3';
-import { MenuVariation4 } from 'components/menu-variations/menu-variation-4';
-import { MenuVariation5 } from 'components/menu-variations/menu-variation-5';
-import { MenuVariation6 } from 'components/menu-variations/menu-variation-6';
-import { MenuVariation7 } from 'components/menu-variations/menu-variation-7';
-import { MenuVariation8 } from 'components/menu-variations/menu-variation-8';
-import { MenuVariation9 } from 'components/menu-variations/menu-variation-9';
-import { MenuVariation10 } from 'components/menu-variations/menu-variation-10';
-// Nouvelles variations 11-60
-import { MenuVariation11 } from 'components/menu-variations/menu-variation-11';
-import { MenuVariation12 } from 'components/menu-variations/menu-variation-12';
-import { MenuVariation13 } from 'components/menu-variations/menu-variation-13';
-import { MenuVariation14 } from 'components/menu-variations/menu-variation-14';
-import { MenuVariation15 } from 'components/menu-variations/menu-variation-15';
-import { MenuVariation16 } from 'components/menu-variations/menu-variation-16';
-import { MenuVariation17 } from 'components/menu-variations/menu-variation-17';
-import { MenuVariation18 } from 'components/menu-variations/menu-variation-18';
-import { MenuVariation19 } from 'components/menu-variations/menu-variation-19';
-import { MenuVariation20 } from 'components/menu-variations/menu-variation-20';
-import { MenuVariation21 } from 'components/menu-variations/menu-variation-21';
-import { MenuVariation22 } from 'components/menu-variations/menu-variation-22';
-import { MenuVariation23 } from 'components/menu-variations/menu-variation-23';
-import { MenuVariation24 } from 'components/menu-variations/menu-variation-24';
-import { MenuVariation25 } from 'components/menu-variations/menu-variation-25';
-import { MenuVariation26 } from 'components/menu-variations/menu-variation-26';
-import { MenuVariation27 } from 'components/menu-variations/menu-variation-27';
-import { MenuVariation28 } from 'components/menu-variations/menu-variation-28';
-import { MenuVariation29 } from 'components/menu-variations/menu-variation-29';
-import { MenuVariation30 } from 'components/menu-variations/menu-variation-30';
-import { MenuVariation31 } from 'components/menu-variations/menu-variation-31';
-import { MenuVariation32 } from 'components/menu-variations/menu-variation-32';
-import { MenuVariation33 } from 'components/menu-variations/menu-variation-33';
-import { MenuVariation34 } from 'components/menu-variations/menu-variation-34';
-import { MenuVariation35 } from 'components/menu-variations/menu-variation-35';
-import { MenuVariation36 } from 'components/menu-variations/menu-variation-36';
-import { MenuVariation37 } from 'components/menu-variations/menu-variation-37';
-import { MenuVariation38 } from 'components/menu-variations/menu-variation-38';
-import { MenuVariation39 } from 'components/menu-variations/menu-variation-39';
-import { MenuVariation40 } from 'components/menu-variations/menu-variation-40';
-import { MenuVariation41 } from 'components/menu-variations/menu-variation-41';
-import { MenuVariation42 } from 'components/menu-variations/menu-variation-42';
-import { MenuVariation43 } from 'components/menu-variations/menu-variation-43';
-import { MenuVariation44 } from 'components/menu-variations/menu-variation-44';
-import { MenuVariation45 } from 'components/menu-variations/menu-variation-45';
-import { MenuVariation46 } from 'components/menu-variations/menu-variation-46';
-import { MenuVariation47 } from 'components/menu-variations/menu-variation-47';
-import { MenuVariation48 } from 'components/menu-variations/menu-variation-48';
-import { MenuVariation49 } from 'components/menu-variations/menu-variation-49';
-import { MenuVariation50 } from 'components/menu-variations/menu-variation-50';
-import { MenuVariation51 } from 'components/menu-variations/menu-variation-51';
-import { MenuVariation52 } from 'components/menu-variations/menu-variation-52';
-import { MenuVariation53 } from 'components/menu-variations/menu-variation-53';
-import { MenuVariation54 } from 'components/menu-variations/menu-variation-54';
-import { MenuVariation55 } from 'components/menu-variations/menu-variation-55';
-import { MenuVariation56 } from 'components/menu-variations/menu-variation-56';
-import { MenuVariation57 } from 'components/menu-variations/menu-variation-57';
-import { MenuVariation58 } from 'components/menu-variations/menu-variation-58';
-import { MenuVariation59 } from 'components/menu-variations/menu-variation-59';
-import { MenuVariation60 } from 'components/menu-variations/menu-variation-60';
-import { MenuVariation61 } from 'components/menu-variations/menu-variation-61';
-import { MenuVariation62 } from 'components/menu-variations/menu-variation-62';
-import { MenuVariation63 } from 'components/menu-variations/menu-variation-63';
-import { MenuVariation64 } from 'components/menu-variations/menu-variation-64';
-import { MenuVariation65 } from 'components/menu-variations/menu-variation-65';
-import { MenuVariation66 } from 'components/menu-variations/menu-variation-66';
-import { MenuVariation67 } from 'components/menu-variations/menu-variation-67';
-import { MenuVariation68 } from 'components/menu-variations/menu-variation-68';
-import { MenuVariation69 } from 'components/menu-variations/menu-variation-69';
-import { MenuVariation70 } from 'components/menu-variations/menu-variation-70';
-import { MenuVariation71 } from 'components/menu-variations/menu-variation-71';
-import { MenuVariation72 } from 'components/menu-variations/menu-variation-72';
-import { MenuVariation73 } from 'components/menu-variations/menu-variation-73';
-import { MenuVariation74 } from 'components/menu-variations/menu-variation-74';
-import { MenuVariation75 } from 'components/menu-variations/menu-variation-75';
-import { MenuVariation76 } from 'components/menu-variations/menu-variation-76';
-import { MenuVariation77 } from 'components/menu-variations/menu-variation-77';
-import { MenuVariation78 } from 'components/menu-variations/menu-variation-78';
-import { MenuVariation79 } from 'components/menu-variations/menu-variation-79';
-import { MenuVariation80 } from 'components/menu-variations/menu-variation-80';
-import { MenuVariation81 } from 'components/menu-variations/menu-variation-81';
-import { MenuVariation82 } from 'components/menu-variations/menu-variation-82';
-import { MenuVariation83 } from 'components/menu-variations/menu-variation-83';
-import { MenuVariation84 } from 'components/menu-variations/menu-variation-84';
-import { MenuVariation85 } from 'components/menu-variations/menu-variation-85';
-import { MenuVariation86 } from 'components/menu-variations/menu-variation-86';
-import { MenuVariation87 } from 'components/menu-variations/menu-variation-87';
-import { MenuVariation88 } from 'components/menu-variations/menu-variation-88';
-import { MenuVariation89 } from 'components/menu-variations/menu-variation-89';
+// Most variations are commented out, only keeping the ones that are actually used
 import { MenuVariation90 } from 'components/menu-variations/menu-variation-90';
-import { MenuVariation91 } from 'components/menu-variations/menu-variation-91';
-import { MenuVariation92 } from 'components/menu-variations/menu-variation-92';
-import { MenuVariation93 } from 'components/menu-variations/menu-variation-93';
+// Only MenuVariation90 is actually used in the menuVariations array
 
 const menuVariations = [
   // Variations originales 1-10
@@ -338,7 +248,7 @@ const menuVariations = [
   //   id: 40,
   //   name: '🎨 Oil Painting',
   //   component: MenuVariation40,
-  //   description: "Peinture à l'huile classique"
+  //   description: "Peinture à l&apos;huile classique"
   // },
   // {
   //   id: 41,
@@ -552,7 +462,7 @@ const menuVariations = [
   //   id: 75,
   //   name: '✨ Particle Trail',
   //   component: MenuVariation75,
-  //   description: "Traînée de particules qui suivent l'indicateur"
+  //   description: "Traînée de particules qui suivent l&apos;indicateur"
   // },
   // {
   //   id: 76,
@@ -642,7 +552,7 @@ const menuVariations = [
     id: 90,
     name: '🎀 Ribbon Sweep',
     component: MenuVariation90,
-    description: "Ruban qui balaie l'interface avec brillance"
+    description: 'Ruban qui balaie l&apos;interface avec brillance'
   }
   // {
   //   id: 91,
@@ -730,7 +640,7 @@ export default function TestMenuVariationsPage() {
             <h4 className="font-bold text-blue-900 mb-2">📱 Instructions :</h4>
             <ul className="text-sm text-blue-800 space-y-1">
               <li>• Activez le mode mobile (F12 → Responsive)</li>
-              <li>• Le menu apparaît en bas de l'écran</li>
+              <li>• Le menu apparaît en bas de l&apos;écran</li>
               <li>• Testez les interactions et animations</li>
               <li>• Changez de style avec les boutons ci-dessus</li>
             </ul>

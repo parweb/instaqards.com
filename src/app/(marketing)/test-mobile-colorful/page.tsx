@@ -1,5 +1,3 @@
-import { MobileBottomNavColorful } from 'components/mobile-bottom-nav-colorful';
-
 export default function TestMobileColorfulPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 p-4">
@@ -45,8 +43,8 @@ export default function TestMobileColorfulPage() {
                 ✨ Animations simplifiées
               </h2>
               <ul className="text-sm text-purple-800 space-y-1">
-                <li>• 🎯 Animations uniquement sur bouton "Plus"</li>
-                <li>• 🎪 Rotation et spin au clic sur "Plus"</li>
+                <li>• 🎯 Animations uniquement sur bouton &quot;Plus&quot;</li>
+                <li>• 🎪 Rotation et spin au clic sur &quot;Plus&quot;</li>
                 <li>• ⚡ Vibrations tactiles améliorées</li>
                 <li>• 🎨 Overlay modal avec slide-up</li>
                 <li>• 🔄 Transitions douces et rapides</li>
@@ -56,12 +54,12 @@ export default function TestMobileColorfulPage() {
 
             <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-2xl border border-orange-100">
               <h2 className="font-bold text-orange-900 mb-2 flex items-center">
-                🎯 Test du bouton "Plus"
+                🎯 Test du bouton &quot;Plus&quot;
               </h2>
               <p className="text-sm text-orange-800">
-                Cliquez sur le dernier onglet "Plus" pour voir apparaître le
-                menu complet avec tous les éléments de navigation dans un
-                overlay élégant.
+                Cliquez sur le dernier onglet &quot;Plus&quot; pour voir
+                apparaître le menu complet avec tous les éléments de navigation
+                dans un overlay élégant.
               </p>
             </div>
           </div>
@@ -77,10 +75,12 @@ export default function TestMobileColorfulPage() {
                 • <strong>Onglets normaux :</strong> Hover scale 105% simple
               </p>
               <p>
-                • <strong>Bouton "Plus" :</strong> Hover scale 110% + rotation
+                • <strong>Bouton &quot;Plus&quot; :</strong> Hover scale 110% +
+                rotation
               </p>
               <p>
-                • <strong>Clic "Plus" :</strong> Pulse + spin de l'icône
+                • <strong>Clic &quot;Plus&quot; :</strong> Pulse + spin de
+                l&apos;icône
               </p>
               <p>
                 • <strong>Modal :</strong> Slide-up fluide avec backdrop
@@ -89,7 +89,8 @@ export default function TestMobileColorfulPage() {
                 • <strong>Fermeture :</strong> Bouton X avec rotation 90°
               </p>
               <p>
-                • <strong>Vibration :</strong> Pattern [100,50,100] pour "Plus"
+                • <strong>Vibration :</strong> Pattern [100,50,100] pour
+                &quot;Plus&quot;
               </p>
               <p>
                 • <strong>Transitions :</strong> 200ms rapides et fluides
@@ -107,8 +108,8 @@ export default function TestMobileColorfulPage() {
               </h3>
               <p className="text-gray-600 text-sm">
                 Contenu de test pour voir le menu en action. Le menu reste fixe
-                en bas et s'adapte aux couleurs selon l'onglet actif. Testez le
-                bouton "Plus" pour accéder au menu complet !
+                en bas et s&apos;adapte aux couleurs selon l&apos;onglet actif.
+                Testez le bouton &quot;Plus&quot; pour accéder au menu complet !
               </p>
             </div>
           ))}

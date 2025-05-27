@@ -1,11 +1,6 @@
 'use server';
 
-import bcrypt from 'bcryptjs';
 import type * as z from 'zod';
-
-import { getPasswordResetTokenByToken } from 'data/password-reset-token';
-import { getUserByEmail } from 'data/user';
-import { db } from 'helpers/db';
 import { NewPasswordSchema } from 'schemas';
 import { translate } from 'helpers/translate';
 import { auth } from 'lib/auth';

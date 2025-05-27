@@ -1,6 +1,5 @@
 'use server';
 
-import { DEFAULT_LOGIN_REDIRECT } from 'settings';
 import { getUserByEmail } from 'data/user';
 import { getVerificationTokenByToken } from 'data/verificiation-token';
 import { db } from 'helpers/db';
