@@ -1,6 +1,6 @@
 'use client';
 
-import { Outbox, Prisma, Queue, User } from '@prisma/client';
+import { Outbox, Prisma, Queue, Reservation, User } from '@prisma/client';
 import { interpolate } from 'motion';
 import Link from 'next/link';
 import { Suspense, use, useActionState, useState } from 'react';
@@ -100,11 +100,16 @@ const Stat = ({
 const ContactItem = ({
   user: user,
   status,
-  outbox
+  outbox,
+  phoneReservations
 }: {
   user: Pick<User, 'id' | 'email' | 'phone'>;
   status: string | undefined;
   outbox: Pick<Outbox, 'id' | 'status' | 'metadata'> | undefined;
+  phoneReservations?: Pick<
+    Reservation,
+    'id' | 'type' | 'email' | 'dateStart' | 'dateEnd' | 'comment' | 'createdAt'
+  >[];
 }) => {
   return (
     <div
@@ -145,6 +150,19 @@ const ContactItem = ({
             // @ts-ignore
             event => event.type === 'bounced'
           ) && <Badge variant="destructive">bounced</Badge>}
+
+          {/* Affichage des réservations téléphoniques */}
+          {phoneReservations && phoneReservations.length > 0 && (
+            <Badge
+              variant="default"
+              className="bg-blue-500 hover:bg-blue-600 text-white border-blue-500"
+            >
+              <LuPhone className="w-3 h-3 mr-1 text-white" />
+              {phoneReservations.length === 1
+                ? `Appel ${new Date(phoneReservations[0].dateStart).toLocaleDateString('fr-FR')}`
+                : `${phoneReservations.length} appels`}
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -167,9 +185,26 @@ const ContactItem = ({
 
         {/* Bouton téléphone */}
         <ModalButton
-          variant="ghost"
+          variant={
+            phoneReservations && phoneReservations.length > 0
+              ? 'default'
+              : 'ghost'
+          }
           size="sm"
-          label={<LuPhone className="w-4 h-4" />}
+          className={cn({
+            'bg-green-500 hover:bg-green-600 text-white border-green-500':
+              phoneReservations && phoneReservations.length > 0
+          })}
+          label={
+            <LuPhone
+              className={cn(
+                'w-4 h-4',
+                phoneReservations && phoneReservations.length > 0
+                  ? 'text-white'
+                  : ''
+              )}
+            />
+          }
         >
           <ProspectReservationModal
             user={{
@@ -335,11 +370,21 @@ function CampaignItemDetails({
     [
       Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
       Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[],
-      Pick<User, 'id' | 'email' | 'phone'>[]
+      Pick<User, 'id' | 'email' | 'phone'>[],
+      Pick<
+        Reservation,
+        | 'id'
+        | 'type'
+        | 'email'
+        | 'dateStart'
+        | 'dateEnd'
+        | 'comment'
+        | 'createdAt'
+      >[]
     ]
   >;
 }) {
-  const [outboxes, queues, users] = use($details);
+  const [outboxes, queues, users, phoneReservations] = use($details);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   // Fonction pour basculer un filtre
@@ -362,6 +407,11 @@ function CampaignItemDetails({
       );
       return selectedFilters.some(filter => contactStatuses.includes(filter));
     });
+  };
+
+  // Fonction pour récupérer les réservations téléphoniques d'un utilisateur
+  const getPhoneReservationsForUser = (email: string) => {
+    return phoneReservations.filter(reservation => reservation.email === email);
   };
 
   // Préparer les données pour les filtres
@@ -431,6 +481,9 @@ function CampaignItemDetails({
               user={contact.user}
               status={contact.status}
               outbox={contact.outbox}
+              phoneReservations={getPhoneReservationsForUser(
+                contact.user.email
+              )}
             />
           ))}
           {filteredContacts.length === 0 && selectedFilters.length > 0 && (
@@ -507,6 +560,7 @@ function CampaignItemDetails({
             user={contact.user}
             status={contact.status}
             outbox={contact.outbox}
+            phoneReservations={getPhoneReservationsForUser(contact.user.email)}
           />
         ))}
         {filteredContacts.length === 0 && selectedFilters.length > 0 && (
@@ -534,7 +588,17 @@ export const CampaignItem = ({
     [
       Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
       Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[],
-      Pick<User, 'id' | 'email' | 'phone'>[]
+      Pick<User, 'id' | 'email' | 'phone'>[],
+      Pick<
+        Reservation,
+        | 'id'
+        | 'type'
+        | 'email'
+        | 'dateStart'
+        | 'dateEnd'
+        | 'comment'
+        | 'createdAt'
+      >[]
     ]
   >;
 }) => {

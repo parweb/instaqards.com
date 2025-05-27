@@ -15,6 +15,23 @@ export default async function WorkflowsCampaigns() {
     orderBy: { updatedAt: 'desc' }
   });
 
+  // Récupérer tous les emails des contacts des campagnes
+  const allEmails = Array.from(
+    new Set([
+      // Emails des smart campaigns
+      ...campaigns
+        .filter(({ smart }) => smart === true)
+        .flatMap(campaign => campaign.outboxes.map(outbox => outbox.email)),
+      // Emails des regular campaigns
+      ...campaigns
+        .filter(({ smart }) => smart === false)
+        .flatMap(
+          campaign =>
+            campaign.list?.contacts.map(contact => contact.email) || []
+        )
+    ])
+  );
+
   const $details = db.$transaction([
     db.outbox.findMany({
       select: {
@@ -43,17 +60,27 @@ export default async function WorkflowsCampaigns() {
       },
       where: {
         email: {
-          in: Array.from(
-            new Set(
-              campaigns
-                .filter(({ smart }) => smart === true)
-                .flatMap(campaign =>
-                  campaign.outboxes.map(outbox => outbox.email)
-                )
-            )
-          )
+          in: allEmails
         }
       }
+    }),
+    db.reservation.findMany({
+      select: {
+        id: true,
+        type: true,
+        email: true,
+        dateStart: true,
+        dateEnd: true,
+        comment: true,
+        createdAt: true
+      },
+      where: {
+        email: {
+          in: allEmails
+        },
+        type: 'PHONE'
+      },
+      orderBy: { dateStart: 'desc' }
     })
   ]);
 
