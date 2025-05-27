@@ -277,6 +277,40 @@ const ContactItem = ({
   );
 };
 
+// Fonction utilitaire pour déterminer les statuts d'un contact
+const getContactStatuses = (
+  outbox: Pick<Outbox, 'id' | 'status' | 'metadata'> | undefined,
+  status: string | undefined
+) => {
+  const statuses: string[] = [];
+
+  if (status === 'completed' || outbox) {
+    statuses.push('completed');
+  }
+
+  if (outbox?.metadata) {
+    // @ts-ignore
+    const events = outbox.metadata.events || [];
+
+    // @ts-ignore
+    if (events.some(event => event.type === 'bounced')) {
+      statuses.push('bounced');
+    }
+
+    // @ts-ignore
+    if (events.some(event => event.type === 'open')) {
+      statuses.push('opened');
+    }
+
+    // @ts-ignore
+    if (events.some(event => event.type === 'click')) {
+      statuses.push('clicked');
+    }
+  }
+
+  return statuses;
+};
+
 function CampaignItemDetails({
   campaign,
   $details
@@ -306,54 +340,181 @@ function CampaignItemDetails({
   >;
 }) {
   const [outboxes, queues, users] = use($details);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
+  // Fonction pour basculer un filtre
+  const toggleFilter = (filter: string) => {
+    setSelectedFilters(prev =>
+      prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
+    );
+  };
+
+  // Fonction pour filtrer les contacts
+  const filterContacts = (contacts: any[]) => {
+    if (selectedFilters.length === 0) {
+      return contacts;
+    }
+
+    return contacts.filter(contact => {
+      const contactStatuses = getContactStatuses(
+        contact.outbox,
+        contact.status
+      );
+      return selectedFilters.some(filter => contactStatuses.includes(filter));
+    });
+  };
+
+  // Préparer les données pour les filtres
+  const filterOptions = [
+    { key: 'completed', label: 'Completed', variant: 'success' as const },
+    { key: 'bounced', label: 'Bounced', variant: 'destructive' as const },
+    { key: 'opened', label: 'Opened', variant: 'secondary' as const },
+    { key: 'clicked', label: 'Clicked', variant: 'default' as const }
+  ];
 
   if (campaign.smart) {
+    const smartContacts = campaign.outboxes
+      .map(outbox => {
+        const user = users.find(user => user.email === outbox.email);
+        if (!user) return null;
+
+        return {
+          key: `${campaign.id}-${user.id}`,
+          user,
+          status: 'completed',
+          outbox
+        };
+      })
+      .filter(Boolean);
+
+    const filteredContacts = filterContacts(smartContacts);
+
     return (
-      <div className="flex flex-col gap-1">
-        {campaign.outboxes.map(outbox => {
-          const user = users.find(user => user.email === outbox.email);
+      <div className="flex flex-col gap-4">
+        {/* Filtres */}
+        <div className="flex gap-2 items-center flex-wrap">
+          <span className="text-sm text-muted-foreground">Filtrer par:</span>
+          {filterOptions.map(option => (
+            <Badge
+              key={option.key}
+              variant={
+                selectedFilters.includes(option.key)
+                  ? option.variant
+                  : 'outline'
+              }
+              className={cn(
+                'cursor-pointer transition-all',
+                selectedFilters.includes(option.key) && 'ring-2 ring-offset-1'
+              )}
+              onClick={() => toggleFilter(option.key)}
+            >
+              {option.label}
+            </Badge>
+          ))}
+          {selectedFilters.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedFilters([])}
+              className="text-xs"
+            >
+              Effacer
+            </Button>
+          )}
+        </div>
 
-          if (!user) {
-            return null;
-          }
-
-          return (
+        {/* Liste des contacts */}
+        <div className="flex flex-col gap-1">
+          {filteredContacts.map(contact => (
             <ContactItem
-              key={`${campaign.id}-${user.id}`}
-              user={user}
-              status="completed"
-              outbox={outbox}
+              key={contact.key}
+              user={contact.user}
+              status={contact.status}
+              outbox={contact.outbox}
             />
-          );
-        })}
+          ))}
+          {filteredContacts.length === 0 && selectedFilters.length > 0 && (
+            <div className="text-center text-muted-foreground py-4">
+              Aucun contact ne correspond aux filtres sélectionnés
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 
+  const regularContacts =
+    campaign.list?.contacts.map(contact => {
+      const outbox = outboxes.find(
+        outbox =>
+          outbox.email === contact.email && outbox.campaignId === campaign.id
+      );
+
+      const queue = queues.find(
+        q =>
+          // @ts-ignore
+          q.payload?.contact?.email === contact.email &&
+          q.correlationId === campaign.id
+      );
+
+      return {
+        key: `${campaign.id}-${contact.id}`,
+        user: contact,
+        status: queue?.status,
+        outbox
+      };
+    }) || [];
+
+  const filteredContacts = filterContacts(regularContacts);
+
   return (
-    <div className="flex flex-col gap-1">
-      {campaign.list?.contacts.map(contact => {
-        const outbox = outboxes.find(
-          outbox =>
-            outbox.email === contact.email && outbox.campaignId === campaign.id
-        );
+    <div className="flex flex-col gap-4">
+      {/* Filtres */}
+      <div className="flex gap-2 items-center flex-wrap">
+        <span className="text-sm text-muted-foreground">Filtrer par:</span>
+        {filterOptions.map(option => (
+          <Badge
+            key={option.key}
+            variant={
+              selectedFilters.includes(option.key) ? option.variant : 'outline'
+            }
+            className={cn(
+              'cursor-pointer transition-all',
+              selectedFilters.includes(option.key) && 'ring-2 ring-offset-1'
+            )}
+            onClick={() => toggleFilter(option.key)}
+          >
+            {option.label}
+          </Badge>
+        ))}
+        {selectedFilters.length > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSelectedFilters([])}
+            className="text-xs"
+          >
+            Effacer
+          </Button>
+        )}
+      </div>
 
-        const queue = queues.find(
-          q =>
-            // @ts-ignore
-            q.payload?.contact?.email === contact.email &&
-            q.correlationId === campaign.id
-        );
-
-        return (
+      {/* Liste des contacts */}
+      <div className="flex flex-col gap-1">
+        {filteredContacts.map(contact => (
           <ContactItem
-            key={`${campaign.id}-${contact.id}`}
-            user={contact}
-            status={queue?.status}
-            outbox={outbox}
+            key={contact.key}
+            user={contact.user}
+            status={contact.status}
+            outbox={contact.outbox}
           />
-        );
-      })}
+        ))}
+        {filteredContacts.length === 0 && selectedFilters.length > 0 && (
+          <div className="text-center text-muted-foreground py-4">
+            Aucun contact ne correspond aux filtres sélectionnés
+          </div>
+        )}
+      </div>
     </div>
   );
 }
