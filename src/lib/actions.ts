@@ -1275,7 +1275,7 @@ export const commentProspect = async (form: FormData) => {
 
 export const createMagicLink = async ({
   email,
-  daysValid = 7,
+  daysValid = 365,
   callbackUrl = uri.app()
 }: {
   email: string;
@@ -1295,16 +1295,12 @@ export const createMagicLink = async ({
       }
     });
 
-    const baseUrl = uri.app();
-    const provider = { id: 'resend' };
-
-    const url = `${baseUrl}/api/auth/callback/${provider.id}?${new URLSearchParams(
-      {
-        callbackUrl,
-        token,
-        email
-      }
-    )}`;
+    const url = uri.base(
+      `/api/auth/magic-link/verify?${new URLSearchParams({
+        token: hash,
+        callbackURL: callbackUrl
+      })}`
+    );
 
     return { url };
   } catch (error: unknown) {
