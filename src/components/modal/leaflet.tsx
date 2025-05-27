@@ -17,6 +17,7 @@ export const Leaflet = ({
   children: ReactNode;
 }) => {
   const leafletRef = useRef<HTMLDivElement>(null);
+
   const controls = useAnimation();
   const dragControls = useDragControls();
 
@@ -59,7 +60,7 @@ export const Leaflet = ({
       <motion.div
         ref={leafletRef}
         key="leaflet"
-        className="fixed inset-x-0 bottom-0 w-screen bg-white pb-5 sm:hidden"
+        className="fixed inset-x-0 bottom-0 w-screen bg-white pb-5"
         initial={{ y: '100%' }}
         animate={controls}
         exit={{ y: '100%' }}
