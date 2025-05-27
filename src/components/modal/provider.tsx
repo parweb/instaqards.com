@@ -8,6 +8,7 @@ interface ModalContextProps {
   // eslint-disable-next-line no-unused-vars
   show: (content: ReactNode) => void;
   hide: () => void;
+  isOpen: boolean;
 }
 
 const ModalContext = createContext<ModalContextProps | undefined>(undefined);
@@ -30,7 +31,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <ModalContext.Provider value={{ show, hide }}>
+    <ModalContext.Provider value={{ show, hide, isOpen: showModal }}>
       {children}
 
       {showModal && (

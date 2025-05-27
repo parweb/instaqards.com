@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Suspense } from 'react';
 
 import { AppSidebar } from 'components/app-sidebar';
+import { MobileBottomNavColorful } from 'components/mobile-bottom-nav-colorful';
 import { PriceTable } from 'components/price-table';
 import Profile from 'components/profile';
 // import { Separator } from 'components/ui/separator';
@@ -113,7 +114,7 @@ export default async function DashboardLayout({
           </div>
         </header>
 
-        <div className="isolate z-10 flex-1 flex flex-col overflow-y-auto">
+        <div className="isolate z-10 flex-1 flex flex-col overflow-y-auto pb-20 md:pb-0">
           {!subscription.valid() && (
             <div className="px-4 py-8">
               <Suspense fallback={null}>
@@ -142,6 +143,8 @@ export default async function DashboardLayout({
           </div>
         </div>
       </SidebarInset>
+
+      <MobileBottomNavColorful />
     </SidebarProvider>
   );
 }

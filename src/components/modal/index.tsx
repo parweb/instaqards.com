@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import useWindowSize from 'hooks/use-window-size';
 import Leaflet from './leaflet';
+import { useIsMobile } from 'hooks/use-mobile';
 
 export default function Modal({
   children,
@@ -17,6 +18,8 @@ export default function Modal({
   setShowModal: Dispatch<SetStateAction<boolean>>;
 }) {
   const desktopModalRef = useRef<HTMLDivElement>(null);
+
+  const isMobile = useIsMobile();
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -31,8 +34,6 @@ export default function Modal({
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [onKeyDown]);
-
-  const { isMobile, isDesktop } = useWindowSize();
 
   useEffect(() => {
     if (showModal) {
@@ -50,9 +51,10 @@ export default function Modal({
     <AnimatePresence>
       {showModal && (
         <div className="pointer-events-auto z-20">
-          {isMobile && <Leaflet setShow={setShowModal}>{children}</Leaflet>}
-
-          {isDesktop && (
+          {isMobile === true && (
+            <Leaflet setShow={setShowModal}>{children}</Leaflet>
+          )}
+          {isMobile === false && (
             <>
               <motion.div
                 key="desktop-backdrop"
