@@ -260,6 +260,7 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
     )
   ) {
     await db.block.findFirstOrThrow({
+      select: { id: true },
       where: { id: blockId, site: { userId: session.user.id } }
     });
   }
@@ -380,6 +381,7 @@ export const createBlock = async (
     )
   ) {
     await db.site.findFirstOrThrow({
+      select: { id: true },
       where: { id: site, userId: session.user.id }
     });
   }
@@ -487,7 +489,17 @@ export const createBlock = async (
 export const duplicateBlock = async (blockId: Block['id']) => {
   try {
     const block = await db.block.findUnique({
-      include: { site: true },
+      select: {
+        type: true,
+        position: true,
+        label: true,
+        href: true,
+        logo: true,
+        style: true,
+        siteId: true,
+        widget: true,
+        site: { select: { id: true, subdomain: true, customDomain: true } }
+      },
       where: { id: blockId }
     });
 
@@ -942,8 +954,29 @@ export const duplicateSite = async (
     // 1. Fetch the original site and its blocks
     const originalSite = await db.site.findUnique({
       where: { id: siteId },
-      include: {
-        blocks: true // Include blocks to duplicate them
+      select: {
+        name: true,
+        subdomain: true,
+        userId: true,
+        message404: true,
+        background: true,
+        display_name: true,
+        description: true,
+        logo: true,
+        font: true,
+        image: true,
+        imageBlurhash: true,
+        blocks: {
+          select: {
+            type: true,
+            position: true,
+            label: true,
+            href: true,
+            logo: true,
+            style: true,
+            widget: true
+          }
+        }
       }
     });
 
@@ -975,6 +1008,7 @@ export const duplicateSite = async (
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const existingSite = await db.site.findUnique({
+        select: { id: true },
         where: { subdomain: newSubdomain }
       });
 
@@ -1197,6 +1231,7 @@ export const bookProspect = async (form: FormData) => {
     });
 
     const destination = await db.user.findUniqueOrThrow({
+      select: { id: true },
       where: { email }
     });
 
@@ -1565,7 +1600,10 @@ export const editCron = async (
 };
 
 export const executeCronManually = async (id: string) => {
-  const cron = await db.cron.findUnique({ where: { id } });
+  const cron = await db.cron.findUnique({
+    select: { id: true, modulePath: true, functionName: true },
+    where: { id }
+  });
 
   if (!cron) throw new Error(`Cron with ID ${id} not found`);
 

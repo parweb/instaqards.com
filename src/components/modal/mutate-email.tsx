@@ -61,7 +61,15 @@ const $selection = atom<z.infer<typeof ListsSchema>['data'][number]['id']>();
 export default function EmailsMutateModal({
   email
 }: {
-  email?: Prisma.EmailGetPayload<{}>;
+  email?: Prisma.EmailGetPayload<{
+    select: {
+      id: true;
+      title: true;
+      description: true;
+      design: true;
+      subject: true;
+    };
+  }>;
 }) {
   const emailEditorRef = useRef<EditorRef>(null);
 

@@ -1,22 +1,9 @@
-import Form from 'next/form';
 import { IconType } from 'react-icons';
-import { z } from 'zod';
-
-import {
-  LuExternalLink,
-  LuPause,
-  LuPencil,
-  LuPlay,
-  LuPlus,
-  LuPointer,
-  LuUser
-} from 'react-icons/lu';
+import { LuPencil, LuPlus } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
 import EmailsMutateModal from 'components/modal/mutate-email';
-import { Button } from 'components/ui/button';
 import { db } from 'helpers/db';
-import { revalidatePath } from 'next/cache';
 
 const Stat = ({
   label,
@@ -31,6 +18,7 @@ const Stat = ({
     <div className="flex items-center justify-center rounded-full bg-stone-100 p-4">
       <Icon className="h-7 w-7" />
     </div>
+
     <div>
       <h4 className="text-muted-foreground">{label}</h4>
       <span className="font-medium">{value}</span>
@@ -40,7 +28,13 @@ const Stat = ({
 
 export default async function WorkflowsEmails() {
   const emails = await db.email.findMany({
-    // include: { list: { include: { contacts: true } } },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      design: true,
+      subject: true
+    },
     orderBy: { updatedAt: 'desc' }
   });
 

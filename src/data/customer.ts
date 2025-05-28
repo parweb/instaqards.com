@@ -16,7 +16,12 @@ export const createOrRetrieveCustomer = async ({
   email,
   name
 }: User) => {
-  const customer = await db.customer.findUnique({ where: { id: uuid } });
+  const customer = await db.customer.findUnique({
+    select: {
+      stripe_customer_id: true
+    },
+    where: { id: uuid }
+  });
 
   if (!customer || !customer?.stripe_customer_id) {
     const customerData: {
@@ -73,6 +78,7 @@ export const manageSubscriptionStatusChange = async (
   createAction = false
 ) => {
   const customerData = await db.customer.findUnique({
+    select: { id: true },
     where: { stripe_customer_id: customerId }
   });
 

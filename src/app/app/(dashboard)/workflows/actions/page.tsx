@@ -18,6 +18,13 @@ import {
 
 export default async function WorkflowsActions() {
   const actions = await db.action.findMany({
+    select: {
+      id: true,
+      code: true,
+      description: true,
+      type: true,
+      isPublished: true
+    },
     orderBy: {
       createdAt: 'desc' // Trier par date de création par exemple
     }
