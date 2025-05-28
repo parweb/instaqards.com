@@ -82,8 +82,7 @@ const steps = [
 ];
 
 export default async function Overview() {
-  const lang = await getLang();
-  const session = await getSession();
+  const [lang, session] = await Promise.all([getLang(), getSession()]);
 
   if (!session || !session?.user) {
     redirect('/login');
@@ -136,28 +135,36 @@ export default async function Overview() {
       ? (today.Visitors / yesterday.Visitors - 1) * 100
       : 0;
 
-  const sites = await db.site.findMany({
-    where: {
-      userId: session.user.id
-    },
-    include: {
-      clicks: true,
-      subscribers: true,
-      likes: true,
-      blocks: { include: { reservations: true } }
-    },
-    orderBy: {
-      updatedAt: 'desc'
-    }
-  });
-
-  const links = await db.link.findMany({ where: { userId: session.user.id } });
-
-  const affiliate = await db.user.findMany({
-    where: {
-      refererId: session.user.id
-    }
-  });
+  const [[sites, affiliate], subscription] = await Promise.all([
+    db.$transaction([
+      db.site.findMany({
+        where: {
+          userId: session.user.id
+        },
+        include: {
+          clicks: true,
+          subscribers: true,
+          likes: true,
+          blocks: { include: { _count: { select: { reservations: true } } } },
+          _count: {
+            select: {
+              blocks: true,
+              subscribers: true
+            }
+          }
+        },
+        orderBy: {
+          updatedAt: 'desc'
+        }
+      }),
+      db.user.findMany({
+        where: {
+          refererId: session.user.id
+        }
+      })
+    ]),
+    getSubscription()
+  ]);
 
   const totalClicks = clicks.length;
   const totalSubscribers = sites.reduce(
@@ -169,13 +176,11 @@ export default async function Overview() {
     (acc, site) =>
       acc +
       site.blocks.reduce(
-        (blockAcc, block) => blockAcc + block.reservations.length,
+        (blockAcc, block) => blockAcc + block._count.reservations,
         0
       ),
     0
   );
-
-  const subscription = await getSubscription();
 
   const checklistState = {
     hasSite: sites.length > 0,
@@ -183,7 +188,7 @@ export default async function Overview() {
     hasCustomDomain: sites.some(site => site.customDomain),
     hasBlock: sites.some(site => site.blocks.length > 0),
     hasReservation: sites.some(site =>
-      site.blocks.some(block => block.reservations.length > 0)
+      site.blocks.some(block => block._count.reservations > 0)
     ),
     hasSubscriber: sites.some(site => site.subscribers.length > 0),
     hasClick: clicks.length > 0,
@@ -200,7 +205,7 @@ export default async function Overview() {
     <div className="p-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-100 via-zinc-100 to-zinc-200 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-800 overflow-hidden">
       {sites.length > 0 && (
         <div className="flex flex-col gap-6 p-6">
-          <div className="flex-1 flex flex-col sm:flex-row items-start items-center gap-4">
+          <div className="flex-1 flex flex-col sm:flex-row items-center gap-4">
             <MetricCard
               title="Total des clics"
               value={totalClicks}
