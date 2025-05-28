@@ -39,41 +39,49 @@ export default async function DashboardLayout({
     redirect('/login');
   }
 
-  const subscription = await getSubscription();
-
-  const products = await db.product.findMany({
-    where: { active: { equals: true } },
-    include: {
-      prices: {
-        where: {
-          active: { equals: true },
-          interval_count: { equals: 1 }
+  const [lang, subscription, [products, sites, prices]] = await Promise.all([
+    getLang(),
+    getSubscription(),
+    db.$transaction([
+      db.product.findMany({
+        where: { active: { equals: true } },
+        select: {
+          prices: {
+            select: {
+              id: true
+            },
+            where: {
+              active: { equals: true },
+              interval_count: { equals: 1 }
+            }
+          }
         }
-      }
-    }
-  });
-
-  const sites = await db.site.findMany({
-    include: {
-      clicks: true,
-      subscribers: true,
-      blocks: { include: { reservations: true } }
-    },
-    orderBy: { updatedAt: 'desc' },
-    where: {
-      userId: session.user.id
-    }
-  });
-
-  const lang = await getLang();
-
-  const prices = await db.price.findMany({
-    where: {
-      product: {
-        active: true
-      }
-    }
-  });
+      }),
+      db.site.findMany({
+        select: {
+          id: true,
+          name: true,
+          subdomain: true,
+          _count: { select: { clicks: true, subscribers: true } },
+          blocks: { select: { _count: { select: { reservations: true } } } }
+        },
+        orderBy: { updatedAt: 'desc' },
+        where: {
+          userId: session.user.id
+        }
+      }),
+      db.price.findMany({
+        where: {
+          product: {
+            active: true
+          }
+        },
+        select: {
+          interval: true
+        }
+      })
+    ])
+  ]);
 
   return (
     <SidebarProvider>

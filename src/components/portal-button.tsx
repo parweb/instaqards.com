@@ -1,7 +1,7 @@
 'use client';
 
-import type { PropsWithChildren } from 'react';
 import { useRouter } from 'next/navigation';
+import type { PropsWithChildren } from 'react';
 import { useState } from 'react';
 import { LuLoader } from 'react-icons/lu';
 

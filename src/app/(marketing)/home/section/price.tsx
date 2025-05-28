@@ -1,6 +1,6 @@
 'use client';
 
-import type { Price as PriceType } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { AlertCircle, Check, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
@@ -84,7 +84,11 @@ const features = [
 
 export const Price: React.FC<{
   lang: Lang;
-  prices: PriceType[];
+  prices: Prisma.PriceGetPayload<{
+    select: {
+      interval: true;
+    };
+  }>[];
   standalone: boolean;
   begin: boolean;
   trial: boolean;
@@ -102,9 +106,21 @@ export const Price: React.FC<{
     setState('idle');
   }, [billingCycle]);
 
-  const offer: Partial<Record<typeof billingCycle, PriceType>> = prices.reduce(
+  const offer: Record<
+    typeof billingCycle,
+    Prisma.PriceGetPayload<{
+      select: {
+        interval: true;
+        unit_amount: true;
+        id: true;
+      };
+    }>
+  > = prices.reduce(
     (carry, price) => ({ ...carry, [String(price.interval)]: price }),
-    {}
+    {
+      year: null as any,
+      month: null as any
+    }
   );
 
   return (

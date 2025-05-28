@@ -8,12 +8,16 @@ import { getURL } from 'helpers/getURL';
 import { stripe } from 'helpers/stripe';
 import { translate } from 'helpers/translate';
 import { getSession } from 'lib/auth';
+import { input } from './input';
 
 export async function POST(req: Request) {
   try {
-    const { priceId, metadata = {} } = await req.json();
+    const { priceId, metadata = {} } = input.parse(await req.json());
 
-    const price = await db.price.findUnique({ where: { id: priceId } });
+    const price = await db.price.findUnique({
+      select: { interval: true, id: true, type: true },
+      where: { id: priceId }
+    });
 
     const quantity = price?.interval === 'month' ? 1 : 12;
     console.info({ priceId, quantity, metadata });

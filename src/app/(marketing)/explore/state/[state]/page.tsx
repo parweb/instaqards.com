@@ -10,6 +10,7 @@ import { Pagination } from 'app/(marketing)/explore/Pagination';
 import { paginate } from 'app/(marketing)/explore/QuerySchema';
 import ModalButton from 'components/modal-button';
 import { db } from 'helpers/db';
+import { connection } from 'next/server';
 
 export default async function StatePage({
   params,
@@ -18,6 +19,8 @@ export default async function StatePage({
   params: Promise<{ state: string }>;
   searchParams: Promise<SearchParams>;
 }) {
+  await connection();
+
   const [state] = (await params).state.split('-');
 
   const { page, take, search } = paginate(await searchParams);
@@ -67,28 +70,22 @@ export default async function StatePage({
       take,
       skip: (page - 1) * take,
       where,
-      include: {
+      select: {
+        id: true,
+        background: true,
         user: {
-          include: {
-            naf: {
-              include: {
-                class: {
-                  include: {
-                    group: {
-                      include: { division: { include: { section: true } } }
-                    }
-                  }
-                }
-              }
-            }
+          select: {
+            name: true,
+            email: true,
+            location: true
           }
         },
-        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+        blocks: {
+          orderBy: [{ position: 'asc' }, { createdAt: 'asc' }]
+        }
       }
     }),
-    db.site.count({
-      where
-    })
+    db.site.count({ where })
   ]);
 
   return (

@@ -1,15 +1,18 @@
+import { type Input } from 'app/api/create-checkout-session/input';
+import { input } from 'app/api/create-checkout-session/input';
+
 export const postData = async ({
   url,
   data
 }: {
   url: string;
-  data?: Record<string, unknown>;
+  data?: Input;
 }) => {
   const res = await fetch(url, {
     method: 'POST',
     headers: new Headers({ 'Content-Type': 'application/json' }),
     credentials: 'same-origin',
-    body: JSON.stringify(data)
+    body: JSON.stringify(input.parse(data))
   });
 
   if (!res.ok) {

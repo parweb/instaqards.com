@@ -3,31 +3,22 @@ import { useMemo } from 'react';
 
 import Yolo from 'components/maps/map/Yolo';
 
-interface MapProps {
-  // users: Pick<User, 'id' | 'name' | 'email' | 'location'>[];
+export const Map = ({
+  sites
+}: {
   sites: Prisma.SiteGetPayload<{
-    include: {
+    select: {
+      id: true;
       user: {
-        include: {
-          naf: {
-            include: {
-              class: {
-                include: {
-                  group: {
-                    include: { division: { include: { section: true } } };
-                  };
-                };
-              };
-            };
-          };
+        select: {
+          name: true;
+          email: true;
+          location: true;
         };
       };
-      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] };
     };
   }>[];
-}
-
-export const Map = ({ sites }: MapProps) => {
+}) => {
   const markers = useMemo(() => {
     return sites
       .map(site => {

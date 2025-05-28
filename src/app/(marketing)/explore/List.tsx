@@ -12,30 +12,19 @@ import { Wrapper } from 'components/website/wrapper';
 
 import 'array-grouping-polyfill';
 
-interface ListProps {
+export const List = ({
+  sites
+}: {
   sites: Prisma.SiteGetPayload<{
-    include: {
-      user: {
-        include: {
-          naf: {
-            include: {
-              class: {
-                include: {
-                  group: {
-                    include: { division: { include: { section: true } } };
-                  };
-                };
-              };
-            };
-          };
-        };
+    select: {
+      id: true;
+      background: true;
+      blocks: {
+        orderBy: [{ position: 'asc' }, { createdAt: 'asc' }];
       };
-      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] };
     };
   }>[];
-}
-
-export const List = ({ sites }: ListProps) => {
+}) => {
   return (
     <div className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 self-stretch p-4">
       {sites.map(site => {

@@ -26,7 +26,17 @@ interface ExecuteWorkflowActionPayload {
 
 const conditionEngine = {
   evaluate: async (
-    ruleConditions: (RuleCondition & { condition: Condition })[],
+    ruleConditions: Prisma.RuleConditionGetPayload<{
+      select: {
+        condition: {
+          select: {
+            id: true;
+            name: true;
+            type: true;
+          };
+        };
+      };
+    }>[],
     _user: User,
     _triggeringEvent: Event,
     _subscription: Subscription | null
@@ -129,13 +139,16 @@ async function processJob(job: Queue): Promise<void> {
     try {
       const rule = await db.rule.findUnique({
         where: { id: ruleId },
-        include: {
+        select: {
+          id: true,
+          isActive: true,
+          workflowId: true,
           action: true,
           trigger: true,
           workflow: true,
           ruleConditions: {
-            include: {
-              condition: true
+            select: {
+              condition: { select: { id: true, name: true, type: true } }
             }
           }
         }

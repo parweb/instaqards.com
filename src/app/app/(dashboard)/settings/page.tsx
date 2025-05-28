@@ -19,6 +19,9 @@ export default async function SettingsPage() {
       product: {
         active: true
       }
+    },
+    select: {
+      interval: true
     }
   });
 

@@ -10,10 +10,24 @@ export const PriceTable = ({
   subscription,
   className
 }: {
-  products: (Product & { prices: Price[] })[];
+  products: (Product & {
+    prices: Prisma.ProductGetPayload<{
+      select: {
+        id: true;
+        metadata: true;
+        interval_count: true;
+        currency: true;
+        unit_amount: true;
+      };
+    }>[];
+  })[];
   subscription?: Subscription &
     Prisma.SubscriptionGetPayload<{
-      include: { price: { include: { product: true } } };
+      select: {
+        priceId: true;
+        cancel_at: true;
+        current_period_end: true;
+      };
     }>;
   className?: string;
 }) => {

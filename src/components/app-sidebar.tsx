@@ -42,10 +42,12 @@ export function AppSidebar(
   props: React.ComponentProps<typeof Sidebar> & {
     role: User['role'];
     sites: Prisma.SiteGetPayload<{
-      include: {
-        clicks: true;
-        subscribers: true;
-        blocks: { include: { reservations: true } };
+      select: {
+        id: true;
+        name: true;
+        subdomain: true;
+        _count: { select: { clicks: true; subscribers: true } };
+        blocks: { select: { _count: { select: { reservations: true } } } };
       };
     }>[];
   }
@@ -142,7 +144,7 @@ export function AppSidebar(
         url: `/site/${site.id}`,
         icon: Frame,
         secondaryUrl: uri.site(site).link,
-        clicks: site.clicks.length
+        clicks: site._count.clicks
       };
     })
   };
@@ -166,7 +168,7 @@ export function AppSidebar(
             url: `/site/${openProject.id}/subscribers`,
             isActive: segments.includes('subscribers'),
             icon: Users,
-            count: openProject.subscribers.length
+            count: openProject._count.subscribers
           },
           {
             title: translate('menu.reservations'),
@@ -174,7 +176,7 @@ export function AppSidebar(
             isActive: segments.includes('reservations'),
             icon: Calendar,
             count: openProject.blocks.reduce(
-              (carry, block) => carry + (block?.reservations?.length ?? 0),
+              (carry, block) => carry + (block?._count.reservations ?? 0),
               0
             )
           },
@@ -183,7 +185,7 @@ export function AppSidebar(
             url: `/site/${openProject.id}/analytics`,
             isActive: segments.includes('analytics'),
             icon: BarChart3,
-            count: openProject.clicks.length
+            count: openProject._count.clicks
           },
           {
             title: translate('menu.settings'),

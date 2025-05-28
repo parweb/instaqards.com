@@ -1,6 +1,6 @@
 'use client';
 
-import type { Price } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { LuLoader } from 'react-icons/lu';
@@ -11,7 +11,17 @@ import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
 import { uri } from 'settings';
 
-export const PriceTableButton = ({ price }: { price: Price }) => {
+export const PriceTableButton = ({
+  price
+}: {
+  price: Prisma.PriceGetPayload<{
+    select: {
+      id: true;
+      metadata: true;
+      interval_count: true;
+    };
+  }>;
+}) => {
   const [loading, setLoading] = useState(false);
 
   const translate = useTranslation();
@@ -21,7 +31,12 @@ export const PriceTableButton = ({ price }: { price: Price }) => {
     price,
     quantity
   }: {
-    price: Price;
+    price: Prisma.PriceGetPayload<{
+      select: {
+        id: true;
+        metadata: true;
+      };
+    }>;
     quantity: number;
   }) => {
     try {
@@ -29,7 +44,10 @@ export const PriceTableButton = ({ price }: { price: Price }) => {
 
       const { sessionId } = await postData({
         url: '/api/create-checkout-session',
-        data: { price, quantity }
+        data: {
+          priceId: price.id,
+          metadata: price.metadata as Record<string, string>
+        }
       });
 
       (await getStripe())?.redirectToCheckout({ sessionId });

@@ -1,4 +1,4 @@
-import { Price as PriceType } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 import { Price } from 'app/(marketing)/home/section/price';
 import { Lang } from 'translations';
@@ -8,7 +8,11 @@ export default function UpgradeAccountModal({
   prices
 }: {
   lang: Lang;
-  prices: PriceType[];
+  prices: Prisma.PriceGetPayload<{
+    select: {
+      interval: true;
+    };
+  }>[];
 }) {
   return (
     <form className="">

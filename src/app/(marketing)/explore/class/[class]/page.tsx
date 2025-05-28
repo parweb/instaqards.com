@@ -71,28 +71,22 @@ export default async function ClassPage({
       take,
       skip: (page - 1) * take,
       where,
-      include: {
+      select: {
+        id: true,
+        background: true,
         user: {
-          include: {
-            naf: {
-              include: {
-                class: {
-                  include: {
-                    group: {
-                      include: { division: { include: { section: true } } }
-                    }
-                  }
-                }
-              }
-            }
+          select: {
+            name: true,
+            email: true,
+            location: true
           }
         },
-        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+        blocks: {
+          orderBy: [{ position: 'asc' }, { createdAt: 'asc' }]
+        }
       }
     }),
-    db.site.count({
-      where
-    })
+    db.site.count({ where })
   ]);
 
   return (

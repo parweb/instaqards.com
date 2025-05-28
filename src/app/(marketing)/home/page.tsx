@@ -12,7 +12,10 @@ export default async function HomePage(props: {
   const lang = await getLang();
 
   const prices = await db.price.findMany({
-    where: { product: { active: true } }
+    where: { product: { active: true } },
+    select: {
+      interval: true
+    }
   });
 
   return (

@@ -96,9 +96,7 @@ export default async function ExplorePage({
         blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
       }
     }),
-    db.site.count({
-      where
-    })
+    db.site.count({ where })
   ]);
 
   return (

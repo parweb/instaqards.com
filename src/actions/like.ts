@@ -30,6 +30,7 @@ export const like = async (
   }
 
   const exist = await db.like.findFirst({
+    select: { id: true },
     where: {
       ip,
       siteId
