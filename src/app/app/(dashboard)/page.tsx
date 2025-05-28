@@ -24,6 +24,7 @@ import PlaceholderCard from 'components/placeholder-card';
 import { ProgressBar } from 'components/progress-bar';
 import Sites from 'components/sites';
 import { db } from 'helpers/db';
+import { rangeParser } from 'helpers/rangeParser';
 import { getLang, translate } from 'helpers/translate';
 import { getAuth, getSubscription } from 'lib/auth';
 
@@ -80,26 +81,43 @@ const steps = [
   }
 ];
 
-export default async function Overview() {
+export default async function Overview({
+  searchParams
+}: {
+  searchParams: Promise<{ range: string }>;
+}) {
+  const params = await searchParams;
+  const range = rangeParser.parse(params.range);
   const [lang, auth] = await Promise.all([getLang(), getAuth()]);
+
+  const where = {
+    ...(range && {
+      createdAt: {
+        gte: range.from,
+        lte: range.to
+      }
+    })
+  };
 
   const clicks = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
     auth.role
   )
     ? await db.click.findMany({
+        orderBy: { createdAt: 'asc' },
         where: {
+          ...where,
           OR: [{ site: { is: {} } }, { block: { site: { is: {} } } }]
-        },
-        orderBy: { createdAt: 'asc' }
+        }
       })
     : await db.click.findMany({
+        orderBy: { createdAt: 'asc' },
         where: {
+          ...where,
           OR: [
             { site: { user: { id: auth.id } } },
             { block: { site: { user: { id: auth.id } } } }
           ]
-        },
-        orderBy: { createdAt: 'asc' }
+        }
       });
 
   const splitByDate = clicks.groupBy(({ createdAt }) =>

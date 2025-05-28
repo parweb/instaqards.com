@@ -9,12 +9,12 @@ import ModalButton from 'components/modal-button';
 import UserCreateModal from 'components/modal/create-user';
 import ProspectsImportModal from 'components/modal/prospects-import';
 import { db } from 'helpers/db';
+import { rangeParser } from 'helpers/rangeParser';
 import { translate } from 'helpers/translate';
 import { getAuth } from 'lib/auth';
 import * as lead from 'services/lead';
 import { uri } from 'settings';
 import { AffiliationChart } from './affiliation-chart';
-import { parser } from './utils';
 
 export default async function AllAffiliation({
   searchParams
@@ -31,8 +31,7 @@ export default async function AllAffiliation({
   const auth = await getAuth();
 
   const params = await searchParams;
-
-  const range = parser.parse(params.range);
+  const range = rangeParser.parse(params.range);
 
   const page = parseInt(params.page) || 1;
   const take = parseInt(params.take) || 25;

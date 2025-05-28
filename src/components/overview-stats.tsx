@@ -1,9 +1,12 @@
 'use client';
 
 import { AreaChart, BadgeDelta, Card, Flex, Metric, Text } from '@tremor/react';
-import { useMemo, useState } from 'react';
+import { useQueryState } from 'nuqs';
+import { useMemo } from 'react';
 
 import { DateRangePicker, type DateRange } from 'components/ui/date-picker';
+import { subYears } from 'date-fns';
+import { rangeParser as dateRangeParser } from 'helpers/rangeParser';
 import useTranslation from 'hooks/use-translation';
 
 const filterDataByDateRange = (
@@ -33,8 +36,12 @@ export default function OverviewStats({
 }) {
   const translate = useTranslation();
 
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
-  const [filteredData, setFilteredData] = useState(chartdata);
+  const [dateRange, setDateRange] = useQueryState<DateRange | null>('range', {
+    shallow: false,
+    parse: dateRangeParser.parse,
+    serialize: dateRangeParser.serialize,
+    defaultValue: null
+  });
 
   const presets = useMemo(
     () => [
@@ -88,25 +95,28 @@ export default function OverviewStats({
           ),
           to: new Date()
         }
+      },
+      {
+        label: 'All time',
+        dateRange: {
+          from: new Date(subYears(new Date(), 100)),
+          to: new Date()
+        }
       }
     ],
     []
   );
 
-  const handleDateRangeChange = (dateRange: DateRange | undefined) => {
-    const range = {
-      from: dateRange?.from
-        ? new Date(dateRange.from.setHours(0, 0, 0, 0))
-        : undefined,
-      to: dateRange?.to
-        ? new Date(dateRange.to.setHours(23, 59, 59, 999))
-        : undefined
-    };
+  const handleDateRangeChange = (selectedRange: DateRange | undefined) => {
+    if (selectedRange?.from && selectedRange?.to) {
+      const rangeToSet: DateRange = {
+        from: new Date(selectedRange.from.setHours(0, 0, 0, 0)),
+        to: new Date(selectedRange.to.setHours(23, 59, 59, 999))
+      };
 
-    setDateRange(range);
-
-    if (dateRange) {
-      setFilteredData(filterDataByDateRange(chartdata, range.from, range.to));
+      setDateRange(rangeToSet);
+    } else {
+      setDateRange(null);
     }
   };
 
@@ -149,7 +159,7 @@ export default function OverviewStats({
 
         <AreaChart
           className="mt-6 h-28"
-          data={filteredData}
+          data={chartdata}
           index="date"
           valueFormatter={(number: number) =>
             Intl.NumberFormat(

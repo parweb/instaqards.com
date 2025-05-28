@@ -1,4 +1,5 @@
 import { subDays } from 'date-fns';
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { LuLoader } from 'react-icons/lu';
 
@@ -9,6 +10,8 @@ import CronModalForm from './CronModalForm';
 import CronTable from './CronTable';
 
 export default async function CronDashboard() {
+  await connection();
+
   const crons = await db.cron.findMany({
     orderBy: { createdAt: 'desc' },
     include: {

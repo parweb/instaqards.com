@@ -5,9 +5,9 @@ import { useQueryState } from 'nuqs';
 import { useMemo, useState } from 'react';
 
 import { DateRangePicker, type DateRange } from 'components/ui/date-picker';
+import { rangeParser as dateRangeParser } from 'helpers/rangeParser';
 import useTranslation from 'hooks/use-translation';
 import { cn } from 'lib/utils';
-import { parser as dateRangeParser } from './utils';
 
 import {
   ComboChart,
