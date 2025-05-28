@@ -1,6 +1,6 @@
 'use client';
 
-import { History, Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { eachDayOfInterval, format, subDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useTransition } from 'react';
@@ -32,6 +32,17 @@ const Th = ({
     {children}
   </th>
 );
+
+type History = Prisma.HistoryGetPayload<{
+  select: {
+    id: true;
+    startedAt: true;
+    status: true;
+    durationMs: true;
+    message: true;
+    endedAt: true;
+  };
+}>;
 
 const GithubStyleGrid = ({
   history,
@@ -155,7 +166,24 @@ export default function CronTable({
   crons
 }: {
   crons: Prisma.CronGetPayload<{
-    include: { history: true };
+    select: {
+      id: true;
+      name: true;
+      cronExpr: true;
+      modulePath: true;
+      functionName: true;
+      enabled: true;
+      history: {
+        select: {
+          id: true;
+          startedAt: true;
+          status: true;
+          durationMs: true;
+          message: true;
+          endedAt: true;
+        };
+      };
+    };
   }>[];
 }) {
   const [isPending, startTransition] = useTransition();

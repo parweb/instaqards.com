@@ -14,8 +14,22 @@ export default async function CronDashboard() {
 
   const crons = await db.cron.findMany({
     orderBy: { createdAt: 'desc' },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      cronExpr: true,
+      modulePath: true,
+      functionName: true,
+      enabled: true,
       history: {
+        select: {
+          id: true,
+          startedAt: true,
+          status: true,
+          durationMs: true,
+          message: true,
+          endedAt: true
+        },
         orderBy: { startedAt: 'desc' },
         where: {
           AND: [

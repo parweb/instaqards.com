@@ -1,7 +1,7 @@
 'use client';
 
-import { History } from '@prisma/client';
-import { useEffect, useState } from 'react';
+import type { Prisma } from '@prisma/client';
+import { useState } from 'react';
 
 import {
   CalendarIcon,
@@ -15,8 +15,8 @@ import {
 } from 'lucide-react';
 
 import { Button } from 'components/ui/button';
-import { cn } from 'lib/utils';
 import useOnScreen from 'hooks/use-on-screen';
+import { cn } from 'lib/utils';
 
 const statusMap = {
   ok: {
@@ -35,6 +35,17 @@ const statusMap = {
     icon: <ClockIcon className="h-4 w-4 text-blue-500" />
   }
 };
+
+type History = Prisma.HistoryGetPayload<{
+  select: {
+    id: true;
+    startedAt: true;
+    status: true;
+    durationMs: true;
+    message: true;
+    endedAt: true;
+  };
+}>;
 
 const HistoryItem = ({ item }: { item: History }) => {
   const [open, setOpen] = useState(false);

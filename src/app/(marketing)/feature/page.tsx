@@ -10,7 +10,9 @@ import * as job from 'data/job';
 export default async function ProPage() {
   const lang = await getLang();
   const site = await db.site.findUnique({
-    include: {
+    select: {
+      id: true,
+      background: true,
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     },
     where: {
