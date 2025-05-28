@@ -1,6 +1,6 @@
 'use client';
 
-import { Site } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -13,7 +13,18 @@ import { cn } from 'lib/utils';
 import { uri } from 'settings';
 import { useModal } from './provider';
 
-export default function DuplicateSiteModal({ site }: { site: Site }) {
+export default function DuplicateSiteModal({
+  site
+}: {
+  site: Prisma.SiteGetPayload<{
+    select: {
+      id: true;
+      subdomain: true;
+      name: true;
+      description: true;
+    };
+  }>;
+}) {
   const router = useRouter();
   const modal = useModal();
 

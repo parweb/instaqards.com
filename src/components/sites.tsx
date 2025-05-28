@@ -14,7 +14,13 @@ export default async function Sites({
   userId?: User['id'] | null;
 }) {
   const sites = await db.site.findMany({
-    include: { clicks: true },
+    select: {
+      id: true,
+      subdomain: true,
+      name: true,
+      description: true,
+      _count: { select: { clicks: true } }
+    },
     orderBy: { createdAt: 'asc' },
     ...(limit ? { take: limit } : {}),
     where: {
@@ -27,7 +33,7 @@ export default async function Sites({
   return sites.length > 0 ? (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {sites.map(site => (
-        <SiteCard key={site.id} data={site} />
+        <SiteCard key={site.id} site={site} />
       ))}
     </div>
   ) : (
