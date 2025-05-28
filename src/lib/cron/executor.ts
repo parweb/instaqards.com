@@ -1,4 +1,4 @@
-import { Cron } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 import { lockCron, unlockCron } from 'lib/cron/lock';
 import { createHistory, persistError, persistSuccess } from 'lib/cron/persist';
@@ -7,7 +7,13 @@ import { validateCronFunction } from 'lib/cron/validate';
 
 export class CronExecutor {
   static async run(
-    cron: Cron,
+    cron: Prisma.CronGetPayload<{
+      select: {
+        id: true;
+        modulePath: true;
+        functionName: true;
+      };
+    }>,
     options: CronExecutionOptions = {}
   ): Promise<CronExecutionResult> {
     await lockCron(cron.id);

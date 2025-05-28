@@ -32,6 +32,7 @@ import ProspectUnassignModal from 'components/modal/unassign-prospect';
 import UserUpdateModal from 'components/modal/update-user';
 import { Badge } from 'components/ui/badge';
 import { formatPhoneNumber } from 'helpers/formatPhoneNumber';
+import { UserKanban } from 'services/lead/type';
 import { EventSchema, UserSchema } from '../../../prisma/generated/zod';
 
 import {
@@ -151,7 +152,7 @@ const ProspectDetail = ({
   codeNaf,
   activity,
   email
-}: User) => {
+}: UserKanban) => {
   return (
     <Card className="mx-auto w-full max-w-3xl">
       <CardHeader className="space-y-1">

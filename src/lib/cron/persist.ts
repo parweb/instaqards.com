@@ -1,8 +1,8 @@
+import { Prisma } from '@prisma/client';
+import { CronExpressionParser } from 'cron-parser';
 import { db } from 'helpers/db';
 import { CronExecutionOptions } from 'lib/cron/types';
-import { CronExpressionParser } from 'cron-parser';
 import { DateTime } from 'luxon';
-import { Cron } from '@prisma/client';
 
 export async function createHistory(
   cronId: string,
@@ -90,7 +90,16 @@ export async function persistError(
   });
 }
 
-function isDue(job: Cron, now: DateTime): boolean {
+function isDue(
+  job: Prisma.CronGetPayload<{
+    select: {
+      lastRunAt: true;
+      cronExpr: true;
+      timezone: true;
+    };
+  }>,
+  now: DateTime
+): boolean {
   let prev;
 
   try {
@@ -119,6 +128,15 @@ export async function getDueCrons() {
 
   // 1. Récupère les candidats (enabled et non-lockés ou lockés depuis > 5 min)
   const candidates = await db.cron.findMany({
+    select: {
+      id: true,
+      lastRunAt: true,
+      cronExpr: true,
+      timezone: true,
+      name: true,
+      modulePath: true,
+      functionName: true
+    },
     where: {
       enabled: true,
       OR: [

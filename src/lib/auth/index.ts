@@ -1,4 +1,4 @@
-import { UserRole, type Site } from '@prisma/client';
+import { Prisma, UserRole, type Site } from '@prisma/client';
 import { compare } from 'bcryptjs';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
@@ -210,7 +210,12 @@ export async function getRole() {
 }
 
 type Option = {
-  site?: Site;
+  site?: Prisma.SiteGetPayload<{
+    select: {
+      id: true;
+      userId: true;
+    };
+  }>;
 };
 
 export async function getSubscription(option?: Option) {

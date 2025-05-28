@@ -1,15 +1,26 @@
-import { SubscriptionStatus, type Prisma, type User } from '@prisma/client';
+import { SubscriptionStatus, type Prisma } from '@prisma/client';
 
-export const isFuture = (date: Date | string) =>
+const isFuture = (date: Date | string) =>
   (typeof date === 'string' ? new Date(date) : date).getTime() >
   new Date().getTime();
 
-export const isPast = (date: Date | string) =>
+const isPast = (date: Date | string) =>
   (typeof date === 'string' ? new Date(date) : date).getTime() <
   new Date().getTime();
 
-export type SubscriptionBase = Prisma.SubscriptionGetPayload<{
-  include: { price: { include: { product: true } } };
+type SubscriptionBase = Prisma.SubscriptionGetPayload<{
+  select: {
+    status: true;
+    trial_end: true;
+    trial_start: true;
+    ended_at: true;
+  };
+}>;
+
+type User = Prisma.UserGetPayload<{
+  select: {
+    createdAt: true;
+  };
 }>;
 
 export class Subscription {

@@ -14,6 +14,7 @@ export async function getSiteData(domain: string) {
           ? { subdomain: subdomain.toLowerCase() }
           : { customDomain: domain.toLowerCase() },
         select: {
+          id: true,
           background: true,
           customDomain: true,
           name: true,

@@ -8,7 +8,16 @@ export default function UserSiteModal({
   user
 }: {
   user: Prisma.UserGetPayload<{
-    include: { sites: true };
+    select: {
+      sites: {
+        select: {
+          id: true;
+          name: true;
+          logo: true;
+          subdomain: true;
+        };
+      };
+    };
   }>;
 }) {
   return (

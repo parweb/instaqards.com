@@ -115,10 +115,21 @@ const Pages = ({ total }: { total: number }) => {
 interface UsersTableProps {
   affiliate?: boolean;
   users: Prisma.UserGetPayload<{
-    include: {
+    select: {
+      id: true;
+      name: true;
+      email: true;
+      image: true;
       sites: true;
+      createdAt: true;
       subscriptions: {
-        include: { price: { include: { product: true } } };
+        select: {
+          id: true;
+          status: true;
+          trial_end: true;
+          trial_start: true;
+          ended_at: true;
+        };
       };
     };
   }>[];
@@ -126,7 +137,7 @@ interface UsersTableProps {
 }
 
 export const UsersTable = ({
-  users: users,
+  users,
   affiliate = false,
   total
 }: UsersTableProps) => {
