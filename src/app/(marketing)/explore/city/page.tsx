@@ -3,7 +3,12 @@ import Link from 'next/link';
 import slugify from 'slugify';
 
 export default async function ActivityPage() {
-  const cities = await db.city.findMany();
+  const cities = await db.city.findMany({
+    select: {
+      id: true,
+      nomReel: true
+    }
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">

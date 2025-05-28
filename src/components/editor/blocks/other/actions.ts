@@ -5,23 +5,24 @@ import { db } from 'helpers/db';
 export const subscribe = async (form: FormData) => {
   console.info({ form: Object.fromEntries([...form.entries()]) });
 
-  const email = String(form.get('email'));
-
-  const block = await db.block.findUnique({
-    include: {
-      site: {
-        include: {
-          user: true
-        }
-      }
-    },
-    where: {
-      id: String(form.get('blockId'))
-    }
-  });
-
   try {
+    const email = String(form.get('email'));
+
+    const block = await db.block.findUnique({
+      select: {
+        siteId: true
+      },
+      where: {
+        id: String(form.get('blockId'))
+      }
+    });
+
     const subscriber = await db.subscriber.create({
+      select: {
+        id: true,
+        siteId: true,
+        email: true
+      },
       data: {
         email,
         siteId: String(block?.siteId)
@@ -41,6 +42,10 @@ export const book = async (form: FormData) => {
   const blockId = String(form.get('blockId'));
 
   const block = await db.block.findUnique({
+    select: {
+      id: true,
+      widget: true
+    },
     where: { id: blockId }
   });
 

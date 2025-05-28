@@ -3,7 +3,12 @@ import Link from 'next/link';
 import slugify from 'slugify';
 
 export default async function ActivityPage() {
-  const sections = await db.nafSection.findMany();
+  const sections = await db.nafSection.findMany({
+    select: {
+      id: true,
+      title: true
+    }
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -1,6 +1,15 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:eslint-plugin-prisma/recommended" // ⇦ ajoute ça
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["prisma"], // ⇦ indispensable
   "rules": {
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "prisma/require-select": "error" // déjà inclus par « recommended », mais je le mets en clair
   }
 }

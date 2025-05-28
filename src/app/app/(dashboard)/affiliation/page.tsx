@@ -15,6 +15,7 @@ import { getAuth } from 'lib/auth';
 import * as lead from 'services/lead';
 import { uri } from 'settings';
 import { AffiliationChart } from './affiliation-chart';
+import { UserKanban } from 'services/lead/type';
 
 export default async function AllAffiliation({
   searchParams
@@ -177,7 +178,7 @@ export default async function AllAffiliation({
     Subscriptions: dailySubscriptionsMap[format(date, 'MMM d')] || 0
   }));
 
-  const prospectsByStatus: Record<string, User[]> = {
+  const prospectsByStatus: Record<string, UserKanban[]> = {
     NEW: prospectsNew,
     IN_PROGRESS: prospectsInProgress,
     WIN: prospectsWin,

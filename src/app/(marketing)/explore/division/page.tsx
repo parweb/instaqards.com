@@ -4,8 +4,15 @@ import slugify from 'slugify';
 
 export default async function ActivityPage() {
   const divisions = await db.nafDivision.findMany({
-    include: {
-      section: true
+    select: {
+      id: true,
+      title: true,
+      section: {
+        select: {
+          id: true,
+          title: true
+        }
+      }
     }
   });
 

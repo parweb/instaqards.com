@@ -4,10 +4,19 @@ import slugify from 'slugify';
 
 export default async function ActivityPage() {
   const groups = await db.nafGroup.findMany({
-    include: {
+    select: {
+      id: true,
+      title: true,
       division: {
-        include: {
-          section: true
+        select: {
+          id: true,
+          title: true,
+          section: {
+            select: {
+              id: true,
+              title: true
+            }
+          }
         }
       }
     }

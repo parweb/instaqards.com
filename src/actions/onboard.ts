@@ -19,11 +19,11 @@ export const onboard = async (values: z.infer<typeof OnboardSchema>) => {
 
   const { email, subdomain } = validatedFields.data;
 
-  const alreadyExistsSubdomain = await db.site.findFirst({
+  const alreadyExistsSubdomain = await db.site.count({
     where: { subdomain }
   });
 
-  if (alreadyExistsSubdomain) {
+  if (alreadyExistsSubdomain > 0) {
     return { error: await translate('actions.onboard.subdomain.error') };
   }
 

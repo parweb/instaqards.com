@@ -13,8 +13,15 @@ export async function getSiteData(domain: string) {
         where: subdomain
           ? { subdomain: subdomain.toLowerCase() }
           : { customDomain: domain.toLowerCase() },
-        include: {
-          user: true,
+        select: {
+          background: true,
+          customDomain: true,
+          name: true,
+          description: true,
+          image: true,
+          logo: true,
+          userId: true,
+          user: { select: { id: true } },
           blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
         }
       });

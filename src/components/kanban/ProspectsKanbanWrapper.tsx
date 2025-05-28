@@ -1,6 +1,5 @@
 'use client';
 
-import { User } from '@prisma/client';
 import { useSetAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -9,6 +8,7 @@ import { toast } from 'sonner';
 
 import { useModal } from 'components/modal/provider';
 import { formatPhoneNumber } from 'helpers/formatPhoneNumber';
+import type { UserKanban } from 'services/lead/type';
 import Kanban from './Kanban';
 import ProspectDetail from './ProspectDetail';
 
@@ -20,11 +20,11 @@ import {
 } from 'components/ui/card';
 
 const $positions = atomWithStorage<
-  Record<User['id'], { position: number; status: string }>
+  Record<UserKanban['id'], { position: number; status: string }>
 >('kanbanPositions', {});
 
 export interface ProspectsKanbanWrapperProps {
-  initialColumns: Record<string, User[]>;
+  initialColumns: Record<string, UserKanban[]>;
   statuses: string[];
   statusLabels: Record<string, string>;
 }
@@ -57,7 +57,7 @@ export default function ProspectsKanbanWrapper({
       sourceStatus: string,
       status: string,
       position: number
-    ): Promise<User | null> => {
+    ): Promise<UserKanban | null> => {
       setPositions(state => ({ ...state, [id]: { position, status } }));
       return null;
 
@@ -109,13 +109,15 @@ export default function ProspectsKanbanWrapper({
       try {
         // Create deep copies to avoid reference issues
         const newColumns = JSON.parse(JSON.stringify(columns));
-        let movedItem: (User & { status: string }) | undefined;
+        let movedItem: (UserKanban & { status: string }) | undefined;
         let sourceStatus = '';
 
         // Find and remove the item from all columns
         for (const status of statuses) {
           const items = newColumns[status] || [];
-          const itemIndex = items.findIndex((item: User) => item.id === id);
+          const itemIndex = items.findIndex(
+            (item: UserKanban) => item.id === id
+          );
           if (itemIndex !== -1) {
             [movedItem] = items.splice(itemIndex, 1);
             newColumns[status] = items;
@@ -155,7 +157,7 @@ export default function ProspectsKanbanWrapper({
         // Update the columns with the fresh data
         const finalColumns = JSON.parse(JSON.stringify(newColumns));
         const destItemsIndex = finalColumns[destStatus].findIndex(
-          (item: User) => item.id === id
+          (item: UserKanban) => item.id === id
         );
         if (destItemsIndex !== -1) {
           finalColumns[destStatus][destItemsIndex] = updatedProspect;
@@ -189,7 +191,7 @@ export default function ProspectsKanbanWrapper({
   }, [columns]);
 
   const showDetails = useCallback(
-    (id: User['id']) => {
+    (id: UserKanban['id']) => {
       const prospect = items[id];
       if (prospect) {
         modal?.show(<ProspectDetail {...prospect} />);
