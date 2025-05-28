@@ -1,5 +1,4 @@
 import { UserRole } from '@prisma/client';
-import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 import CreateSiteButton from 'components/create-site-button';
@@ -7,22 +6,17 @@ import CreateSiteModal from 'components/modal/create-site';
 import Sites from 'components/sites';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
-import { getSession } from 'lib/auth';
+import { getAuth } from 'lib/auth';
 
 export default async function AllSites() {
-  const session = await getSession();
-
-  if (!session || !session?.user) {
-    redirect('/login');
-  }
-
+  const auth = await getAuth();
   const users = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
-    session?.user.role
+    auth.role
   )
     ? await db.user.findMany({
         include: { sites: true },
         where: {
-          id: { not: session.user.id },
+          id: { not: auth.id },
           sites: { some: {} },
           role: { not: UserRole.LEAD }
         }

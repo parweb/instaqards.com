@@ -6,6 +6,7 @@ import { hashPassword, verifyPassword } from 'better-auth/crypto';
 import { nextCookies } from 'better-auth/next-js';
 import { anonymous, emailOTP, magicLink } from 'better-auth/plugins';
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
@@ -184,6 +185,23 @@ export const getSession = async () => {
   return auth.api.getSession({
     headers: await headers()
   });
+};
+
+export const getAuth = async ({
+  redirect: needRedirect = false,
+  throw: needThrow = false
+}: { redirect?: boolean; throw?: boolean } = {}) => {
+  const session = await getSession();
+
+  if (!session?.user && needThrow) {
+    throw new Error('You are not logged in');
+  }
+
+  if (!session?.user && needRedirect) {
+    redirect('/login');
+  }
+
+  return session?.user!;
 };
 
 export async function getRole() {

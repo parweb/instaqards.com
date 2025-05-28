@@ -1,37 +1,32 @@
 import { UserRole } from '@prisma/client';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { LuArrowUpRight } from 'react-icons/lu';
 
 import { WebSite } from 'components/editor/WebSite';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
-import { getSession } from 'lib/auth';
+import { getAuth } from 'lib/auth';
 import { uri } from 'settings';
 
 export default async function SitePosts(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const session = await getSession();
-
-  if (!session) {
-    redirect('/login');
-  }
-
-  const site = await db.site.findUnique({
-    where: { id: decodeURIComponent(params.id) },
-    include: {
-      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
-    }
-  });
+  const [auth, site] = await Promise.all([
+    getAuth(),
+    db.site.findUnique({
+      where: { id: decodeURIComponent(params.id) },
+      include: {
+        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+      }
+    })
+  ]);
 
   if (
     !site ||
-    (site.userId !== session?.user?.id &&
-      !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
-        session?.user.role
-      ))
+    (site.userId !== auth.id &&
+      !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(auth.role))
   ) {
     notFound();
   }

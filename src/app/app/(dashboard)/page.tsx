@@ -1,7 +1,6 @@
 import { UserRole } from '@prisma/client';
 import { Tooltip, TooltipContent, TooltipTrigger } from 'components/ui/tooltip';
 import { eachDayOfInterval, subDays } from 'date-fns';
-import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 import {
@@ -26,7 +25,7 @@ import { ProgressBar } from 'components/progress-bar';
 import Sites from 'components/sites';
 import { db } from 'helpers/db';
 import { getLang, translate } from 'helpers/translate';
-import { getSession, getSubscription } from 'lib/auth';
+import { getAuth, getSubscription } from 'lib/auth';
 
 import 'array-grouping-polyfill';
 
@@ -82,14 +81,10 @@ const steps = [
 ];
 
 export default async function Overview() {
-  const [lang, session] = await Promise.all([getLang(), getSession()]);
-
-  if (!session || !session?.user) {
-    redirect('/login');
-  }
+  const [lang, auth] = await Promise.all([getLang(), getAuth()]);
 
   const clicks = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
-    session.user.role
+    auth.role
   )
     ? await db.click.findMany({
         where: {
@@ -100,8 +95,8 @@ export default async function Overview() {
     : await db.click.findMany({
         where: {
           OR: [
-            { site: { user: { id: session.user.id } } },
-            { block: { site: { user: { id: session.user.id } } } }
+            { site: { user: { id: auth.id } } },
+            { block: { site: { user: { id: auth.id } } } }
           ]
         },
         orderBy: { createdAt: 'asc' }
@@ -139,7 +134,7 @@ export default async function Overview() {
     db.$transaction([
       db.site.findMany({
         where: {
-          userId: session.user.id
+          userId: auth.id
         },
         include: {
           clicks: true,
@@ -159,7 +154,7 @@ export default async function Overview() {
       }),
       db.user.findMany({
         where: {
-          refererId: session.user.id
+          refererId: auth.id
         }
       })
     ]),

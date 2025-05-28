@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import Image from 'next/image';
 import { Suspense } from 'react';
 import * as z from 'zod';
@@ -8,9 +9,7 @@ import * as job from 'data/job';
 import { Job } from 'data/job';
 import { db } from 'helpers/db';
 import { getLang, translate } from 'helpers/translate';
-import { getSession } from 'lib/auth';
-import { nanoid } from 'nanoid';
-import { redirect } from 'next/navigation';
+import { getAuth } from 'lib/auth';
 import { Personas } from './personas';
 
 const ParamsSchema = z.object({
@@ -28,11 +27,7 @@ export default async function ProPage({
 }) {
   const params = ParamsSchema.parse(await searchParams);
 
-  const session = await getSession();
-
-  if (!session || !session.user?.id) {
-    redirect('/api/auth/login/guest');
-  }
+  const auth = await getAuth();
 
   const lang = await getLang();
   const template = await db.site.findUnique({
@@ -72,7 +67,7 @@ export default async function ProPage({
   const already = await db.site.findFirst({
     where: {
       subdomain: { startsWith: `${template.subdomain}-` },
-      user: { id: session.user.id }
+      user: { id: auth.id }
     }
   });
 
@@ -92,7 +87,7 @@ export default async function ProPage({
         customDomain: null,
         message404: template.message404,
         background: template.background,
-        user: { connect: { id: session.user.id } }
+        user: { connect: { id: auth.id } }
       }
     });
 

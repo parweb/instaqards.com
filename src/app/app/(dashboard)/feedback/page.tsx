@@ -1,26 +1,21 @@
 import { revalidatePath } from 'next/cache';
 import Form from 'next/form';
-import { redirect } from 'next/navigation';
 
 import { AutosizeTextarea } from 'components/ui/autosize-textarea';
 import { Button } from 'components/ui/button';
-import { currentUser } from 'helpers/auth';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
+import { getAuth } from 'lib/auth';
 
 export default async function FeedbackPage() {
-  const user = await currentUser();
-
-  if (!user) {
-    redirect('/login');
-  }
+  const auth = await getAuth();
 
   const feedbacks = await db.feedback.findMany({
     include: {
       user: true
     },
     where: {
-      userId: user.id
+      userId: auth.id
     },
     orderBy: {
       createdAt: 'desc'
@@ -47,7 +42,7 @@ export default async function FeedbackPage() {
               await db.feedback.create({
                 data: {
                   message,
-                  userId: user.id
+                  userId: auth.id
                 }
               });
 

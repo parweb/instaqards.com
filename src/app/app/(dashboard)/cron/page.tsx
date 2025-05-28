@@ -4,15 +4,11 @@ import { LuLoader } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
 import { db } from 'helpers/db';
-import { getSession } from 'lib/auth';
 import { CronJobStatus } from './CronJobStatus';
 import CronModalForm from './CronModalForm';
 import CronTable from './CronTable';
 
 export default async function CronDashboard() {
-  const session = await getSession();
-  if (!session?.user) return null;
-
   const crons = await db.cron.findMany({
     orderBy: { createdAt: 'desc' },
     include: {

@@ -1,10 +1,10 @@
 import { UserRole } from '@prisma/client';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { LuArrowUpRight } from 'react-icons/lu';
 
 import { db } from 'helpers/db';
-import { getSession } from 'lib/auth';
+import { getAuth } from 'lib/auth';
 import { uri } from 'settings';
 import SiteSettingsNav from './nav';
 
@@ -12,26 +12,20 @@ export default async function SiteAnalyticsLayout(props: {
   params: Promise<{ id: string }>;
   children: ReactNode;
 }) {
+  const { children } = props;
   const params = await props.params;
 
-  const { children } = props;
-
-  const session = await getSession();
-
-  if (!session) {
-    redirect('/login');
-  }
-
-  const site = await db.site.findUnique({
-    where: { id: decodeURIComponent(params.id) }
-  });
+  const [auth, site] = await Promise.all([
+    getAuth(),
+    db.site.findUnique({
+      where: { id: decodeURIComponent(params.id) }
+    })
+  ]);
 
   if (
     !site ||
-    (site.userId !== session?.user?.id &&
-      !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
-        session?.user.role
-      ))
+    (site.userId !== auth.id &&
+      !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(auth.role))
   ) {
     notFound();
   }

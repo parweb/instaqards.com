@@ -12,12 +12,6 @@ export default async function Generator(props: {
 
   const { siteId } = searchParams;
 
-  const session = await getSession();
-
-  if (!session) {
-    redirect('/login');
-  }
-
   const site = siteId
     ? await db.site.findUnique({
         where: { id: siteId },

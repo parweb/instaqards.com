@@ -5,14 +5,10 @@ import { redirect } from 'next/navigation';
 
 import { db } from 'helpers/db';
 import { revalidate } from 'helpers/revalidate';
-import { getSession } from 'lib/auth';
+import { getAuth } from 'lib/auth';
 
 export const generateSite = async (form: FormData) => {
-  const session = await getSession();
-
-  if (!session) {
-    redirect('/login');
-  }
+  const auth = await getAuth({ throw: true });
 
   const siteId = form.get('siteId') as string;
 
@@ -53,7 +49,7 @@ export const generateSite = async (form: FormData) => {
       name,
       description,
       subdomain,
-      user: { connect: { id: session.user.id } }
+      user: { connect: { id: auth.id } }
     }
   });
 
@@ -68,7 +64,7 @@ export const generateSite = async (form: FormData) => {
       name,
       description,
       subdomain,
-      user: { connect: { id: session.user.id } }
+      user: { connect: { id: auth.id } }
     }
   });
 

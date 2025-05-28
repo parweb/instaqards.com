@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 import {
   BadgeCheck,
@@ -11,7 +10,7 @@ import {
 
 import LogoutButton from 'components/logout-button';
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
-import { getSession } from 'lib/auth';
+import { getAuth } from 'lib/auth';
 
 import {
   DropdownMenu,
@@ -30,21 +29,16 @@ import {
 } from 'components/ui/sidebar';
 
 export default async function Profile() {
-  const session = await getSession();
-
-  if (!session?.user) {
-    redirect('/login');
-  }
+  const auth = await getAuth();
 
   const user: {
     name: string;
     email: string;
     avatar: string;
   } = {
-    name: session.user.name ?? '',
-    email: session.user.email ?? '',
-    avatar:
-      session.user.image ?? `https://avatar.vercel.sh/${session.user.email}`
+    name: auth.name ?? '',
+    email: auth.email ?? '',
+    avatar: auth.image ?? `https://avatar.vercel.sh/${auth.email}`
   };
 
   return (

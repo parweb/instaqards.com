@@ -316,7 +316,10 @@ const ContactItem = ({
 const getContactStatuses = (
   outbox: Pick<Outbox, 'id' | 'status' | 'metadata'> | undefined,
   status: string | undefined,
-  phoneReservations?: Pick<Reservation, 'id' | 'type' | 'email' | 'dateStart' | 'dateEnd' | 'comment' | 'createdAt'>[]
+  phoneReservations?: Pick<
+    Reservation,
+    'id' | 'type' | 'email' | 'dateStart' | 'dateEnd' | 'comment' | 'createdAt'
+  >[]
 ) => {
   const statuses: string[] = [];
 

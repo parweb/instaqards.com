@@ -1,21 +1,16 @@
-import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 import { Price } from 'app/(marketing)/home/section/price';
 import Form from 'components/form';
 import { PortalButton } from 'components/portal-button';
+import { Button } from 'components/ui/button';
 import { db } from 'helpers/db';
 import { getLang } from 'helpers/translate';
 import { patchUser } from 'lib/actions';
-import { getSession, getSubscription } from 'lib/auth';
-import { Button } from 'components/ui/button';
-import Link from 'next/link';
+import { getAuth, getSubscription } from 'lib/auth';
 
 export default async function SettingsPage() {
-  const session = await getSession();
-
-  if (!session || !session.user) {
-    redirect('/login');
-  }
+  const auth = await getAuth();
 
   const lang = await getLang();
 
@@ -88,7 +83,7 @@ export default async function SettingsPage() {
           inputAttrs={{
             name: 'isTwoFactorEnabled',
             type: 'switch',
-            defaultValue: session.user.isTwoFactorEnabled ?? false,
+            defaultValue: auth.isTwoFactorEnabled ?? false,
             placeholder: 'Your name'
           }}
           handleSubmit={
@@ -107,7 +102,7 @@ export default async function SettingsPage() {
           inputAttrs={{
             name: 'name',
             type: 'text',
-            defaultValue: session.user.name ?? '',
+            defaultValue: auth.name ?? '',
             placeholder: 'Your name',
             maxLength: 32
           }}
@@ -127,7 +122,7 @@ export default async function SettingsPage() {
           inputAttrs={{
             name: 'email',
             type: 'email',
-            defaultValue: session.user.email ?? '',
+            defaultValue: auth.email ?? '',
             placeholder: 'Your email'
           }}
           handleSubmit={

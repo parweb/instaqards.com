@@ -1,7 +1,6 @@
 import { Prisma, SubscriptionStatus, User, UserRole } from '@prisma/client';
 import { eachDayOfInterval, format } from 'date-fns';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { LuArrowUpRight } from 'react-icons/lu';
 
 import { UsersTable } from 'app/app/(dashboard)/users/users-table';
@@ -11,7 +10,7 @@ import UserCreateModal from 'components/modal/create-user';
 import ProspectsImportModal from 'components/modal/prospects-import';
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
-import { getSession } from 'lib/auth';
+import { getAuth } from 'lib/auth';
 import * as lead from 'services/lead';
 import { uri } from 'settings';
 import { AffiliationChart } from './affiliation-chart';
@@ -29,11 +28,7 @@ export default async function AllAffiliation({
     range: string;
   }>;
 }) {
-  const session = await getSession();
-
-  if (!session || !session?.user) {
-    redirect('/login');
-  }
+  const auth = await getAuth();
 
   const params = await searchParams;
 
@@ -47,11 +42,11 @@ export default async function AllAffiliation({
 
   const isSeller = [UserRole.SELLER, UserRole.ADMIN].includes(
     // @ts-ignore
-    session.user.role
+    auth.role
   );
 
   const where: Prisma.UserWhereInput = {
-    refererId: session.user.id,
+    refererId: auth.id,
     ...(subscription !== 'all' && {
       subscriptions: {
         some: {
@@ -92,7 +87,7 @@ export default async function AllAffiliation({
     }),
     db.click.findMany({
       where: {
-        refererId: session.user.id,
+        refererId: auth.id,
         createdAt: { gte: range?.from, lte: range?.to }
       },
       select: { createdAt: true }
@@ -104,7 +99,7 @@ export default async function AllAffiliation({
         quantity: true
       },
       where: {
-        user: { refererId: session.user.id },
+        user: { refererId: auth.id },
         created: { gte: range?.from, lte: range?.to }
       }
     }),
@@ -150,9 +145,7 @@ export default async function AllAffiliation({
     const dateStr = format(sub.created, 'MMM d');
     dailySubscriptionsMap[dateStr] =
       (dailySubscriptionsMap[dateStr] || 0) +
-      ((sub.price.unit_amount || 0) / 100) *
-        sub.quantity *
-        session.user.affiliateRate;
+      ((sub.price.unit_amount || 0) / 100) * sub.quantity * auth.affiliateRate;
   });
 
   const earliestDateOverall =
@@ -208,11 +201,11 @@ export default async function AllAffiliation({
         </h1>
 
         <Link
-          href={uri.app(`/?r=${session.user.id}`)}
+          href={uri.app(`/?r=${auth.id}`)}
           target="_blank"
           className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700 flex items-center gap-2"
         >
-          <span>{uri.app(`/?r=${session.user.id}`)}</span>
+          <span>{uri.app(`/?r=${auth.id}`)}</span>
           <LuArrowUpRight />
         </Link>
       </hgroup>

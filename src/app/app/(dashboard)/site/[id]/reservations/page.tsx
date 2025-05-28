@@ -1,10 +1,10 @@
 import { UserRole } from '@prisma/client';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { LuArrowUpRight } from 'react-icons/lu';
 
 import { Badge } from 'components/ui/badge';
 import { db } from 'helpers/db';
-import { getSession } from 'lib/auth';
+import { getAuth } from 'lib/auth';
 import { cn } from 'lib/utils';
 import { uri } from 'settings';
 import { Calendar } from './client';
@@ -19,22 +19,17 @@ export default async function SiteReservations(props: {
   const params = await props.params;
   const date = query.date ? new Date(query.date) : new Date();
 
-  const session = await getSession();
-
-  if (!session || !session?.user) {
-    redirect('/login');
-  }
-
-  const site = await db.site.findUnique({
-    where: { id: decodeURIComponent(params.id) }
-  });
+  const [auth, site] = await Promise.all([
+    getAuth(),
+    db.site.findUnique({
+      where: { id: decodeURIComponent(params.id) }
+    })
+  ]);
 
   if (
     !site ||
-    (site.userId !== session?.user?.id &&
-      !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
-        session?.user.role
-      ))
+    (site.userId !== auth.id &&
+      !([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(auth.role))
   ) {
     notFound();
   }

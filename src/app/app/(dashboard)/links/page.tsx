@@ -1,31 +1,26 @@
 import { UserRole } from '@prisma/client';
-import { redirect } from 'next/navigation';
 
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
-import { getSession } from 'lib/auth';
+import { getAuth } from 'lib/auth';
 import { CreateButton } from './CreateButton';
 import { LinkCard } from './LinkCard';
 import { MutateModal } from './MutateModal';
 
 export default async function AllLinks() {
-  const session = await getSession();
-
-  if (!session || !session?.user) {
-    redirect('/login');
-  }
+  const auth = await getAuth();
 
   const links = await db.link.findMany({
     include: { clicks: true },
-    where: { userId: session.user.id }
+    where: { userId: auth.id }
   });
 
   const users = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
-    session?.user.role
+    auth.role
   )
     ? await db.user.findMany({
         include: { links: { include: { clicks: true } } },
-        where: { id: { not: session.user.id }, links: { some: {} } }
+        where: { id: { not: auth.id }, links: { some: {} } }
       })
     : [];
 
