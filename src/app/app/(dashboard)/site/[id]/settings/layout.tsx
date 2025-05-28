@@ -18,6 +18,11 @@ export default async function SiteAnalyticsLayout(props: {
   const [auth, site] = await Promise.all([
     getAuth(),
     db.site.findUnique({
+      select: {
+        name: true,
+        userId: true,
+        subdomain: true
+      },
       where: { id: decodeURIComponent(params.id) }
     })
   ]);

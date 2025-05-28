@@ -10,7 +10,7 @@ import { ulid } from 'ulid';
 
 import { db } from 'helpers/db';
 import { trySafe } from 'helpers/trySafe';
-import { sender, uri } from 'settings';
+import { sender } from 'settings';
 import { DEFAULT_LANG, type Lang } from 'translations';
 import ConfirmAccountEmail from '../../emails/confirm-account';
 import MagicLinkEmail from '../../emails/magic-link';
@@ -20,8 +20,6 @@ import ResetPasswordEmail from '../../emails/reset-password';
 import TwoFactorTokenEmail from '../../emails/two-factor-token';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-const domain = uri.app();
 
 export const getLang = async () => {
   let lang = (((await cookies()) as unknown as UnsafeUnwrappedCookies).get(
@@ -87,6 +85,7 @@ export const sendHtmlWithCampaign = async (
       const correlationId = nanoid();
 
       const destination = await db.user.findUnique({
+        select: { id: true },
         where: { email: to }
       });
 
@@ -197,6 +196,7 @@ const sendTemplateReact = async (
       const correlationId = nanoid();
 
       const destination = await db.user.findUnique({
+        select: { id: true },
         where: { email: to }
       });
 

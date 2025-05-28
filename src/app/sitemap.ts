@@ -6,7 +6,10 @@ import { marketingRoutes, uri } from 'settings';
 
 export default async function Sitemap() {
   const [sites, allCities] = await Promise.all([
-    db.site.findMany({ orderBy: { updatedAt: 'desc' } }),
+    db.site.findMany({
+      select: { subdomain: true },
+      orderBy: { updatedAt: 'desc' }
+    }),
     city.all()
   ]);
 

@@ -31,7 +31,17 @@ export default async function ProPage({
 
   const lang = await getLang();
   const template = await db.site.findUnique({
-    include: {
+    select: {
+      subdomain: true,
+      name: true,
+      display_name: true,
+      description: true,
+      logo: true,
+      font: true,
+      image: true,
+      imageBlurhash: true,
+      message404: true,
+      background: true,
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     },
     where: {

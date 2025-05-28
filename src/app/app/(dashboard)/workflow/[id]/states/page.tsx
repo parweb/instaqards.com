@@ -4,9 +4,8 @@ export default async function WorkflowStates(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-
   const states = await db.workflowState.findMany({
-    include: { user: true },
+    select: { id: true, user: true },
     where: { workflowId: params.id }
   });
 

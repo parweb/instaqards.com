@@ -537,7 +537,15 @@ export const deleteBlock = async (blockId: Block['id']) => {
   }
 };
 
-export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
+export const updateSite = withSiteAuth<
+  Prisma.SiteGetPayload<{
+    select: {
+      id: true;
+      customDomain: true;
+      subdomain: true;
+    };
+  }>
+>(async (formData, site, key) => {
   const session = await getSession();
 
   if (!session?.user?.id) {
@@ -550,6 +558,7 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
     )
   ) {
     await db.site.findFirstOrThrow({
+      select: { id: true },
       where: { id: site.id, userId: session.user.id }
     });
   }
@@ -561,7 +570,13 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
   const value = String(formData.get(key));
 
   try {
-    let response: Site = site;
+    let response: Prisma.SiteGetPayload<{
+      select: {
+        id: true;
+        customDomain: true;
+        subdomain: true;
+      };
+    }> = site;
 
     if (key === 'customDomain') {
       if (value.includes('vercel.pub')) {
@@ -570,6 +585,11 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
 
       if (validDomainRegex.test(value)) {
         response = await db.site.update({
+          select: {
+            id: true,
+            customDomain: true,
+            subdomain: true
+          },
           where: { id: site.id },
           data: {
             customDomain: value.toLowerCase()
@@ -578,6 +598,11 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
         await Promise.all([addDomainToVercel(value)]);
       } else if (value === '') {
         response = await db.site.update({
+          select: {
+            id: true,
+            customDomain: true,
+            subdomain: true
+          },
           where: { id: site.id },
           data: {
             customDomain: null
@@ -590,6 +615,11 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
       }
     } else if (['css-background'].includes(key)) {
       response = await db.site.update({
+        select: {
+          id: true,
+          customDomain: true,
+          subdomain: true
+        },
         where: { id: site.id },
         data: {
           background: value
@@ -622,6 +652,11 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
       const blurhash = key === 'image' ? await getBlurDataURL(url) : null;
 
       response = await db.site.update({
+        select: {
+          id: true,
+          customDomain: true,
+          subdomain: true
+        },
         where: { id: site.id },
         data: {
           [key]: url,
@@ -648,6 +683,11 @@ export const updateSite = withSiteAuth<Site>(async (formData, site, key) => {
       });
     } else {
       response = await db.site.update({
+        select: {
+          id: true,
+          customDomain: true,
+          subdomain: true
+        },
         where: { id: site.id },
         data: {
           [key]: value
@@ -759,11 +799,11 @@ export const updateUser = async (form: FormData, userId: User['id']) => {
       return { error: await translate('auth.error') };
     }
 
-    const old = await db.user.findUnique({
+    const old = await db.user.count({
       where: { id: userId }
     });
 
-    if (!old) {
+    if (old === 0) {
       return { error: await translate('error') };
     }
 

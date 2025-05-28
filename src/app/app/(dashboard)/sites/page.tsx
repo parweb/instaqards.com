@@ -14,7 +14,7 @@ export default async function AllSites() {
     auth.role
   )
     ? await db.user.findMany({
-        include: { sites: true },
+        select: { id: true, name: true, email: true },
         where: {
           id: { not: auth.id },
           sites: { some: {} },

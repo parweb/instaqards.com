@@ -29,6 +29,7 @@ export const newVerification = async (token: string) => {
   }
 
   await db.user.update({
+    select: { id: true },
     where: { id: existingUser.id },
     data: {
       emailVerified: true,

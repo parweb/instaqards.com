@@ -6,7 +6,16 @@ import { db } from 'helpers/db';
 
 export default async function WorkflowsLists() {
   const lists = await db.list.findMany({
-    include: { contacts: true, owners: true },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      _count: {
+        select: {
+          contacts: true
+        }
+      }
+    },
     orderBy: { updatedAt: 'desc' }
   });
 
@@ -31,7 +40,7 @@ export default async function WorkflowsLists() {
             className="flex items-center justify-between gap-4 rounded-md border p-4"
           >
             <div className="flex aspect-square w-15 items-center justify-center rounded-md border p-4">
-              {list.contacts.length}
+              {list._count.contacts}
             </div>
 
             <div className="flex-1">

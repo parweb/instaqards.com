@@ -8,7 +8,13 @@ import { Input } from 'components/ui/input';
 import { db } from 'helpers/db';
 
 export default async function WorkflowsTriggers() {
-  const triggers = await db.trigger.findMany();
+  const triggers = await db.trigger.findMany({
+    select: {
+      id: true,
+      code: true,
+      description: true
+    }
+  });
 
   return (
     <div className="flex flex-col space-y-6">

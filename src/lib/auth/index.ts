@@ -1,4 +1,4 @@
-import { Prisma, UserRole, type Site } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
 import { compare } from 'bcryptjs';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
@@ -221,7 +221,12 @@ type Option = {
 export async function getSubscription(option?: Option) {
   if (option?.site) {
     const subscription = await db.subscription.findFirst({
-      include: { price: { include: { product: true } } },
+      select: {
+        status: true,
+        trial_end: true,
+        trial_start: true,
+        ended_at: true
+      },
       where: {
         user: { sites: { some: { id: option?.site?.id } } },
         status: { in: ['trialing', 'active'] }
@@ -230,9 +235,8 @@ export async function getSubscription(option?: Option) {
 
     const user = option.site.userId
       ? await db.user.findUnique({
-          where: {
-            id: option.site.userId
-          }
+          select: { createdAt: true },
+          where: { id: option.site.userId }
         })
       : null;
 
@@ -247,7 +251,12 @@ export async function getSubscription(option?: Option) {
 
   return new Subscription(
     await db.subscription.findFirst({
-      include: { price: { include: { product: true } } },
+      select: {
+        status: true,
+        trial_end: true,
+        trial_start: true,
+        ended_at: true
+      },
       where: {
         user: { id: session.user.id },
         status: { in: ['trialing', 'active'] }
@@ -255,9 +264,8 @@ export async function getSubscription(option?: Option) {
     }),
     session.user.id
       ? await db.user.findUnique({
-          where: {
-            id: session.user.id
-          }
+          select: { createdAt: true },
+          where: { id: session.user.id }
         })
       : null
   );
@@ -272,7 +280,13 @@ export async function isPaid() {
 export function withSiteAuth<T>(
   action: (
     form: FormData, // eslint-disable-line no-unused-vars
-    site: Site, // eslint-disable-line no-unused-vars
+    site: Prisma.SiteGetPayload<{
+      select: {
+        id: true;
+        customDomain: true;
+        subdomain: true;
+      };
+    }>, // eslint-disable-line no-unused-vars
     key: string | null // eslint-disable-line no-unused-vars
   ) => Promise<{ error: string } | T>
 ) {
@@ -288,6 +302,12 @@ export function withSiteAuth<T>(
     }
 
     const site = await db.site.findUnique({
+      select: {
+        id: true,
+        customDomain: true,
+        subdomain: true,
+        userId: true
+      },
       where: { id: siteId }
     });
 

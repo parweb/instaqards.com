@@ -100,7 +100,13 @@ const Prospects = () => {
 export default function ListsMutateModal({
   list
 }: {
-  list?: Prisma.ListGetPayload<{ include: { owners: true; contacts: true } }>;
+  list?: Prisma.ListGetPayload<{
+    select: {
+      id: true;
+      title: true;
+      description: true;
+    };
+  }>;
 }) {
   const router = useRouter();
   const modal = useModal();

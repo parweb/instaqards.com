@@ -43,7 +43,9 @@ const Inner = ({
   preview: boolean;
   setPreview: Dispatch<SetStateAction<boolean>>;
   data: Record<Block['type'], Block[]>;
-  site: Site;
+  site: Prisma.SiteGetPayload<{
+    select: { background: true; id: true; blocks: true };
+  }>;
 }) => {
   return (
     <Wrapper className={cn(preview === true && 'fixed inset-0 z-10')}>
@@ -98,7 +100,9 @@ const Inner = ({
 export const WebSite = ({
   site
 }: {
-  site: Prisma.SiteGetPayload<{ include: { blocks: true } }>;
+  site: Prisma.SiteGetPayload<{
+    select: { background: true; id: true; blocks: true };
+  }>;
 }) => {
   const [preview, setPreview] = useState(false);
 

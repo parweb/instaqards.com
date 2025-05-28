@@ -10,9 +10,14 @@ export default async function SiteSettingsIndex(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const [auth, data] = await Promise.all([
+  const [auth, site] = await Promise.all([
     getAuth(),
     db.site.findUnique({
+      select: {
+        name: true,
+        description: true,
+        userId: true
+      },
       where: {
         id: decodeURIComponent(params.id)
       }
@@ -55,7 +60,7 @@ export default async function SiteSettingsIndex(props: {
           inputAttrs={{
             name: 'userId',
             type: 'select',
-            defaultValue: data?.userId ?? '',
+            defaultValue: site?.userId ?? '',
             placeholder: 'Select a user',
             options: users.map(user => ({
               id: user.id,
@@ -80,7 +85,7 @@ export default async function SiteSettingsIndex(props: {
         inputAttrs={{
           name: 'name',
           type: 'text',
-          defaultValue: data?.name ?? '',
+          defaultValue: site?.name ?? '',
           placeholder: 'My Awesome Site',
           maxLength: 32
         }}
@@ -100,7 +105,7 @@ export default async function SiteSettingsIndex(props: {
         inputAttrs={{
           name: 'description',
           type: 'text',
-          defaultValue: data?.description ?? '',
+          defaultValue: site?.description ?? '',
           placeholder: 'A blog about really interesting things.'
         }}
         handleSubmit={
@@ -112,7 +117,7 @@ export default async function SiteSettingsIndex(props: {
         }
       />
 
-      <DeleteSiteForm siteName={data?.name ?? ''} />
+      <DeleteSiteForm siteName={site?.name ?? ''} />
     </div>
   );
 }

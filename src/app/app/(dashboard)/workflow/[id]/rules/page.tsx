@@ -6,7 +6,7 @@ export default async function WorkflowsRules(props: {
   const params = await props.params;
 
   const rules = await db.rule.findMany({
-    include: { trigger: true, action: true },
+    select: { id: true, trigger: true, action: true },
     where: {
       workflowId: params.id
     }

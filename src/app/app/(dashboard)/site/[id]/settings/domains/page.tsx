@@ -7,6 +7,10 @@ export default async function SiteSettingsDomains(props: {
 }) {
   const params = await props.params;
   const data = await db.site.findUnique({
+    select: {
+      subdomain: true,
+      customDomain: true
+    },
     where: {
       id: decodeURIComponent(params.id)
     }

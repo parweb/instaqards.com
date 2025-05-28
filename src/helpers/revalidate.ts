@@ -1,9 +1,17 @@
-import { Site } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 
 import { db } from 'helpers/db';
 
-export const revalidate = async (thing: Site) => {
+export const revalidate = async (
+  thing: Prisma.SiteGetPayload<{
+    select: {
+      id: true;
+      customDomain: true;
+      subdomain: true;
+    };
+  }>
+) => {
   if (thing.id) {
     await db.site.update({
       where: { id: thing.id },

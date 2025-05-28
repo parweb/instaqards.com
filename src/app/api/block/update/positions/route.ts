@@ -1,9 +1,11 @@
 import type { Block, Site } from '@prisma/client';
 import { type NextRequest, NextResponse } from 'next/server';
+import * as z from 'zod';
 
 import { db } from 'helpers/db';
 import { revalidate } from 'helpers/revalidate';
 import { getSession } from 'lib/auth';
+import { input } from './input';
 
 export async function POST(request: NextRequest) {
   const session = await getSession();
@@ -12,10 +14,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { result, site } = (await request.json()) as {
-    result: Block[];
-    site: Site;
-  };
+  const { result, site } = input.parse(await request.json());
 
   const blocks = await db.$transaction(
     result.map(({ id }, position) =>

@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Block, Site } from '@prisma/client';
+import type { Block, Prisma, Site } from '@prisma/client';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { Suspense, useEffect, useState } from 'react';
@@ -38,6 +38,7 @@ import DuplicateBlockButton from 'components/duplicate-block-button';
 import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
+import { input } from 'app/api/block/update/positions/input';
 
 const BlockWidget = dynamic(() => import('./BlockWidget'), {
   loading: () => (
@@ -303,7 +304,7 @@ export const BlockList = ({
   editor = false
 }: {
   blocks: Block[];
-  site: Site;
+  site: Prisma.SiteGetPayload<{ select: { id: true } }>;
   type: 'main' | 'social';
   editor?: boolean;
 }) => {
@@ -331,7 +332,7 @@ export const BlockList = ({
 
         fetch('/api/block/update/positions', {
           method: 'POST',
-          body: JSON.stringify({ result, site })
+          body: JSON.stringify(input.parse({ result, site }))
         });
 
         return result;

@@ -8,8 +8,8 @@ export default async function WorkflowActionPage({
   params: Promise<{ id: string }>;
 }) {
   const query = await params;
-
   const actions = await db.action.findMany({
+    select: { id: true, type: true },
     where: {
       type: query.id as Action['type']
     }
