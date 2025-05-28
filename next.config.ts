@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  reactStrictMode: false,
   distDir: process.env.NODE_ENV === 'production' ? '.next' : '.next-dev',
   // typescript: { ignoreBuildErrors: true },
   allowedDevOrigins: ['qards.local', '*.qards.local'],
