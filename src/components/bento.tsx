@@ -31,9 +31,9 @@ const Bento = ({ children }: BentoProps) => {
   };
 
   return (
-    <div className="grid grid-cols-2 grid-rows-3 gap-4 w-full mx-auto rounded-lg aspect-[2/3]">
+    <div className="mx-auto grid aspect-[2/3] w-full grid-cols-2 grid-rows-3 gap-4 rounded-lg">
       <motion.div
-        className="relative flex justify-center items-center row-span-2"
+        className="relative row-span-2 flex items-center justify-center"
         variants={baseVariants}
         initial={{
           ...baseVariants.hidden,
@@ -52,7 +52,7 @@ const Bento = ({ children }: BentoProps) => {
       </motion.div>
 
       <motion.div
-        className="relative flex justify-center items-center"
+        className="relative flex items-center justify-center"
         variants={baseVariants}
         initial={{
           ...baseVariants.hidden,
@@ -71,7 +71,7 @@ const Bento = ({ children }: BentoProps) => {
       </motion.div>
 
       <motion.div
-        className="relative flex justify-center items-center"
+        className="relative flex items-center justify-center"
         variants={baseVariants}
         initial={{
           ...baseVariants.hidden,
@@ -90,7 +90,7 @@ const Bento = ({ children }: BentoProps) => {
       </motion.div>
 
       <motion.div
-        className="relative flex justify-center items-center col-span-2"
+        className="relative col-span-2 flex items-center justify-center"
         variants={baseVariants}
         initial={{
           ...baseVariants.hidden,

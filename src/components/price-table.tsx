@@ -29,19 +29,19 @@ export const PriceTable = ({
           <div
             key={`PriceTableItem-${product.id}`}
             className={cn(
-              'relative flex-1 flex flex-col gap-4 bg-white scale-95',
-              'border-4 border-black rounded-xl p-5 sm:p-10',
+              'relative flex flex-1 scale-95 flex-col gap-4 bg-white',
+              'rounded-xl border-4 border-black p-5 sm:p-10',
 
               // @ts-ignore
               product?.metadata?.feature === 'true' &&
                 !subscription?.valid() &&
-                'scale-105 -mx-7 bg-yellow-50',
+                '-mx-7 scale-105 bg-yellow-50',
               subscription?.priceId === product?.prices?.[0]?.id &&
-                'bg-green-100 border-4 border-green-500'
+                'border-4 border-green-500 bg-green-100'
             )}
           >
             <div className="flex flex-col gap-2">
-              <div className="font-normal text-2xl uppercase">
+              <div className="text-2xl font-normal uppercase">
                 {product.name}
               </div>
 
@@ -64,7 +64,7 @@ export const PriceTable = ({
                       {await translate('components.prices.plan.renews')}
                     </span>
 
-                    <span className="text-white bg-green-600 px-2 py-1 rounded-md">
+                    <span className="rounded-md bg-green-600 px-2 py-1 text-white">
                       {subscription?.current_period_end.toLocaleDateString()}
                     </span>
                   </div>
@@ -76,7 +76,7 @@ export const PriceTable = ({
                       {await translate('components.prices.plan.canceled')}
                     </span>
 
-                    <span className="text-white bg-orange-500 px-2 py-1 rounded-md">
+                    <span className="rounded-md bg-orange-500 px-2 py-1 text-white">
                       {subscription?.cancel_at?.toLocaleDateString()}
                     </span>
                   </div>

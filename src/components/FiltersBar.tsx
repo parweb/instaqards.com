@@ -19,12 +19,12 @@ export function FiltersBar({ name, value }: FiltersBarProps) {
   const config = filterConfig[name];
 
   return (
-    <div className="flex flex-wrap gap-4 mb-6 items-center text-sm">
+    <div className="mb-6 flex flex-wrap items-center gap-4 text-sm">
       <span>
         {config.label} :{' '}
         <Link
           href={`/explore/${config.path}/${value}`}
-          className="underline text-blue-600 hover:text-blue-800"
+          className="text-blue-600 underline hover:text-blue-800"
         >
           {value}
         </Link>

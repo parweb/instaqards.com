@@ -103,7 +103,7 @@ export default function ProspectsImportModal() {
 
   return (
     <form
-      className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700 flex flex-col gap-4"
+      className="flex w-full flex-col gap-4 rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:bg-black dark:md:border-stone-700"
       action={async (data: FormData) => {
         assignProspect(data).then(res => {
           if (res.error) {
@@ -132,7 +132,7 @@ export default function ProspectsImportModal() {
         <Prospects />
       </Suspense>
 
-      <div className="flex flex-col items-stretch justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
+      <div className="flex flex-col items-stretch justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10 dark:border-stone-700 dark:bg-stone-800">
         <CreateUserFormButton />
       </div>
     </form>

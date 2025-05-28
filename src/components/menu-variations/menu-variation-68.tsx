@@ -13,25 +13,25 @@ export const MenuVariation68: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       crystal: 'from-blue-300 via-cyan-200 to-blue-400'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       crystal: 'from-purple-300 via-pink-200 to-purple-400'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       crystal: 'from-red-300 via-orange-200 to-red-400'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       crystal: 'from-green-300 via-emerald-200 to-green-400'
     }
@@ -54,9 +54,9 @@ export const MenuVariation68: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative bg-gradient-to-r from-slate-100 via-gray-50 to-slate-100 p-1">
-        <div className="bg-white/90 backdrop-blur-sm px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-white/90 px-4 py-4 backdrop-blur-sm">
           {/* Formations cristallines de fond */}
           <div className="absolute inset-0 opacity-20">
             {Array.from({ length: 8 }, (_, i) => (
@@ -75,17 +75,17 @@ export const MenuVariation68: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 <div
                   className={cn(
-                    'relative mb-2 transition-all duration-700 ease-out transform',
+                    'relative mb-2 transform transition-all duration-700 ease-out',
                     'group-hover:scale-110 group-active:scale-95',
                     activeTab === index ? 'scale-115' : ''
                   )}
@@ -93,7 +93,7 @@ export const MenuVariation68: React.FC = () => {
                   {/* Cristal principal */}
                   <div
                     className={cn(
-                      'relative z-10 w-14 h-14 transition-all duration-500 transform',
+                      'relative z-10 h-14 w-14 transform transition-all duration-500',
                       'group-hover:rotate-12',
                       activeTab === index ? 'shadow-2xl' : 'shadow-lg'
                     )}
@@ -120,13 +120,13 @@ export const MenuVariation68: React.FC = () => {
 
                     {/* Reflets cristallins */}
                     <div
-                      className="absolute top-2 left-3 w-2 h-6 bg-white/80 transform rotate-12"
+                      className="absolute top-2 left-3 h-6 w-2 rotate-12 transform bg-white/80"
                       style={{
                         clipPath: 'polygon(0% 0%, 100% 0%, 80% 100%, 0% 100%)'
                       }}
                     />
                     <div
-                      className="absolute top-3 right-3 w-1 h-4 bg-white/60 transform -rotate-12"
+                      className="absolute top-3 right-3 h-4 w-1 -rotate-12 transform bg-white/60"
                       style={{
                         clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 20% 100%)'
                       }}
@@ -149,7 +149,7 @@ export const MenuVariation68: React.FC = () => {
                       <>
                         <div
                           className={cn(
-                            'absolute top-1 left-2 w-1 h-1 bg-white rounded-full animate-ping',
+                            'absolute top-1 left-2 h-1 w-1 animate-ping rounded-full bg-white',
                             crystalGrowth % 3 === 0
                               ? 'opacity-100'
                               : 'opacity-0'
@@ -157,7 +157,7 @@ export const MenuVariation68: React.FC = () => {
                         />
                         <div
                           className={cn(
-                            'absolute bottom-2 right-2 w-0.5 h-0.5 bg-white rounded-full animate-ping',
+                            'absolute right-2 bottom-2 h-0.5 w-0.5 animate-ping rounded-full bg-white',
                             crystalGrowth % 3 === 1
                               ? 'opacity-100'
                               : 'opacity-0'
@@ -165,7 +165,7 @@ export const MenuVariation68: React.FC = () => {
                         />
                         <div
                           className={cn(
-                            'absolute top-3 right-1 w-0.5 h-0.5 bg-white rounded-full animate-ping',
+                            'absolute top-3 right-1 h-0.5 w-0.5 animate-ping rounded-full bg-white',
                             crystalGrowth % 3 === 2
                               ? 'opacity-100'
                               : 'opacity-0'
@@ -180,7 +180,7 @@ export const MenuVariation68: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -top-2 -left-1 w-3 h-4 transition-all duration-1000',
+                          'absolute -top-2 -left-1 h-4 w-3 transition-all duration-1000',
                           `bg-gradient-to-br ${tab.crystal}`,
                           'opacity-70'
                         )}
@@ -191,7 +191,7 @@ export const MenuVariation68: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute -bottom-1 -right-2 w-2 h-3 transition-all duration-1000',
+                          'absolute -right-2 -bottom-1 h-3 w-2 transition-all duration-1000',
                           `bg-gradient-to-br ${tab.crystal}`,
                           'opacity-70'
                         )}
@@ -202,7 +202,7 @@ export const MenuVariation68: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute top-0 -right-1 w-1.5 h-2 transition-all duration-1000',
+                          'absolute top-0 -right-1 h-2 w-1.5 transition-all duration-1000',
                           `bg-gradient-to-br ${tab.crystal}`,
                           'opacity-70'
                         )}
@@ -217,9 +217,9 @@ export const MenuVariation68: React.FC = () => {
 
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all duration-500 relative',
+                    'relative text-xs font-bold transition-all duration-500',
                     activeTab === index
-                      ? `bg-gradient-to-r ${tab.crystal} bg-clip-text text-transparent animate-pulse`
+                      ? `bg-gradient-to-r ${tab.crystal} animate-pulse bg-clip-text text-transparent`
                       : 'text-gray-600 group-hover:text-gray-700'
                   )}
                 >
@@ -227,7 +227,7 @@ export const MenuVariation68: React.FC = () => {
                   {activeTab === index && (
                     <div
                       className={cn(
-                        'absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-0.5',
+                        'absolute -bottom-1 left-1/2 h-0.5 w-6 -translate-x-1/2 transform',
                         `bg-gradient-to-r ${tab.crystal}`
                       )}
                       style={{

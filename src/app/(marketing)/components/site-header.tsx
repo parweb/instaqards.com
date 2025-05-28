@@ -87,7 +87,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
   const translate = useTranslation();
 
   return (
-    <header className="sticky top-0 z-10 w-full border-b bg-white/80 backdrop-blur-sm shadow-lg px-4">
+    <header className="sticky top-0 z-10 w-full border-b bg-white/80 px-4 shadow-lg backdrop-blur-sm">
       <div className="container mx-auto flex max-w-6xl items-center justify-between">
         <div className="flex items-center gap-4">
           <MobileNav

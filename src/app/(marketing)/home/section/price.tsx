@@ -111,23 +111,23 @@ export const Price: React.FC<{
     <div className="flex flex-col gap-10 px-4">
       {standalone === false && (
         <motion.div
-          className="text-center flex flex-col gap-4"
+          className="flex flex-col gap-4 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <div>
-            <div className="inline-block px-3 py-1 rounded-full bg-black/5 text-xs font-medium tracking-wide uppercase">
+            <div className="inline-block rounded-full bg-black/5 px-3 py-1 text-xs font-medium tracking-wide uppercase">
               {translate('page.home.pricing.header.badge')}
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight">
+            <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
               {translate('page.home.pricing.header.title')}
             </h2>
 
-            <p className="text-lg text-gray-600 flex flex-col gap-1">
+            <p className="flex flex-col gap-1 text-lg text-gray-600">
               <span>
                 {translate('page.home.pricing.header.description.one')}
               </span>
@@ -140,11 +140,11 @@ export const Price: React.FC<{
       )}
 
       <div className="flex justify-center">
-        <div className="relative flex gap-2 p-1 rounded-full bg-black/5 ">
+        <div className="relative flex gap-2 rounded-full bg-black/5 p-1">
           <button
             type="button"
             className={cn(
-              'w-40 flex-1 relative z-10 px-4 py-2 rounded-full font-medium transition-colors duration-300 ease-in-out',
+              'relative z-10 w-40 flex-1 rounded-full px-4 py-2 font-medium transition-colors duration-300 ease-in-out',
               billingCycle === 'month' ? 'text-black' : 'text-gray-500'
             )}
             onClick={() => setBillingCycle('month')}
@@ -155,8 +155,8 @@ export const Price: React.FC<{
           <button
             type="button"
             className={cn(
-              'flex items-center gap-2 justify-center',
-              'w-40 flex-1 relative z-10 px-4 py-2 rounded-full font-medium transition-colors duration-300 ease-in-out',
+              'flex items-center justify-center gap-2',
+              'relative z-10 w-40 flex-1 rounded-full px-4 py-2 font-medium transition-colors duration-300 ease-in-out',
               billingCycle === 'year' ? 'text-black' : 'text-gray-500'
             )}
             onClick={() => setBillingCycle('year')}
@@ -173,7 +173,7 @@ export const Price: React.FC<{
           </button>
 
           <div
-            className="absolute top-1 left-1 h-[calc(100%-8px)] w-40 rounded-full bg-white shadow-xs transition-transform duration-400 ease-&lsqb;cubic-bezier(0.16,1,0.3,1)&rsqb;"
+            className="ease-&lsqb;cubic-bezier(0.16,1,0.3,1)&rsqb; absolute top-1 left-1 h-[calc(100%-8px)] w-40 rounded-full bg-white shadow-xs transition-transform duration-400"
             style={{
               transform:
                 billingCycle === 'month'
@@ -186,11 +186,11 @@ export const Price: React.FC<{
 
       <motion.div
         className={cn(
-          'relative md:w-4xl mx-auto flex flex-col lg:flex-row gap-4',
-          'transition duration-400 ease-in-out -translate-y-1',
+          'relative mx-auto flex flex-col gap-4 md:w-4xl lg:flex-row',
+          '-translate-y-1 transition duration-400 ease-in-out',
           'shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_10px_10px_-5px_rgba(0,0,0,0.02)]',
-          'bg-white rounded-2xl border border-gray-100 pt-10 md:p-10',
-          border === false && 'shadow-none border-none md:p-0'
+          'rounded-2xl border border-gray-100 bg-white pt-10 md:p-10',
+          border === false && 'border-none shadow-none md:p-0'
         )}
         initial={{ opacity: 0, y: 20, scale: 0.8 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -199,7 +199,7 @@ export const Price: React.FC<{
         {trial === true && (
           <div className="absolute -top-3 right-0 left-0 flex justify-center">
             <div className="flex flex-col gap-1">
-              <div className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-4 py-1 rounded-full font-medium text-sm shadow-md">
+              <div className="rounded-full bg-linear-to-r from-green-500 to-emerald-600 px-4 py-1 text-sm font-medium text-white shadow-md">
                 {translate('page.home.pricing.trial')}
               </div>
 
@@ -210,9 +210,9 @@ export const Price: React.FC<{
           </div>
         )}
 
-        <div className="flex-1 flex flex-col gap-4 p-4 justify-center">
+        <div className="flex flex-1 flex-col justify-center gap-4 p-4">
           <div className="flex flex-col gap-4 text-center">
-            <div className="uppercase text-sm font-medium tracking-wider text-gray-500 mb-2">
+            <div className="mb-2 text-sm font-medium tracking-wider text-gray-500 uppercase">
               {translate('page.home.pricing.premium')}
             </div>
 
@@ -221,9 +221,9 @@ export const Price: React.FC<{
                 {(offer[billingCycle]?.unit_amount ?? 0) / 100}
               </span>
 
-              <span className="text-xl ml-1 font-medium">€</span>
+              <span className="ml-1 text-xl font-medium">€</span>
 
-              <span className="text-gray-500 ml-1">
+              <span className="ml-1 text-gray-500">
                 /{translate('page.home.pricing.monthly')}
               </span>
             </div>
@@ -264,7 +264,7 @@ export const Price: React.FC<{
             )}
 
             {begin === true ? (
-              <div className="p-3 rounded-md shadow-md border border-gray-100">
+              <div className="rounded-md border border-gray-100 p-3 shadow-md">
                 <Begin />
               </div>
             ) : (
@@ -300,7 +300,7 @@ export const Price: React.FC<{
                   }}
                 >
                   {state === 'loading' ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     translate('page.home.pricing.cta')
                   )}
@@ -310,8 +310,8 @@ export const Price: React.FC<{
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-2 justify-center p-4 border-t pt-8 md:border-t-0 md:pt-4">
-          <div className="text-sm font-medium mb-4">
+        <div className="flex flex-1 flex-col justify-center gap-2 border-t p-4 pt-8 md:border-t-0 md:pt-4">
+          <div className="mb-4 text-sm font-medium">
             {translate('page.home.pricing.included')}
           </div>
 
@@ -324,7 +324,7 @@ export const Price: React.FC<{
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
               >
-                <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-linear-to-br from-green-300/20 to-green-500/20 mr-2 mt-0.5">
+                <div className="mt-0.5 mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-linear-to-br from-green-300/20 to-green-500/20">
                   <Check size={12} className="text-green-600" />
                 </div>
 

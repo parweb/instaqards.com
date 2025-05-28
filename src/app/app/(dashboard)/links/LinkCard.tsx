@@ -24,7 +24,7 @@ const CopyLink = ({ url }: { url: string }) => {
   return (
     <Button
       className={cn(
-        'hover:text-blue-500 hover:font-bold cursor-pointer',
+        'cursor-pointer hover:font-bold hover:text-blue-500',
         isCopied && 'text-green-500'
       )}
       type="button"
@@ -53,23 +53,23 @@ export function LinkCard({ link }: LinkCardProps) {
   return (
     <div className="group relative rounded-lg border border-stone-200 shadow-md transition-all hover:shadow-xl">
       <div className="flex flex-col overflow-hidden rounded-lg">
-        <div className="border-t border-stone-200 p-4 gap-4 flex flex-col">
+        <div className="flex flex-col gap-4 border-t border-stone-200 p-4">
           <div>
             <div className="flex items-center justify-start gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-500" />
-              <p className="truncate text-xs font-medium text-stone-500 whitespace-nowrap">
+              <div className="h-2 w-2 rounded-full bg-green-500" />
+              <p className="truncate text-xs font-medium whitespace-nowrap text-stone-500">
                 {link.url}
               </p>
             </div>
 
             <div className="flex items-center justify-between gap-1">
               <Link prefetch className="flex-1" href={`/site/${link.id}`}>
-                <h3 className="truncate font-cal text-xl font-bold tracking-wide">
+                <h3 className="font-cal truncate text-xl font-bold tracking-wide">
                   {link.name}
                 </h3>
               </Link>
 
-              <div className="transition-all opacity-0 group-hover:opacity-100 flex items-center gap-0">
+              <div className="flex items-center gap-0 opacity-0 transition-all group-hover:opacity-100">
                 <EditButton>
                   <MutateModal link={link} />
                 </EditButton>
@@ -79,7 +79,7 @@ export function LinkCard({ link }: LinkCardProps) {
             </div>
 
             <Link prefetch href={`/site/${link.id}`}>
-              <p className="line-clamp-1 text-sm font-normal leading-snug text-stone-500 dark:text-stone-400">
+              <p className="line-clamp-1 text-sm leading-snug font-normal text-stone-500 dark:text-stone-400">
                 {link.description}
               </p>
             </Link>
@@ -99,7 +99,7 @@ export function LinkCard({ link }: LinkCardProps) {
                 rel="noreferrer"
                 className="flex items-center gap-1"
               >
-                <span className="truncate max-w-20">{`/${link.id}`}</span>
+                <span className="max-w-20 truncate">{`/${link.id}`}</span>
                 <LuArrowUpRight />
               </Link>
 
@@ -109,7 +109,7 @@ export function LinkCard({ link }: LinkCardProps) {
             <Link
               prefetch
               href={`/site/${link.id}/analytics`}
-              className="flex items-center gap-2 rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400 dark:hover:bg-green-800 dark:hover:bg-opacity-50"
+              className="dark:bg-opacity-50 dark:hover:bg-opacity-50 flex items-center gap-2 rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:text-green-400 dark:hover:bg-green-800"
             >
               <p>{link.clicks.length}</p>
               <LuMousePointer />

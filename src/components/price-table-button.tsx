@@ -47,7 +47,7 @@ export const PriceTableButton = ({ price }: { price: Price }) => {
       onClick={() => onClick({ price, quantity: Number(price.interval_count) })}
       className={cn(
         'flex items-center justify-center',
-        'bg-black rounded-md p-2 text-white uppercase',
+        'rounded-md bg-black p-2 text-white uppercase',
         'transition-all hover:scale-105'
       )}
     >

@@ -46,28 +46,28 @@ export const MobileBottomNavColorful = () => {
         {
           name: translate('menu.design'),
           href: `/site/${id}`,
-          icon: <LayoutDashboard className="w-5 h-5" />,
+          icon: <LayoutDashboard className="h-5 w-5" />,
           isActive: segments.length === 2,
           color: 'from-blue-400 to-cyan-400'
         },
         {
           name: translate('menu.subscribers'),
           href: `/site/${id}/subscribers`,
-          icon: <Users className="w-5 h-5" />,
+          icon: <Users className="h-5 w-5" />,
           isActive: segments.includes('subscribers'),
           color: 'from-purple-400 to-pink-400'
         },
         {
           name: translate('menu.analytics'),
           href: `/site/${id}/analytics`,
-          icon: <BarChart3 className="w-5 h-5" />,
+          icon: <BarChart3 className="h-5 w-5" />,
           isActive: segments.includes('analytics'),
           color: 'from-red-400 to-orange-400'
         },
         {
           name: 'Plus',
           href: '#',
-          icon: <MoreHorizontal className="w-5 h-5" />,
+          icon: <MoreHorizontal className="h-5 w-5" />,
           isActive: false,
           color: 'from-green-400 to-teal-400'
         }
@@ -79,28 +79,28 @@ export const MobileBottomNavColorful = () => {
       {
         name: translate('menu.overview'),
         href: '/',
-        icon: <LayoutDashboard className="w-5 h-5" />,
+        icon: <LayoutDashboard className="h-5 w-5" />,
         isActive: segments.length === 0,
         color: 'from-blue-400 to-cyan-400'
       },
       {
         name: translate('menu.sites'),
         href: '/sites',
-        icon: <Globe className="w-5 h-5" />,
+        icon: <Globe className="h-5 w-5" />,
         isActive: segments[0] === 'sites',
         color: 'from-purple-400 to-pink-400'
       },
       {
         name: translate('menu.links'),
         href: '/links',
-        icon: <LinkIcon className="w-5 h-5" />,
+        icon: <LinkIcon className="h-5 w-5" />,
         isActive: segments[0] === 'links',
         color: 'from-red-400 to-orange-400'
       },
       {
         name: 'Plus',
         href: '#',
-        icon: <MoreHorizontal className="w-5 h-5" />,
+        icon: <MoreHorizontal className="h-5 w-5" />,
         isActive: false,
         color: 'from-green-400 to-teal-400'
       }
@@ -268,17 +268,17 @@ export const MobileBottomNavColorful = () => {
   if (!isMobile || modal?.isOpen === true) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative">
-        <div className="bg-white/0 backdrop-blur-lg relative">
+        <div className="relative bg-white/0 backdrop-blur-lg">
           {/* Menu More étendu */}
           {showMoreMenu && (
             <div
               className={cn(
-                'absolute bottom-full left-0 right-0 mb-2 bg-black/95 backdrop-blur-lg rounded-2xl p-4 border border-gray-700 shadow-2xl transition-all duration-300 ease-out',
+                'absolute right-0 bottom-full left-0 mb-2 rounded-2xl border border-gray-700 bg-black/95 p-4 shadow-2xl backdrop-blur-lg transition-all duration-300 ease-out',
                 isMenuAnimating && !showMoreMenu
-                  ? 'opacity-0 scale-95 translate-y-2'
-                  : 'opacity-100 scale-100 translate-y-0'
+                  ? 'translate-y-2 scale-95 opacity-0'
+                  : 'translate-y-0 scale-100 opacity-100'
               )}
               style={{
                 animation:
@@ -290,7 +290,7 @@ export const MobileBottomNavColorful = () => {
               {/* Ruban de balayage pour le menu More */}
               {ribbonSweep && (
                 <div
-                  className="absolute inset-0 pointer-events-none rounded-2xl"
+                  className="pointer-events-none absolute inset-0 rounded-2xl"
                   style={{
                     background: `linear-gradient(90deg, 
                       transparent 0%, 
@@ -309,7 +309,7 @@ export const MobileBottomNavColorful = () => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="flex flex-col items-center p-3 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-all duration-300 group"
+                    className="group flex flex-col items-center rounded-xl bg-gray-800/50 p-3 transition-all duration-300 hover:bg-gray-700/50"
                     style={{
                       animation:
                         showMoreMenu && !isMenuAnimating
@@ -328,13 +328,13 @@ export const MobileBottomNavColorful = () => {
                   >
                     <div
                       className={cn(
-                        'w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-all duration-300',
+                        'mb-2 flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300',
                         `bg-gradient-to-r ${item.color} group-hover:scale-110`
                       )}
                     >
                       <span className="text-lg">{item.icon}</span>
                     </div>
-                    <span className="text-xs text-gray-300 group-hover:text-white transition-colors duration-300">
+                    <span className="text-xs text-gray-300 transition-colors duration-300 group-hover:text-white">
                       {item.name}
                     </span>
                   </Link>
@@ -342,30 +342,30 @@ export const MobileBottomNavColorful = () => {
               </div>
 
               {/* Flèche pointant vers le bouton More */}
-              <div className="absolute bottom-0 right-8 transform translate-y-full">
-                <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-gray-700"></div>
+              <div className="absolute right-8 bottom-0 translate-y-full transform">
+                <div className="h-0 w-0 border-t-8 border-r-4 border-l-4 border-t-gray-700 border-r-transparent border-l-transparent"></div>
               </div>
             </div>
           )}
 
-          <div className="flex items-center justify-around relative z-10 tab-container">
+          <div className="tab-container relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <div
                 key={tab.name}
                 ref={el => {
                   tabRefs.current[index] = el;
                 }}
-                className="flex-1 flex flex-col items-center"
+                className="flex flex-1 flex-col items-center"
               >
                 {index === 3 ? (
                   // Bouton More
                   <button
                     onClick={() => handleTabChange(index)}
-                    className="flex flex-col items-center justify-center px-3 py-2 min-w-0 w-full relative group"
+                    className="group relative flex w-full min-w-0 flex-col items-center justify-center px-3 py-2"
                   >
                     <div
                       className={cn(
-                        'relative mb-2 transition-all duration-500 ease-out transform',
+                        'relative mb-2 transform transition-all duration-500 ease-out',
                         'group-hover:scale-110 group-active:scale-95',
                         activeTab === index || (index === 3 && showMoreMenu)
                           ? 'scale-110'
@@ -374,7 +374,7 @@ export const MobileBottomNavColorful = () => {
                     >
                       <div
                         className={cn(
-                          'w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 transform relative overflow-hidden',
+                          'relative flex h-12 w-12 transform items-center justify-center overflow-hidden rounded-2xl transition-all duration-500',
                           'group-hover:rotate-3',
                           activeTab === index || (index === 3 && showMoreMenu)
                             ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
@@ -387,7 +387,7 @@ export const MobileBottomNavColorful = () => {
                         {(activeTab === index ||
                           (index === 3 && showMoreMenu)) && (
                           <>
-                            <div className="absolute inset-1 rounded-xl bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
+                            <div className="pointer-events-none absolute inset-1 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
                             {/* Ruban diagonal */}
                             <div
                               className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/10"
@@ -414,7 +414,7 @@ export const MobileBottomNavColorful = () => {
                     </div>
                     <span
                       className={cn(
-                        'text-xs font-bold transition-all duration-300 relative',
+                        'relative text-xs font-bold transition-all duration-300',
                         activeTab === index || (index === 3 && showMoreMenu)
                           ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent`
                           : 'text-gray-400 group-hover:text-gray-300'
@@ -441,11 +441,11 @@ export const MobileBottomNavColorful = () => {
                   <Link
                     href={tab.href}
                     onClick={() => handleTabChange(index)}
-                    className="flex flex-col items-center justify-center px-3 py-2 min-w-0 w-full relative group"
+                    className="group relative flex w-full min-w-0 flex-col items-center justify-center px-3 py-2"
                   >
                     <div
                       className={cn(
-                        'relative mb-2 transition-all duration-500 ease-out transform',
+                        'relative mb-2 transform transition-all duration-500 ease-out',
                         'group-hover:scale-110 group-active:scale-95',
                         activeTab === index || (index === 3 && showMoreMenu)
                           ? 'scale-110'
@@ -454,7 +454,7 @@ export const MobileBottomNavColorful = () => {
                     >
                       <div
                         className={cn(
-                          'w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 transform relative overflow-hidden',
+                          'relative flex h-12 w-12 transform items-center justify-center overflow-hidden rounded-2xl transition-all duration-500',
                           'group-hover:rotate-3',
                           activeTab === index || (index === 3 && showMoreMenu)
                             ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
@@ -467,7 +467,7 @@ export const MobileBottomNavColorful = () => {
                         {(activeTab === index ||
                           (index === 3 && showMoreMenu)) && (
                           <>
-                            <div className="absolute inset-1 rounded-xl bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
+                            <div className="pointer-events-none absolute inset-1 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
                             {/* Ruban diagonal */}
                             <div
                               className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/10"
@@ -494,7 +494,7 @@ export const MobileBottomNavColorful = () => {
                     </div>
                     <span
                       className={cn(
-                        'text-xs font-bold transition-all duration-300 relative',
+                        'relative text-xs font-bold transition-all duration-300',
                         activeTab === index || (index === 3 && showMoreMenu)
                           ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent`
                           : 'text-gray-400 group-hover:text-gray-300'

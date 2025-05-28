@@ -143,7 +143,7 @@ export const LoginForm = () => {
                       <FormLabel>Password</FormLabel>
 
                       <FormControl>
-                        <div className="flex items-center gap-2 relative">
+                        <div className="relative flex items-center gap-2">
                           <Input
                             {...field}
                             disabled={isPending}
@@ -155,7 +155,7 @@ export const LoginForm = () => {
                             size="icon"
                             type="button"
                             variant="ghost"
-                            className="absolute right-0 top-0 h-full px-3"
+                            className="absolute top-0 right-0 h-full px-3"
                             onClick={() => setShowPassword(prev => !prev)}
                           >
                             {showPassword ? (

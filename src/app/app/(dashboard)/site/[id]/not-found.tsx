@@ -21,7 +21,7 @@ export default function NotFoundSite() {
         className="hidden dark:block"
       />
 
-      <p className="text-lg text-stone-500 text-center">
+      <p className="text-center text-lg text-stone-500">
         Site does not exist sorry
       </p>
     </div>

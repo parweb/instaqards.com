@@ -9,10 +9,10 @@ export const Hero = async ({ bg = '06' }) => {
   return (
     <div
       id="Hero"
-      className="relative flex flex-col bg-[#ddd] p-5 sm:p-20 items-center justify-center overflow-hidden"
+      className="relative flex flex-col items-center justify-center overflow-hidden bg-[#ddd] p-5 sm:p-20"
     >
       <video
-        className="absolute top-0 right-0 left-0 object-cover w-full h-full"
+        className="absolute top-0 right-0 left-0 h-full w-full object-cover"
         preload="auto"
         autoPlay
         loop
@@ -26,10 +26,10 @@ export const Hero = async ({ bg = '06' }) => {
       </video>
 
       <div className="z-10">
-        <div className="flex gap-10 max-w-[900px] items-center flex-col md:flex-row">
+        <div className="flex max-w-[900px] flex-col items-center gap-10 md:flex-row">
           <div className="flex items-center justify-center">
-            <div className="flex flex-col gap-5 text-white p-4 rounded-md">
-              <div className={cn('text-4xl sm:text-7xl font-[900] b')}>
+            <div className="flex flex-col gap-5 rounded-md p-4 text-white">
+              <div className={cn('b text-4xl font-[900] sm:text-7xl')}>
                 {await translate('page.home.hero.title')}
               </div>
 
@@ -57,7 +57,7 @@ export const Hero = async ({ bg = '06' }) => {
                 </li>
               </ul>
 
-              <div className="bg-white rounded-md p-4 text-black max-w-sm shadow-md">
+              <div className="max-w-sm rounded-md bg-white p-4 text-black shadow-md">
                 <Begin />
               </div>
             </div>

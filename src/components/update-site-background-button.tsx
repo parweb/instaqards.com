@@ -17,7 +17,7 @@ export default function UpdateSiteBackgroundButton({
     <button
       type="button"
       onClick={() => modal?.show(children)}
-      className="rounded-lg border border-black bg-black px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-white hover:text-black active:bg-stone-100 dark:border-stone-700 dark:hover:border-stone-200 dark:hover:bg-black dark:hover:text-white dark:active:bg-stone-800 pointer-events-auto"
+      className="pointer-events-auto rounded-lg border border-black bg-black px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-white hover:text-black active:bg-stone-100 dark:border-stone-700 dark:hover:border-stone-200 dark:hover:bg-black dark:hover:text-white dark:active:bg-stone-800"
     >
       {translate('components.site.update.background')}
     </button>

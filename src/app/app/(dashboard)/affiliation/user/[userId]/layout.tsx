@@ -68,10 +68,10 @@ export default async function UserPage(props: {
   const avatar = user.image ?? `https://avatar.vercel.sh/${user.email}?size=40`;
 
   return (
-    <div className="container mx-auto p-8 space-y-8">
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+    <div className="container mx-auto space-y-8 p-8">
+      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div className="flex items-center gap-4">
-          <Link href="/affiliation" className="p-2 rounded-md hover:bg-muted">
+          <Link href="/affiliation" className="hover:bg-muted rounded-md p-2">
             <LuArrowLeft className="h-5 w-5" />
             <span className="sr-only">Back to Users</span>
           </Link>
@@ -87,7 +87,7 @@ export default async function UserPage(props: {
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
               {user.name || 'Unnamed User'}
             </h1>
-            <p className="text-sm text-muted-foreground">{user.email}</p>
+            <p className="text-muted-foreground text-sm">{user.email}</p>
           </div>
         </div>
 

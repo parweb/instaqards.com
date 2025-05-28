@@ -60,26 +60,26 @@ const UserNode = memo(
         )}
 
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 cursor-move drag-handle">
+          <div className="drag-handle flex h-10 w-10 cursor-move items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700">
             <Avatar className="h-8 w-8 rounded-lg">
               <AvatarImage src={avatar} alt={name ?? ''} />
               <AvatarFallback className="rounded-lg">CN</AvatarFallback>
             </Avatar>
           </div>
 
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-1 flex-col">
             <span className="text-sm font-medium select-none">
               {name || 'Anonymous'}
             </span>
 
-            <span className="text-xs text-gray-500 dark:text-gray-400 select-none">
+            <span className="text-xs text-gray-500 select-none dark:text-gray-400">
               {email}
             </span>
           </div>
 
           {affiliatesCount > 0 && (
             <button
-              className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none"
+              className="flex items-center gap-1 text-xs text-gray-500 select-none hover:text-gray-700 dark:hover:text-gray-300"
               data-collapse-trigger
             >
               {isExpanded ? (
@@ -98,7 +98,7 @@ const UserNode = memo(
         <Handle
           type="source"
           position={Position.Bottom}
-          className={cn('!bg-gray-400 invisible', { visible: isExpanded })}
+          className={cn('invisible !bg-gray-400', { visible: isExpanded })}
         />
       </div>
     );

@@ -48,7 +48,7 @@ export default async function AllLinks() {
         <div className="flex flex-col gap-8">
           {users.map(user => (
             <div key={`LinksUser-${user.id}`} className="flex flex-col gap-4">
-              <h2 className="font-cal text-2xl font-bold dark:text-white flex flex-col gap-2">
+              <h2 className="font-cal flex flex-col gap-2 text-2xl font-bold dark:text-white">
                 <span>{user.name}</span>
                 <small className="text-gray-500">{user.email}</small>
               </h2>

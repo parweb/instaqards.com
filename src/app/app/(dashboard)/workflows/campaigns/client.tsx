@@ -60,11 +60,11 @@ const Stat = ({
   total?: number;
   Icon: IconType;
 }) => (
-  <div className="border rounded-md shadow-sm">
-    <div className="rounded-md overflow-hidden">
-      <div className="flex gap-4 items-center px-4 py-2">
-        <div className="flex items-center justify-center bg-stone-100 rounded-full p-4">
-          <Icon className="w-7 h-7" />
+  <div className="rounded-md border shadow-sm">
+    <div className="overflow-hidden rounded-md">
+      <div className="flex items-center gap-4 px-4 py-2">
+        <div className="flex items-center justify-center rounded-full bg-stone-100 p-4">
+          <Icon className="h-7 w-7" />
         </div>
 
         <div>
@@ -80,9 +80,9 @@ const Stat = ({
       </div>
 
       {!!total && total > 0 && (
-        <div className="w-full h-2  bg-stone-200">
+        <div className="h-2 w-full bg-stone-200">
           <div
-            className="h-full "
+            className="h-full"
             style={{
               width: `${(value / total) * 100}%`,
               backgroundColor: interpolate(
@@ -114,7 +114,7 @@ const ContactItem = ({
   return (
     <div
       key={user.id}
-      className="flex items-center gap-4 border rounded-md p-3"
+      className="flex items-center gap-4 rounded-md border p-3"
     >
       <Badge
         variant={
@@ -134,7 +134,7 @@ const ContactItem = ({
           <Link href={`/user/${user.id}`}>{user.email}</Link>
         </div>
 
-        <div className="flex gap-2 items-center mt-1">
+        <div className="mt-1 flex items-center gap-2">
           {outbox?.status === 'opened' && (
             <Badge variant="secondary">{outbox?.status}</Badge>
           )}
@@ -155,9 +155,9 @@ const ContactItem = ({
           {phoneReservations && phoneReservations.length > 0 && (
             <Badge
               variant="default"
-              className="bg-blue-500 hover:bg-blue-600 text-white border-blue-500"
+              className="border-blue-500 bg-blue-500 text-white hover:bg-blue-600"
             >
-              <LuPhone className="w-3 h-3 mr-1 text-white" />
+              <LuPhone className="mr-1 h-3 w-3 text-white" />
               {phoneReservations.length === 1
                 ? `Appel ${new Date(phoneReservations[0].dateStart).toLocaleDateString('fr-FR')}`
                 : `${phoneReservations.length} appels`}
@@ -166,12 +166,12 @@ const ContactItem = ({
         </div>
       </div>
 
-      <div className="flex gap-1 items-center">
+      <div className="flex items-center gap-1">
         {/* Lien vers la outbox */}
         {outbox && (
           <Button variant="ghost" size="sm" asChild>
             <Link href={`/user/${user.id}/outbox/${outbox.id}`}>
-              <LuMail className="w-4 h-4" />
+              <LuMail className="h-4 w-4" />
             </Link>
           </Button>
         )}
@@ -179,7 +179,7 @@ const ContactItem = ({
         {/* Lien vers la fiche détail user */}
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/user/${user.id}`}>
-            <LuUser className="w-4 h-4" />
+            <LuUser className="h-4 w-4" />
           </Link>
         </Button>
 
@@ -192,13 +192,13 @@ const ContactItem = ({
           }
           size="sm"
           className={cn({
-            'bg-green-500 hover:bg-green-600 text-white border-green-500':
+            'border-green-500 bg-green-500 text-white hover:bg-green-600':
               phoneReservations && phoneReservations.length > 0
           })}
           label={
             <LuPhone
               className={cn(
-                'w-4 h-4',
+                'h-4 w-4',
                 phoneReservations && phoneReservations.length > 0
                   ? 'text-white'
                   : ''
@@ -221,7 +221,7 @@ const ContactItem = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm">
-              <LuCalendar className="w-4 h-4" />
+              <LuCalendar className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -231,7 +231,7 @@ const ContactItem = ({
                 className="w-full justify-start"
                 label={
                   <>
-                    <LuVideo className="w-4 h-4 mr-2" />
+                    <LuVideo className="mr-2 h-4 w-4" />
                     Visio
                   </>
                 }
@@ -253,7 +253,7 @@ const ContactItem = ({
                 className="w-full justify-start"
                 label={
                   <>
-                    <LuHandshake className="w-4 h-4 mr-2" />
+                    <LuHandshake className="mr-2 h-4 w-4" />
                     En personne
                   </>
                 }
@@ -275,7 +275,7 @@ const ContactItem = ({
                 className="w-full justify-start"
                 label={
                   <>
-                    <LuCalendar className="w-4 h-4 mr-2" />
+                    <LuCalendar className="mr-2 h-4 w-4" />
                     Rappel
                   </>
                 }
@@ -297,14 +297,14 @@ const ContactItem = ({
         {/* Lien vers Recent Activity */}
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/user/${user.id}#recent-activity`}>
-            <LuActivity className="w-4 h-4" />
+            <LuActivity className="h-4 w-4" />
           </Link>
         </Button>
 
         {/* Lien vers Pages visitées */}
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/user/${user.id}#pages-visited`}>
-            <LuGlobe className="w-4 h-4" />
+            <LuGlobe className="h-4 w-4" />
           </Link>
         </Button>
       </div>
@@ -453,8 +453,8 @@ function CampaignItemDetails({
     return (
       <div className="flex flex-col gap-4">
         {/* Filtres */}
-        <div className="flex gap-2 items-center flex-wrap">
-          <span className="text-sm text-muted-foreground">Filtrer par:</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-muted-foreground text-sm">Filtrer par:</span>
           {filterOptions.map(option => (
             <Badge
               key={option.key}
@@ -498,7 +498,7 @@ function CampaignItemDetails({
             />
           ))}
           {filteredContacts.length === 0 && selectedFilters.length > 0 && (
-            <div className="text-center text-muted-foreground py-4">
+            <div className="text-muted-foreground py-4 text-center">
               Aucun contact ne correspond aux filtres sélectionnés
             </div>
           )}
@@ -534,8 +534,8 @@ function CampaignItemDetails({
   return (
     <div className="flex flex-col gap-4">
       {/* Filtres */}
-      <div className="flex gap-2 items-center flex-wrap">
-        <span className="text-sm text-muted-foreground">Filtrer par:</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-muted-foreground text-sm">Filtrer par:</span>
         {filterOptions.map(option => (
           <Badge
             key={option.key}
@@ -575,7 +575,7 @@ function CampaignItemDetails({
           />
         ))}
         {filteredContacts.length === 0 && selectedFilters.length > 0 && (
-          <div className="text-center text-muted-foreground py-4">
+          <div className="text-muted-foreground py-4 text-center">
             Aucun contact ne correspond aux filtres sélectionnés
           </div>
         )}
@@ -676,8 +676,8 @@ export const CampaignItem = ({
 
   return (
     <div
-      className={cn('flex flex-col gap-4 border p-4 rounded-md', {
-        'border-red-600 bg-red-100 animate-bounce opacity-20': loadingDelete
+      className={cn('flex flex-col gap-4 rounded-md border p-4', {
+        'animate-bounce border-red-600 bg-red-100 opacity-20': loadingDelete
       })}
     >
       <div className="flex items-center justify-between gap-4">
@@ -687,7 +687,7 @@ export const CampaignItem = ({
           </Button>
         </div>
 
-        <div className="aspect-square w-15 border rounded-md p-4 flex items-center justify-center">
+        <div className="flex aspect-square w-15 items-center justify-center rounded-md border p-4">
           {campaign.list?.contacts.length ?? (
             <span className="scale-200">∞</span>
           )}
@@ -697,7 +697,7 @@ export const CampaignItem = ({
           {campaign.smart && (
             <Badge
               className={cn(
-                'w-auto inline-flex items-center gap-1 rounded-full bg-green-500 hover:bg-green-700 text-green-900',
+                'inline-flex w-auto items-center gap-1 rounded-full bg-green-500 text-green-900 hover:bg-green-700',
                 'text-white'
               )}
             >
@@ -718,7 +718,7 @@ export const CampaignItem = ({
           })}
         </div> */}
 
-        <div className="flex gap-4 items-center">
+        <div className="flex items-center gap-4">
           <Stat
             label="Envoyé"
             total={campaign.list?.contacts.length}
@@ -763,7 +763,7 @@ export const CampaignItem = ({
           />
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           <ModalButton label={<LuPencil />}>
             <CampaignsMutateModal campaign={campaign} />
           </ModalButton>

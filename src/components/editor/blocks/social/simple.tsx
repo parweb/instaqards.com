@@ -49,7 +49,7 @@ export default function Simple({
   ]
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
   return (
-    <div className="flex-1 flex gap-3 items-center justify-center">
+    <div className="flex flex-1 items-center justify-center gap-3">
       {socials.map(social => (
         <Link
           prefetch={false}
@@ -87,7 +87,7 @@ export default function Simple({
             ) : (
               <div
                 style={{ borderRadius: `${radius}%` }}
-                className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200"
+                className="flex h-[50px] w-[50px] items-center justify-center bg-stone-200 p-1"
               >
                 <LuLink />
               </div>

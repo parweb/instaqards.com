@@ -101,7 +101,7 @@ const GalleryItem = ({
   );
 
   return (
-    <div className="rounded-md overflow-hidden">
+    <div className="overflow-hidden rounded-md">
       {media.kind === 'local' ? (
         image
       ) : media.link ? (
@@ -151,7 +151,7 @@ export default function Gallery({
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
   if (medias.length === 0) {
     return (
-      <div className="rounded-md overflow-hidden bg-white p-4 flex-1 flex items-center justify-center">
+      <div className="flex flex-1 items-center justify-center overflow-hidden rounded-md bg-white p-4">
         No images
       </div>
     );

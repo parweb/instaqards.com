@@ -201,7 +201,7 @@ export function AppSidebar(
         <Link
           prefetch
           href="/"
-          className="rounded-lg px-2 flex items-center justify-center gap-3 uppercase"
+          className="flex items-center justify-center gap-3 rounded-lg px-2 uppercase"
           style={{
             backgroundImage: 'url("/assets/bg-logo.png")',
             backgroundRepeat: 'no-repeat'

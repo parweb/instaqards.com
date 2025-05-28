@@ -42,7 +42,7 @@ export default function DomainConfiguration({ domain }: { domain: string }) {
     null;
 
   return (
-    <div className="border-t border-stone-200 px-10 pb-5 pt-7 dark:border-stone-700">
+    <div className="border-t border-stone-200 px-10 pt-7 pb-5 dark:border-stone-700">
       <div className="mb-4 flex items-center space-x-2">
         {status === 'Pending Verification' ? (
           <AlertCircle

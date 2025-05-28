@@ -12,25 +12,25 @@ export const MenuVariation43: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       emoji: '🌌'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       emoji: '🔍'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       emoji: '💖'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       emoji: '✨'
     }
@@ -46,14 +46,14 @@ export const MenuVariation43: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden overflow-hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 overflow-hidden md:hidden">
       <div className="relative bg-gradient-to-t from-green-400 via-blue-500 to-purple-600">
         {/* Effets spéciaux */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+        <div className="pointer-events-none absolute top-0 left-0 h-full w-full">
           {Array.from({ length: 8 }, (_, i) => (
             <div
               key={i}
-              className="absolute w-2 h-2 bg-white/30 rounded-full animate-ping opacity-60"
+              className="absolute h-2 w-2 animate-ping rounded-full bg-white/30 opacity-60"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 60}%`,
@@ -64,7 +64,7 @@ export const MenuVariation43: React.FC = () => {
           ))}
         </div>
 
-        <div className="relative px-4 py-4 bg-black/30 backdrop-blur-sm">
+        <div className="relative bg-black/30 px-4 py-4 backdrop-blur-sm">
           <div className="flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
@@ -72,29 +72,29 @@ export const MenuVariation43: React.FC = () => {
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  'flex flex-col items-center justify-center px-3 py-2 rounded-2xl transition-all duration-300 min-w-0 flex-1 relative transform',
+                  'relative flex min-w-0 flex-1 transform flex-col items-center justify-center rounded-2xl px-3 py-2 transition-all duration-300',
                   'hover:scale-110 active:scale-95',
                   activeTab === index ? 'scale-110' : ''
                 )}
               >
                 {activeTab === index && (
-                  <div className="absolute -inset-2 bg-gradient-to-r from-green-300/40 via-white/40 to-green-300/40 rounded-2xl animate-pulse blur-sm" />
+                  <div className="absolute -inset-2 animate-pulse rounded-2xl bg-gradient-to-r from-green-300/40 via-white/40 to-green-300/40 blur-sm" />
                 )}
 
                 <div
                   className={cn(
-                    'mb-2 p-3 rounded-2xl transition-all duration-300 transform border-2',
-                    'hover:rotate-12 hover:scale-110',
+                    'mb-2 transform rounded-2xl border-2 p-3 transition-all duration-300',
+                    'hover:scale-110 hover:rotate-12',
                     activeTab === index
-                      ? 'bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white shadow-2xl shadow-green-500/50 border-white'
-                      : 'bg-green-800 text-green-200 border-green-600 hover:bg-green-700'
+                      ? 'border-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white shadow-2xl shadow-green-500/50'
+                      : 'border-green-600 bg-green-800 text-green-200 hover:bg-green-700'
                   )}
                 >
                   {tab.icon}
                 </div>
 
                 {activeTab === index && (
-                  <div className="absolute -top-3 -right-3 text-2xl animate-bounce">
+                  <div className="absolute -top-3 -right-3 animate-bounce text-2xl">
                     {tab.emoji}
                   </div>
                 )}
@@ -103,7 +103,7 @@ export const MenuVariation43: React.FC = () => {
                   className={cn(
                     'text-xs font-bold transition-all duration-300',
                     activeTab === index
-                      ? 'text-white animate-pulse'
+                      ? 'animate-pulse text-white'
                       : 'text-green-200'
                   )}
                 >

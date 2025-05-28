@@ -41,7 +41,7 @@ const checklist = [
       it: 'Crea un sito',
       es: 'Crear un sitio'
     },
-    icon: <LuRocket className="w-5 h-5 mr-2" />
+    icon: <LuRocket className="mr-2 h-5 w-5" />
   },
   {
     key: 'hasCustomDomain',
@@ -51,7 +51,7 @@ const checklist = [
       it: 'Configura un dominio personalizzato',
       es: 'Configurar un dominio personalizado'
     },
-    icon: <LuGlobe className="w-5 h-5 mr-2" />
+    icon: <LuGlobe className="mr-2 h-5 w-5" />
   },
   {
     key: 'hasBlock',
@@ -61,7 +61,7 @@ const checklist = [
       it: 'Aggiungi un widget',
       es: 'Agregar un widget'
     },
-    icon: <LuWand className="w-5 h-5 mr-2" />
+    icon: <LuWand className="mr-2 h-5 w-5" />
   },
   {
     key: 'hasDescription',
@@ -71,7 +71,7 @@ const checklist = [
       it: "Configura l'identità del sito",
       es: 'Configurar la identidad del sitio'
     },
-    icon: <LuLayoutDashboard className="w-5 h-5 mr-2" />
+    icon: <LuLayoutDashboard className="mr-2 h-5 w-5" />
   },
   {
     key: 'hasClick',
@@ -81,7 +81,7 @@ const checklist = [
       it: 'Ottieni il tuo primo clic',
       es: 'Obtener tu primera clic'
     },
-    icon: <LuSparkles className="w-5 h-5 mr-2" />
+    icon: <LuSparkles className="mr-2 h-5 w-5" />
   },
   {
     key: 'hasReservation',
@@ -91,7 +91,7 @@ const checklist = [
       it: 'Ottieni la tua prima prenotazione',
       es: 'Obtener tu primera reserva'
     },
-    icon: <LuCalendar className="w-5 h-5 mr-2" />
+    icon: <LuCalendar className="mr-2 h-5 w-5" />
   },
   {
     key: 'hasSubscriber',
@@ -101,7 +101,7 @@ const checklist = [
       it: 'Ottieni il tuo primo abbonato',
       es: 'Obtener tu primera suscripción'
     },
-    icon: <LuUsers className="w-5 h-5 mr-2" />
+    icon: <LuUsers className="mr-2 h-5 w-5" />
   },
   //   {
   //     key: 'hasLink',
@@ -125,7 +125,7 @@ const checklist = [
       it: "Sottoscrivi l'offerta premium",
       es: 'Suscríbete a la oferta premium'
     },
-    icon: <LuZap className="w-5 h-5 mr-2" />
+    icon: <LuZap className="mr-2 h-5 w-5" />
   },
   //   { key: 'hasCompany', label: 'Configurer les infos société', icon: <LuLayoutDashboard className="w-5 h-5 mr-2" /> },
   //   { key: 'hasBilling', label: 'Configurer la facturation', icon: <LuHeartHandshake className="w-5 h-5 mr-2" /> },
@@ -138,7 +138,7 @@ const checklist = [
       it: 'Parrainare un amico',
       es: 'Patrocinar a un amigo'
     },
-    icon: <LuUsers className="w-5 h-5 mr-2" />
+    icon: <LuUsers className="mr-2 h-5 w-5" />
   },
   //   { key: 'hasCampaign', label: 'Créer une campagne marketing', icon: <LuMail className="w-5 h-5 mr-2" /> },
   //   { key: 'hasFeed', label: "Ajouter un flux d'actualité", icon: <LuSparkles className="w-5 h-5 mr-2" /> },
@@ -152,7 +152,7 @@ const checklist = [
       it: 'Condividi il tuo Qards',
       es: 'Compartir tu Qards'
     },
-    icon: <LuShare className="w-5 h-5 mr-2" />
+    icon: <LuShare className="mr-2 h-5 w-5" />
   }
 ];
 
@@ -181,10 +181,10 @@ export function OnboardingChecklist({ state }: OnboardingChecklistProps) {
         return (
           <li
             key={item.key}
-            className={cn('flex items-center gap-2 py-2 px-4', {
-              'bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full text-white':
+            className={cn('flex items-center gap-2 px-4 py-2', {
+              'rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white':
                 isNext,
-              'bg-green-100 rounded-full text-green-600': !isNext && isCompleted
+              'rounded-full bg-green-100 text-green-600': !isNext && isCompleted
             })}
           >
             {state[item.key as keyof typeof state] ? (

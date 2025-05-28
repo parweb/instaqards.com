@@ -23,18 +23,18 @@ export function WelcomeCard({
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
-      className="bg-white dark:bg-zinc-800 rounded-2xl p-6 shadow-lg relative overflow-hidden backdrop-blur-sm bg-opacity-80 dark:bg-opacity-80 backdrop-filter border border-white/20 dark:border-black/20"
+      className="bg-opacity-80 dark:bg-opacity-80 relative overflow-hidden rounded-2xl border border-white/20 bg-white p-6 shadow-lg backdrop-blur-sm backdrop-filter dark:border-black/20 dark:bg-zinc-800"
     >
-      <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 bg-gradient-to-bl from-blue-500/10 to-purple-500/10 blur-3xl rounded-full"></div>
+      <div className="absolute top-0 right-0 -mt-20 -mr-20 h-40 w-40 rounded-full bg-gradient-to-bl from-blue-500/10 to-purple-500/10 blur-3xl"></div>
       <div className="relative">
-        <div className="flex items-center gap-3 mb-2">
+        <div className="mb-2 flex items-center gap-3">
           {pourcentVisitors > 0 ? (
-            <div className="flex items-center gap-1 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium rounded-full">
+            <div className="flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-300">
               {/* Trending up icon à injecter par le parent si besoin */}
               <span>+{pourcentVisitors.toFixed(0)}%</span>
             </div>
           ) : (
-            <div className="flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium rounded-full">
+            <div className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
               <span>{"Aujourd'hui"}</span>
             </div>
           )}
@@ -42,7 +42,7 @@ export function WelcomeCard({
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xl shadow-lg animate-pulse">
+            <div className="flex h-12 w-12 animate-pulse items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-xl font-bold text-white shadow-lg">
               {user.image ? (
                 <Image
                   src={user.image}
@@ -56,9 +56,9 @@ export function WelcomeCard({
               )}
             </div>
           </div>
-          <h1 className="text-3xl font-cal font-bold text-zinc-900 dark:text-white">
+          <h1 className="font-cal text-3xl font-bold text-zinc-900 dark:text-white">
             {greeting},{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
               {user.name || 'Entrepreneur'}
             </span>
           </h1>

@@ -42,7 +42,7 @@ export default function WorkflowsNav() {
   ];
 
   return (
-    <div className="flex space-x-4 border-b border-stone-200 pb-4 pt-2 dark:border-stone-700">
+    <div className="flex space-x-4 border-b border-stone-200 pt-2 pb-4 dark:border-stone-700">
       {navItems.map(item => (
         <Link
           prefetch

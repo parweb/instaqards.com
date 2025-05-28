@@ -26,7 +26,7 @@ export default function CreateBlockButton({
         onClick={() => modal?.show(children)}
         className={cn(
           'transition-all duration-300',
-          'border border-white/90 bg-white/90 rounded-md p-3 text-black w-full text-center',
+          'w-full rounded-md border border-white/90 bg-white/90 p-3 text-center text-black',
           'hover:bg-transparent hover:text-white/90'
         )}
       >
@@ -41,7 +41,7 @@ export default function CreateBlockButton({
       <button
         type="button"
         onClick={() => modal?.show(children)}
-        className="border border-white/90 rounded-full bg-white text-black h-[45px] aspect-square hover:bg-transparent hover:text-white/90 transition-all hover:scale-125"
+        className="aspect-square h-[45px] rounded-full border border-white/90 bg-white text-black transition-all hover:scale-125 hover:bg-transparent hover:text-white/90"
       >
         +
       </button>

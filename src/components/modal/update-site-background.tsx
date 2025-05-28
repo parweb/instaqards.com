@@ -62,9 +62,9 @@ const BackgroundItem = ({
         }
       }}
       className={cn(
-        'aspect-video w-full rounded-lg bg-white border-4 border-transparent',
-        'relative overflow-hidden cursor-pointer',
-        'transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black',
+        'aspect-video w-full rounded-lg border-4 border-transparent bg-white',
+        'relative cursor-pointer overflow-hidden',
+        'transition-all duration-300 focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-none',
         {
           'aspect-[5/1]': preview === true && expand === false,
           'border-black': isSelected && preview === false
@@ -248,9 +248,9 @@ const UpdateSiteBackgroundModal = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700"
+      className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:bg-black dark:md:border-stone-700"
     >
-      <div className="flex flex-col p-4 gap-4">
+      <div className="flex flex-col gap-4 p-4">
         <h2 className="font-cal text-2xl dark:text-white">
           {translate('components.site.updateBackground.title')}
         </h2>
@@ -258,8 +258,8 @@ const UpdateSiteBackgroundModal = ({
         <div className="flex flex-col gap-4">
           <div
             className={cn(
-              'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
-              'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
+              'flex cursor-pointer flex-col border-2 border-dashed p-4 transition-all',
+              'rounded-md border-slate-500 text-slate-400 hover:border-slate-900 hover:text-slate-900',
               isDragActive && 'border-slate-900 text-slate-900',
 
               currentBackground.type === 'upload' &&
@@ -286,7 +286,7 @@ const UpdateSiteBackgroundModal = ({
             <>
               {currentBackground.mediaType === 'image' && (
                 <img
-                  className="aspect-video object-contain rounded-md"
+                  className="aspect-video rounded-md object-contain"
                   src={currentBackground.preview}
                   alt="Upload preview"
                 />
@@ -294,7 +294,7 @@ const UpdateSiteBackgroundModal = ({
 
               {currentBackground.mediaType === 'video' && (
                 <video
-                  className="aspect-video object-contain rounded-md"
+                  className="aspect-video rounded-md object-contain"
                   controls
                 >
                   <source src={currentBackground.preview} />
@@ -327,7 +327,7 @@ const UpdateSiteBackgroundModal = ({
           {currentBackground.type === 'color' && (
             <>
               <div
-                className="w-full aspect-video rounded-md border border-stone-200 dark:border-stone-700"
+                className="aspect-video w-full rounded-md border border-stone-200 dark:border-stone-700"
                 style={{ backgroundColor: currentBackground.value }}
                 title={`Selected color: ${currentBackground.value}`}
               />
@@ -375,7 +375,7 @@ const UpdateSiteBackgroundModal = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
+      <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10 dark:border-stone-700 dark:bg-stone-800">
         <UpdateSiteBackgroundFormButton pending={pending} />
       </div>
     </form>

@@ -14,28 +14,28 @@ export const MenuVariation65: React.FC = () => {
   const tabs = [
     {
       name: 'HOME',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       neon: 'from-cyan-400 to-blue-500',
       glitch: 'cyan'
     },
     {
       name: 'SCAN',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       neon: 'from-pink-400 to-purple-500',
       glitch: 'pink'
     },
     {
       name: 'SYNC',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       neon: 'from-green-400 to-emerald-500',
       glitch: 'green'
     },
     {
       name: 'MENU',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       neon: 'from-orange-400 to-red-500',
       glitch: 'orange'
@@ -71,10 +71,10 @@ export const MenuVariation65: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       {/* Fond cyberpunk */}
       <div className="relative bg-gradient-to-r from-black via-gray-900 to-black p-1">
-        <div className="bg-black/95 backdrop-blur-xl px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-black/95 px-4 py-4 backdrop-blur-xl">
           {/* Grille cyberpunk */}
           <div className="absolute inset-0 opacity-20">
             <div
@@ -100,7 +100,7 @@ export const MenuVariation65: React.FC = () => {
               <div
                 key={i}
                 className={cn(
-                  'absolute w-full h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent',
+                  'absolute h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent',
                   'animate-pulse'
                 )}
                 style={{
@@ -118,7 +118,7 @@ export const MenuVariation65: React.FC = () => {
               <div
                 key={i}
                 className={cn(
-                  'absolute w-1 h-1 bg-cyan-400 rounded-full animate-pulse',
+                  'absolute h-1 w-1 animate-pulse rounded-full bg-cyan-400',
                   neonPulse === i % 3 ? 'opacity-100' : 'opacity-30'
                 )}
                 style={{
@@ -130,18 +130,18 @@ export const MenuVariation65: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 {/* Hologramme container */}
                 <div
                   className={cn(
-                    'relative mb-2 transition-all duration-300 ease-out transform',
+                    'relative mb-2 transform transition-all duration-300 ease-out',
                     'group-hover:scale-110 group-active:scale-95',
                     activeTab === index ? 'scale-115' : '',
                     glitchEffect && activeTab === index ? 'animate-pulse' : ''
@@ -150,7 +150,7 @@ export const MenuVariation65: React.FC = () => {
                   {/* Projection holographique */}
                   <div
                     className={cn(
-                      'absolute inset-0 w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2',
+                      'absolute inset-0 top-1/2 left-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2',
                       'border border-dashed transition-all duration-500',
                       activeTab === index
                         ? `border-${tab.glitch}-400 opacity-80`
@@ -163,14 +163,14 @@ export const MenuVariation65: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute inset-0 w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2',
+                          'absolute inset-0 top-1/2 left-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2',
                           `bg-gradient-to-r ${tab.neon}`,
-                          'opacity-20 blur-sm animate-ping'
+                          'animate-ping opacity-20 blur-sm'
                         )}
                       />
                       <div
                         className={cn(
-                          'absolute inset-0 w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 transform translate-x-1',
+                          'absolute inset-0 top-1/2 left-1/2 h-16 w-16 -translate-x-1/2 translate-x-1 -translate-y-1/2 transform',
                           `bg-gradient-to-r ${tab.neon}`,
                           'opacity-10 blur-md'
                         )}
@@ -181,7 +181,7 @@ export const MenuVariation65: React.FC = () => {
                   {/* Panneau holographique */}
                   <div
                     className={cn(
-                      'relative z-10 w-14 h-14 transition-all duration-500 transform',
+                      'relative z-10 h-14 w-14 transform transition-all duration-500',
                       'bg-gradient-to-br from-gray-900 via-black to-gray-800',
                       'border-2 group-hover:rotate-3',
                       activeTab === index
@@ -229,21 +229,21 @@ export const MenuVariation65: React.FC = () => {
                       <>
                         <div
                           className={cn(
-                            'absolute top-2 left-2 right-2 h-px transition-all duration-1000',
+                            'absolute top-2 right-2 left-2 h-px transition-all duration-1000',
                             `bg-gradient-to-r ${tab.neon}`,
                             neonPulse === 0 ? 'opacity-80' : 'opacity-20'
                           )}
                         />
                         <div
                           className={cn(
-                            'absolute top-1/2 left-2 right-2 h-px transition-all duration-1000',
+                            'absolute top-1/2 right-2 left-2 h-px transition-all duration-1000',
                             `bg-gradient-to-r ${tab.neon}`,
                             neonPulse === 1 ? 'opacity-80' : 'opacity-20'
                           )}
                         />
                         <div
                           className={cn(
-                            'absolute bottom-2 left-2 right-2 h-px transition-all duration-1000',
+                            'absolute right-2 bottom-2 left-2 h-px transition-all duration-1000',
                             `bg-gradient-to-r ${tab.neon}`,
                             neonPulse === 2 ? 'opacity-80' : 'opacity-20'
                           )}
@@ -257,21 +257,21 @@ export const MenuVariation65: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -top-1 -left-1 w-2 h-2 rounded-full animate-ping',
+                          'absolute -top-1 -left-1 h-2 w-2 animate-ping rounded-full',
                           `bg-gradient-to-r ${tab.neon}`
                         )}
                         style={{ animationDelay: '0s' }}
                       />
                       <div
                         className={cn(
-                          'absolute -bottom-1 -right-1 w-1.5 h-1.5 rounded-full animate-ping',
+                          'absolute -right-1 -bottom-1 h-1.5 w-1.5 animate-ping rounded-full',
                           `bg-gradient-to-r ${tab.neon}`
                         )}
                         style={{ animationDelay: '0.5s' }}
                       />
                       <div
                         className={cn(
-                          'absolute top-0 -right-1 w-1 h-1 rounded-full animate-ping',
+                          'absolute top-0 -right-1 h-1 w-1 animate-ping rounded-full',
                           `bg-gradient-to-r ${tab.neon}`
                         )}
                         style={{ animationDelay: '1s' }}
@@ -283,9 +283,9 @@ export const MenuVariation65: React.FC = () => {
                 {/* Label cyberpunk */}
                 <span
                   className={cn(
-                    'text-[10px] font-bold transition-all duration-300 relative font-mono tracking-wider',
+                    'relative font-mono text-[10px] font-bold tracking-wider transition-all duration-300',
                     activeTab === index
-                      ? `bg-gradient-to-r ${tab.neon} bg-clip-text text-transparent animate-pulse`
+                      ? `bg-gradient-to-r ${tab.neon} animate-pulse bg-clip-text text-transparent`
                       : 'text-gray-500 group-hover:text-gray-400',
                     glitchEffect && activeTab === index ? 'animate-pulse' : ''
                   )}
@@ -295,17 +295,17 @@ export const MenuVariation65: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-0.5 rounded-full transition-all duration-500',
+                          'absolute -bottom-1 left-1/2 h-0.5 w-8 -translate-x-1/2 transform rounded-full transition-all duration-500',
                           `bg-gradient-to-r ${tab.neon}`,
                           neonPulse === index % 3
-                            ? 'opacity-100 scale-x-100'
-                            : 'opacity-60 scale-x-75'
+                            ? 'scale-x-100 opacity-100'
+                            : 'scale-x-75 opacity-60'
                         )}
                       />
                       {/* Code d'identification */}
                       <div
                         className={cn(
-                          'absolute -top-3 left-1/2 transform -translate-x-1/2 text-[6px] font-mono',
+                          'absolute -top-3 left-1/2 -translate-x-1/2 transform font-mono text-[6px]',
                           `text-${tab.glitch}-400`
                         )}
                       >
@@ -319,10 +319,10 @@ export const MenuVariation65: React.FC = () => {
           </div>
 
           {/* Status bar cyberpunk */}
-          <div className="absolute bottom-1 left-2 text-[8px] text-cyan-400 font-mono opacity-60">
+          <div className="absolute bottom-1 left-2 font-mono text-[8px] text-cyan-400 opacity-60">
             NEURAL_LINK_ACTIVE
           </div>
-          <div className="absolute bottom-1 right-2 text-[8px] text-green-400 font-mono opacity-60">
+          <div className="absolute right-2 bottom-1 font-mono text-[8px] text-green-400 opacity-60">
             SYNC: 100%
           </div>
         </div>

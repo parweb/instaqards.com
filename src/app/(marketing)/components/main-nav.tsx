@@ -72,7 +72,7 @@ export const MainNav: React.FC<MainNavProps> = ({
                         <li key={subIndex} className="w-100">
                           <NavigationMenuLink
                             className={cn(
-                              'flex gap-4 items-center select-none rounded-md p-4 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground'
+                              'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground flex items-center gap-4 rounded-md p-4 leading-none no-underline transition-colors outline-none select-none'
                             )}
                             asChild
                           >
@@ -89,13 +89,13 @@ export const MainNav: React.FC<MainNavProps> = ({
                                 )}
                               </div>
 
-                              <div className="flex-1 flex flex-col gap-1">
-                                <div className="text-sm font-medium leading-none">
+                              <div className="flex flex-1 flex-col gap-1">
+                                <div className="text-sm leading-none font-medium">
                                   {subItem.title[lang]}
                                 </div>
 
                                 {subItem.description && (
-                                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                  <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
                                     {subItem.description[lang]}
                                   </p>
                                 )}

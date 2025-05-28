@@ -109,29 +109,29 @@ const Welcome = ({ lang = 'en', id }: WelcomeEmailProps) => {
 
   return (
     <Main title={t.title} lang={lang} id={id}>
-      <Heading className="text-3xl font-bold text-center text-gray-800 mb-4">
+      <Heading className="mb-4 text-center text-3xl font-bold text-gray-800">
         {t.title}
       </Heading>
 
-      <Text className="text-xl text-center text-gray-600 mb-8">
+      <Text className="mb-8 text-center text-xl text-gray-600">
         Hey, {t.subtitle}!
       </Text>
 
-      <Text className="text-gray-700 mb-6 text-center">{t.description}</Text>
+      <Text className="mb-6 text-center text-gray-700">{t.description}</Text>
 
       <Section className="mb-8">
         {t.features.map((feature, index) => (
           <Row key={index} className="mb-4">
-            <Column className="px-4 py-2 bg-blue-50 rounded-lg">
-              <Text className="text-gray-700 m-0">✨ {feature}</Text>
+            <Column className="rounded-lg bg-blue-50 px-4 py-2">
+              <Text className="m-0 text-gray-700">✨ {feature}</Text>
             </Column>
           </Row>
         ))}
       </Section>
 
-      <Section className="text-center mb-8">
+      <Section className="mb-8 text-center">
         <Button
-          className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition-colors"
+          className="rounded-full bg-blue-600 px-8 py-3 font-bold text-white transition-colors hover:bg-blue-700"
           href={track(base, 'cta')}
         >
           {t.cta}

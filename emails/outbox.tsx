@@ -29,7 +29,7 @@ const Outbox = ({ subject = '', body = '', lang = 'en', id }: OutboxProps) => {
               .map((line, index) => (
                 <Text
                   key={index}
-                  className="text-[20px] my-0 text-gray-900"
+                  className="my-0 text-[20px] text-gray-900"
                   dangerouslySetInnerHTML={{
                     __html:
                       line.length === 0

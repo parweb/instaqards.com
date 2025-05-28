@@ -7,7 +7,7 @@ interface QardIconProps {
 export const QardIcon: React.FC<QardIconProps> = ({ className }) => {
   return (
     <svg
-      className={cn('w-5 h-5', className)}
+      className={cn('h-5 w-5', className)}
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

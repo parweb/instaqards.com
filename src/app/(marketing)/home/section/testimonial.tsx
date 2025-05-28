@@ -168,24 +168,24 @@ export const Testimonial = async () => {
   const lang = await getLang();
 
   return (
-    <div id="Testimonial" className="flex flex-col p-5 sm:p-10 gap-20">
-      <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-4xl sm:text-5xl font-[900]">
+    <div id="Testimonial" className="flex flex-col gap-20 p-5 sm:p-10">
+      <hgroup className="flex flex-col gap-4 text-center">
+        <h2 className="text-4xl font-[900] sm:text-5xl">
           {await translate('page.home.testimonial.title')}
         </h2>
-        <p className="text-gray-600 text-2xl">
+        <p className="text-2xl text-gray-600">
           {await translate('page.home.testimonial.description')}
         </p>
       </hgroup>
 
       <div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
           {comments.map(comment => (
             <div
               key={`TestimonialItem-${comment.id}`}
-              className="flex flex-col gap-2 p-4 border-2 border-gray-200 rounded-md"
+              className="flex flex-col gap-2 rounded-md border-2 border-gray-200 p-4"
             >
-              <div className="flex gap-4 items-center justify-center">
+              <div className="flex items-center justify-center gap-4">
                 <Image
                   className="rounded-full"
                   src={`/face-${comment.id}.jpg`}
@@ -196,7 +196,7 @@ export const Testimonial = async () => {
                 <div className="">{comment.name}</div>
               </div>
 
-              <div className="flex-1 flex items-center justify-center">
+              <div className="flex flex-1 items-center justify-center">
                 <div className="italic">{comment.text[lang]}</div>
               </div>
             </div>

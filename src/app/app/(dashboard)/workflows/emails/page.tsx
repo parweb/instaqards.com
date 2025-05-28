@@ -27,9 +27,9 @@ const Stat = ({
   value: number;
   Icon: IconType;
 }) => (
-  <div className="flex gap-4 items-center border rounded-md px-4 py-2 shadow-sm">
-    <div className="flex items-center justify-center bg-stone-100 rounded-full p-4">
-      <Icon className="w-7 h-7" />
+  <div className="flex items-center gap-4 rounded-md border px-4 py-2 shadow-sm">
+    <div className="flex items-center justify-center rounded-full bg-stone-100 p-4">
+      <Icon className="h-7 w-7" />
     </div>
     <div>
       <h4 className="text-muted-foreground">{label}</h4>
@@ -62,7 +62,7 @@ export default async function WorkflowsEmails() {
         {emails.map(email => (
           <div
             key={email.id}
-            className="flex items-center justify-between border p-4 rounded-md gap-4"
+            className="flex items-center justify-between gap-4 rounded-md border p-4"
           >
             {/* <div className="aspect-square w-15 border rounded-md p-4 flex items-center justify-center">
               {email.list.contacts.length}
@@ -73,7 +73,7 @@ export default async function WorkflowsEmails() {
               <div className="text-muted-foreground">{email.description}</div>
             </div>
 
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               <ModalButton label={<LuPencil />}>
                 <EmailsMutateModal email={email} />
               </ModalButton>

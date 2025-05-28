@@ -121,7 +121,7 @@ const BaseButton: React.FC<
         <img
           src={src}
           alt={image.id}
-          className="rounded-md w-14 aspect-square"
+          className="aspect-square w-14 rounded-md"
         />
       </div>
 

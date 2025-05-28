@@ -28,9 +28,9 @@ export default async function WorkflowsLists() {
         {lists.map(list => (
           <div
             key={list.id}
-            className="flex items-center justify-between border p-4 rounded-md gap-4"
+            className="flex items-center justify-between gap-4 rounded-md border p-4"
           >
-            <div className="aspect-square w-15 border rounded-md p-4 flex items-center justify-center">
+            <div className="flex aspect-square w-15 items-center justify-center rounded-md border p-4">
               {list.contacts.length}
             </div>
 

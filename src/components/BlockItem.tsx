@@ -41,7 +41,7 @@ import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
 const BlockWidget = dynamic(() => import('./BlockWidget'), {
   loading: () => (
-    <div className="w-full h-48 animate-pulse bg-stone-200/20 rounded-md" />
+    <div className="h-48 w-full animate-pulse rounded-md bg-stone-200/20" />
   ),
   ssr: false
 });
@@ -102,7 +102,7 @@ const BlockItem = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className={cn(
-          'group relative flex flex-col flex-1 items-center gap-2',
+          'group relative flex flex-1 flex-col items-center gap-2',
           isDragging === true && 'z-10'
         )}
         ref={setNodeRef}
@@ -114,8 +114,8 @@ const BlockItem = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className={cn(
-              'p-2 flex flex-1 self-stretch gap-2',
-              '[&>*]:cursor-pointer [&>*]:transition-all [&>*]:duration-300 [&>*]:scale-90 [&>*:hover]:scale-100'
+              'flex flex-1 gap-2 self-stretch p-2',
+              '[&>*]:scale-90 [&>*]:cursor-pointer [&>*]:transition-all [&>*]:duration-300 [&>*:hover]:scale-100'
             )}
           >
             <motion.div
@@ -130,7 +130,7 @@ const BlockItem = ({
               {...listeners}
               className=""
             >
-              <div className="cursor-move p-2 bg-white rounded-full">
+              <div className="cursor-move rounded-full bg-white p-2">
                 <LuMove />
               </div>
             </motion.div>
@@ -175,7 +175,7 @@ const BlockItem = ({
 
         <div
           className={cn(
-            'flex flex-col flex-1 self-stretch items-center gap-2 transition-all duration-300 outline-2 outline-offset-10 outline-dashed outline-stone-200/60 rounded-md',
+            'flex flex-1 flex-col items-center gap-2 self-stretch rounded-md outline-2 outline-offset-10 outline-stone-200/60 transition-all duration-300 outline-dashed',
             '[&>*]:flex-1 [&>*]:self-stretch',
             editor === false && 'outline-none'
           )}
@@ -185,7 +185,7 @@ const BlockItem = ({
               className={cn(
                 'cursor-pointer',
                 'transition-all',
-                'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
+                'w-full rounded-md border border-white/90 p-3 text-center text-white/90',
                 'hover:bg-white hover:text-black'
               )}
             >
@@ -214,7 +214,7 @@ const BlockItem = ({
           {hasWidget === true && (
             <Suspense
               fallback={
-                <div className="w-full h-48 animate-pulse bg-stone-200/20 rounded-md" />
+                <div className="h-48 w-full animate-pulse rounded-md bg-stone-200/20" />
               }
             >
               <BlockWidget block={block} />
@@ -228,14 +228,14 @@ const BlockItem = ({
   if (block.type === 'social') {
     return (
       <div
-        className="group flex flex-col flex-1 items-center gap-2 relative"
+        className="group relative flex flex-1 flex-col items-center gap-2"
         ref={setNodeRef}
         style={style}
       >
         <div
           className={cn(
-            'flex gap-2 absolute items-center p-2 bottom-[100%] text-sm',
-            'transition-all duration-300 opacity-0 group-hover:opacity-100 '
+            'absolute bottom-[100%] flex items-center gap-2 p-2 text-sm',
+            'opacity-0 transition-all duration-300 group-hover:opacity-100'
           )}
         >
           <BlockUpdate block={block} />
@@ -245,14 +245,14 @@ const BlockItem = ({
 
         <div
           className={cn(
-            'flex gap-2 absolute items-center p-2 top-[100%] text-sm',
-            'transition-all duration-300 opacity-0 group-hover:opacity-100 '
+            'absolute top-[100%] flex items-center gap-2 p-2 text-sm',
+            'opacity-0 transition-all duration-300 group-hover:opacity-100'
           )}
         >
           <div
             {...attributes}
             {...listeners}
-            className="cursor-move p-2 bg-white rounded-full"
+            className="cursor-move rounded-full bg-white p-2"
           >
             <LuMove />
           </div>
@@ -284,7 +284,7 @@ const BlockItem = ({
               url={block.href ?? ''}
             />
           ) : (
-            <div className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200 rounded-full">
+            <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full bg-stone-200 p-1">
               <LuLink />
             </div>
           )}

@@ -2,12 +2,12 @@ import { translate } from 'helpers/translate';
 
 export const Features = async () => {
   return (
-    <div id="Features" className="flex flex-col p-10 gap-10">
-      <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-4xl sm:text-5xl font-[900]">
+    <div id="Features" className="flex flex-col gap-10 p-10">
+      <hgroup className="flex flex-col gap-4 text-center">
+        <h2 className="text-4xl font-[900] sm:text-5xl">
           {await translate('page.home.features.title')}
         </h2>
-        <p className="text-gray-600 text-2xl">
+        <p className="text-2xl text-gray-600">
           {await translate('page.home.features.description')}
         </p>
       </hgroup>

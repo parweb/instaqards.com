@@ -128,11 +128,11 @@ export function InputLink(
   console.log({ isValid: props.isValid });
 
   return (
-    <div className="flex items-center border border-input rounded-md p-0 w-full max-w-md text-sm focus-within:ring-2 focus-within:ring-offset-2">
+    <div className="border-input flex w-full max-w-md items-center rounded-md border p-0 text-sm focus-within:ring-2 focus-within:ring-offset-2">
       <div className="mr-2">
         {props?.shape?.just === 'url' ? null : (
           <Select value={type} onValueChange={handleTypeChange}>
-            <SelectTrigger className="px-2 py-0 leading-none m-[-1px] bg-stone-800 text-white [&_svg:not([class*='text-'])]:text-white">
+            <SelectTrigger className="m-[-1px] bg-stone-800 px-2 py-0 leading-none text-white [&_svg:not([class*='text-'])]:text-white">
               <SelectValue placeholder="Type" />
             </SelectTrigger>
 
@@ -150,7 +150,7 @@ export function InputLink(
       {prefix && (
         <label
           htmlFor={id}
-          className="text-muted-foreground/50 whitespace-nowrap text-sm"
+          className="text-muted-foreground/50 text-sm whitespace-nowrap"
         >
           {prefix}
         </label>
@@ -161,7 +161,7 @@ export function InputLink(
           {...props}
           id={id}
           type="text"
-          className="flex-1 border-none focus-visible:ring-0 focus-visible:ring-offset-0 px-1 text-sm h-8"
+          className="h-8 flex-1 border-none px-1 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
           value={displayValue}
           onChange={handleInputChange}
         />

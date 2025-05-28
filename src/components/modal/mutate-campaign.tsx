@@ -190,7 +190,7 @@ export default function CampaignsMutateModal({
 
   return (
     <form
-      className="grid grid-rows-[1fr,auto] flex-col w-full rounded-md bg-white max-w-3xl md:border md:border-stone-200 md:shadow-sm max-h-[90dvh] overflow-y-scroll"
+      className="grid max-h-[90dvh] w-full max-w-3xl grid-rows-[1fr,auto] flex-col overflow-y-scroll rounded-md bg-white md:border md:border-stone-200 md:shadow-sm"
       action={async (data: FormData) =>
         mutateCampaigns(data).then(res => {
           if ('error' in res) {
@@ -257,7 +257,7 @@ export default function CampaignsMutateModal({
 
               <Badge
                 className={cn(
-                  'flex items-center gap-1 rounded-full peer-data-[state=checked]:bg-green-500 hover:peer-data-[state=checked]:bg-green-700  peer-data-[state=checked]:text-green-900',
+                  'flex items-center gap-1 rounded-full peer-data-[state=checked]:bg-green-500 peer-data-[state=checked]:text-green-900 hover:peer-data-[state=checked]:bg-green-700',
                   'peer-data-[state=checked]:text-white'
                 )}
               >
@@ -335,7 +335,7 @@ export default function CampaignsMutateModal({
         </Suspense>
       </div>
 
-      <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
+      <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10 dark:border-stone-700 dark:bg-stone-800">
         <CampaignsMutateButton />
       </div>
     </form>

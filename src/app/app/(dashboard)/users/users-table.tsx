@@ -163,8 +163,8 @@ export const UsersTable = ({
 
   return (
     <>
-      <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2">
             <Label htmlFor="search">Rechercher</Label>
 
@@ -233,26 +233,26 @@ export const UsersTable = ({
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
                   >
                     Utilisateur
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
                   >
                     Sites
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
                   >
                     Subscription
                   </th>
                 </tr>
               </thead>
 
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 bg-white">
                 {users.map(user => {
                   const avatar =
                     user.image ?? `https://avatar.vercel.sh/${user.email}`;
@@ -315,7 +315,7 @@ export const UsersTable = ({
                             return (
                               <span
                                 key={subscription.id}
-                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                className={`inline-flex rounded-full px-2 text-xs leading-5 font-semibold ${
                                   sub.valid()
                                     ? 'bg-green-100 text-green-800'
                                     : sub.onTrial()
@@ -332,7 +332,7 @@ export const UsersTable = ({
                             );
                           })
                         ) : (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                          <span className="inline-flex rounded-full bg-gray-100 px-2 text-xs leading-5 font-semibold text-gray-800">
                             None
                           </span>
                         )}

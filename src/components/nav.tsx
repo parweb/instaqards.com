@@ -142,7 +142,7 @@ export default function Nav({ children }: { children: ReactNode }) {
     <>
       <button
         type="button"
-        className="fixed right-5 top-5 sm:hidden"
+        className="fixed top-5 right-5 sm:hidden"
         onClick={() => setShowSidebar(state => !state)}
       >
         {showSidebar ? <X width={20} /> : <Menu width={20} />}
@@ -153,21 +153,21 @@ export default function Nav({ children }: { children: ReactNode }) {
         onKeyUp={e => e.key === 'Enter' && setShowSidebar(false)}
         className={`transform ${
           showSidebar
-            ? 'w-full h-full pr-[100px] sm:pr-0 translate-x-0 bg-gray-500/50'
+            ? 'h-full w-full translate-x-0 bg-gray-500/50 pr-[100px] sm:pr-0'
             : '-translate-x-full'
-        } fixed sm:static flex flex-col gap-4 justify-between transition-all sm:w-60 sm:translate-x-0`}
+        } fixed flex flex-col justify-between gap-4 transition-all sm:static sm:w-60 sm:translate-x-0`}
       >
         <div
           onClick={e => e.stopPropagation()}
           onKeyUp={e => e.stopPropagation()}
-          className="pointer-events-auto flex flex-col justify-between gap-4 w-full border-r border-stone-200 bg-stone-100 p-4 h-full"
+          className="pointer-events-auto flex h-full w-full flex-col justify-between gap-4 border-r border-stone-200 bg-stone-100 p-4"
         >
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-center rounded-lg p-2">
               <Link
                 prefetch
                 href="/"
-                className="rounded-lg p-2 hover:bg-stone-200 flex items-center gap-3 uppercase"
+                className="flex items-center gap-3 rounded-lg p-2 uppercase hover:bg-stone-200"
               >
                 <Image
                   src="/rsz_black-transparent_nolink.png"

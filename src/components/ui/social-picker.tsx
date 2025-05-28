@@ -76,7 +76,7 @@ export function SocialPicker({
         onChange={e => setFilter(e.target.value)}
       />
 
-      <div className="grid grid-cols-5 gap-2 max-h-[180px] overflow-y-auto p-1">
+      <div className="grid max-h-[180px] grid-cols-5 gap-2 overflow-y-auto p-1">
         {filter === '' &&
           features.map(key => (
             <div
@@ -92,7 +92,7 @@ export function SocialPicker({
                   boxShadow: `0 0 0 2px ${logo === key ? 'black' : 'white'}`
                 }}
                 className={cn(
-                  'rounded-full transition-all duration-300 border-2 border-white'
+                  'rounded-full border-2 border-white transition-all duration-300'
                 )}
                 onClick={() => setLogo(logo === key ? '' : key)}
               />
@@ -112,7 +112,7 @@ export function SocialPicker({
               type="button"
               variant="ghost"
               onClick={() => setAll(true)}
-              className="flex flex-col items-center justify-center w-[46px] h-[46px] rounded-full bg-stone-200"
+              className="flex h-[46px] w-[46px] flex-col items-center justify-center rounded-full bg-stone-200"
             >
               <LuPlus />
             </Button>
@@ -139,7 +139,7 @@ export function SocialPicker({
                   boxShadow: `0 0 0 2px ${logo === key ? 'black' : 'white'}`
                 }}
                 className={cn(
-                  'rounded-full transition-all duration-300 border-2 border-white'
+                  'rounded-full border-2 border-white transition-all duration-300'
                 )}
                 onClick={() => setLogo(logo === key ? '' : key)}
               />

@@ -39,7 +39,7 @@ const Persona = ({
         prefetch
         href={`/pro/${job.id}`}
         className={cn(
-          'flex flex-col gap-2 items-center cursor-pointer transition-all duration-300 scale-90',
+          'flex scale-90 cursor-pointer flex-col items-center gap-2 transition-all duration-300',
           {
             'scale-100': selected === job.id
           }
@@ -59,9 +59,9 @@ const Persona = ({
         <span
           className={cn(
             boldonse.className,
-            'font-light bg-transparent rounded-full py-2 px-4',
+            'rounded-full bg-transparent px-4 py-2 font-light',
             {
-              'text-black bg-stone-200': selected === job.id
+              'bg-stone-200 text-black': selected === job.id
             }
           )}
         >
@@ -74,7 +74,7 @@ const Persona = ({
   return (
     <div
       className={cn(
-        'flex flex-col gap-2 items-center cursor-pointer transition-all duration-300 scale-90',
+        'flex scale-90 cursor-pointer flex-col items-center gap-2 transition-all duration-300',
         {
           'scale-100': selected === job.id
         }
@@ -102,9 +102,9 @@ const Persona = ({
       <span
         className={cn(
           boldonse.className,
-          'font-light bg-transparent rounded-full py-2 px-4',
+          'rounded-full bg-transparent px-4 py-2 font-light',
           {
-            'text-black bg-stone-200': selected === job.id
+            'bg-stone-200 text-black': selected === job.id
           }
         )}
       >

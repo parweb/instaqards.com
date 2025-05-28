@@ -56,21 +56,21 @@ const BaseButton: React.FC<
     <button
       className={cn(
         className,
-        'group flex items-center p-4 gap-4 border-2 border-stone-200 rounded-md bg-white',
+        'group flex items-center gap-4 rounded-md border-2 border-stone-200 bg-white p-4',
         'hover:border-stone-400'
       )}
       type="button"
     >
       <div className="flex gap-4">
         <div>
-          <FaDirections className="text-stone-400 w-14 h-14 group-hover:text-stone-600" />
+          <FaDirections className="h-14 w-14 text-stone-400 group-hover:text-stone-600" />
         </div>
 
-        <div className="flex-1 flex flex-col gap-1 items-start">
-          {label && <span className="text-md font-bold text-xl">{label}</span>}
+        <div className="flex flex-1 flex-col items-start gap-1">
+          {label && <span className="text-md text-xl font-bold">{label}</span>}
 
           {address && (
-            <span className="text-sm text-stone-500 text-left">
+            <span className="text-left text-sm text-stone-500">
               {display_name}
             </span>
           )}

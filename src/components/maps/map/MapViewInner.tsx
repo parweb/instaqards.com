@@ -172,7 +172,7 @@ export function MapViewInner({
   });
 
   return (
-    <div className="w-full h-full map-container overflow-hidden">
+    <div className="map-container h-full w-full overflow-hidden">
       {/* <div ref={mapRef} style={{ height: '100%', width: '100%' }} /> */}
       <MapContainer
         center={mapInitialCenter}

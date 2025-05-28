@@ -13,7 +13,7 @@ export default async function WorkflowsTriggers() {
   return (
     <div className="flex flex-col space-y-6">
       <Form
-        className="flex flex-col gap-4 border border-stone-200 rounded-md p-4"
+        className="flex flex-col gap-4 rounded-md border border-stone-200 p-4"
         action={async form => {
           'use server';
 
@@ -42,7 +42,7 @@ export default async function WorkflowsTriggers() {
       </Form>
 
       {triggers.map(trigger => (
-        <div key={trigger.id} className="flex gap-4 items-center">
+        <div key={trigger.id} className="flex items-center gap-4">
           <Button
             size="sm"
             type="submit"

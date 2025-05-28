@@ -19,7 +19,7 @@ export default function UpdateSiteProfilePictureButton({
       aria-label={translate('components.site.update.profile-picture')}
       type="button"
       onClick={() => modal?.show(children)}
-      className="bg-black text-white rounded-full p-2 w-10 h-10 flex items-center justify-center"
+      className="flex h-10 w-10 items-center justify-center rounded-full bg-black p-2 text-white"
     >
       <LuPencil />
     </button>

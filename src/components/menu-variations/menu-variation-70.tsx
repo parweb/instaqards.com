@@ -13,25 +13,25 @@ export const MenuVariation70: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       morph: 'from-teal-400 to-cyan-500'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       morph: 'from-violet-400 to-purple-500'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       morph: 'from-rose-400 to-pink-500'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       morph: 'from-amber-400 to-orange-500'
     }
@@ -63,9 +63,9 @@ export const MenuVariation70: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative bg-gradient-to-r from-gray-100 via-white to-gray-100 p-1">
-        <div className="bg-white/95 backdrop-blur-sm px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-white/95 px-4 py-4 backdrop-blur-sm">
           {/* Formes morphantes de fond */}
           <div className="absolute inset-0 opacity-10">
             {Array.from({ length: 6 }, (_, i) => (
@@ -84,17 +84,17 @@ export const MenuVariation70: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 <div
                   className={cn(
-                    'relative mb-2 transition-all duration-700 ease-out transform',
+                    'relative mb-2 transform transition-all duration-700 ease-out',
                     'group-hover:scale-110 group-active:scale-95',
                     activeTab === index ? 'scale-115' : ''
                   )}
@@ -102,7 +102,7 @@ export const MenuVariation70: React.FC = () => {
                   {/* Forme morphante principale */}
                   <div
                     className={cn(
-                      'relative z-10 w-14 h-14 transition-all duration-2000 ease-in-out transform',
+                      'relative z-10 h-14 w-14 transform transition-all duration-2000 ease-in-out',
                       'group-hover:rotate-12',
                       activeTab === index ? 'shadow-2xl' : 'shadow-lg'
                     )}
@@ -159,7 +159,7 @@ export const MenuVariation70: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -top-1 -left-1 w-2 h-2 transition-all duration-2000 ease-in-out animate-bounce',
+                          'absolute -top-1 -left-1 h-2 w-2 animate-bounce transition-all duration-2000 ease-in-out',
                           `bg-gradient-to-r ${tab.morph}`
                         )}
                         style={{
@@ -169,7 +169,7 @@ export const MenuVariation70: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute -bottom-1 -right-1 w-1.5 h-1.5 transition-all duration-2000 ease-in-out animate-bounce',
+                          'absolute -right-1 -bottom-1 h-1.5 w-1.5 animate-bounce transition-all duration-2000 ease-in-out',
                           `bg-gradient-to-r ${tab.morph}`
                         )}
                         style={{
@@ -179,7 +179,7 @@ export const MenuVariation70: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute top-0 -right-1 w-1 h-1 transition-all duration-2000 ease-in-out animate-bounce',
+                          'absolute top-0 -right-1 h-1 w-1 animate-bounce transition-all duration-2000 ease-in-out',
                           `bg-gradient-to-r ${tab.morph}`
                         )}
                         style={{
@@ -193,9 +193,9 @@ export const MenuVariation70: React.FC = () => {
 
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all duration-500 relative',
+                    'relative text-xs font-bold transition-all duration-500',
                     activeTab === index
-                      ? `bg-gradient-to-r ${tab.morph} bg-clip-text text-transparent animate-pulse`
+                      ? `bg-gradient-to-r ${tab.morph} animate-pulse bg-clip-text text-transparent`
                       : 'text-gray-600 group-hover:text-gray-700'
                   )}
                 >
@@ -203,7 +203,7 @@ export const MenuVariation70: React.FC = () => {
                   {activeTab === index && (
                     <div
                       className={cn(
-                        'absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-0.5 transition-all duration-2000 ease-in-out',
+                        'absolute -bottom-1 left-1/2 h-0.5 w-6 -translate-x-1/2 transform transition-all duration-2000 ease-in-out',
                         `bg-gradient-to-r ${tab.morph}`
                       )}
                       style={{
@@ -217,7 +217,7 @@ export const MenuVariation70: React.FC = () => {
           </div>
 
           {/* Indicateur de morphing */}
-          <div className="absolute bottom-1 right-2 text-[8px] text-gray-500 font-mono">
+          <div className="absolute right-2 bottom-1 font-mono text-[8px] text-gray-500">
             MORPH: {morphState + 1}/{shapes.length}
           </div>
         </div>

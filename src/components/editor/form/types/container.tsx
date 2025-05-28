@@ -25,11 +25,11 @@ const Size = ({
       render={({ field }) => {
         return (
           <div className="flex items-center gap-2">
-            <label htmlFor={name} className="text-sm min-w-18 text-stone-500">
+            <label htmlFor={name} className="min-w-18 text-sm text-stone-500">
               {label}
             </label>
 
-            <div className="w-[80px] relative">
+            <div className="relative w-[80px]">
               <Input
                 id={name}
                 name={name}
@@ -41,7 +41,7 @@ const Size = ({
                 }}
               />
 
-              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-stone-500">
+              <span className="absolute top-1/2 right-2 -translate-y-1/2 text-sm text-stone-500">
                 px
               </span>
             </div>
@@ -71,7 +71,7 @@ const Color = ({
       render={({ field }) => {
         return (
           <div className="flex items-center gap-2">
-            <label htmlFor={name} className="text-sm min-w-18 text-stone-500">
+            <label htmlFor={name} className="min-w-18 text-sm text-stone-500">
               {label}
             </label>
 
@@ -93,7 +93,7 @@ export const Container = (props: {
   data: Record<string, unknown>;
 }) => {
   return (
-    <div className="flex flex-col gap-4 p-4 border rounded bg-stone-50 shadow-sm">
+    <div className="flex flex-col gap-4 rounded border bg-stone-50 p-4 shadow-sm">
       {props.shape.default.backgroundColor && (
         <Color
           label="Background"
@@ -106,12 +106,12 @@ export const Container = (props: {
       {(props.shape.default.borderColor ||
         props.shape.default.borderWidth ||
         props.shape.default.borderRadius) && (
-        <div className="flex flex-col gap-2 pt-3 border-t border-stone-200">
-          <span className="text-xs font-medium text-stone-600 uppercase tracking-wider">
+        <div className="flex flex-col gap-2 border-t border-stone-200 pt-3">
+          <span className="text-xs font-medium tracking-wider text-stone-600 uppercase">
             Border
           </span>
 
-          <div className="flex flex-wrap gap-x-4 gap-y-2 items-center">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             {props.shape.default.borderColor && (
               <Color
                 label="Color"
@@ -143,12 +143,12 @@ export const Container = (props: {
       )}
 
       {(props.shape.default.padding || props.shape.default.margin) && (
-        <div className="flex flex-col gap-2 pt-3 border-t border-stone-200">
-          <span className="text-xs font-medium text-stone-600 uppercase tracking-wider">
+        <div className="flex flex-col gap-2 border-t border-stone-200 pt-3">
+          <span className="text-xs font-medium tracking-wider text-stone-600 uppercase">
             Spacing
           </span>
 
-          <div className="flex flex-wrap gap-x-4 gap-y-2 items-center">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             {props.shape.default.padding && (
               <Size
                 label="Padding"

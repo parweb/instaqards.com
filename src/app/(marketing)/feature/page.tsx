@@ -19,8 +19,8 @@ export default async function ProPage() {
   });
 
   return (
-    <div className="flex-1 self-stretch flex flex-col items-center justify-center p-4 gap-12">
-      <div className="flex-1 flex flex-col items-center justify-center -mb-8 mt-0">
+    <div className="flex flex-1 flex-col items-center justify-center gap-12 self-stretch p-4">
+      <div className="mt-0 -mb-8 flex flex-1 flex-col items-center justify-center">
         <div>
           <Image
             src={`/plateform-number-one-commercants-artisants-${lang}.png`}
@@ -41,7 +41,7 @@ export default async function ProPage() {
       </div>
 
       <div className="w-full">
-        <div className="relative w-full aspect-[9/16] max-w-xl mx-auto flex">
+        <div className="relative mx-auto flex aspect-[9/16] w-full max-w-xl">
           <Suspense fallback={null}>{site && <WebSite site={site} />}</Suspense>
         </div>
       </div>

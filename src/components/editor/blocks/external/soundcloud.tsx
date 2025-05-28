@@ -26,7 +26,7 @@ export default function Soundcloud({
       title="Soundcloud"
       src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%233c2020&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`}
       width="100%"
-      className="w-full aspect-square rounded-md"
+      className="aspect-square w-full rounded-md"
       allow="autoplay"
       loading="lazy"
     />

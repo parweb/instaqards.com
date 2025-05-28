@@ -17,7 +17,7 @@ export default function CreateSiteButtonSidebar({
       type="button"
       size="icon"
       onClick={() => modal?.show(children)}
-      className="text-stone-600 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-200 cursor-pointer"
+      className="cursor-pointer text-stone-600 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-200"
     />
   );
 }

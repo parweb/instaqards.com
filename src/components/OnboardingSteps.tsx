@@ -21,12 +21,12 @@ export function OnboardingSteps({ steps }: OnboardingStepsProps) {
         <div
           key={i}
           className={
-            'flex transform transition-all hover:scale-[1.01] items-start gap-4'
+            'flex transform items-start gap-4 transition-all hover:scale-[1.01]'
           }
         >
           <div
             className={cn(
-              'w-10 h-10 aspect-square rounded-full bg-gradient-to-br flex items-center justify-center text-white font-bold shadow-md',
+              'flex aspect-square h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br font-bold text-white shadow-md',
               step.color
             )}
           >
@@ -34,7 +34,7 @@ export function OnboardingSteps({ steps }: OnboardingStepsProps) {
           </div>
 
           <div className="flex flex-col gap-1">
-            <h3 className="text-lg font-semibold flex items-center text-zinc-900 dark:text-white gap-1">
+            <h3 className="flex items-center gap-1 text-lg font-semibold text-zinc-900 dark:text-white">
               {step.icon}
               {step.title}
             </h3>

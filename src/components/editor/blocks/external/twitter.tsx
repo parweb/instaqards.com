@@ -26,7 +26,7 @@ export default function Twitter({
   const username = url.split('/')[3];
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
+    <div className="flex w-full flex-col items-center justify-center">
       <XEmbed
         url={`https://x.com/${username}/status/${tweetId}`}
         width="100%"

@@ -36,7 +36,7 @@ export const Header = ({ lang }: { lang: Lang }) => {
                 alt="Logo"
                 width="160"
                 height="80"
-                className="mx-auto mb-6 border border-solid border-gray-100 rounded-lg"
+                className="mx-auto mb-6 rounded-lg border border-solid border-gray-100"
               />
             </Link>
           </div>

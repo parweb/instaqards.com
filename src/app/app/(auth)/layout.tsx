@@ -5,11 +5,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <Suspense fallback={null}>
       <div className="flex min-h-screen">
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex flex-1 items-center justify-center">
           {children}
         </div>
 
-        <div className="flex-1 hidden lg:flex items-center justify-center">
+        <div className="hidden flex-1 items-center justify-center lg:flex">
           <Image
             className="rounded-lg"
             src="/splash.jpg"

@@ -13,25 +13,25 @@ export const MenuVariation61: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       color: 'from-cyan-400 to-blue-500'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       color: 'from-purple-400 to-pink-500'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       color: 'from-red-400 to-orange-500'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'from-green-400 to-teal-500'
     }
@@ -54,42 +54,42 @@ export const MenuVariation61: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       {/* Fond liquide morphing */}
       <div className="relative bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 p-1">
-        <div className="bg-black/80 backdrop-blur-xl px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-black/80 px-4 py-4 backdrop-blur-xl">
           {/* Vagues liquides animées */}
           <div
             className={cn(
               'absolute inset-0 transition-all duration-[3000ms] ease-in-out',
               liquidAnimation
-                ? 'transform translate-y-2 scale-110'
-                : 'transform -translate-y-1 scale-100'
+                ? 'translate-y-2 scale-110 transform'
+                : '-translate-y-1 scale-100 transform'
             )}
           >
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20 rounded-[50%] animate-pulse" />
+            <div className="absolute top-0 left-0 h-full w-full animate-pulse rounded-[50%] bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20" />
             <div
-              className="absolute top-2 left-4 w-20 h-20 bg-gradient-to-r from-blue-400/30 to-cyan-400/30 rounded-full blur-xl animate-bounce"
+              className="absolute top-2 left-4 h-20 w-20 animate-bounce rounded-full bg-gradient-to-r from-blue-400/30 to-cyan-400/30 blur-xl"
               style={{ animationDelay: '0.5s' }}
             />
             <div
-              className="absolute top-1 right-6 w-16 h-16 bg-gradient-to-r from-purple-400/30 to-pink-400/30 rounded-full blur-xl animate-bounce"
+              className="absolute top-1 right-6 h-16 w-16 animate-bounce rounded-full bg-gradient-to-r from-purple-400/30 to-pink-400/30 blur-xl"
               style={{ animationDelay: '1s' }}
             />
           </div>
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 {/* Blob liquide morphing */}
                 <div
                   className={cn(
-                    'relative mb-2 transition-all duration-700 ease-out transform',
+                    'relative mb-2 transform transition-all duration-700 ease-out',
                     'group-hover:scale-125 group-active:scale-95',
                     activeTab === index ? 'scale-120' : ''
                   )}
@@ -97,10 +97,10 @@ export const MenuVariation61: React.FC = () => {
                   {/* Forme liquide de fond */}
                   <div
                     className={cn(
-                      'absolute inset-0 rounded-full transition-all duration-1000 ease-in-out transform',
+                      'absolute inset-0 transform rounded-full transition-all duration-1000 ease-in-out',
                       `bg-gradient-to-r ${tab.color}`,
                       activeTab === index
-                        ? 'scale-150 opacity-80 animate-pulse blur-sm'
+                        ? 'scale-150 animate-pulse opacity-80 blur-sm'
                         : 'scale-100 opacity-40 group-hover:scale-125 group-hover:opacity-60'
                     )}
                     style={{
@@ -115,7 +115,7 @@ export const MenuVariation61: React.FC = () => {
                   {/* Icône avec effet liquide */}
                   <div
                     className={cn(
-                      'relative z-10 p-4 rounded-full transition-all duration-500 transform',
+                      'relative z-10 transform rounded-full p-4 transition-all duration-500',
                       'group-hover:rotate-12',
                       activeTab === index
                         ? `bg-gradient-to-r ${tab.color} text-white shadow-2xl`
@@ -137,7 +137,7 @@ export const MenuVariation61: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -top-2 -left-1 w-3 h-3 rounded-full animate-bounce opacity-70',
+                          'absolute -top-2 -left-1 h-3 w-3 animate-bounce rounded-full opacity-70',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                         style={{
@@ -147,7 +147,7 @@ export const MenuVariation61: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute -bottom-1 -right-2 w-2 h-2 rounded-full animate-bounce opacity-70',
+                          'absolute -right-2 -bottom-1 h-2 w-2 animate-bounce rounded-full opacity-70',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                         style={{
@@ -157,7 +157,7 @@ export const MenuVariation61: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute top-1 -right-1 w-1.5 h-1.5 rounded-full animate-bounce opacity-70',
+                          'absolute top-1 -right-1 h-1.5 w-1.5 animate-bounce rounded-full opacity-70',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                         style={{
@@ -172,9 +172,9 @@ export const MenuVariation61: React.FC = () => {
                 {/* Label avec effet liquide */}
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all duration-500 relative',
+                    'relative text-xs font-bold transition-all duration-500',
                     activeTab === index
-                      ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent animate-pulse`
+                      ? `bg-gradient-to-r ${tab.color} animate-pulse bg-clip-text text-transparent`
                       : 'text-gray-400 group-hover:text-gray-200'
                   )}
                 >
@@ -182,7 +182,7 @@ export const MenuVariation61: React.FC = () => {
                   {activeTab === index && (
                     <div
                       className={cn(
-                        'absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-0.5 rounded-full',
+                        'absolute -bottom-1 left-1/2 h-0.5 w-6 -translate-x-1/2 transform rounded-full',
                         `bg-gradient-to-r ${tab.color}`
                       )}
                       style={{

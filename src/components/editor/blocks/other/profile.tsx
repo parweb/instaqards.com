@@ -87,10 +87,10 @@ export default function Profile({
   }, [mediaFile]);
 
   return (
-    <header className="flex-1 flex flex-col justify-center items-center gap-4">
+    <header className="flex flex-1 flex-col items-center justify-center gap-4">
       <div
         style={{ borderRadius: `${corner}%`, width: `${size}px` }}
-        className="relative aspect-square mx-auto bg-white overflow-hidden"
+        className="relative mx-auto aspect-square overflow-hidden bg-white"
       >
         <Image
           priority
@@ -104,7 +104,7 @@ export default function Profile({
         />
       </div>
 
-      <h1 className="text-white text-4xl font-bold">{name}</h1>
+      <h1 className="text-4xl font-bold text-white">{name}</h1>
 
       <div className="">
         <p className="text-center whitespace-pre-wrap">{description}</p>

@@ -70,7 +70,7 @@ export const Calendar = ({
               {...buttonPropsRest}
               type="button"
               className={cn('relative m-0.5', buttonClassName, {
-                'border border-primary': hasReservation(date)
+                'border-primary border': hasReservation(date)
               })}
             >
               {buttonChildren}
@@ -92,9 +92,9 @@ export const Calendar = ({
               )}
 
               {hasReservation(date) && (
-                <div className="absolute left-0 right-0 bottom-full translate-y-1/2 flex items-start justify-center">
+                <div className="absolute right-0 bottom-full left-0 flex translate-y-1/2 items-start justify-center">
                   <Badge
-                    className="text-xs px-1 py-0 rounded-full"
+                    className="rounded-full px-1 py-0 text-xs"
                     variant="success"
                   >
                     {

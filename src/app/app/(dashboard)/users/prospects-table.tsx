@@ -143,7 +143,7 @@ const Tbody = ({
   const [selection, setSelection] = useAtom($selection);
 
   return (
-    <tbody className="bg-white divide-y divide-gray-200">
+    <tbody className="divide-y divide-gray-200 bg-white">
       {prospects.data.map(prospect => {
         return (
           <tr
@@ -153,7 +153,7 @@ const Tbody = ({
               'hover:bg-gray-100'
             )}
           >
-            <td className="p-2 w-12 text-center">
+            <td className="w-12 p-2 text-center">
               <Checkbox
                 checked={selection?.includes(prospect.id)}
                 onCheckedChange={() => {
@@ -240,7 +240,7 @@ const Thead = ({
   const selection = useAtomValue($selection);
 
   return (
-    <thead className="bg-gray-50 sticky top-0">
+    <thead className="sticky top-0 bg-gray-50">
       <tr>
         <th className="p-2">
           <Suspense fallback={<LucideLoader2 className="animate-spin" />}>
@@ -253,7 +253,7 @@ const Thead = ({
         </th>
         <th
           scope="col"
-          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
         >
           <div className="flex flex-col gap-1 whitespace-nowrap">
             <span>Raison sociale</span>
@@ -263,7 +263,7 @@ const Thead = ({
 
         <th
           scope="col"
-          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
         >
           <div className="flex flex-col gap-1 whitespace-nowrap">
             <span>Code postal</span>
@@ -273,7 +273,7 @@ const Thead = ({
 
         <th
           scope="col"
-          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
         >
           <div className="flex flex-col gap-1 whitespace-nowrap">
             <span>Email</span>
@@ -283,7 +283,7 @@ const Thead = ({
 
         <th
           scope="col"
-          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
         >
           Activité
         </th>
@@ -322,7 +322,7 @@ export const ProspectsTable = ({
 
   return (
     <>
-      <div className="p-4 rounded-md border border-gray-200 m-2">
+      <div className="m-2 rounded-md border border-gray-200 p-4">
         <div className="flex flex-col gap-2">
           <Label htmlFor="search">Rechercher {isPending ? '...' : ''}</Label>
 
@@ -344,12 +344,12 @@ export const ProspectsTable = ({
       </div>
 
       <div className="flex flex-col gap-4">
-        <Suspense fallback={<div className="bg-gray-400 h-10 animate-pulse" />}>
+        <Suspense fallback={<div className="h-10 animate-pulse bg-gray-400" />}>
           <Pages $page={$page} $take={$take} $prospects={$prospects} />
         </Suspense>
 
         <div className="flex flex-col gap-4 rounded-lg border border-gray-200">
-          <div className="overflow-x-auto max-h-60">
+          <div className="max-h-60 overflow-x-auto">
             <table className="w-full divide-y divide-gray-200">
               <Thead $selection={$selection} $prospects={$prospects} />
 
@@ -357,7 +357,7 @@ export const ProspectsTable = ({
                 fallback={
                   <tbody>
                     <tr>
-                      <td colSpan={5} className="text-left p-4">
+                      <td colSpan={5} className="p-4 text-left">
                         <div className="flex items-center justify-center p-4">
                           <LucideLoader2 className="animate-spin" />
                         </div>

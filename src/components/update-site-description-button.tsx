@@ -19,7 +19,7 @@ export default function UpdateSiteDescriptionButton({
       aria-label={translate('components.site.update.description')}
       type="button"
       onClick={() => modal?.show(children)}
-      className="bg-black text-white rounded-full p-2 w-8 h-8 flex items-center justify-center"
+      className="flex h-8 w-8 items-center justify-center rounded-full bg-black p-2 text-white"
     >
       <LuPencil />
     </button>

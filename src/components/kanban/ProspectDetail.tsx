@@ -96,18 +96,18 @@ const History = ({ id }: { id: User['id'] }) => {
   }
 
   return (
-    <div className="pt-4 border-t">
-      <div className="flex items-center gap-2 mb-4">
-        <LuHistory className="w-4 h-4 text-muted-foreground" />
+    <div className="border-t pt-4">
+      <div className="mb-4 flex items-center gap-2">
+        <LuHistory className="text-muted-foreground h-4 w-4" />
         <h3 className="font-medium">Historique des événements</h3>
       </div>
 
-      <div className="relative space-y-4 before:absolute before:left-2 before:top-0 before:bottom-0 before:w-px before:bg-border">
+      <div className="before:bg-border relative space-y-4 before:absolute before:top-0 before:bottom-0 before:left-2 before:w-px">
         {history.map(entry => (
           <div key={entry.id} className="relative pl-8">
-            <div className="absolute left-[7px] top-[9px] w-1.5 h-1.5 rounded-full bg-foreground -translate-x-1/2"></div>
+            <div className="bg-foreground absolute top-[9px] left-[7px] h-1.5 w-1.5 -translate-x-1/2 rounded-full"></div>
 
-            <div className="flex flex-col gap-1 p-2 bg-stone-50 border border-stone-200/80 shadow rounded-md">
+            <div className="flex flex-col gap-1 rounded-md border border-stone-200/80 bg-stone-50 p-2 shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="text-xs font-normal">
@@ -120,7 +120,7 @@ const History = ({ id }: { id: User['id'] }) => {
                   )} */}
                 </div>
 
-                <time className="text-xs text-muted-foreground flex-shrink-0 ml-2">
+                <time className="text-muted-foreground ml-2 flex-shrink-0 text-xs">
                   {formatDistanceToNow(new Date(entry.createdAt), {
                     addSuffix: true,
                     locale: fr
@@ -129,7 +129,7 @@ const History = ({ id }: { id: User['id'] }) => {
               </div>
 
               {entry.payload && (
-                <pre className="text-xs text-muted-foreground mt-1 bg-gray-100 rounded p-2 overflow-x-auto">
+                <pre className="text-muted-foreground mt-1 overflow-x-auto rounded bg-gray-100 p-2 text-xs">
                   {JSON.stringify(entry.payload, null, 2)}
                 </pre>
               )}
@@ -153,11 +153,11 @@ const ProspectDetail = ({
   email
 }: User) => {
   return (
-    <Card className="w-full max-w-3xl mx-auto">
+    <Card className="mx-auto w-full max-w-3xl">
       <CardHeader className="space-y-1">
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-2xl flex items-center gap-2">
-            <LuBuilding2 className="w-6 h-6" />
+          <CardTitle className="flex items-center gap-2 text-2xl">
+            <LuBuilding2 className="h-6 w-6" />
             {company || 'Sans nom'}
           </CardTitle>
 
@@ -196,7 +196,7 @@ const ProspectDetail = ({
           <CardDescription className="text-sm">
             {activity}
             {codeNaf && (
-              <span className="text-xs ml-2 text-muted-foreground">
+              <span className="text-muted-foreground ml-2 text-xs">
                 ({codeNaf})
               </span>
             )}
@@ -208,7 +208,7 @@ const ProspectDetail = ({
         <div className="space-y-2">
           {email && (
             <div className="flex items-center gap-2 text-sm">
-              <LuMail className="w-4 h-4 text-muted-foreground" />
+              <LuMail className="text-muted-foreground h-4 w-4" />
               <a href={`mailto:${email}`} className="hover:underline">
                 {email}
               </a>
@@ -217,7 +217,7 @@ const ProspectDetail = ({
 
           {phone && (
             <div className="flex items-center gap-2 text-sm">
-              <LuPhone className="w-4 h-4 text-muted-foreground" />
+              <LuPhone className="text-muted-foreground h-4 w-4" />
               <a
                 href={`phone:${formatPhoneNumber(phone).replace(/\s/g, '')}`}
                 className="hover:underline"
@@ -229,8 +229,8 @@ const ProspectDetail = ({
         </div>
 
         {(address || city || postcode) && (
-          <div className="flex items-start gap-2 text-sm pt-2 border-t">
-            <LuMapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+          <div className="flex items-start gap-2 border-t pt-2 text-sm">
+            <LuMapPin className="text-muted-foreground mt-0.5 h-4 w-4" />
             <div className="space-y-1">
               {address && <div>{address}</div>}
               {(city || postcode) && (
@@ -329,11 +329,11 @@ const ProspectDetail = ({
           </ModalButton>
         </div>
 
-        <div className="max-h-[250px] sm:max-h-96 overflow-y-auto">
+        <div className="max-h-[250px] overflow-y-auto sm:max-h-96">
           <Suspense
             fallback={
               <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
               </div>
             }
           >

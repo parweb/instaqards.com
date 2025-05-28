@@ -20,7 +20,7 @@ export default function UpgradeAccountButton({
       type="button"
       onClick={() => modal?.show(children)}
       size="sm"
-      className="flex gap-2 items-center justify-center"
+      className="flex items-center justify-center gap-2"
     >
       <PiMagicWand />
       <div>{translate('components.account.upgrade')}</div>

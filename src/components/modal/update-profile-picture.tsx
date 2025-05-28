@@ -81,17 +81,17 @@ export default function UpdateSiteProfilePictureModal({
           }
         }
       }}
-      className="w-full rounded-md bg-white dark:bg-black md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700"
+      className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:bg-black dark:md:border-stone-700"
     >
-      <div className="relative flex flex-col p-5 md:p-10 gap-5">
+      <div className="relative flex flex-col gap-5 p-5 md:p-10">
         <h2 className="font-cal text-2xl dark:text-white">
           {translate('components.site.updateProfilePicture.title')}
         </h2>
 
         <div
           className={cn(
-            'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
-            'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
+            'flex cursor-pointer flex-col border-2 border-dashed p-4 transition-all',
+            'rounded-md border-slate-500 text-slate-400 hover:border-slate-900 hover:text-slate-900',
             isDragActive && 'border-slate-900 text-slate-900'
           )}
         >
@@ -113,7 +113,7 @@ export default function UpdateSiteProfilePictureModal({
         </div>
 
         {preview && (
-          <div className="relative w-full h-40">
+          <div className="relative h-40 w-full">
             <Image
               className="aspect-video object-contain"
               src={preview as string}
@@ -124,7 +124,7 @@ export default function UpdateSiteProfilePictureModal({
         )}
       </div>
 
-      <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
+      <div className="flex items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10 dark:border-stone-700 dark:bg-stone-800">
         <UpdateSiteProfilePictureFormButton pending={pending} />
       </div>
     </form>

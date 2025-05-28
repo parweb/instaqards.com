@@ -582,12 +582,12 @@ export default function TestMenuVariationsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <div className="max-w-md mx-auto">
+      <div className="mx-auto max-w-md">
         {/* Header */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-6 border border-gray-200">
-          <div className="text-center mb-6">
-            <div className="text-4xl mb-2">🎨</div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+        <div className="mb-6 rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+          <div className="mb-6 text-center">
+            <div className="mb-2 text-4xl">🎨</div>
+            <h1 className="mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-2xl font-bold text-transparent">
               Menu Variations Lab
             </h1>
             <p className="text-gray-600">
@@ -597,23 +597,23 @@ export default function TestMenuVariationsPage() {
 
           {/* Sélecteur de menu */}
           <div className="space-y-3">
-            <h3 className="font-bold text-gray-900 mb-3">
+            <h3 className="mb-3 font-bold text-gray-900">
               Choisissez un style :
             </h3>
-            <div className="grid grid-cols-1 gap-2 max-h-80 overflow-y-auto custom-scrollbar">
+            <div className="custom-scrollbar grid max-h-80 grid-cols-1 gap-2 overflow-y-auto">
               {menuVariations.map(menu => (
                 <button
                   key={menu.id}
                   onClick={() => setSelectedMenu(menu.id)}
-                  className={`p-3 rounded-xl text-left transition-all duration-200 ${
+                  className={`rounded-xl p-3 text-left transition-all duration-200 ${
                     selectedMenu === menu.id
                       ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                      : 'bg-gray-50 hover:bg-gray-100 text-gray-700'
+                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  <div className="font-semibold text-sm">{menu.name}</div>
+                  <div className="text-sm font-semibold">{menu.name}</div>
                   <div
-                    className={`text-xs mt-1 ${
+                    className={`mt-1 text-xs ${
                       selectedMenu === menu.id
                         ? 'text-purple-100'
                         : 'text-gray-500'
@@ -627,18 +627,18 @@ export default function TestMenuVariationsPage() {
           </div>
         </div>
         {/* Zone de démonstration */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-6 border border-gray-200">
-          <h3 className="font-bold text-gray-900 mb-4 text-center">
+        <div className="mb-6 rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+          <h3 className="mb-4 text-center font-bold text-gray-900">
             Aperçu : {menuVariations.find(m => m.id === selectedMenu)?.name}
           </h3>
-          <div className="text-center text-gray-600 text-sm mb-4">
+          <div className="mb-4 text-center text-sm text-gray-600">
             {menuVariations.find(m => m.id === selectedMenu)?.description}
           </div>
 
           {/* Instructions */}
-          <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100 mb-4">
-            <h4 className="font-bold text-blue-900 mb-2">📱 Instructions :</h4>
-            <ul className="text-sm text-blue-800 space-y-1">
+          <div className="mb-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+            <h4 className="mb-2 font-bold text-blue-900">📱 Instructions :</h4>
+            <ul className="space-y-1 text-sm text-blue-800">
               <li>• Activez le mode mobile (F12 → Responsive)</li>
               <li>• Le menu apparaît en bas de l&apos;écran</li>
               <li>• Testez les interactions et animations</li>
@@ -651,12 +651,12 @@ export default function TestMenuVariationsPage() {
           {Array.from({ length: 8 }, (_, i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100"
+              className="rounded-2xl border border-gray-100 bg-white p-4 shadow-lg"
             >
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="mb-2 font-semibold text-gray-900">
                 Section de test {i + 1}
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-sm text-gray-600">
                 Contenu de démonstration pour tester le menu sélectionné. Chaque
                 variation a ses propres animations, couleurs et effets spéciaux
                 !

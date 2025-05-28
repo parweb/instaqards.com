@@ -37,7 +37,7 @@ interface ListProps {
 
 export const List = ({ sites }: ListProps) => {
   return (
-    <div className="flex-1 self-stretch grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 p-4">
+    <div className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 self-stretch p-4">
       {sites.map(site => {
         const data: Record<Block['type'], Block[]> = {
           main: [],
@@ -49,9 +49,9 @@ export const List = ({ sites }: ListProps) => {
         return (
           <div
             key={site.id}
-            className="flex-1 self-stretch group transition-all duration-300 hover:scale-[1.025] hover:shadow-2xl rounded-md cursor-pointer flex flex-col"
+            className="group flex flex-1 cursor-pointer flex-col self-stretch rounded-md transition-all duration-300 hover:scale-[1.025] hover:shadow-2xl"
           >
-            <div className="flex-1 self-stretch aspect-square relative flex flex-col justify-center items-center overflow-hidden border bg-muted/60 rounded-md">
+            <div className="bg-muted/60 relative flex aspect-square flex-1 flex-col items-center justify-center self-stretch overflow-hidden rounded-md border">
               <Wrapper>
                 <Suspense fallback={null}>
                   <Background background={site.background} />
@@ -65,7 +65,7 @@ export const List = ({ sites }: ListProps) => {
                   </Main>
 
                   <Footer>
-                    <div className="flex gap-3 items-center justify-center">
+                    <div className="flex items-center justify-center gap-3">
                       <Suspense fallback={null}>
                         <BlockList blocks={data.social} />
                       </Suspense>

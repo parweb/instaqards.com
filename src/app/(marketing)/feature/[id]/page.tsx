@@ -64,8 +64,8 @@ export default async function ProPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      <div className="max-w-screen-xl mx-auto px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 overflow-hidden rounded-lg bg-white p-12 relative">
+      <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+        <div className="relative grid gap-8 overflow-hidden rounded-lg bg-white p-12 lg:grid-cols-2 lg:gap-12">
           <div
             className="absolute inset-0 -z-10"
             style={{
@@ -76,12 +76,12 @@ export default async function ProPage({ params }: Props) {
 
           <div className="flex flex-col items-center lg:items-start">
             <div
-              className="flex items-center justify-center rounded-lg text-primary p-8 border-2 border-stone-300 shadow-lg"
+              className="text-primary flex items-center justify-center rounded-lg border-2 border-stone-300 p-8 shadow-lg"
               style={{
                 background: `url("https://avatar.vercel.sh/${item.title}") no-repeat center center / cover`
               }}
             >
-              <feature.icon className="w-32 h-32" />
+              <feature.icon className="h-32 w-32" />
             </div>
           </div>
 
@@ -91,7 +91,7 @@ export default async function ProPage({ params }: Props) {
                 {item.title.charAt(0).toUpperCase() + item.title.slice(1)}
               </h1>
 
-              <p className="text-gray-600 text-lg">{item.description}</p>
+              <p className="text-lg text-gray-600">{item.description}</p>
             </div>
           </div>
         </div>

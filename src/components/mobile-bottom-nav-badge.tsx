@@ -16,7 +16,7 @@ export const MobileBottomNavBadge: React.FC<MobileBottomNavBadgeProps> = ({
   return (
     <div
       className={cn(
-        'absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center',
+        'absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white',
         className
       )}
     >

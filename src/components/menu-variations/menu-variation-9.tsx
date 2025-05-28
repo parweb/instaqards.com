@@ -12,25 +12,25 @@ export const MenuVariation9: React.FC = () => {
   const tabs = [
     {
       name: 'HOME',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       emoji: '🎮'
     },
     {
       name: 'FIND',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       emoji: '🕹️'
     },
     {
       name: 'LIKE',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       emoji: '👾'
     },
     {
       name: 'MORE',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       emoji: '🎯'
     }
@@ -46,9 +46,9 @@ export const MenuVariation9: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden overflow-hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 overflow-hidden md:hidden">
       <div
-        className="relative bg-black border-t-4 border-green-400"
+        className="relative border-t-4 border-green-400 bg-black"
         style={{
           backgroundImage: `
           linear-gradient(90deg, #00ff00 50%, transparent 50%),
@@ -58,7 +58,7 @@ export const MenuVariation9: React.FC = () => {
           backgroundPosition: '0 0, 2px 2px'
         }}
       >
-        <div className="relative px-4 py-4 bg-black/80">
+        <div className="relative bg-black/80 px-4 py-4">
           <div className="flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
@@ -66,7 +66,7 @@ export const MenuVariation9: React.FC = () => {
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  'flex flex-col items-center justify-center px-2 py-2 transition-all duration-200 min-w-0 flex-1 relative transform',
+                  'relative flex min-w-0 flex-1 transform flex-col items-center justify-center px-2 py-2 transition-all duration-200',
                   'hover:scale-110 active:scale-95',
                   activeTab === index ? 'scale-110' : ''
                 )}
@@ -77,11 +77,11 @@ export const MenuVariation9: React.FC = () => {
                 {/* Bordure pixelisée */}
                 <div
                   className={cn(
-                    'mb-2 p-3 transition-all duration-200 transform border-2',
-                    'hover:rotate-12 hover:scale-110',
+                    'mb-2 transform border-2 p-3 transition-all duration-200',
+                    'hover:scale-110 hover:rotate-12',
                     activeTab === index
-                      ? 'bg-green-400 text-black shadow-lg border-yellow-400'
-                      : 'bg-gray-800 text-green-400 border-green-400 hover:bg-gray-700'
+                      ? 'border-yellow-400 bg-green-400 text-black shadow-lg'
+                      : 'border-green-400 bg-gray-800 text-green-400 hover:bg-gray-700'
                   )}
                   style={{
                     clipPath:
@@ -92,16 +92,16 @@ export const MenuVariation9: React.FC = () => {
                 </div>
 
                 {activeTab === index && (
-                  <div className="absolute -top-3 -right-3 text-2xl animate-bounce">
+                  <div className="absolute -top-3 -right-3 animate-bounce text-2xl">
                     {tab.emoji}
                   </div>
                 )}
 
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all duration-200 font-mono uppercase tracking-wider',
+                    'font-mono text-xs font-bold tracking-wider uppercase transition-all duration-200',
                     activeTab === index
-                      ? 'text-green-400 animate-pulse'
+                      ? 'animate-pulse text-green-400'
                       : 'text-green-500'
                   )}
                   style={{
@@ -116,17 +116,17 @@ export const MenuVariation9: React.FC = () => {
                 {/* Pixels clignotants */}
                 {activeTab === index && (
                   <>
-                    <div className="absolute top-1 left-1 w-1 h-1 bg-yellow-400 animate-ping" />
+                    <div className="absolute top-1 left-1 h-1 w-1 animate-ping bg-yellow-400" />
                     <div
-                      className="absolute top-1 right-1 w-1 h-1 bg-yellow-400 animate-ping"
+                      className="absolute top-1 right-1 h-1 w-1 animate-ping bg-yellow-400"
                       style={{ animationDelay: '0.2s' }}
                     />
                     <div
-                      className="absolute bottom-1 left-1 w-1 h-1 bg-yellow-400 animate-ping"
+                      className="absolute bottom-1 left-1 h-1 w-1 animate-ping bg-yellow-400"
                       style={{ animationDelay: '0.4s' }}
                     />
                     <div
-                      className="absolute bottom-1 right-1 w-1 h-1 bg-yellow-400 animate-ping"
+                      className="absolute right-1 bottom-1 h-1 w-1 animate-ping bg-yellow-400"
                       style={{ animationDelay: '0.6s' }}
                     />
                   </>
@@ -136,8 +136,8 @@ export const MenuVariation9: React.FC = () => {
           </div>
 
           {/* Score style rétro */}
-          <div className="text-center mt-2">
-            <span className="text-green-400 font-mono text-xs tracking-widest">
+          <div className="mt-2 text-center">
+            <span className="font-mono text-xs tracking-widest text-green-400">
               SCORE: {String(activeTab * 1000).padStart(6, '0')}
             </span>
           </div>

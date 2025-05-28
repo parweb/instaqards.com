@@ -78,7 +78,7 @@ const Size = ({
       defaultValue={defaultValue}
       render={({ field }) => {
         return (
-          <div className="w-[80px] relative">
+          <div className="relative w-[80px]">
             <Input
               name={name}
               type="number"
@@ -89,7 +89,7 @@ const Size = ({
               }}
             />
 
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-stone-500">
+            <span className="absolute top-1/2 right-2 -translate-y-1/2 text-sm text-stone-500">
               px
             </span>
           </div>
@@ -181,7 +181,7 @@ export const Font = (props: {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2">
         {props.shape.default.color && (
           <Color
             name="font[color]"

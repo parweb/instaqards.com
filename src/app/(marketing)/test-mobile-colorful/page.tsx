@@ -1,11 +1,11 @@
 export default function TestMobileColorfulPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 p-4">
-      <div className="max-w-md mx-auto">
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-6 border border-purple-100">
-          <div className="text-center mb-6">
-            <div className="text-4xl mb-2">🎨</div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+      <div className="mx-auto max-w-md">
+        <div className="mb-6 rounded-3xl border border-purple-100 bg-white p-6 shadow-xl">
+          <div className="mb-6 text-center">
+            <div className="mb-2 text-4xl">🎨</div>
+            <h1 className="mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-2xl font-bold text-transparent">
               Menu Mobile Coloré
             </h1>
             <p className="text-gray-600">
@@ -14,35 +14,35 @@ export default function TestMobileColorfulPage() {
           </div>
 
           <div className="space-y-4">
-            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-2xl border border-blue-100">
-              <h2 className="font-bold text-blue-900 mb-2 flex items-center">
+            <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 to-cyan-50 p-4">
+              <h2 className="mb-2 flex items-center font-bold text-blue-900">
                 🌈 Couleurs par onglet
               </h2>
-              <div className="text-sm text-blue-800 space-y-1">
+              <div className="space-y-1 text-sm text-blue-800">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <div className="h-3 w-3 rounded-full bg-blue-500"></div>
                   <span>Accueil - Bleu</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="h-3 w-3 rounded-full bg-green-500"></div>
                   <span>Explorer - Vert</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                  <div className="h-3 w-3 rounded-full bg-purple-500"></div>
                   <span>Qards - Violet</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                  <div className="h-3 w-3 rounded-full bg-gray-500"></div>
                   <span>Plus - Gris</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-2xl border border-purple-100">
-              <h2 className="font-bold text-purple-900 mb-2 flex items-center">
+            <div className="rounded-2xl border border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50 p-4">
+              <h2 className="mb-2 flex items-center font-bold text-purple-900">
                 ✨ Animations simplifiées
               </h2>
-              <ul className="text-sm text-purple-800 space-y-1">
+              <ul className="space-y-1 text-sm text-purple-800">
                 <li>• 🎯 Animations uniquement sur bouton &quot;Plus&quot;</li>
                 <li>• 🎪 Rotation et spin au clic sur &quot;Plus&quot;</li>
                 <li>• ⚡ Vibrations tactiles améliorées</li>
@@ -52,8 +52,8 @@ export default function TestMobileColorfulPage() {
               </ul>
             </div>
 
-            <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-2xl border border-orange-100">
-              <h2 className="font-bold text-orange-900 mb-2 flex items-center">
+            <div className="rounded-2xl border border-orange-100 bg-gradient-to-r from-orange-50 to-red-50 p-4">
+              <h2 className="mb-2 flex items-center font-bold text-orange-900">
                 🎯 Test du bouton &quot;Plus&quot;
               </h2>
               <p className="text-sm text-orange-800">
@@ -66,11 +66,11 @@ export default function TestMobileColorfulPage() {
         </div>
         {/* Contenu de démonstration */}
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <h3 className="font-bold text-gray-900 mb-3 flex items-center">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-lg">
+            <h3 className="mb-3 flex items-center font-bold text-gray-900">
               🚀 Animations épurées
             </h3>
-            <div className="text-sm text-gray-600 space-y-2">
+            <div className="space-y-2 text-sm text-gray-600">
               <p>
                 • <strong>Onglets normaux :</strong> Hover scale 105% simple
               </p>
@@ -101,12 +101,12 @@ export default function TestMobileColorfulPage() {
           {Array.from({ length: 6 }, (_, i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100"
+              className="rounded-2xl border border-gray-100 bg-white p-4 shadow-lg"
             >
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="mb-2 font-semibold text-gray-900">
                 Section colorée {i + 1}
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-sm text-gray-600">
                 Contenu de test pour voir le menu en action. Le menu reste fixe
                 en bas et s&apos;adapte aux couleurs selon l&apos;onglet actif.
                 Testez le bouton &quot;Plus&quot; pour accéder au menu complet !

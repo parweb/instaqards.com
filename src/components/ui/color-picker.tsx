@@ -21,7 +21,7 @@ export const ColorPicker = ({
     <Popover modal>
       <PopoverTrigger asChild>
         <div
-          className="border rounded-sm overflow-hidden"
+          className="overflow-hidden rounded-sm border"
           style={{
             backgroundImage:
               'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)',
@@ -38,7 +38,7 @@ export const ColorPicker = ({
 
       <input name={name} type="hidden" value={value} />
 
-      <PopoverContent className="w-auto p-0 z-300 relative">
+      <PopoverContent className="relative z-300 w-auto p-0">
         <HexAlphaColorPicker color={value} onChange={onChange} />
       </PopoverContent>
     </Popover>

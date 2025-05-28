@@ -21,7 +21,7 @@ const Instagram = ({ url = placeholder }: Partial<z.infer<typeof input>>) => {
   }, placeholder);
 
   return (
-    <div className="rounded-md overflow-hidden">
+    <div className="overflow-hidden rounded-md">
       <InstagramEmbed
         url={`https://www.instagram.com/${url}/`}
         captioned={false}

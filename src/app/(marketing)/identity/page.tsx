@@ -8,10 +8,10 @@ import { DownloadButton, GalleryAdsVideo } from './client';
 
 export default async function Identity() {
   return (
-    <div className="p-10 flex flex-col gap-10 max-w-screen-lg mx-auto">
+    <div className="mx-auto flex max-w-screen-lg flex-col gap-10 p-10">
       <div className="flex flex-col gap-4">
         <h1
-          className={cn('text-5xl font-bold text-center', boldonse.className)}
+          className={cn('text-center text-5xl font-bold', boldonse.className)}
         >
           Identity
         </h1>
@@ -27,7 +27,7 @@ export default async function Identity() {
             SQUARE
           </h2>
 
-          <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-4">
             <div className="flex flex-col gap-2">
               <div
                 style={{
@@ -79,7 +79,7 @@ export default async function Identity() {
         <div className="flex flex-col gap-4">
           <h2 className={cn('text-xl font-bold', boldonse.className)}>FULL</h2>
 
-          <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-4">
             <div className="flex flex-col gap-2">
               <div
                 style={{
@@ -133,7 +133,7 @@ export default async function Identity() {
             FULL WITH LINK
           </h2>
 
-          <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-4">
             <div className="flex flex-col gap-2">
               <div
                 style={{

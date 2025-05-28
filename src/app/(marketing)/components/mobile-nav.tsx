@@ -30,7 +30,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="md:hidden p-1"
+          className="p-1 md:hidden"
           aria-label={translate('menu.landing.label')}
         >
           <Menu className="h-6 w-6" />
@@ -38,8 +38,8 @@ export const MobileNav: React.FC<MobileNavProps> = ({
       </SheetTrigger>
 
       <SheetContent side="left" className="w-full sm:w-64">
-        <div className="flex flex-col gap-4 mt-8">
-          <div className="flex items-center justify-between mb-4">
+        <div className="mt-8 flex flex-col gap-4">
+          <div className="mb-4 flex items-center justify-between">
             <span className="text-lg font-semibold">
               {translate('menu.landing.name')}
             </span>
@@ -51,7 +51,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
                 prefetch
                 key={link.href}
                 href={link.href}
-                className="px-2 py-1 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="hover:bg-accent hover:text-accent-foreground rounded-md px-2 py-1 text-sm transition-colors"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
@@ -59,9 +59,9 @@ export const MobileNav: React.FC<MobileNavProps> = ({
             ))}
           </nav>
 
-          <div className="mt-auto pt-4 border-t">
+          <div className="mt-auto border-t pt-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-muted-foreground text-sm">
                 {translate('menu.landing.language')}
               </span>
 

@@ -33,7 +33,7 @@ export const BlockItemComponent = (block: Block) => {
           target="_blank"
           className={cn(
             'transition-all',
-            'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
+            'w-full rounded-md border border-white/90 p-3 text-center text-white/90',
             'hover:bg-white hover:text-black'
           )}
         >
@@ -107,7 +107,7 @@ export const BlockItemComponent = (block: Block) => {
               url={block.href ?? ''}
             />
           ) : (
-            <div className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200 rounded-full">
+            <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full bg-stone-200 p-1">
               <LuLink />
             </div>
           )}
@@ -144,7 +144,7 @@ const BlockListComponent = ({ blocks }: { blocks: Block[] }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 1 } }}
             exit={{ opacity: 0 }}
-            className="flex flex-col gap-10 flex-1 self-stretch"
+            className="flex flex-1 flex-col gap-10 self-stretch"
           >
             <BlockItem {...props} />
           </motion.div>

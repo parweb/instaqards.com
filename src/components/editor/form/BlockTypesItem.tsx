@@ -91,7 +91,7 @@ export const BlockTypesItem = ({
     <ErrorBoundary
       fallback={
         <div className="flex flex-col">
-          <hgroup className="flex gap-2 items-center justify-between">
+          <hgroup className="flex items-center justify-between gap-2">
             <label>{label}</label>
             {description && <p>{description}</p>}
           </hgroup>
@@ -112,18 +112,18 @@ export const BlockTypesItem = ({
           transition: { delay: index * 0.15 }
         }}
         exit={{ opacity: 0, y: -10 }}
-        className="scale-95 hover:scale-100 transition-all duration-300"
+        className="scale-95 transition-all duration-300 hover:scale-100"
       >
         <AccordionItem
           value={type}
-          className="border-2 rounded-md px-0 cursor-pointer shadow-sm"
+          className="cursor-pointer rounded-md border-2 px-0 shadow-sm"
           style={{ borderColor: color[1] }}
         >
           <div className="flex flex-col gap-0">
             <AccordionTrigger className="p-2" style={{ color: color[2] }}>
-              <hgroup className="flex flex-col gap-2 items-start justify-between flex-1 pr-2">
-                <div className="flex-1 self-stretch flex gap-2 items-center justify-between pr-2">
-                  {Icon && <Icon className="w-4 h-4" />}
+              <hgroup className="flex flex-1 flex-col items-start justify-between gap-2 pr-2">
+                <div className="flex flex-1 items-center justify-between gap-2 self-stretch pr-2">
+                  {Icon && <Icon className="h-4 w-4" />}
 
                   <label
                     className="flex-1 text-left"
@@ -145,7 +145,7 @@ export const BlockTypesItem = ({
                 </div>
                 {description && (
                   <p
-                    className="text-left italic text-sm"
+                    className="text-left text-sm italic"
                     style={{ color: color[2] }}
                   >
                     {description}

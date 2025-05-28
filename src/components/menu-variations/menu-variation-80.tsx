@@ -14,25 +14,25 @@ export const MenuVariation80: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       color: 'from-indigo-500 to-purple-600'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       color: 'from-teal-500 to-cyan-600'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       color: 'from-rose-500 to-pink-600'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'from-amber-500 to-orange-600'
     }
@@ -56,9 +56,9 @@ export const MenuVariation80: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative bg-gradient-to-r from-white via-gray-50 to-white p-1">
-        <div className="bg-white/95 backdrop-blur-lg px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-white/95 px-4 py-4 backdrop-blur-lg">
           {/* Indicateur avec physique avancée */}
           <div
             className={cn(
@@ -79,7 +79,7 @@ export const MenuVariation80: React.FC = () => {
           {/* Indicateur de hover */}
           {hoveredTab !== null && hoveredTab !== activeTab && (
             <div
-              className="absolute bottom-2 h-0.5 bg-gray-300 rounded-full transition-all duration-300 ease-out"
+              className="absolute bottom-2 h-0.5 rounded-full bg-gray-300 transition-all duration-300 ease-out"
               style={{
                 left: `${hoveredTab * 25 + 8}%`,
                 width: '9%',
@@ -88,7 +88,7 @@ export const MenuVariation80: React.FC = () => {
             />
           )}
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
@@ -96,11 +96,11 @@ export const MenuVariation80: React.FC = () => {
                 onClick={() => handleTabChange(index)}
                 onMouseEnter={() => setHoveredTab(index)}
                 onMouseLeave={() => setHoveredTab(null)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 <div
                   className={cn(
-                    'relative mb-2 transition-all ease-out transform',
+                    'relative mb-2 transform transition-all ease-out',
                     'group-hover:scale-105 group-active:scale-95',
                     activeTab === index ? 'scale-110' : '',
                     microInteraction && index === activeTab
@@ -117,7 +117,7 @@ export const MenuVariation80: React.FC = () => {
                   {/* Micro-animation de fond */}
                   <div
                     className={cn(
-                      'absolute inset-0 w-14 h-14 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-full transition-all duration-300',
+                      'absolute inset-0 top-1/2 left-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300',
                       activeTab === index
                         ? `bg-gradient-to-r ${tab.color} opacity-10`
                         : hoveredTab === index
@@ -128,7 +128,7 @@ export const MenuVariation80: React.FC = () => {
 
                   <div
                     className={cn(
-                      'w-12 h-12 rounded-2xl flex items-center justify-center transition-all transform relative z-10',
+                      'relative z-10 flex h-12 w-12 transform items-center justify-center rounded-2xl transition-all',
                       'group-hover:rotate-3',
                       activeTab === index
                         ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
@@ -165,7 +165,7 @@ export const MenuVariation80: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full animate-bounce',
+                          'absolute -top-1 -right-1 h-1.5 w-1.5 animate-bounce rounded-full',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                         style={{
@@ -175,7 +175,7 @@ export const MenuVariation80: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute -bottom-1 -left-1 w-1 h-1 rounded-full animate-bounce',
+                          'absolute -bottom-1 -left-1 h-1 w-1 animate-bounce rounded-full',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                         style={{
@@ -189,7 +189,7 @@ export const MenuVariation80: React.FC = () => {
 
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all relative',
+                    'relative text-xs font-bold transition-all',
                     activeTab === index
                       ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent`
                       : 'text-gray-600 group-hover:text-gray-800',
@@ -210,7 +210,7 @@ export const MenuVariation80: React.FC = () => {
                   {activeTab === index && (
                     <div
                       className={cn(
-                        'absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 h-0.5 rounded-full transition-all',
+                        'absolute -bottom-0.5 left-1/2 h-0.5 -translate-x-1/2 transform rounded-full transition-all',
                         `bg-gradient-to-r ${tab.color}`,
                         microInteraction
                           ? 'w-8 duration-800'

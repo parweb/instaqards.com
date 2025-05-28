@@ -22,20 +22,20 @@ export default async function Generator(props: {
     : null;
 
   return (
-    <div className="flex flex-col p-8 gap-8 self-stretch flex-1 relative">
-      <hgroup className="flex flex-col sm:flex-row items-center gap-1 justify-between">
-        <h1 className="font-cal text-xl font-bold dark:text-white sm:text-3xl">
+    <div className="relative flex flex-1 flex-col gap-8 self-stretch p-8">
+      <hgroup className="flex flex-col items-center justify-between gap-1 sm:flex-row">
+        <h1 className="font-cal text-xl font-bold sm:text-3xl dark:text-white">
           Generator
         </h1>
       </hgroup>
 
-      <div className="flex-1 self-stretch flex gap-8 flex-col md:flex-row sticky top-0">
+      <div className="sticky top-0 flex flex-1 flex-col gap-8 self-stretch md:flex-row">
         <div className="flex flex-col gap-4 md:w-96">
           <Fields site={site} />
         </div>
 
-        <div className="flex-1 flex flex-col">
-          <div className="border border-stone-200 rounded-md p-4 self-stretch flex-1 flex flex-col">
+        <div className="flex flex-1 flex-col">
+          <div className="flex flex-1 flex-col self-stretch rounded-md border border-stone-200 p-4">
             {site && <WebSite site={site} />}
           </div>
         </div>

@@ -8,10 +8,10 @@ export default function ExploreLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex-1 flex flex-col self-stretch gap-0">
-      <div className="flex-1 flex flex-col self-stretch">{children}</div>
+    <div className="flex flex-1 flex-col gap-0 self-stretch">
+      <div className="flex flex-1 flex-col self-stretch">{children}</div>
 
-      <div className="p-2 flex flex-wrap items-center justify-around gap-4">
+      <div className="flex flex-wrap items-center justify-around gap-4 p-2">
         <Link href="/explore/region">Régions</Link>
         <Link href="/explore/state">Départements</Link>
         <Link href="/explore/city">Villes</Link>

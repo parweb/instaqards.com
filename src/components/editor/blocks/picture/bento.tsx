@@ -89,12 +89,12 @@ const BentoItem = ({
     <img
       src={src}
       alt=""
-      className="absolute inset-0 w-full h-full object-cover"
+      className="absolute inset-0 h-full w-full object-cover"
     />
   );
 
   return (
-    <div className={cn('rounded-md overflow-hidden', className)}>
+    <div className={cn('overflow-hidden rounded-md', className)}>
       {media.kind === 'local' ? (
         image
       ) : media.link ? (
@@ -135,7 +135,7 @@ export default function Bento({
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
   if (medias.length === 0) {
     return (
-      <div className="rounded-md overflow-hidden bg-white p-4 flex-1 flex items-center justify-center">
+      <div className="flex flex-1 items-center justify-center overflow-hidden rounded-md bg-white p-4">
         No images
       </div>
     );

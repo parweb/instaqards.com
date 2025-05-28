@@ -225,7 +225,7 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={tooltipStyle}
-            className="bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg text-sm"
+            className="rounded-lg bg-gray-900 px-3 py-2 text-sm text-white shadow-lg"
           >
             <div className="font-bold">{stage.name}</div>
             <div>
@@ -238,11 +238,11 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={tooltipStyle}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border"
+            className="rounded-xl border bg-white p-4 shadow-xl dark:bg-gray-800"
           >
             <div className="flex items-center space-x-3">
-              <div className="relative w-12 h-12">
-                <svg className="w-12 h-12 transform -rotate-90">
+              <div className="relative h-12 w-12">
+                <svg className="h-12 w-12 -rotate-90 transform">
                   <circle
                     cx="24"
                     cy="24"
@@ -283,18 +283,18 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={tooltipStyle}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border min-w-48"
+            className="min-w-48 rounded-xl border bg-white p-4 shadow-xl dark:bg-gray-800"
           >
-            <div className="flex items-center space-x-2 mb-2">
+            <div className="mb-2 flex items-center space-x-2">
               <div style={{ color: stage.color }}>{stage.icon}</div>
               <div className="font-bold text-gray-900 dark:text-white">
                 {stage.name}
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <div className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
               {stage.value}
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+            <div className="mb-2 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <div
                 className="h-2 rounded-full transition-all duration-300"
                 style={{
@@ -313,14 +313,14 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={{ ...tooltipStyle, borderLeftColor: stage.color }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl border-l-4 p-4 min-w-56"
+            className="min-w-56 rounded-xl border-l-4 bg-white p-4 shadow-xl dark:bg-gray-800"
           >
-            <div className="flex justify-between items-start mb-3">
+            <div className="mb-3 flex items-start justify-between">
               <div>
-                <div className="font-bold text-gray-900 dark:text-white text-lg">
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {stage.name}
                 </div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                   Étape du funnel
                 </div>
               </div>
@@ -356,9 +356,9 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={tooltipStyle}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border min-w-64"
+            className="min-w-64 rounded-xl border bg-white p-4 shadow-xl dark:bg-gray-800"
           >
-            <div className="flex items-center space-x-2 mb-3">
+            <div className="mb-3 flex items-center space-x-2">
               <div style={{ color: stage.color }}>{stage.icon}</div>
               <div className="font-bold text-gray-900 dark:text-white">
                 {stage.name}
@@ -405,9 +405,9 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={tooltipStyle}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border min-w-72"
+            className="min-w-72 rounded-xl border bg-white p-4 shadow-xl dark:bg-gray-800"
           >
-            <div className="flex items-center space-x-2 mb-3">
+            <div className="mb-3 flex items-center space-x-2">
               <div style={{ color: stage.color }}>{stage.icon}</div>
               <div className="font-bold text-gray-900 dark:text-white">
                 {stage.name}
@@ -433,9 +433,9 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
             </div>
             <div className="mt-3 flex items-center justify-center space-x-2">
               {conversionRate >= 70 ? (
-                <TrendingUp className="w-4 h-4 text-green-500" />
+                <TrendingUp className="h-4 w-4 text-green-500" />
               ) : (
-                <TrendingDown className="w-4 h-4 text-red-500" />
+                <TrendingDown className="h-4 w-4 text-red-500" />
               )}
               <span className="text-sm font-medium">
                 {conversionRate}% de conversion
@@ -447,14 +447,14 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
       case 'bubble-style':
         return (
           <div style={tooltipStyle} className="relative">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-full shadow-xl min-w-48 text-center">
+            <div className="min-w-48 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-center text-white shadow-xl">
               <div className="text-lg font-bold">{stage.name}</div>
               <div className="text-2xl font-bold">{stage.value}</div>
               <div className="text-sm opacity-90">
                 {percentage}% • {conversionRate}% conv.
               </div>
             </div>
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-purple-600"></div>
+            <div className="absolute top-full left-1/2 h-0 w-0 -translate-x-1/2 transform border-t-8 border-r-8 border-l-8 border-transparent border-t-purple-600"></div>
           </div>
         );
 
@@ -462,16 +462,16 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={tooltipStyle}
-            className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl border text-center min-w-48"
+            className="min-w-48 rounded-xl border bg-white p-6 text-center shadow-xl dark:bg-gray-800"
           >
-            <div className="text-6xl mb-3" style={{ color: stage.color }}>
+            <div className="mb-3 text-6xl" style={{ color: stage.color }}>
               {stage.icon}
             </div>
-            <div className="font-bold text-xl text-gray-900 dark:text-white mb-1">
+            <div className="mb-1 text-xl font-bold text-gray-900 dark:text-white">
               {stage.name}
             </div>
             <div
-              className="text-3xl font-bold mb-2"
+              className="mb-2 text-3xl font-bold"
               style={{ color: stage.color }}
             >
               {stage.value}
@@ -486,9 +486,9 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={tooltipStyle}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border min-w-80"
+            className="min-w-80 rounded-xl border bg-white p-4 shadow-xl dark:bg-gray-800"
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <div style={{ color: stage.color }}>{stage.icon}</div>
                 <div className="font-bold text-gray-900 dark:text-white">
@@ -499,7 +499,7 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
                 Étape {data.findIndex(d => d.id === stage.id) + 1}/4
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="mb-4 grid grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {stage.value}
@@ -528,7 +528,7 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
                 </div>
               </div>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+            <div className="h-1 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <div
                 className="h-1 rounded-full"
                 style={{
@@ -544,11 +544,11 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
         return (
           <div
             style={tooltipStyle}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border min-w-64"
+            className="min-w-64 rounded-xl border bg-white p-4 shadow-xl dark:bg-gray-800"
           >
-            <div className="flex items-center space-x-3 mb-3">
+            <div className="mb-3 flex items-center space-x-3">
               <div
-                className="p-2 rounded-full"
+                className="rounded-full p-2"
                 style={{
                   backgroundColor: `${stage.color}20`,
                   color: stage.color
@@ -565,43 +565,43 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between mb-3">
+            <div className="mb-3 flex items-center justify-between">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stage.value}
               </div>
               <div className="flex items-center space-x-1">
                 {conversionRate >= 70 ? (
                   <>
-                    <TrendingUp className="w-5 h-5 text-green-500" />
-                    <span className="text-green-500 font-bold">
+                    <TrendingUp className="h-5 w-5 text-green-500" />
+                    <span className="font-bold text-green-500">
                       +{conversionRate}%
                     </span>
                   </>
                 ) : conversionRate >= 40 ? (
                   <>
-                    <Target className="w-5 h-5 text-yellow-500" />
-                    <span className="text-yellow-500 font-bold">
+                    <Target className="h-5 w-5 text-yellow-500" />
+                    <span className="font-bold text-yellow-500">
                       {conversionRate}%
                     </span>
                   </>
                 ) : (
                   <>
-                    <TrendingDown className="w-5 h-5 text-red-500" />
-                    <span className="text-red-500 font-bold">
+                    <TrendingDown className="h-5 w-5 text-red-500" />
+                    <span className="font-bold text-red-500">
                       {conversionRate}%
                     </span>
                   </>
                 )}
               </div>
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <div className="mb-2 text-sm text-gray-600 dark:text-gray-400">
               {conversionRate >= 70
                 ? 'Excellente performance'
                 : conversionRate >= 40
                   ? 'Performance correcte'
                   : 'Nécessite optimisation'}
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
               <div
                 className="h-2 rounded-full transition-all duration-300"
                 style={{
@@ -616,14 +616,14 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
       case 'minimal':
         return (
           <TooltipCard title="49. Minimal Stats" variant="minimal-stats">
-            <div className="bg-white p-4 rounded-lg shadow-sm border min-w-64">
+            <div className="min-w-64 rounded-lg border bg-white p-4 shadow-sm">
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-xs text-gray-500 mb-1">Total</div>
+                  <div className="mb-1 text-xs text-gray-500">Total</div>
                   <div className="text-lg font-bold">{stage.total}</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xs text-gray-500 mb-1">Actuel</div>
+                  <div className="mb-1 text-xs text-gray-500">Actuel</div>
                   <div
                     className="text-lg font-bold"
                     style={{ color: stage.color }}
@@ -632,7 +632,7 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xs text-gray-500 mb-1">Taux</div>
+                  <div className="mb-1 text-xs text-gray-500">Taux</div>
                   <div className="text-lg font-bold">{percentage}%</div>
                 </div>
               </div>
@@ -666,7 +666,7 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
                     fill={data[index].color}
                     stroke="rgba(255,255,255,0.2)"
                     strokeWidth="1"
-                    className="transition-all duration-300 hover:brightness-110 cursor-pointer"
+                    className="cursor-pointer transition-all duration-300 hover:brightness-110"
                     onMouseEnter={e => handleMouseEnter(data[index], index, e)}
                     onMouseLeave={handleMouseLeave}
                   />
@@ -712,7 +712,7 @@ export default function FunnelHoverCharts() {
     {
       id: 'sent',
       name: 'Envoyé',
-      icon: <Users className="w-5 h-5" />,
+      icon: <Users className="h-5 w-5" />,
       value: 39,
       total: 39,
       color: '#10b981'
@@ -720,7 +720,7 @@ export default function FunnelHoverCharts() {
     {
       id: 'delivered',
       name: 'Délivré',
-      icon: <Target className="w-5 h-5" />,
+      icon: <Target className="h-5 w-5" />,
       value: 28,
       total: 39,
       color: '#3b82f6'
@@ -728,7 +728,7 @@ export default function FunnelHoverCharts() {
     {
       id: 'opened',
       name: 'Ouvert',
-      icon: <Eye className="w-5 h-5" />,
+      icon: <Eye className="h-5 w-5" />,
       value: 3,
       total: 28,
       color: '#f59e0b'
@@ -736,7 +736,7 @@ export default function FunnelHoverCharts() {
     {
       id: 'clicked',
       name: 'Cliqué',
-      icon: <MousePointer className="w-5 h-5" />,
+      icon: <MousePointer className="h-5 w-5" />,
       value: 0,
       total: 3,
       color: '#8b5cf6'

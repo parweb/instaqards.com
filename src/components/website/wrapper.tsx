@@ -10,7 +10,7 @@ export const Wrapper = ({
   return (
     <main
       className={cn(
-        'relative flex-1 self-stretch items-center flex flex-col',
+        'relative flex flex-1 flex-col items-center self-stretch',
         className
       )}
     >

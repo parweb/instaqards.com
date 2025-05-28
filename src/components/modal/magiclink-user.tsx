@@ -70,13 +70,13 @@ export default function UserMagicLinkModal({
   }, [loading]);
 
   return (
-    <form className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700 dark:bg-stone-800">
+    <form className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:bg-stone-800 dark:md:border-stone-700">
       <div className="relative flex flex-col gap-4 p-4">
         <h2 className="font-cal text-2xl dark:text-white">
           {translate('components.user.magiclink.title')}
         </h2>
 
-        <div className="relative flex gap-1 items-center">
+        <div className="relative flex items-center gap-1">
           <Input
             ref={input}
             id="link"
@@ -90,7 +90,7 @@ export default function UserMagicLinkModal({
           {data.link && (
             <Button
               className={cn(
-                'hover:text-blue-500 hover:font-bold cursor-pointer',
+                'cursor-pointer hover:font-bold hover:text-blue-500',
                 isCopied && 'text-green-500'
               )}
               type="button"
@@ -110,7 +110,7 @@ export default function UserMagicLinkModal({
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
+      <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10 dark:border-stone-700 dark:bg-stone-800">
         <UserMagicLinkButton />
       </div>
     </form>

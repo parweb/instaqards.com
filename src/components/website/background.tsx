@@ -34,18 +34,18 @@ export const Background = ({
         initial={{ filter: 'blur(100px)' }}
         animate={{ filter: 'blur(0px)' }}
         transition={{ duration: 1 }}
-        className="absolute inset-0 group pointer-events-auto"
+        className="group pointer-events-auto absolute inset-0"
       >
         {background && (
           <>
             {(media_type?.startsWith('video/') ||
               media_type === 'application/mp4') && (
               <>
-                <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
+                <div className="pointer-events-auto absolute inset-0 bg-black/30" />
 
                 <video
                   ref={videoRef}
-                  className="absolute top-0 left-0 w-full h-full object-cover"
+                  className="absolute top-0 left-0 h-full w-full object-cover"
                   preload="metadata"
                   controls={false}
                   disablePictureInPicture
@@ -61,7 +61,7 @@ export const Background = ({
             )}
 
             {media_type?.startsWith('image/') && (
-              <div className="absolute top-0 left-0 w-full h-full object-cover">
+              <div className="absolute top-0 left-0 h-full w-full object-cover">
                 <div className="plop" />
                 {background.includes('|') ? (
                   <div
@@ -88,7 +88,7 @@ export const Background = ({
             {media_type === 'css' && (
               <div
                 className={cn(
-                  `absolute top-0 left-0 w-full h-full object-cover`,
+                  `absolute top-0 left-0 h-full w-full object-cover`,
                   { ' ': autoPlay === false && state === 'paused' }
                 )}
               >
@@ -100,7 +100,7 @@ export const Background = ({
 
             {media_type === 'color' && (
               <div
-                className="absolute top-0 left-0 w-full h-full object-cover"
+                className="absolute top-0 left-0 h-full w-full object-cover"
                 style={{ backgroundColor: background.replace('color:', '') }}
               />
             )}
@@ -108,7 +108,7 @@ export const Background = ({
         )}
 
         {media_type === '' && (
-          <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
+          <div className="pointer-events-auto absolute inset-0 bg-black/30" />
         )}
       </motion.div>
     </>

@@ -28,7 +28,7 @@ export const Qards = ({ siteId }: { siteId: Site['id'] }) => {
   };
 
   return (
-    <div className="relative w-full aspect-[2/3] max-w-xl mx-auto flex overflow-hidden rounded-3xl">
+    <div className="relative mx-auto flex aspect-[2/3] w-full max-w-xl overflow-hidden rounded-3xl">
       <Wrapper>
         <Suspense fallback={null}>
           <Background background={site.background} />
@@ -42,7 +42,7 @@ export const Qards = ({ siteId }: { siteId: Site['id'] }) => {
           </Main>
 
           <Footer>
-            <div className="flex gap-3 items-center justify-center">
+            <div className="flex items-center justify-center gap-3">
               <Suspense fallback={null}>
                 <BlockList blocks={data.social} />
               </Suspense>

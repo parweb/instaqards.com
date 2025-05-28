@@ -195,14 +195,14 @@ export default async function AllAffiliation({
   return (
     <div className="flex flex-col space-y-12 p-8">
       <hgroup className="flex items-center justify-between gap-2">
-        <h1 className="font-cal text-xl font-bold dark:text-white sm:text-3xl">
+        <h1 className="font-cal text-xl font-bold sm:text-3xl dark:text-white">
           All Affiliates
         </h1>
 
         <Link
           href={uri.app(`/?r=${auth.id}`)}
           target="_blank"
-          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700 flex items-center gap-2"
+          className="flex items-center gap-2 truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700"
         >
           <span>{uri.app(`/?r=${auth.id}`)}</span>
           <LuArrowUpRight />

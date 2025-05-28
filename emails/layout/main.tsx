@@ -33,8 +33,8 @@ export const Main = ({
 
         <Preview>{title}</Preview>
 
-        <Body className="my-auto mx-auto font-sans p-1">
-          <Container className="border border-solid border-gray-200 rounded-lg bg-white overflow-hidden">
+        <Body className="mx-auto my-auto p-1 font-sans">
+          <Container className="overflow-hidden rounded-lg border border-solid border-gray-200 bg-white">
             <Header lang={lang} />
             <Content lang={lang}>{children}</Content>
             <Footer lang={lang} />

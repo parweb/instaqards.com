@@ -105,13 +105,13 @@ const GithubStyleGrid = ({
     );
 
     return (
-      <div key={dayIdx} className="flex-1 flex flex-col items-center">
-        <div className="mb-2 font-bold text-xs text-zinc-700">
+      <div key={dayIdx} className="flex flex-1 flex-col items-center">
+        <div className="mb-2 text-xs font-bold text-zinc-700">
           {format(day, 'dd MMM yyyy')}
         </div>
 
         <div
-          className="grid gap-0.5 max-h-48 aspect-square w-full"
+          className="grid aspect-square max-h-48 w-full gap-0.5"
           style={{
             gridTemplateColumns: `repeat(${columns}, 1fr)`,
             gridTemplateRows: `repeat(${rows}, 1fr)`,
@@ -123,8 +123,8 @@ const GithubStyleGrid = ({
               <ModalButton
                 key={`${rowIdx}-${colIdx}`}
                 className={cn(
-                  "block items-start justify-start gap-0 whitespace-normal rounded-none text-base font-normal transition-none pointer-events-auto opacity-100 [&_svg]:pointer-events-auto [&_svg]:shrink [&_svg:not([class*='size-'])]:size-auto outline focus-visible:border-transparent focus-visible:ring-0 aria-invalid:border-transparent aria-invalid:ring-transparent dark:aria-invalid:ring-transparent bg-transparent text-current shadow-none hover:bg-transparent h-auto px-0 py-0 has-[>svg]:px-0",
-                  'cursor-pointer bg-gray-100 hover:bg-[#dedede] h-full w-full rounded-sm',
+                  "pointer-events-auto block h-auto items-start justify-start gap-0 rounded-none bg-transparent px-0 py-0 text-base font-normal whitespace-normal text-current opacity-100 shadow-none outline transition-none hover:bg-transparent focus-visible:border-transparent focus-visible:ring-0 has-[>svg]:px-0 aria-invalid:border-transparent aria-invalid:ring-transparent dark:aria-invalid:ring-transparent [&_svg]:pointer-events-auto [&_svg]:shrink [&_svg:not([class*='size-'])]:size-auto",
+                  'h-full w-full cursor-pointer rounded-sm bg-gray-100 hover:bg-[#dedede]',
                   { 'bg-[#00bc7d] hover:bg-[#009c60]': status === 'success' },
                   { 'bg-[#ff1f57] hover:bg-[#d6003d]': status === 'error' }
                 )}
@@ -142,7 +142,7 @@ const GithubStyleGrid = ({
 
   return (
     <div className="overflow-x-auto">
-      <div className="flex flex-row gap-2 p-2 items-center justify-center">
+      <div className="flex flex-row items-center justify-center gap-2 p-2">
         {dayGrids}
       </div>
     </div>
@@ -198,18 +198,18 @@ export default function CronTable({
               <React.Fragment key={cron.id}>
                 <tr
                   className={cn('', {
-                    'bg-red-100 border border-red-200': !cron.enabled
+                    'border border-red-200 bg-red-100': !cron.enabled
                   })}
                 >
-                  <td className="px-4 py-2 font-medium text-zinc-900 w-full">
+                  <td className="w-full px-4 py-2 font-medium text-zinc-900">
                     {cron.name}
                   </td>
 
-                  <td className="px-4 py-2 text-zinc-700 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap text-zinc-700">
                     {cron.cronExpr}
                   </td>
 
-                  <td className="px-4 py-2 text-zinc-700 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap text-zinc-700">
                     {cron.modulePath}
                   </td>
 
@@ -234,7 +234,7 @@ export default function CronTable({
                     </form>
                   </td>
 
-                  <td className="px-4 py-2 flex gap-2 justify-end w-auto">
+                  <td className="flex w-auto justify-end gap-2 px-4 py-2">
                     <ModalButton label="Éditer">
                       <CronModalForm cron={cron} />
                     </ModalButton>
@@ -299,10 +299,10 @@ export default function CronTable({
 
                 <tr
                   className={cn('', {
-                    'bg-red-100 border border-red-200': !cron.enabled
+                    'border border-red-200 bg-red-100': !cron.enabled
                   })}
                 >
-                  <td colSpan={6} className="bg-transparent border-none p-0">
+                  <td colSpan={6} className="border-none bg-transparent p-0">
                     <GithubStyleGrid
                       history={cron.history}
                       days={days}

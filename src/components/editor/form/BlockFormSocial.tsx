@@ -70,10 +70,10 @@ export function BlockFormSocial({
       )}
 
       <div className="flex flex-col gap-4">
-        <h2 className="font-cal text-2xl px-4 pt-4">{mode.title}</h2>
+        <h2 className="font-cal px-4 pt-4 text-2xl">{mode.title}</h2>
 
         <div className="relative">
-          <div className={cn('transition-all duration-300 bg-white px-4 pb-4')}>
+          <div className={cn('bg-white px-4 pb-4 transition-all duration-300')}>
             <BlockPicker
               type={mode.type}
               data={data}

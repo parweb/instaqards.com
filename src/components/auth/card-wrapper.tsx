@@ -28,7 +28,7 @@ export const CardWrapper = ({
   return (
     <Card className="max-w-[500px] border-none shadow-none">
       <CardHeader>
-        <div className="lg:hidden flex items-center justify-center">
+        <div className="flex items-center justify-center lg:hidden">
           <Image
             src="/rsz_black-transparent_withlink.png"
             alt="Logo qards.link"

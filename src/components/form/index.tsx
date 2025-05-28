@@ -103,7 +103,7 @@ export default function Form({
             <select
               name="font"
               defaultValue={inputAttrs.defaultValue as string}
-              className="w-full rounded-none border-none bg-white px-4 py-2 text-sm font-medium text-stone-700 focus:outline-hidden focus:ring-black dark:bg-black dark:text-stone-200 dark:focus:ring-white"
+              className="w-full rounded-none border-none bg-white px-4 py-2 text-sm font-medium text-stone-700 focus:ring-black focus:outline-hidden dark:bg-black dark:text-stone-200 dark:focus:ring-white"
             >
               <option value="font-cal">Cal Sans</option>
               <option value="font-lora">Lora</option>
@@ -124,7 +124,7 @@ export default function Form({
                   .replace(/[\W_]+/g, '-');
               }}
               required
-              className="z-10 flex-1 rounded-l-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-hidden focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
+              className="z-10 flex-1 rounded-l-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:ring-stone-500 focus:outline-hidden dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
             />
             <div className="flex items-center rounded-r-md border border-l-0 border-stone-300 bg-stone-100 px-3 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-stone-400">
               {uri.cookie}
@@ -140,7 +140,7 @@ export default function Form({
               onChange={e => {
                 e.target.value = e.target.value.toLowerCase();
               }}
-              className="flex-1 rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-hidden focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
+              className="flex-1 rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:ring-stone-500 focus:outline-hidden dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
             />
 
             {inputAttrs.defaultValue && (
@@ -160,7 +160,7 @@ export default function Form({
             }}
             rows={3}
             required
-            className="w-full max-w-xl rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-hidden focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
+            className="w-full max-w-xl rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:ring-stone-500 focus:outline-hidden dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
           />
         ) : inputAttrs.type === 'switch' ? (
           <Switch
@@ -174,7 +174,7 @@ export default function Form({
               defaultValue: inputAttrs.defaultValue as string
             }}
             required
-            className="w-full max-w-md rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:outline-hidden focus:ring-stone-500 dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
+            className="w-full max-w-md rounded-md border border-stone-300 text-sm text-stone-900 placeholder-stone-300 focus:border-stone-500 focus:ring-stone-500 focus:outline-hidden dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700"
           />
         )}
       </div>
@@ -183,7 +183,7 @@ export default function Form({
         <DomainConfiguration domain={inputAttrs.defaultValue as string} />
       )}
 
-      <div className="flex flex-col items-center justify-center space-y-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 sm:flex-row sm:justify-between sm:space-y-0 sm:px-10">
+      <div className="flex flex-col items-center justify-center space-y-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 sm:flex-row sm:justify-between sm:space-y-0 sm:px-10 dark:border-stone-700 dark:bg-stone-800">
         <p className="text-sm text-stone-500 dark:text-stone-400">{helpText}</p>
         <FormButton />
       </div>

@@ -23,12 +23,12 @@ export function OnboardingAccordion({
     // Skeleton pendant le chargement
     return (
       <div className="animate-pulse">
-        <div className="w-full h-2 bg-gradient-to-r from-indigo-200/40 to-purple-200/40 dark:from-indigo-900/30 dark:to-purple-900/30">
+        <div className="h-2 w-full bg-gradient-to-r from-indigo-200/40 to-purple-200/40 dark:from-indigo-900/30 dark:to-purple-900/30">
           <div className="h-full w-full bg-gradient-to-r from-indigo-500 to-purple-500" />
         </div>
-        <div className="p-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
-          <div className="w-32 h-6 bg-gray-200 dark:bg-gray-700 rounded mb-4" />
-          <div className="w-96 h-8 bg-gray-200 dark:bg-gray-700 rounded" />
+        <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 p-6">
+          <div className="mb-4 h-6 w-32 rounded bg-gray-200 dark:bg-gray-700" />
+          <div className="h-8 w-96 rounded bg-gray-200 dark:bg-gray-700" />
         </div>
       </div>
     );
@@ -36,24 +36,24 @@ export function OnboardingAccordion({
 
   return (
     <div className="">
-      <div className="w-full h-2 bg-gradient-to-r from-indigo-200/40 to-purple-200/40 dark:from-indigo-900/30 dark:to-purple-900/30">
+      <div className="h-2 w-full bg-gradient-to-r from-indigo-200/40 to-purple-200/40 dark:from-indigo-900/30 dark:to-purple-900/30">
         <div className="h-full w-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" />
       </div>
 
       <div
-        className="p-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 cursor-pointer hover:from-indigo-500/15 hover:to-purple-500/15 transition-all duration-200"
+        className="cursor-pointer bg-gradient-to-r from-indigo-500/10 to-purple-500/10 p-6 transition-all duration-200 hover:from-indigo-500/15 hover:to-purple-500/15"
         onClick={toggleAccordion}
       >
         <div className="flex items-center justify-between">
           <div>
-            <div className="w-fit mb-4 px-4 py-1 bg-purple-100 dark:bg-purple-900/30 backdrop-blur-sm text-purple-800 dark:text-purple-300 text-sm font-medium rounded-full border border-purple-200 dark:border-purple-800/50 flex items-center">
-              <LuSparkles className="w-4 h-4 mr-2 text-purple-500" />
+            <div className="mb-4 flex w-fit items-center rounded-full border border-purple-200 bg-purple-100 px-4 py-1 text-sm font-medium text-purple-800 backdrop-blur-sm dark:border-purple-800/50 dark:bg-purple-900/30 dark:text-purple-300">
+              <LuSparkles className="mr-2 h-4 w-4 text-purple-500" />
               <span>{startText}</span>
             </div>
 
-            <h2 className="text-3xl font-cal font-bold text-zinc-900 dark:text-white">
+            <h2 className="font-cal text-3xl font-bold text-zinc-900 dark:text-white">
               {titleText}{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
+              <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-indigo-400">
                 {subtitleText}
               </span>
             </h2>
@@ -62,9 +62,9 @@ export function OnboardingAccordion({
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.2 }}
-            className="flex-shrink-0 ml-4"
+            className="ml-4 flex-shrink-0"
           >
-            <LuChevronDown className="w-6 h-6 text-purple-500" />
+            <LuChevronDown className="h-6 w-6 text-purple-500" />
           </motion.div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export function OnboardingAccordion({
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="flex flex-col lg:flex-row gap-0">
+            <div className="flex flex-col gap-0 lg:flex-row">
               <div className="flex flex-col gap-12 p-6">{children}</div>
             </div>
           </motion.div>

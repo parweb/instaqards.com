@@ -76,7 +76,7 @@ export default function ImageFullscreen({
   const finalHeight = Math.min(windowSize.height * 0.8, 800);
 
   const modalContent = (
-    <div className="fixed inset-0 z-[9999] bg-black/0 pointer-events-auto">
+    <div className="pointer-events-auto fixed inset-0 z-[9999] bg-black/0">
       <motion.div
         className="absolute inset-0 bg-black"
         initial={{ opacity: 0 }}
@@ -89,7 +89,7 @@ export default function ImageFullscreen({
       <motion.button
         type="button"
         onClick={handleClose}
-        className="absolute top-4 right-4 z-[10000] p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+        className="absolute top-4 right-4 z-[10000] rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
         aria-label="Fermer"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -100,7 +100,7 @@ export default function ImageFullscreen({
       </motion.button>
 
       <motion.div
-        className="absolute bottom-4 right-4 z-[10000] flex gap-2"
+        className="absolute right-4 bottom-4 z-[10000] flex gap-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -109,7 +109,7 @@ export default function ImageFullscreen({
         <button
           type="button"
           onClick={zoomOut}
-          className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+          className="rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
           aria-label="Réduire"
         >
           <LuZoomOut size={24} />
@@ -117,7 +117,7 @@ export default function ImageFullscreen({
         <button
           type="button"
           onClick={zoomIn}
-          className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+          className="rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
           aria-label="Agrandir"
         >
           <LuZoomIn size={24} />
@@ -146,7 +146,7 @@ export default function ImageFullscreen({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <motion.div
-          className="w-full h-full overflow-hidden"
+          className="h-full w-full overflow-hidden"
           initial={{ opacity: 0.5 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
@@ -154,10 +154,10 @@ export default function ImageFullscreen({
           <button
             type="button"
             onClick={handleClose}
-            className="border-0 p-0 bg-transparent w-full h-full"
+            className="h-full w-full border-0 bg-transparent p-0"
             aria-label="Fermer l'image"
           >
-            <img src={src} alt="" className="w-full h-full object-contain" />
+            <img src={src} alt="" className="h-full w-full object-contain" />
           </button>
         </motion.div>
       </motion.div>

@@ -61,16 +61,16 @@ const ConfirmAccount = ({
       <Section className="my-[16px]">
         <Section>
           <Row>
-            <Text className="m-0 text-[24px] font-semibold leading-[32px] text-gray-900">
+            <Text className="m-0 text-[24px] leading-[32px] font-semibold text-gray-900">
               {translations[lang].title}
             </Text>
 
-            <Section className="py-3 bg-stone-100 rounded-md my-4">
+            <Section className="my-4 rounded-md bg-stone-100 py-3">
               <Row>
-                <Column className="px-3 w-4">
+                <Column className="w-4 px-3">
                   <Img
                     src={`${base}/assets/email/link.png`}
-                    className="w-4 h-4"
+                    className="h-4 w-4"
                     alt="link"
                   />
                 </Column>
@@ -79,7 +79,7 @@ const ConfirmAccount = ({
                   <Link href={confirmLink} target="_blank">
                     <Text
                       style={{ fontSize: '16px' }}
-                      className="p-0 m-0 text-stone-700 underline"
+                      className="m-0 p-0 text-stone-700 underline"
                     >
                       {translations[lang].confirm_text}
                     </Text>

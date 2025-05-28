@@ -44,10 +44,10 @@ const MapContainer = ({
   );
 
   return (
-    <div className="group w-full aspect-video relative overflow-hidden rounded-lg transition-all">
+    <div className="group relative aspect-video w-full overflow-hidden rounded-lg transition-all">
       <Suspense
         fallback={
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+          <div className="flex h-full w-full items-center justify-center bg-gray-100">
             <LoadingDots />
           </div>
         }
@@ -57,15 +57,15 @@ const MapContainer = ({
         <div
           className={cn(
             'transition-all duration-300',
-            'absolute inset-0 p-4 flex flex-col gap-0 items-start justify-end',
+            'absolute inset-0 flex flex-col items-start justify-end gap-0 p-4',
             'bg-linear-to-t from-black/50 to-transparent',
-            'group-hover:opacity-0 group-hover:pointer-events-none'
+            'group-hover:pointer-events-none group-hover:opacity-0'
           )}
         >
           {inputValue.name && (
             <div
               className={cn(
-                'text-white/90 text-2xl uppercase font-black',
+                'text-2xl font-black text-white/90 uppercase',
                 inter.className
               )}
             >
@@ -74,7 +74,7 @@ const MapContainer = ({
           )}
 
           {inputValue.address && (
-            <div className={cn('text-white/80 text-xl', open.className)}>
+            <div className={cn('text-xl text-white/80', open.className)}>
               {inputValue.address}
             </div>
           )}

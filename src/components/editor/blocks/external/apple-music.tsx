@@ -24,7 +24,7 @@ export default function AppleMusic({
   return (
     <iframe
       title="Soundcloud"
-      className="w-full aspect-square rounded-md"
+      className="aspect-square w-full rounded-md"
       src={url.replace('music.apple.com', 'embed.music.apple.com')}
       allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
       loading="lazy"

@@ -56,7 +56,7 @@ export function BlockFormMain({
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="font-cal text-2xl px-4 pt-4">{mode.title}</h2>
+      <h2 className="font-cal px-4 pt-4 text-2xl">{mode.title}</h2>
 
       <div className="relative">
         <motion.div
@@ -78,8 +78,8 @@ export function BlockFormMain({
         </motion.div>
 
         <div
-          className={cn('transition-all duration-300 bg-white px-4 pb-4', {
-            '-translate-x-full pointer-events-none': isSelectedBlock
+          className={cn('bg-white px-4 pb-4 transition-all duration-300', {
+            'pointer-events-none -translate-x-full': isSelectedBlock
           })}
         >
           <BlockPicker

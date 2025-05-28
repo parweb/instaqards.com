@@ -68,7 +68,7 @@ export default async function RootLayout({
             cal.variable,
             inter.variable,
             open.variable,
-            'font-sans flex flex-col h-[100vh] relative'
+            'relative flex h-[100vh] flex-col font-sans'
           )}
         >
           <Suspense fallback={null}>

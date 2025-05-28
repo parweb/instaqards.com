@@ -28,13 +28,13 @@ import {
 
 export const FilterModal = () => {
   return (
-    <div className="bg-gradient-to-br from-white/80 via-purple-50/80 to-blue-100/80 dark:from-background/80 dark:via-purple-950/60 dark:to-blue-950/60 backdrop-blur-2xl rounded-2xl shadow-2xl border border-purple-200/40 dark:border-purple-900/40 animate-fade-in">
-      <div className="flex flex-col gap-6 p-8 min-w-[28rem] relative">
-        <header className="flex items-center gap-3 mb-2">
-          <span className="inline-flex items-center justify-center bg-gradient-to-tr from-purple-400 via-pink-400 to-blue-400 rounded-full p-2 shadow-lg animate-bounce-in">
-            <Filter className="text-white size-7 drop-shadow-glow animate-spin-slow" />
+    <div className="dark:from-background/80 animate-fade-in rounded-2xl border border-purple-200/40 bg-gradient-to-br from-white/80 via-purple-50/80 to-blue-100/80 shadow-2xl backdrop-blur-2xl dark:border-purple-900/40 dark:via-purple-950/60 dark:to-blue-950/60">
+      <div className="relative flex min-w-[28rem] flex-col gap-6 p-8">
+        <header className="mb-2 flex items-center gap-3">
+          <span className="animate-bounce-in inline-flex items-center justify-center rounded-full bg-gradient-to-tr from-purple-400 via-pink-400 to-blue-400 p-2 shadow-lg">
+            <Filter className="drop-shadow-glow animate-spin-slow size-7 text-white" />
           </span>
-          <h2 className="text-2xl font-extrabold bg-gradient-to-r from-purple-700 via-pink-600 to-blue-600 bg-clip-text text-transparent tracking-tight drop-shadow-md animate-fade-in">
+          <h2 className="animate-fade-in bg-gradient-to-r from-purple-700 via-pink-600 to-blue-600 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent drop-shadow-md">
             Filtres magiques
           </h2>
         </header>
@@ -42,33 +42,33 @@ export const FilterModal = () => {
         <main>
           <div className="flex flex-col gap-8">
             {/* Recherche texte */}
-            <div className="flex flex-col gap-2 animate-slide-in">
+            <div className="animate-slide-in flex flex-col gap-2">
               <Label
                 htmlFor="search"
-                className="text-base font-semibold flex items-center gap-2"
+                className="flex items-center gap-2 text-base font-semibold"
               >
                 <Search className="size-4 text-purple-400" /> Recherche
               </Label>
               <Input
                 id="search"
                 placeholder="Nom, entreprise, email..."
-                className="rounded-xl border-2 border-purple-200/60 focus:border-pink-400 focus:ring-2 focus:ring-pink-200/40 bg-white/70 dark:bg-background/60 shadow-inner"
+                className="dark:bg-background/60 rounded-xl border-2 border-purple-200/60 bg-white/70 shadow-inner focus:border-pink-400 focus:ring-2 focus:ring-pink-200/40"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
+            <div className="animate-fade-in grid grid-cols-1 gap-8 md:grid-cols-2">
               {/* Ville */}
               <div className="flex flex-col gap-2">
                 <Label
                   htmlFor="city"
-                  className="font-semibold flex items-center gap-2"
+                  className="flex items-center gap-2 font-semibold"
                 >
                   <MapPin className="size-4 text-blue-400" /> Ville
                 </Label>
                 <Select>
                   <SelectTrigger
                     id="city"
-                    className="w-full rounded-xl border-2 border-blue-200/60 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/40 bg-white/70 dark:bg-background/60 shadow-inner"
+                    className="dark:bg-background/60 w-full rounded-xl border-2 border-blue-200/60 bg-white/70 shadow-inner focus:border-blue-400 focus:ring-2 focus:ring-blue-200/40"
                   >
                     <SelectValue placeholder="Choisir une ville" />
                   </SelectTrigger>
@@ -84,14 +84,14 @@ export const FilterModal = () => {
               <div className="flex flex-col gap-2">
                 <Label
                   htmlFor="state"
-                  className="font-semibold flex items-center gap-2"
+                  className="flex items-center gap-2 font-semibold"
                 >
                   <Building2 className="size-4 text-purple-400" /> Département
                 </Label>
                 <Select>
                   <SelectTrigger
                     id="state"
-                    className="w-full rounded-xl border-2 border-purple-200/60 focus:border-purple-400 focus:ring-2 focus:ring-purple-200/40 bg-white/70 dark:bg-background/60 shadow-inner"
+                    className="dark:bg-background/60 w-full rounded-xl border-2 border-purple-200/60 bg-white/70 shadow-inner focus:border-purple-400 focus:ring-2 focus:ring-purple-200/40"
                   >
                     <SelectValue placeholder="Choisir un département" />
                   </SelectTrigger>
@@ -107,14 +107,14 @@ export const FilterModal = () => {
               <div className="flex flex-col gap-2">
                 <Label
                   htmlFor="activity"
-                  className="font-semibold flex items-center gap-2"
+                  className="flex items-center gap-2 font-semibold"
                 >
                   <Briefcase className="size-4 text-pink-400" /> Activité
                 </Label>
                 <Select>
                   <SelectTrigger
                     id="activity"
-                    className="w-full rounded-xl border-2 border-pink-200/60 focus:border-pink-400 focus:ring-2 focus:ring-pink-200/40 bg-white/70 dark:bg-background/60 shadow-inner"
+                    className="dark:bg-background/60 w-full rounded-xl border-2 border-pink-200/60 bg-white/70 shadow-inner focus:border-pink-400 focus:ring-2 focus:ring-pink-200/40"
                   >
                     <SelectValue placeholder="Choisir une activité" />
                   </SelectTrigger>
@@ -128,12 +128,12 @@ export const FilterModal = () => {
 
               {/* Type de profil (RadioGroup) */}
               <div className="flex flex-col gap-2">
-                <Label className="font-semibold flex items-center gap-2">
+                <Label className="flex items-center gap-2 font-semibold">
                   <Users className="size-4 text-blue-400" /> Type de profil
                 </Label>
                 <RadioGroup
                   defaultValue="all"
-                  className="flex flex-row gap-4 pl-2 mt-1"
+                  className="mt-1 flex flex-row gap-4 pl-2"
                 >
                   <div className="flex items-center gap-2">
                     <RadioGroupItem value="all" id="all" />
@@ -152,16 +152,16 @@ export const FilterModal = () => {
             </div>
 
             {/* Séparateur visuel */}
-            <div className="w-full h-0.5 bg-gradient-to-r from-purple-200 via-pink-200 to-blue-200 rounded-full my-2 animate-grow-in" />
+            <div className="animate-grow-in my-2 h-0.5 w-full rounded-full bg-gradient-to-r from-purple-200 via-pink-200 to-blue-200" />
 
             {/* Options avancées */}
-            <div className="flex flex-col md:flex-row gap-8 animate-fade-in">
+            <div className="animate-fade-in flex flex-col gap-8 md:flex-row">
               {/* Filtres multiples (checkbox) */}
-              <div className="flex flex-col gap-2 flex-1">
-                <Label className="font-semibold flex items-center gap-2">
+              <div className="flex flex-1 flex-col gap-2">
+                <Label className="flex items-center gap-2 font-semibold">
                   <Filter className="size-4 text-purple-400" /> Options
                 </Label>
-                <div className="flex flex-col gap-3 pl-2 mt-1">
+                <div className="mt-1 flex flex-col gap-3 pl-2">
                   <div className="flex items-center gap-2">
                     <Checkbox id="hasPhone" />
                     <Label htmlFor="hasPhone">Avec téléphone</Label>
@@ -174,11 +174,11 @@ export const FilterModal = () => {
               </div>
 
               {/* Switch exemple */}
-              <div className="flex flex-col gap-2 flex-1">
-                <Label className="font-semibold flex items-center gap-2">
+              <div className="flex flex-1 flex-col gap-2">
+                <Label className="flex items-center gap-2 font-semibold">
                   <UserCheck className="size-4 text-green-400" /> Statut
                 </Label>
-                <div className="flex items-center gap-3 pl-2 mt-1">
+                <div className="mt-1 flex items-center gap-3 pl-2">
                   <Switch id="verified" />
                   <Label htmlFor="verified" className="flex items-center gap-1">
                     <CheckCircle2 className="size-4 text-green-400" /> Comptes
@@ -190,14 +190,14 @@ export const FilterModal = () => {
           </div>
         </main>
 
-        <footer className="pt-6 flex flex-col gap-2">
-          <Button className="w-full py-3 text-lg font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 shadow-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-300 animate-pop-in">
+        <footer className="flex flex-col gap-2 pt-6">
+          <Button className="animate-pop-in w-full bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 py-3 text-lg font-bold shadow-lg transition-all duration-300 hover:from-purple-600 hover:to-blue-600">
             <span className="inline-flex items-center gap-2">
-              <Filter className="size-5 animate-sparkle text-white drop-shadow-glow" />
+              <Filter className="animate-sparkle drop-shadow-glow size-5 text-white" />
               Appliquer les filtres magiques
             </span>
           </Button>
-          <span className="text-xs text-center text-purple-400/80 italic animate-fade-in">
+          <span className="animate-fade-in text-center text-xs text-purple-400/80 italic">
             Trouvez exactement ce que vous cherchez, en un éclair ✨
           </span>
         </footer>

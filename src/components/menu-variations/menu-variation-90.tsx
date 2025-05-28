@@ -19,25 +19,25 @@ export const MenuVariation90: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '#',
       color: 'from-blue-400 to-cyan-400'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '#',
       color: 'from-purple-400 to-pink-400'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '#',
       color: 'from-red-400 to-orange-400'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'from-green-400 to-teal-400'
     }
@@ -137,13 +137,13 @@ export const MenuVariation90: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative bg-gradient-to-r from-gray-900 via-black to-gray-900 p-1">
-        <div className="bg-black/90 backdrop-blur-lg px-4 py-4 relative">
+        <div className="relative bg-black/90 px-4 py-4 backdrop-blur-lg">
           {/* Indicateur de ruban principal */}
           {indicator && (
             <div
-              className="absolute bottom-0 h-1 bg-gradient-to-r from-transparent via-white/60 to-transparent transition-all duration-500 ease-out rounded-full"
+              className="absolute bottom-0 h-1 rounded-full bg-gradient-to-r from-transparent via-white/60 to-transparent transition-all duration-500 ease-out"
               style={{
                 left: indicator.left,
                 width: indicator.width,
@@ -154,11 +154,11 @@ export const MenuVariation90: React.FC = () => {
 
           {/* Menu More étendu */}
           {showMoreMenu && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 bg-black/95 backdrop-blur-lg rounded-2xl p-4 border border-gray-700 shadow-2xl">
+            <div className="absolute right-0 bottom-full left-0 mb-2 rounded-2xl border border-gray-700 bg-black/95 p-4 shadow-2xl backdrop-blur-lg">
               {/* Ruban de balayage pour le menu More */}
               {ribbonSweep && (
                 <div
-                  className="absolute inset-0 pointer-events-none rounded-2xl"
+                  className="pointer-events-none absolute inset-0 rounded-2xl"
                   style={{
                     background: `linear-gradient(90deg, 
                       transparent 0%, 
@@ -176,7 +176,7 @@ export const MenuVariation90: React.FC = () => {
                 {moreMenuItems.map(item => (
                   <button
                     key={item.name}
-                    className="flex flex-col items-center p-3 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 transition-all duration-300 group"
+                    className="group flex flex-col items-center rounded-xl bg-gray-800/50 p-3 transition-all duration-300 hover:bg-gray-700/50"
                     onClick={() => {
                       setShowMoreMenu(false);
                       setRibbonSweep(true);
@@ -185,13 +185,13 @@ export const MenuVariation90: React.FC = () => {
                   >
                     <div
                       className={cn(
-                        'w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-all duration-300',
+                        'mb-2 flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300',
                         `bg-gradient-to-r ${item.color} group-hover:scale-110`
                       )}
                     >
                       <span className="text-lg">{item.icon}</span>
                     </div>
-                    <span className="text-xs text-gray-300 group-hover:text-white transition-colors duration-300">
+                    <span className="text-xs text-gray-300 transition-colors duration-300 group-hover:text-white">
                       {item.name}
                     </span>
                   </button>
@@ -199,28 +199,28 @@ export const MenuVariation90: React.FC = () => {
               </div>
 
               {/* Flèche pointant vers le bouton More */}
-              <div className="absolute bottom-0 right-8 transform translate-y-full">
-                <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-gray-700"></div>
+              <div className="absolute right-8 bottom-0 translate-y-full transform">
+                <div className="h-0 w-0 border-t-8 border-r-4 border-l-4 border-t-gray-700 border-r-transparent border-l-transparent"></div>
               </div>
             </div>
           )}
 
-          <div className="flex items-center justify-around relative z-10 tab-container">
+          <div className="tab-container relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <div
                 key={tab.name}
                 ref={el => {
                   tabRefs.current[index] = el;
                 }}
-                className="flex-1 flex flex-col items-center"
+                className="flex flex-1 flex-col items-center"
               >
                 <button
                   onClick={() => handleTabChange(index)}
-                  className="flex flex-col items-center justify-center px-3 py-2 min-w-0 w-full relative group"
+                  className="group relative flex w-full min-w-0 flex-col items-center justify-center px-3 py-2"
                 >
                   <div
                     className={cn(
-                      'relative mb-2 transition-all duration-500 ease-out transform',
+                      'relative mb-2 transform transition-all duration-500 ease-out',
                       'group-hover:scale-110 group-active:scale-95',
                       activeTab === index || (index === 3 && showMoreMenu)
                         ? 'scale-110'
@@ -229,7 +229,7 @@ export const MenuVariation90: React.FC = () => {
                   >
                     <div
                       className={cn(
-                        'w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 transform relative overflow-hidden',
+                        'relative flex h-12 w-12 transform items-center justify-center overflow-hidden rounded-2xl transition-all duration-500',
                         'group-hover:rotate-3',
                         activeTab === index || (index === 3 && showMoreMenu)
                           ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
@@ -242,7 +242,7 @@ export const MenuVariation90: React.FC = () => {
                       {(activeTab === index ||
                         (index === 3 && showMoreMenu)) && (
                         <>
-                          <div className="absolute inset-1 rounded-xl bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
+                          <div className="pointer-events-none absolute inset-1 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
                           {/* Ruban diagonal */}
                           <div
                             className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/10"
@@ -269,7 +269,7 @@ export const MenuVariation90: React.FC = () => {
                   </div>
                   <span
                     className={cn(
-                      'text-xs font-bold transition-all duration-300 relative',
+                      'relative text-xs font-bold transition-all duration-300',
                       activeTab === index || (index === 3 && showMoreMenu)
                         ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent`
                         : 'text-gray-400 group-hover:text-gray-300'

@@ -64,7 +64,7 @@ export default async function WorkflowActionsLayout({
 
         <div>
           <Form
-            className="p-4 flex flex-col gap-4"
+            className="flex flex-col gap-4 p-4"
             action={async form => {
               'use server';
 

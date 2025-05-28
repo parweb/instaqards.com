@@ -83,8 +83,8 @@ export default async function DashboardLayout({
         </Suspense>
       </AppSidebar>
 
-      <SidebarInset className="isolate overflow-hidden border-2 border-indigo-900/20 ">
-        <header className="z-20 absolute top-4 left-1 flex shrink-0 items-center gap-2">
+      <SidebarInset className="isolate overflow-hidden border-2 border-indigo-900/20">
+        <header className="absolute top-4 left-1 z-20 flex shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 p-1">
             <SidebarTrigger className="-ml-1 md:hidden" />
 
@@ -114,7 +114,7 @@ export default async function DashboardLayout({
           </div>
         </header>
 
-        <div className="isolate z-10 flex-1 flex flex-col overflow-y-auto pb-20 md:pb-0">
+        <div className="isolate z-10 flex flex-1 flex-col overflow-y-auto pb-20 md:pb-0">
           {!subscription.valid() && (
             <div className="px-4 py-8">
               <Suspense fallback={null}>
@@ -125,7 +125,7 @@ export default async function DashboardLayout({
           )}
 
           {subscription.hasTrial() && subscription.customerSinceDays() && (
-            <div className="z-20 sticky top-0 flex items-center justify-between gap-4 bg-lime-700 p-4 pl-9 text-white">
+            <div className="sticky top-0 z-20 flex items-center justify-between gap-4 bg-lime-700 p-4 pl-9 text-white">
               <div>
                 {31 - subscription.customerSinceDays()} days left in your trial
               </div>
@@ -138,7 +138,7 @@ export default async function DashboardLayout({
             </div>
           )}
 
-          <div className="z-10 flex flex-col flex-1 self-stretch">
+          <div className="z-10 flex flex-1 flex-col self-stretch">
             <Suspense fallback={null}>{children}</Suspense>
           </div>
         </div>

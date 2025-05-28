@@ -27,8 +27,8 @@ export default async function SiteFeed(props: {
   }
 
   return (
-    <div className="p-8 flex flex-col gap-6 flex-1 self-stretch">
-      <div className="flex flex-col items-center sm:flex-row justify-between">
+    <div className="flex flex-1 flex-col gap-6 self-stretch p-8">
+      <div className="flex flex-col items-center justify-between sm:flex-row">
         <h1 className="font-cal text-xl font-bold sm:text-3xl">
           Feed for {site.name}
         </h1>
@@ -37,13 +37,13 @@ export default async function SiteFeed(props: {
           href={uri.site(site).link}
           target="_blank"
           rel="noreferrer"
-          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
+          className="flex items-center gap-2 truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200"
         >
           {uri.site(site).title} <LuArrowUpRight />
         </a>
       </div>
 
-      <div className="flex-1 self-stretch flex flex-col gap-4 ">
+      <div className="flex flex-1 flex-col gap-4 self-stretch">
         {site.feed.map(feed => (
           <pre key={feed.id}>{JSON.stringify(feed, null, 2)}</pre>
         ))}

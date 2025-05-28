@@ -17,25 +17,25 @@ export const MenuVariation87: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       color: 'from-blue-400 to-cyan-400'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       color: 'from-purple-400 to-pink-400'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       color: 'from-red-400 to-orange-400'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'from-green-400 to-teal-400'
     }
@@ -70,17 +70,17 @@ export const MenuVariation87: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       {/* Fond avec effet de verre */}
       <div className="relative">
         {/* Couche de fond colorée */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-gray-900/30 to-transparent backdrop-blur-3xl" />
 
         {/* Effet de verre principal */}
-        <div className="relative bg-white/10 backdrop-blur-2xl border-t border-white/20 px-4 py-4">
+        <div className="relative border-t border-white/20 bg-white/10 px-4 py-4 backdrop-blur-2xl">
           {/* Reflets de verre */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/5 pointer-events-none" />
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/5" />
+          <div className="absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
 
           {/* Indicateur en verre */}
           {indicator && (
@@ -98,30 +98,30 @@ export const MenuVariation87: React.FC = () => {
             </div>
           )}
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <div
                 key={tab.name}
                 ref={el => {
                   tabRefs.current[index] = el;
                 }}
-                className="flex-1 flex flex-col items-center"
+                className="flex flex-1 flex-col items-center"
               >
                 <Link
                   href={tab.href}
                   onClick={() => setActiveTab(index)}
-                  className="flex flex-col items-center justify-center px-3 py-2 min-w-0 w-full relative group"
+                  className="group relative flex w-full min-w-0 flex-col items-center justify-center px-3 py-2"
                 >
                   <div
                     className={cn(
-                      'relative mb-2 transition-all duration-500 ease-out transform',
+                      'relative mb-2 transform transition-all duration-500 ease-out',
                       'group-hover:scale-110 group-active:scale-95',
                       activeTab === index ? 'scale-110' : ''
                     )}
                   >
                     <div
                       className={cn(
-                        'w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 transform relative overflow-hidden',
+                        'relative flex h-12 w-12 transform items-center justify-center overflow-hidden rounded-2xl transition-all duration-500',
                         'group-hover:rotate-3',
                         activeTab === index
                           ? 'text-white'
@@ -154,15 +154,15 @@ export const MenuVariation87: React.FC = () => {
                       )}
 
                       {/* Reflets internes */}
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 via-transparent to-transparent" />
+                      <div className="absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
 
                       <div className="relative z-10">{tab.icon}</div>
                     </div>
                   </div>
                   <span
                     className={cn(
-                      'text-xs font-bold transition-all duration-300 relative',
+                      'relative text-xs font-bold transition-all duration-300',
                       activeTab === index
                         ? 'text-white drop-shadow-lg'
                         : 'text-gray-300 group-hover:text-white'

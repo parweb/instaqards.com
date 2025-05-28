@@ -77,14 +77,14 @@ export const FlagPicker = ({
     <div
       ref={ref}
       className={cn(
-        'relative p-1 bg-white/80 backdrop-blur-sm rounded-md flex flex-col items-center',
+        'relative flex flex-col items-center rounded-md bg-white/80 p-1 backdrop-blur-sm',
         isOpen && 'rounded-b-none'
       )}
       onClick={() => setIsOpen(state => !state)}
       onKeyDown={() => {}}
     >
       {pending ? (
-        <div className="rounded-md bg-gray-100 py-2 px-4 border border-gray-200 cursor-pointer">
+        <div className="cursor-pointer rounded-md border border-gray-200 bg-gray-100 px-4 py-2">
           <LuLoader className="animate-spin" />
         </div>
       ) : (
@@ -92,14 +92,14 @@ export const FlagPicker = ({
           code={lang2flag(selectedFlag)}
           height={45}
           width={45}
-          className="transition-all duration-300 rounded-md bg-gray-100 p-1 border border-gray-200 cursor-pointer hover:bg-gray-200 hover:border-gray-400"
+          className="cursor-pointer rounded-md border border-gray-200 bg-gray-100 p-1 transition-all duration-300 hover:border-gray-400 hover:bg-gray-200"
         />
       )}
 
       {isOpen && (
         <form
           action={action}
-          className="absolute p-1 top-full flex flex-col gap-2 bg-white/80 backdrop-blur-sm rounded-b-md"
+          className="absolute top-full flex flex-col gap-2 rounded-b-md bg-white/80 p-1 backdrop-blur-sm"
         >
           {otherFlags.map(code => (
             <button
@@ -113,7 +113,7 @@ export const FlagPicker = ({
                 code={lang2flag(code)}
                 height={100}
                 width={100}
-                className="transition-all duration-300 rounded-md bg-gray-100 p-1 border border-gray-200 cursor-pointer hover:bg-gray-200 hover:border-gray-400"
+                className="cursor-pointer rounded-md border border-gray-200 bg-gray-100 p-1 transition-all duration-300 hover:border-gray-400 hover:bg-gray-200"
               />
             </button>
           ))}

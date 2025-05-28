@@ -19,7 +19,7 @@ const MapView = ({
   markers: { id: string; position: [number, number] }[];
 }) => {
   return (
-    <div className="h-full w-full relative">
+    <div className="relative h-full w-full">
       <LeafletMap
         boundsPositions={boundsPositions}
         position={position}

@@ -84,7 +84,7 @@ export default function LogoSquare({
   return (
     <div
       style={{ width: `${size}px`, borderRadius: `${corner}%` }}
-      className="relative aspect-square mx-auto bg-white overflow-hidden"
+      className="relative mx-auto aspect-square overflow-hidden bg-white"
     >
       <Image
         priority

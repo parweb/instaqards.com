@@ -72,8 +72,8 @@ const SocialItem = ({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'flex gap-2 items-center flex-1',
-        isActive && 'p-1 shadow-xs border border-stone-300 rounded-md'
+        'flex flex-1 items-center gap-2',
+        isActive && 'rounded-md border border-stone-300 p-1 shadow-xs'
       )}
     >
       {list.length > 1 && (
@@ -94,7 +94,7 @@ const SocialItem = ({
                 style={{ width: 28, height: 28 }}
               />
             ) : (
-              <div className="p-1 w-[28px] h-[28px] flex items-center justify-center bg-stone-200 rounded-full">
+              <div className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-stone-200 p-1">
                 <LuLink />
               </div>
             )}
@@ -191,7 +191,7 @@ export const Socials = (props: {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 items-stretch">
+    <div className="flex flex-col items-stretch gap-4">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -200,7 +200,7 @@ export const Socials = (props: {
         modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
       >
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          <div className="flex flex-col gap-2 items-stretch">
+          <div className="flex flex-col items-stretch gap-2">
             {items?.map((link, _, list) => (
               <SocialItem
                 key={link.id}
@@ -239,7 +239,7 @@ export const Socials = (props: {
       <div>
         <Button
           type="button"
-          className="flex gap-2 items-center"
+          className="flex items-center gap-2"
           onClick={() => {
             setItems(state => {
               const result = [

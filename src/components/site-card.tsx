@@ -16,12 +16,12 @@ export default function SiteCard({
   data: Prisma.SiteGetPayload<{ include: { clicks: true } }>;
 }) {
   return (
-    <div className="group relative rounded-lg border pb-10 shadow-md transition-all hover:shadow-2xl hover:scale-[1.025] hover:border-blue-400/70 border-stone-300 dark:hover:border-blue-500/60 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md transition-all duration-200">
+    <div className="group relative rounded-lg border border-stone-300 bg-white/80 pb-10 shadow-md backdrop-blur-md transition-all duration-200 hover:scale-[1.025] hover:border-blue-400/70 hover:shadow-2xl dark:bg-zinc-900/80 dark:hover:border-blue-500/60">
       <div className="flex flex-col overflow-hidden rounded-lg">
         <div className="border-t border-stone-200 p-4 dark:border-stone-700">
           <div className="flex items-center justify-between">
             <Link prefetch className="flex-1" href={`/site/${data.id}`}>
-              <h3 className="my-0 truncate font-cal text-xl font-bold tracking-wide">
+              <h3 className="font-cal my-0 truncate text-xl font-bold tracking-wide">
                 {data.name}
               </h3>
             </Link>
@@ -30,7 +30,7 @@ export default function SiteCard({
               initial={{ x: 24, opacity: 0 }}
               whileHover={{ x: 0, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-              className="transition-all opacity-0 group-hover:opacity-100 flex items-center gap-2 group-hover:translate-x-0"
+              className="flex items-center gap-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
             >
               <ModalButton variant="ghost" size="icon" label={<LuCopy />}>
                 <SiteDuplicateModal site={data} />
@@ -45,7 +45,7 @@ export default function SiteCard({
           </div>
 
           <Link prefetch href={`/site/${data.id}`}>
-            <p className="mt-2 line-clamp-1 text-sm font-light leading-snug text-black/80">
+            <p className="mt-2 line-clamp-1 text-sm leading-snug font-light text-black/80">
               {data.description}
             </p>
           </Link>
@@ -57,7 +57,7 @@ export default function SiteCard({
           href={uri.site(data).link}
           target="_blank"
           rel="noreferrer"
-          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700 flex items-center gap-2"
+          className="flex items-center gap-2 truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700"
         >
           {uri.site(data).title}
           <LuArrowUpRight />
@@ -66,7 +66,7 @@ export default function SiteCard({
         <Link
           prefetch
           href={`/site/${data.id}/analytics`}
-          className="flex items-center gap-2 rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400 dark:hover:bg-green-800 dark:hover:bg-opacity-50"
+          className="dark:bg-opacity-50 dark:hover:bg-opacity-50 flex items-center gap-2 rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:text-green-400 dark:hover:bg-green-800"
         >
           <p>{data.clicks.length}</p>
           <LuMousePointer />

@@ -25,9 +25,9 @@ export default function Facebook({
   }, placeholder);
 
   return (
-    <div className="w-full rounded-md overflow-hidden border border-white bg-white">
+    <div className="w-full overflow-hidden rounded-md border border-white bg-white">
       <FacebookEmbed
-        className="w-full "
+        className="w-full"
         url={`https://www.facebook.com/${url}`}
         width="100%"
       />

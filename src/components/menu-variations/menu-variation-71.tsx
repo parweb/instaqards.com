@@ -14,25 +14,25 @@ export const MenuVariation71: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       color: 'from-blue-500 to-cyan-500'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       color: 'from-purple-500 to-pink-500'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       color: 'from-red-500 to-orange-500'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'from-green-500 to-teal-500'
     }
@@ -68,13 +68,13 @@ export const MenuVariation71: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative bg-gradient-to-r from-white via-gray-50 to-white p-1">
-        <div className="bg-white/95 backdrop-blur-sm px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-white/95 px-4 py-4 backdrop-blur-sm">
           {/* Indicateur mobile */}
           <div
             className={cn(
-              'absolute bottom-6 h-1 bg-gradient-to-r transition-all duration-500 ease-out rounded-full',
+              'absolute bottom-6 h-1 rounded-full bg-gradient-to-r transition-all duration-500 ease-out',
               `${tabs[activeTab].color}`
             )}
             style={{
@@ -87,7 +87,7 @@ export const MenuVariation71: React.FC = () => {
           {/* Indicateur de fond */}
           <div
             className={cn(
-              'absolute bottom-2 h-12 bg-gradient-to-r transition-all duration-700 ease-out rounded-2xl opacity-10',
+              'absolute bottom-2 h-12 rounded-2xl bg-gradient-to-r opacity-10 transition-all duration-700 ease-out',
               `${tabs[activeTab].color}`
             )}
             style={{
@@ -96,7 +96,7 @@ export const MenuVariation71: React.FC = () => {
             }}
           />
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
@@ -105,19 +105,19 @@ export const MenuVariation71: React.FC = () => {
                   tabRefs.current[index] = el;
                 }}
                 onClick={() => setActiveTab(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 {/* Icône avec micro-animations */}
                 <div
                   className={cn(
-                    'relative mb-2 transition-all duration-300 ease-out transform',
+                    'relative mb-2 transform transition-all duration-300 ease-out',
                     'group-hover:scale-110 group-active:scale-95',
                     activeTab === index ? 'scale-110' : ''
                   )}
                 >
                   <div
                     className={cn(
-                      'w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 transform',
+                      'flex h-12 w-12 transform items-center justify-center rounded-2xl transition-all duration-500',
                       'group-hover:rotate-3',
                       activeTab === index
                         ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
@@ -130,7 +130,7 @@ export const MenuVariation71: React.FC = () => {
                     {activeTab === index && (
                       <div
                         className={cn(
-                          'absolute inset-0 rounded-2xl animate-ping opacity-30',
+                          'absolute inset-0 animate-ping rounded-2xl opacity-30',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                       />
@@ -142,14 +142,14 @@ export const MenuVariation71: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -top-1 -right-1 w-2 h-2 rounded-full animate-bounce',
+                          'absolute -top-1 -right-1 h-2 w-2 animate-bounce rounded-full',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                         style={{ animationDelay: '0s' }}
                       />
                       <div
                         className={cn(
-                          'absolute -bottom-1 -left-1 w-1.5 h-1.5 rounded-full animate-bounce',
+                          'absolute -bottom-1 -left-1 h-1.5 w-1.5 animate-bounce rounded-full',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                         style={{ animationDelay: '0.2s' }}
@@ -161,7 +161,7 @@ export const MenuVariation71: React.FC = () => {
                 {/* Label avec animation */}
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all duration-300 relative',
+                    'relative text-xs font-bold transition-all duration-300',
                     activeTab === index
                       ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent`
                       : 'text-gray-600 group-hover:text-gray-800'
@@ -171,7 +171,7 @@ export const MenuVariation71: React.FC = () => {
 
                   {/* Micro-animation du texte */}
                   {activeTab === index && (
-                    <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-current rounded-full animate-pulse" />
+                    <div className="absolute right-0 -bottom-0.5 left-0 h-0.5 animate-pulse rounded-full bg-current" />
                   )}
                 </span>
               </Link>

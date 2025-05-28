@@ -31,20 +31,20 @@ export default async function SiteHomePage(props: {
 
   if (!subscription.valid()) {
     return (
-      <div className="flex items-center justify-center flex-1 self-stretch">
-        <div className="max-w-md m-2 p-6 border border-gray-200 rounded-lg shadow-lg bg-white flex flex-col gap-5">
+      <div className="flex flex-1 items-center justify-center self-stretch">
+        <div className="m-2 flex max-w-md flex-col gap-5 rounded-lg border border-gray-200 bg-white p-6 shadow-lg">
           <h2 className="text-xl font-semibold text-gray-800">
             {await translate('page.public.site.title')}
           </h2>
 
-          <p className="text-gray-600 ">
+          <p className="text-gray-600">
             {await translate('page.public.site.description')}
           </p>
 
           <div>
             <Link
               prefetch
-              className="bg-black rounded-md px-3 py-2 text-white"
+              className="rounded-md bg-black px-3 py-2 text-white"
               href={uri.base()}
             >
               {await translate('page.public.site.create')}
@@ -76,7 +76,7 @@ export default async function SiteHomePage(props: {
         </Main>
 
         <Footer>
-          <div className="flex gap-3 items-center justify-center">
+          <div className="flex items-center justify-center gap-3">
             <Suspense fallback={null}>
               <BlockList blocks={data.social} />
             </Suspense>

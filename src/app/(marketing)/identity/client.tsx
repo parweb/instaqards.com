@@ -73,11 +73,11 @@ export const GalleryAdsVideo = () => {
           }
         ].map(media => (
           <CarouselItem key={media.id}>
-            <div className=" flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <video
                 controls
                 preload="metadata"
-                className="h-[400px] aspect-video"
+                className="aspect-video h-[400px]"
               >
                 <source src={`/api/file?id=${media.video}`} type="video/mp4" />
               </video>

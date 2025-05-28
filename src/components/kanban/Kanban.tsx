@@ -74,7 +74,7 @@ const DnDGroup = React.memo(function DnDGroup({
     >
       <div
         ref={setNodeRef}
-        className={`bg-stone-50 dark:bg-stone-900 p-4 rounded-lg flex flex-col ${
+        className={`flex flex-col rounded-lg bg-stone-50 p-4 dark:bg-stone-900 ${
           isOver ? 'ring-2 ring-blue-500' : ''
         }`}
       >
@@ -282,14 +282,14 @@ export default function Kanban<T>({
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         {columnsItems.map(({ status, items, itemIds }) => (
           <DnDGroup key={`DnDGroup-${status}`} id={status} items={itemIds}>
-            <h2 className="text-lg font-semibold dark:text-white mb-4">
+            <h2 className="mb-4 text-lg font-semibold dark:text-white">
               {statusLabels[status]}
             </h2>
 
-            <div className="space-y-2 min-h-[50px]">
+            <div className="min-h-[50px] space-y-2">
               {items.map(item => {
                 const id = getId(item);
                 return (

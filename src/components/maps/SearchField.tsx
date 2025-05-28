@@ -43,8 +43,8 @@ const SearchField = memo(
             onChange={onQueryChange}
             placeholder={placeholder}
             className={cn(
-              'pl-10 pr-12 h-12 transition-all shadow-xs hover:shadow-sm',
-              'focus:border-primary focus:ring-2 focus:ring-primary/10'
+              'h-12 pr-12 pl-10 shadow-xs transition-all hover:shadow-sm',
+              'focus:border-primary focus:ring-primary/10 focus:ring-2'
             )}
             type="text"
             role="combobox"
@@ -58,10 +58,10 @@ const SearchField = memo(
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+              className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={onClearSearch}
             >
-              <X className="h-4 w-4 text-muted-foreground" />
+              <X className="text-muted-foreground h-4 w-4" />
               <span className="sr-only">Clear search</span>
             </Button>
           )}

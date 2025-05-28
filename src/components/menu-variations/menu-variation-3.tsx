@@ -13,28 +13,28 @@ export const MenuVariation3: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-6 h-6" />,
+      icon: <Home className="h-6 w-6" />,
       href: '/',
       color: 'bg-red-500',
       shadow: 'shadow-red-500/50'
     },
     {
       name: 'Search',
-      icon: <Search className="w-6 h-6" />,
+      icon: <Search className="h-6 w-6" />,
       href: '/explore',
       color: 'bg-yellow-500',
       shadow: 'shadow-yellow-500/50'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-6 h-6" />,
+      icon: <Heart className="h-6 w-6" />,
       href: '/qards',
       color: 'bg-green-500',
       shadow: 'shadow-green-500/50'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-6 h-6" />,
+      icon: <MoreHorizontal className="h-6 w-6" />,
       href: '#',
       color: 'bg-blue-500',
       shadow: 'shadow-blue-500/50'
@@ -73,10 +73,10 @@ export const MenuVariation3: React.FC = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       {/* Background rayé comme un chapiteau */}
-      <div className="bg-gradient-to-r from-red-400 via-yellow-400 via-green-400 to-blue-400 p-2">
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl px-4 py-4 border-4 border-dashed border-purple-400">
+      <div className="bg-gradient-to-r from-red-400 via-green-400 via-yellow-400 to-blue-400 p-2">
+        <div className="rounded-3xl border-4 border-dashed border-purple-400 bg-white/95 px-4 py-4 backdrop-blur-lg">
           <div className="flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
@@ -84,7 +84,7 @@ export const MenuVariation3: React.FC = () => {
                 href={tab.href}
                 onClick={() => handleTabClick(index)}
                 className={cn(
-                  'flex flex-col items-center justify-center px-2 py-2 rounded-3xl transition-all duration-300 min-w-0 flex-1 relative transform',
+                  'relative flex min-w-0 flex-1 transform flex-col items-center justify-center rounded-3xl px-2 py-2 transition-all duration-300',
                   'hover:scale-125 active:scale-90',
                   activeTab === index ? 'scale-125' : '',
                   bouncingTab === index ? 'animate-bounce' : ''
@@ -96,16 +96,16 @@ export const MenuVariation3: React.FC = () => {
                 {/* Confettis autour de l'onglet actif */}
                 {activeTab === index && (
                   <>
-                    <div className="absolute -top-2 -left-2 text-2xl animate-spin">
+                    <div className="absolute -top-2 -left-2 animate-spin text-2xl">
                       🎪
                     </div>
-                    <div className="absolute -top-2 -right-2 text-2xl animate-bounce">
+                    <div className="absolute -top-2 -right-2 animate-bounce text-2xl">
                       🎭
                     </div>
-                    <div className="absolute -bottom-2 -left-2 text-2xl animate-pulse">
+                    <div className="absolute -bottom-2 -left-2 animate-pulse text-2xl">
                       🎨
                     </div>
-                    <div className="absolute -bottom-2 -right-2 text-2xl animate-spin">
+                    <div className="absolute -right-2 -bottom-2 animate-spin text-2xl">
                       🎯
                     </div>
                   </>
@@ -114,12 +114,12 @@ export const MenuVariation3: React.FC = () => {
                 {/* Icône avec style cirque */}
                 <div
                   className={cn(
-                    'mb-2 p-4 rounded-full transition-all duration-500 transform border-4 border-white',
-                    'hover:rotate-180 hover:scale-110',
+                    'mb-2 transform rounded-full border-4 border-white p-4 transition-all duration-500',
+                    'hover:scale-110 hover:rotate-180',
                     tab.color,
                     tab.shadow,
                     activeTab === index
-                      ? 'shadow-2xl text-white scale-110 animate-pulse'
+                      ? 'scale-110 animate-pulse text-white shadow-2xl'
                       : 'text-white hover:shadow-xl',
                     bouncingTab === index ? 'animate-bounce' : ''
                   )}
@@ -130,9 +130,9 @@ export const MenuVariation3: React.FC = () => {
                 {/* Label avec style festif */}
                 <span
                   className={cn(
-                    'text-xs font-black transition-all duration-300 uppercase tracking-widest',
+                    'text-xs font-black tracking-widest uppercase transition-all duration-300',
                     activeTab === index
-                      ? 'text-purple-600 animate-pulse text-sm'
+                      ? 'animate-pulse text-sm text-purple-600'
                       : 'text-gray-700',
                     bouncingTab === index ? 'animate-bounce' : ''
                   )}
@@ -143,23 +143,23 @@ export const MenuVariation3: React.FC = () => {
                 {/* Étoiles scintillantes */}
                 {(activeTab === index || bouncingTab === index) && (
                   <>
-                    <div className="absolute top-0 left-0 text-yellow-400 animate-ping">
+                    <div className="absolute top-0 left-0 animate-ping text-yellow-400">
                       ⭐
                     </div>
                     <div
-                      className="absolute top-0 right-0 text-pink-400 animate-ping"
+                      className="absolute top-0 right-0 animate-ping text-pink-400"
                       style={{ animationDelay: '0.2s' }}
                     >
                       ✨
                     </div>
                     <div
-                      className="absolute bottom-0 left-0 text-blue-400 animate-ping"
+                      className="absolute bottom-0 left-0 animate-ping text-blue-400"
                       style={{ animationDelay: '0.4s' }}
                     >
                       💫
                     </div>
                     <div
-                      className="absolute bottom-0 right-0 text-green-400 animate-ping"
+                      className="absolute right-0 bottom-0 animate-ping text-green-400"
                       style={{ animationDelay: '0.6s' }}
                     >
                       🌟
@@ -171,14 +171,14 @@ export const MenuVariation3: React.FC = () => {
           </div>
 
           {/* Ligne de points colorés en bas */}
-          <div className="flex justify-center mt-3 space-x-2">
+          <div className="mt-3 flex justify-center space-x-2">
             {tabs.map((_, index) => (
               <div
                 key={index}
                 className={cn(
-                  'w-2 h-2 rounded-full transition-all duration-300',
+                  'h-2 w-2 rounded-full transition-all duration-300',
                   activeTab === index
-                    ? 'bg-purple-500 scale-150 animate-pulse'
+                    ? 'scale-150 animate-pulse bg-purple-500'
                     : 'bg-gray-300'
                 )}
               />

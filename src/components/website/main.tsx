@@ -9,11 +9,11 @@ export const Main = ({
   length: number;
 }) => {
   return (
-    <main className="flex flex-1 self-stretch items-center justify-center">
-      <div className="flex flex-col gap-10 flex-1 w-full isolate">
+    <main className="flex flex-1 items-center justify-center self-stretch">
+      <div className="isolate flex w-full flex-1 flex-col gap-10">
         <Suspense
           fallback={
-            <div className="flex flex-col gap-10 flex-1 self-stretch">
+            <div className="flex flex-1 flex-col gap-10 self-stretch">
               {Array.from({ length }).map((_, index) => (
                 <motion.div
                   key={index}
@@ -24,7 +24,7 @@ export const Main = ({
                     transition: { delay: index * 0.3 }
                   }}
                   exit={{ opacity: 0, translateY: -100 }}
-                  className="w-full h-48 animate-pulse bg-stone-200/20 rounded-md"
+                  className="h-48 w-full animate-pulse rounded-md bg-stone-200/20"
                 />
               ))}
             </div>

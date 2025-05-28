@@ -32,7 +32,7 @@ export function BlockPicker({
   onClick: (data: { type: string; id: string }) => void;
 }) {
   return (
-    <div className="max-h-[500px] overflow-y-scroll flex flex-col gap-4">
+    <div className="flex max-h-[500px] flex-col gap-4 overflow-y-scroll">
       <div className="flex flex-col gap-4">
         {type === 'main' && (
           <div>
@@ -42,7 +42,7 @@ export function BlockPicker({
         )}
 
         {type === 'social' && (
-          <div className="p-1 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 p-1">
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="href"
@@ -62,7 +62,7 @@ export function BlockPicker({
                       style={{ width: 28, height: 28 }}
                     />
                   ) : (
-                    <div className="p-1 w-[28px] h-[28px] flex items-center justify-center bg-stone-200 rounded-full">
+                    <div className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-stone-200 p-1">
                       <LuLink />
                     </div>
                   )}

@@ -39,7 +39,7 @@ function DeleteBlockFormButton() {
   return (
     <button
       type="submit"
-      className="bg-white/80 p-2 rounded-md"
+      className="rounded-md bg-white/80 p-2"
       disabled={pending}
     >
       {pending ? <LoadingDots color="#808080" /> : <LuTrash2 />}

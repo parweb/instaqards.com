@@ -231,7 +231,7 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
                         height="24"
                         className="overflow-visible"
                       >
-                        <div className="flex items-center justify-center w-6 h-6 text-white">
+                        <div className="flex h-6 w-6 items-center justify-center text-white">
                           {stage.icon}
                         </div>
                       </foreignObject>
@@ -258,7 +258,7 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
                       height="32"
                       className="overflow-visible"
                     >
-                      <div className="flex items-center justify-center w-8 h-8 text-white bg-black bg-opacity-20 rounded-full backdrop-blur-sm">
+                      <div className="bg-opacity-20 flex h-8 w-8 items-center justify-center rounded-full bg-black text-white backdrop-blur-sm">
                         {stage.icon}
                       </div>
                     </foreignObject>
@@ -294,10 +294,10 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
         return (
           <div
             key={`legend-${stage.id}`}
-            className="bg-white dark:bg-gray-700 rounded-lg p-3 shadow-md border-l-4"
+            className="rounded-lg border-l-4 bg-white p-3 shadow-md dark:bg-gray-700"
             style={{ borderLeftColor: stage.color }}
           >
-            <div className="flex items-center space-x-2 mb-2">
+            <div className="mb-2 flex items-center space-x-2">
               <div style={{ color: stage.color }}>{stage.icon}</div>
               <div className="font-bold text-gray-900 dark:text-white">
                 {stage.name}
@@ -306,7 +306,7 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
             <div className="text-lg font-bold text-gray-900 dark:text-white">
               {percentage}%
             </div>
-            <div className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-full mt-2">
+            <div className="mt-2 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-600">
               <div
                 className="h-full rounded-full"
                 style={{
@@ -341,13 +341,13 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
           )}
           style={{ color: stage.color }}
         >
-          <div className="flex items-center justify-center w-8 h-8">
+          <div className="flex h-8 w-8 items-center justify-center">
             {stage.icon}
           </div>
           <div className="font-bold">{stage.name}</div>
           <div className="font-semibold">{percentage}%</div>
           <div
-            className="w-16 h-2 rounded-full overflow-hidden"
+            className="h-2 w-16 overflow-hidden rounded-full"
             style={{ backgroundColor: `${stage.color}40` }}
           >
             <div
@@ -365,7 +365,7 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
 
     if (variant === 'top-legend') {
       return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
           {legendContent}
         </div>
       );
@@ -373,14 +373,14 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
 
     if (variant === 'cards') {
       return (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
           {legendContent}
         </div>
       );
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
         {legendContent}
       </div>
     );
@@ -388,11 +388,11 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
 
   if (variant === 'right-legend') {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+      <div className="rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800">
+        <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">
           {title}
         </h3>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
           <div className="lg:col-span-3">{renderFunnel()}</div>
           <div className="lg:col-span-1">{renderLegend()}</div>
         </div>
@@ -401,8 +401,8 @@ function FunnelChart({ data, title, variant }: FunnelChartProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+    <div className="rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800">
+      <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">
         {title}
       </h3>
       {variant === 'top-legend' && renderLegend()}

@@ -114,7 +114,7 @@ export function Combobox({
             </CommandGroup>
             {/* Pagination Controls */}
             {filteredOptions.length > maxItems && (
-              <div className="flex justify-between items-center px-2 py-1 border-t text-xs">
+              <div className="flex items-center justify-between border-t px-2 py-1 text-xs">
                 <button
                   type="button"
                   disabled={page === 0}

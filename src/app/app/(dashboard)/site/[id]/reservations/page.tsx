@@ -45,8 +45,8 @@ export default async function SiteReservations(props: {
   );
 
   return (
-    <div className="p-8 flex flex-col gap-6 flex-1 self-stretch">
-      <div className="flex flex-col items-center sm:flex-row justify-between">
+    <div className="flex flex-1 flex-col gap-6 self-stretch p-8">
+      <div className="flex flex-col items-center justify-between sm:flex-row">
         <h1 className="font-cal text-xl font-bold sm:text-3xl">
           Reservations for {site.name}
         </h1>
@@ -55,25 +55,25 @@ export default async function SiteReservations(props: {
           href={uri.site(site).link}
           target="_blank"
           rel="noreferrer"
-          className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
+          className="flex items-center gap-2 truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200"
         >
           {uri.site(site).title} <LuArrowUpRight />
         </a>
       </div>
 
-      <div className="flex-1 self-stretch flex flex-col gap-4 ">
-        <section className="flex-1 self-stretch flex gap-4 md:flex-row flex-col">
-          <nav className="flex flex-col items-center border border-stone-200 rounded-md p-4 gap-4">
+      <div className="flex flex-1 flex-col gap-4 self-stretch">
+        <section className="flex flex-1 flex-col gap-4 self-stretch md:flex-row">
+          <nav className="flex flex-col items-center gap-4 rounded-md border border-stone-200 p-4">
             <div>
               <Calendar reservations={reservations} value={date} />
             </div>
 
-            <div className="flex-1 self-stretch flex flex-col gap-2">
+            <div className="flex flex-1 flex-col gap-2 self-stretch">
               {Object.entries(sites).map(([siteId, reservations]) => (
                 <div
                   key={siteId}
                   className={cn(
-                    'flex items-center justify-between gap-2 p-2 rounded-md',
+                    'flex items-center justify-between gap-2 rounded-md p-2',
                     'bg-stone-100'
                   )}
                 >
@@ -87,15 +87,15 @@ export default async function SiteReservations(props: {
             </div>
           </nav>
 
-          <main className="flex-1 self-stretch flex flex-col border border-stone-200 rounded-md gap-4 p-4 overflow-scroll">
+          <main className="flex flex-1 flex-col gap-4 self-stretch overflow-scroll rounded-md border border-stone-200 p-4">
             <div
               className={cn(
                 'sticky top-0',
                 'flex flex-col gap-0',
-                'rounded-md p-4 bg-primary'
+                'bg-primary rounded-md p-4'
               )}
             >
-              <div className="font-bold text-lg text-white">
+              <div className="text-lg font-bold text-white">
                 {date.toLocaleDateString('fr-FR', {
                   month: 'long',
                   day: 'numeric'
@@ -116,10 +116,10 @@ export default async function SiteReservations(props: {
               .map(reservation => (
                 <div
                   key={reservation.id}
-                  className={cn('flex gap-8', 'rounded-md p-4 bg-stone-100')}
+                  className={cn('flex gap-8', 'rounded-md bg-stone-100 p-4')}
                 >
-                  <div className="flex flex-col items-center justify-center aspect-square border border-stone-400 rounded-md p-4">
-                    <div className="font-bold text-xl">
+                  <div className="flex aspect-square flex-col items-center justify-center rounded-md border border-stone-400 p-4">
+                    <div className="text-xl font-bold">
                       {new Date(reservation.dateStart).toLocaleTimeString(
                         'fr-FR',
                         {
@@ -140,14 +140,14 @@ export default async function SiteReservations(props: {
 
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1">
-                      <div className="font-bold text-lg">
+                      <div className="text-lg font-bold">
                         {reservation.name}
                       </div>
                       <div className="text-black/70">{reservation.email}</div>
                     </div>
                     {reservation.comment && (
                       <div
-                        className="whitespace-pre-wrap p-4 rounded-md border border-stone-200 bg-slate-500 text-white"
+                        className="rounded-md border border-stone-200 bg-slate-500 p-4 whitespace-pre-wrap text-white"
                         dangerouslySetInnerHTML={{
                           __html: reservation.comment
                         }}

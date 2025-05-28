@@ -12,7 +12,7 @@ export default function UserSiteModal({
   }>;
 }) {
   return (
-    <div className="grid gap-4 py-4 bg-white rounded-lg p-4 border border-gray-200">
+    <div className="grid gap-4 rounded-lg border border-gray-200 bg-white p-4 py-4">
       <hgroup className="flex items-center gap-2">
         <Badge>{user.sites.length}</Badge>
         <h2 className="text-lg font-medium">Sites</h2>
@@ -21,12 +21,12 @@ export default function UserSiteModal({
       {user.sites.length === 0 ? (
         <p className="text-sm text-gray-500">Aucun site</p>
       ) : (
-        <div className="grid gap-4 max-h-[500px] overflow-y-auto">
+        <div className="grid max-h-[500px] gap-4 overflow-y-auto">
           {user.sites.map(site => {
             return (
               <div
                 key={site.id}
-                className="flex items-center justify-between p-4 rounded-lg border border-gray-200"
+                className="flex items-center justify-between rounded-lg border border-gray-200 p-4"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8">
@@ -36,12 +36,12 @@ export default function UserSiteModal({
                         'https://qards.link/rsz_noir-fon-transparent.png'
                       }
                       alt={site.name || ''}
-                      className="h-full w-full object-cover rounded"
+                      className="h-full w-full rounded object-cover"
                     />
                   </div>
                   <div>
                     <h3 className="font-medium">{site.name || 'Sans nom'}</h3>
-                    <p className="text-sm text-gray-500 truncate">
+                    <p className="truncate text-sm text-gray-500">
                       <Link
                         href={uri.site(site).link}
                         target="_blank"

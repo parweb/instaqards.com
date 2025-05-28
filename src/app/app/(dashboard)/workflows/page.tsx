@@ -30,10 +30,10 @@ export default async function WorkflowsPage() {
           <Link
             href={`/workflow/${workflow.id}`}
             key={workflow.id}
-            className="block group"
+            className="group block"
           >
-            <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 mb-4">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-shadow hover:shadow-lg">
+              <h2 className="mb-4 text-xl font-semibold text-gray-900 group-hover:text-blue-600">
                 {workflow.name}
               </h2>
               <div className="space-y-2">
@@ -51,7 +51,7 @@ export default async function WorkflowsPage() {
                       {rule.trigger.code}
                     </Button>
 
-                    <div className="text-sm text-gray-600 bg-gray-50 rounded-md p-3">
+                    <div className="rounded-md bg-gray-50 p-3 text-sm text-gray-600">
                       {rule.action.description}
                     </div>
                   </div>

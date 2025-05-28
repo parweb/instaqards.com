@@ -150,7 +150,7 @@ const TrailSegment: React.FC<TrailSegmentProps> = ({
 
   return (
     <motion.div
-      className={`absolute ${color} rounded-full pointer-events-none`}
+      className={`absolute ${color} pointer-events-none rounded-full`}
       style={{
         x: finalX,
         y: finalY,

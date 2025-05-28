@@ -17,7 +17,7 @@ export const Persona = ({
   return (
     <div
       className={cn(
-        'group flex flex-col gap-3 items-center cursor-pointer transition-all duration-300 ease-in-out hover:scale-105',
+        'group flex cursor-pointer flex-col items-center gap-3 transition-all duration-300 ease-in-out hover:scale-105',
         selected ? 'scale-100' : 'scale-90'
       )}
     >
@@ -40,10 +40,10 @@ export const Persona = ({
       <span
         className={cn(
           boldonse.className,
-          'font-light transition-colors duration-300 rounded-full py-2 px-6',
+          'rounded-full px-6 py-2 font-light transition-colors duration-300',
           selected
-            ? 'text-black bg-stone-200'
-            : 'text-gray-600 group-hover:text-black group-hover:bg-stone-100'
+            ? 'bg-stone-200 text-black'
+            : 'text-gray-600 group-hover:bg-stone-100 group-hover:text-black'
         )}
       >
         {profession}

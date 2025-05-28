@@ -12,25 +12,25 @@ export const MenuVariation2: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       color: 'cyan'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       color: 'pink'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       color: 'green'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'purple'
     }
@@ -80,9 +80,9 @@ export const MenuVariation2: React.FC = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       {/* Background sombre avec bordure néon */}
-      <div className="bg-black/95 backdrop-blur-lg border-t-2 border-cyan-500 shadow-[0_-5px_20px_rgba(6,182,212,0.3)]">
+      <div className="border-t-2 border-cyan-500 bg-black/95 shadow-[0_-5px_20px_rgba(6,182,212,0.3)] backdrop-blur-lg">
         <div className="px-4 py-4">
           <div className="flex items-center justify-around">
             {tabs.map((tab, index) => {
@@ -96,7 +96,7 @@ export const MenuVariation2: React.FC = () => {
                   href={tab.href}
                   onClick={() => setActiveTab(index)}
                   className={cn(
-                    'flex flex-col items-center justify-center px-3 py-2 rounded-xl transition-all duration-300 min-w-0 flex-1 relative transform',
+                    'relative flex min-w-0 flex-1 transform flex-col items-center justify-center rounded-xl px-3 py-2 transition-all duration-300',
                     'hover:scale-110 active:scale-95',
                     activeTab === index ? 'scale-110' : ''
                   )}
@@ -105,7 +105,7 @@ export const MenuVariation2: React.FC = () => {
                   {activeTab === index && (
                     <div
                       className={cn(
-                        'absolute -top-3 left-1/2 transform -translate-x-1/2 w-12 h-0.5 rounded-full animate-pulse',
+                        'absolute -top-3 left-1/2 h-0.5 w-12 -translate-x-1/2 transform animate-pulse rounded-full',
                         `bg-${tab.color}-400`,
                         colorClasses.neon
                       )}
@@ -115,12 +115,12 @@ export const MenuVariation2: React.FC = () => {
                   {/* Icône avec effet néon */}
                   <div
                     className={cn(
-                      'mb-2 p-3 rounded-xl transition-all duration-300 transform border-2',
-                      'hover:rotate-6 hover:scale-110',
+                      'mb-2 transform rounded-xl border-2 p-3 transition-all duration-300',
+                      'hover:scale-110 hover:rotate-6',
                       colorClasses.bg,
                       colorClasses.border,
                       activeTab === index
-                        ? `${colorClasses.glow} ${colorClasses.neon} text-white animate-pulse`
+                        ? `${colorClasses.glow} ${colorClasses.neon} animate-pulse text-white`
                         : 'border-gray-700 text-gray-500 hover:border-gray-600'
                     )}
                   >
@@ -130,7 +130,7 @@ export const MenuVariation2: React.FC = () => {
                   {/* Label avec effet néon */}
                   <span
                     className={cn(
-                      'text-xs font-bold transition-all duration-300 uppercase tracking-wider',
+                      'text-xs font-bold tracking-wider uppercase transition-all duration-300',
                       colorClasses.text,
                       activeTab === index ? 'animate-pulse' : ''
                     )}
@@ -143,21 +143,21 @@ export const MenuVariation2: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute top-1 left-1 w-1 h-1 rounded-full animate-ping opacity-75',
+                          'absolute top-1 left-1 h-1 w-1 animate-ping rounded-full opacity-75',
                           `bg-${tab.color}-400`
                         )}
                         style={{ animationDelay: '0s' }}
                       />
                       <div
                         className={cn(
-                          'absolute top-1 right-1 w-1 h-1 rounded-full animate-ping opacity-75',
+                          'absolute top-1 right-1 h-1 w-1 animate-ping rounded-full opacity-75',
                           `bg-${tab.color}-400`
                         )}
                         style={{ animationDelay: '0.3s' }}
                       />
                       <div
                         className={cn(
-                          'absolute bottom-1 left-2 w-0.5 h-0.5 rounded-full animate-ping opacity-75',
+                          'absolute bottom-1 left-2 h-0.5 w-0.5 animate-ping rounded-full opacity-75',
                           `bg-${tab.color}-400`
                         )}
                         style={{ animationDelay: '0.6s' }}

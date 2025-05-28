@@ -70,9 +70,9 @@ export default function CronModalForm({ cron }: { cron?: any }) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 max-w-xl p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow"
+        className="flex max-w-xl flex-col gap-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4 shadow dark:border-zinc-700 dark:bg-zinc-800"
       >
-        <h2 className="font-bold text-lg mb-2">
+        <h2 className="mb-2 text-lg font-bold">
           {cron ? 'Éditer le cron' : 'Ajouter un cron'}
         </h2>
 

@@ -16,7 +16,7 @@ export default function UpdateBlockButton({
     <button
       type="button"
       onClick={() => modal?.show(children)}
-      className="bg-white/80 p-2 rounded-md"
+      className="rounded-md bg-white/80 p-2"
     >
       <LuPencil />
     </button>

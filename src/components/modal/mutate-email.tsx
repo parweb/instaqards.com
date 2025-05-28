@@ -103,7 +103,7 @@ export default function EmailsMutateModal({
           });
         });
       }}
-      className="w-full rounded-md bg-white max-w-3xl md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700 dark:bg-stone-800"
+      className="w-full max-w-3xl rounded-md bg-white md:border md:border-stone-200 md:shadow-sm dark:bg-stone-800 dark:md:border-stone-700"
     >
       {email?.id && <input type="hidden" name="id" value={email.id} />}
 
@@ -179,7 +179,7 @@ export default function EmailsMutateModal({
         </Suspense>
       </div>
 
-      <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
+      <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10 dark:border-stone-700 dark:bg-stone-800">
         <EmailsMutateButton />
       </div>
     </form>

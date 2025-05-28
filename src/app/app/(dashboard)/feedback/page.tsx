@@ -33,7 +33,7 @@ export default async function FeedbackPage() {
 
         <div>
           <Form
-            className="flex flex-col gap-4 border border-stone-200 rounded-md p-4"
+            className="flex flex-col gap-4 rounded-md border border-stone-200 p-4"
             action={async formData => {
               'use server';
 
@@ -71,10 +71,10 @@ export default async function FeedbackPage() {
             {feedbacks.map(feedback => (
               <div
                 key={feedback.id}
-                className="bg-white rounded-lg p-4 shadow-sm border border-stone-200"
+                className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm"
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-100">
                     <span className="text-sm text-stone-600">
                       {feedback.user?.name?.[0] ?? '?'}
                     </span>
@@ -91,7 +91,7 @@ export default async function FeedbackPage() {
                   </div>
                 </div>
 
-                <p className="text-stone-600 whitespace-pre-wrap">
+                <p className="whitespace-pre-wrap text-stone-600">
                   {feedback.message}
                 </p>
               </div>

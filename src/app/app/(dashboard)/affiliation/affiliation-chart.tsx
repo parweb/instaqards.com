@@ -207,10 +207,10 @@ export const AffiliationChart = ({ data }: AffiliationChartProps) => {
   };
 
   return (
-    <Card className="dark:bg-stone-900 relative">
-      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+    <Card className="relative dark:bg-stone-900">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row">
         <div className="flex gap-4">
-          <div className="border border-stone-200 p-4 rounded-md shadow-sm">
+          <div className="rounded-md border border-stone-200 p-4 shadow-sm">
             <Text>Utilisateurs</Text>
 
             <Flex justifyContent="between" alignItems="center">
@@ -234,7 +234,7 @@ export const AffiliationChart = ({ data }: AffiliationChartProps) => {
                         ? 'moderateIncrease'
                         : 'moderateDecrease'
                     }
-                    className={cn('text-white dark:bg-opacity-50', {
+                    className={cn('dark:bg-opacity-50 text-white', {
                       'dark:bg-green-900': dailyGrowth.Users >= 0,
                       'dark:bg-red-900': dailyGrowth.Users < 0
                     })}
@@ -246,7 +246,7 @@ export const AffiliationChart = ({ data }: AffiliationChartProps) => {
             </Flex>
           </div>
 
-          <div className="border border-stone-200 p-4 rounded-md shadow-sm">
+          <div className="rounded-md border border-stone-200 p-4 shadow-sm">
             <Text>Clicks</Text>
 
             <Flex justifyContent="between" alignItems="center">
@@ -270,7 +270,7 @@ export const AffiliationChart = ({ data }: AffiliationChartProps) => {
                         ? 'moderateIncrease'
                         : 'moderateDecrease'
                     }
-                    className={cn('text-white dark:bg-opacity-50', {
+                    className={cn('dark:bg-opacity-50 text-white', {
                       'dark:bg-green-900': dailyGrowth.Clicks >= 0,
                       'dark:bg-red-900': dailyGrowth.Clicks < 0
                     })}
@@ -282,7 +282,7 @@ export const AffiliationChart = ({ data }: AffiliationChartProps) => {
             </Flex>
           </div>
 
-          <div className="border border-stone-200 p-4 rounded-md shadow-sm">
+          <div className="rounded-md border border-stone-200 p-4 shadow-sm">
             <Text>Abonnements</Text>
 
             <Flex justifyContent="between" alignItems="center">
@@ -314,7 +314,7 @@ export const AffiliationChart = ({ data }: AffiliationChartProps) => {
                         ? 'moderateIncrease'
                         : 'moderateDecrease'
                     }
-                    className={cn('text-white dark:bg-opacity-50', {
+                    className={cn('dark:bg-opacity-50 text-white', {
                       'dark:bg-green-900': dailyGrowth.Subscriptions >= 0,
                       'dark:bg-red-900': dailyGrowth.Subscriptions < 0
                     })}
@@ -360,10 +360,10 @@ export const AffiliationChart = ({ data }: AffiliationChartProps) => {
 
       {data.length === 0 && (
         <>
-          <div className="absolute inset-0 flex items-center justify-center opacity-80 bg-white" />
+          <div className="absolute inset-0 flex items-center justify-center bg-white opacity-80" />
 
           <div className="absolute inset-0 flex items-center justify-center">
-            <p className="p-4 text-center text-gray-500 bg-amber-500/50 backdrop-blur-sm rounded-md">
+            <p className="rounded-md bg-amber-500/50 p-4 text-center text-gray-500 backdrop-blur-sm">
               Pas de données disponibles
             </p>
           </div>

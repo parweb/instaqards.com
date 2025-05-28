@@ -29,7 +29,7 @@ export default function Snapchat({
 
   return (
     <iframe
-      className="w-full aspect-[9/16] rounded-md"
+      className="aspect-[9/16] w-full rounded-md"
       src={`${embedUrl}/embed`}
       height="100%"
       width="100%"

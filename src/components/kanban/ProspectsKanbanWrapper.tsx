@@ -209,9 +209,9 @@ export default function ProspectsKanbanWrapper({
           return (
             <Card
               onClick={() => showDetails(item.id)}
-              className="w-full hover:shadow-md transition-shadow "
+              className="w-full transition-shadow hover:shadow-md"
             >
-              <CardHeader className="p-4 flex flex-col gap-4">
+              <CardHeader className="flex flex-col gap-4 p-4">
                 <CardTitle title={item.company ?? 'ø'} className="text-balance">
                   {item.company ?? 'ø'}
                 </CardTitle>
@@ -223,7 +223,7 @@ export default function ProspectsKanbanWrapper({
                         ? `${item.city} ${item.postcode ? `(${item.postcode})` : 'ø'}`
                         : 'ø'
                     }
-                    className="flex gap-2 items-center"
+                    className="flex items-center gap-2"
                   >
                     <LuMapPin />
                     <span className="text-balance">
@@ -240,7 +240,7 @@ export default function ProspectsKanbanWrapper({
 
                   <CardDescription
                     title={item.phone ? formatPhoneNumber(item.phone) : 'ø'}
-                    className="flex gap-2 items-center"
+                    className="flex items-center gap-2"
                   >
                     <LuPhone />
                     <span className="truncate">
@@ -250,7 +250,7 @@ export default function ProspectsKanbanWrapper({
 
                   <CardDescription
                     title={item.email ?? 'ø'}
-                    className="flex gap-2 items-center"
+                    className="flex items-center gap-2"
                   >
                     <LuMail />
                     <span className="truncate">{item.email ?? 'ø'}</span>

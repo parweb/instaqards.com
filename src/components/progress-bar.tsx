@@ -17,7 +17,7 @@ export function ProgressBar({ value }: { value: number }) {
         </span>
       </div>
 
-      <div className="w-full h-3 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+      <div className="h-3 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
         <div
           className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700"
           style={{ width: `${percent}%` }}

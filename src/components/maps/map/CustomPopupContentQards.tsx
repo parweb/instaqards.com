@@ -15,7 +15,7 @@ export const CustomPopupContentQards = ({
       <Suspense
         fallback={
           <div className="flex items-center justify-center">
-            <div className="p-4 bg-white/10 rounded-full shadow-lg relative top-[11px] left-[1px] backdrop-blur-md">
+            <div className="relative top-[11px] left-[1px] rounded-full bg-white/10 p-4 shadow-lg backdrop-blur-md">
               <LuLoader className="animate-spin" />
             </div>
           </div>

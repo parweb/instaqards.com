@@ -109,7 +109,7 @@ const BlockItem = ({ block }: { block: Block }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="group flex flex-1 items-center gap-2 relative"
+        className="group relative flex flex-1 items-center gap-2"
         ref={setNodeRef}
         style={style}
       >
@@ -118,7 +118,7 @@ const BlockItem = ({ block }: { block: Block }) => {
           {...listeners}
           className="absolute right-full pr-2"
         >
-          <div className="cursor-move p-2 bg-white rounded-full">
+          <div className="cursor-move rounded-full bg-white p-2">
             <LuMove />
           </div>
         </div>
@@ -128,7 +128,7 @@ const BlockItem = ({ block }: { block: Block }) => {
             className={cn(
               'cursor-pointer',
               'transition-all',
-              'border border-white/90 rounded-md p-3 text-white/90 w-full text-center',
+              'w-full rounded-md border border-white/90 p-3 text-center text-white/90',
               'hover:bg-white hover:text-black'
             )}
           >
@@ -172,14 +172,14 @@ const BlockItem = ({ block }: { block: Block }) => {
   if (block.type === 'social') {
     return (
       <div
-        className="group flex flex-col flex-1 items-center gap-2 relative"
+        className="group relative flex flex-1 flex-col items-center gap-2"
         ref={setNodeRef}
         style={style}
       >
         <div
           className={cn(
-            'flex gap-2 absolute items-center p-2 bottom-[100%] text-sm',
-            'transition-all duration-300 opacity-0 group-hover:opacity-100 '
+            'absolute bottom-[100%] flex items-center gap-2 p-2 text-sm',
+            'opacity-0 transition-all duration-300 group-hover:opacity-100'
           )}
         >
           <BlockUpdate block={block} />
@@ -189,14 +189,14 @@ const BlockItem = ({ block }: { block: Block }) => {
 
         <div
           className={cn(
-            'flex gap-2 absolute items-center p-2 top-[100%] text-sm',
-            'transition-all duration-300 opacity-0 group-hover:opacity-100 '
+            'absolute top-[100%] flex items-center gap-2 p-2 text-sm',
+            'opacity-0 transition-all duration-300 group-hover:opacity-100'
           )}
         >
           <div
             {...attributes}
             {...listeners}
-            className="cursor-move p-2 bg-white rounded-full"
+            className="cursor-move rounded-full bg-white p-2"
           >
             <LuMove />
           </div>
@@ -228,7 +228,7 @@ const BlockItem = ({ block }: { block: Block }) => {
               url={block.href ?? ''}
             />
           ) : (
-            <div className="p-1 w-[50px] h-[50px] flex items-center justify-center bg-stone-200 rounded-full">
+            <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full bg-stone-200 p-1">
               <LuLink />
             </div>
           )}

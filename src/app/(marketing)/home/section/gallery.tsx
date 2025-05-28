@@ -17,13 +17,13 @@ const qards = [
 
 export const Gallery = async () => {
   return (
-    <div id="Gallery" className="flex flex-col p-10 gap-10">
-      <hgroup className="text-center flex flex-col gap-4">
-        <h2 className="text-4xl sm:text-5xl font-[900]">
+    <div id="Gallery" className="flex flex-col gap-10 p-10">
+      <hgroup className="flex flex-col gap-4 text-center">
+        <h2 className="text-4xl font-[900] sm:text-5xl">
           {await translate('page.home.gallery.title')}
         </h2>
 
-        <p className="text-gray-600 text-2xl">
+        <p className="text-2xl text-gray-600">
           {await translate('page.home.gallery.description')}
         </p>
       </hgroup>
@@ -34,7 +34,7 @@ export const Gallery = async () => {
             {qards.map(qard => (
               <CarouselItem
                 key={qard.url}
-                className="md:basis-1/2 lg:basis-1/3 justify-center flex"
+                className="flex justify-center md:basis-1/2 lg:basis-1/3"
               >
                 <Iphone url={qard.url} scale={25} />
               </CarouselItem>

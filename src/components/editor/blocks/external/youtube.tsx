@@ -84,14 +84,14 @@ function YoutubeVideo({
   }, [title]);
 
   return (
-    <div className="relative rounded-md overflow-hidden min-h-40 w-full aspect-video">
+    <div className="relative aspect-video min-h-40 w-full overflow-hidden rounded-md">
       {playing === true && (
         <>
           <div className="absolute inset-0 flex items-center justify-center bg-white">
-            <FaYoutube className="w-16 h-16 text-red-600" />
+            <FaYoutube className="h-16 w-16 text-red-600" />
 
             <div className="absolute inset-0 flex items-center justify-center">
-              <LuLoader className="w-16 h-16 animate-spin text-white/50" />
+              <LuLoader className="h-16 w-16 animate-spin text-white/50" />
             </div>
           </div>
 
@@ -99,7 +99,7 @@ function YoutubeVideo({
             ref={iframeRef}
             title="YouTube video player"
             width="100%"
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 h-full w-full"
             src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&enablejsapi=1&showinfo=${playing ? '1' : '0'}&rel=0&iv_load_policy=3`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
@@ -111,7 +111,7 @@ function YoutubeVideo({
       {playing === false && (
         <button
           type="button"
-          className="absolute inset-0 h-full aspect-video flex items-center justify-center bg-black transition-opacity hover:bg-opacity-10 focus:outline-hidden focus:ring-2 focus:ring-red-500"
+          className="hover:bg-opacity-10 absolute inset-0 flex aspect-video h-full items-center justify-center bg-black transition-opacity focus:ring-2 focus:ring-red-500 focus:outline-hidden"
           onClick={activatePlayer}
           aria-label="Activer le son et afficher les contrôles"
         >
@@ -125,16 +125,16 @@ function YoutubeVideo({
           />
 
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-white w-6 h-6" />
+            <div className="h-6 w-6 bg-white" />
           </div>
 
           <div className="absolute inset-0 flex items-center justify-center">
-            <FaYoutube className="text-red-600 w-24 h-24" />
+            <FaYoutube className="h-24 w-24 text-red-600" />
           </div>
 
           {(title || titleFetched) && (
             <div className="absolute inset-0 flex items-end justify-start bg-gradient-to-t from-black/50 to-transparent p-2">
-              <p className="text-white text-md font-bold text-left text-balance">
+              <p className="text-md text-left font-bold text-balance text-white">
                 {title || titleFetched}
               </p>
             </div>
@@ -201,11 +201,11 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
 
   if (videos.length === 0) {
     return (
-      <div className="w-full aspect-video bg-white rounded-md flex items-center justify-center">
-        <FaYoutube className="w-16 h-16 text-red-600" />
+      <div className="flex aspect-video w-full items-center justify-center rounded-md bg-white">
+        <FaYoutube className="h-16 w-16 text-red-600" />
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <LuLoader className="w-16 h-16 animate-spin text-white/50" />
+          <LuLoader className="h-16 w-16 animate-spin text-white/50" />
         </div>
       </div>
     );

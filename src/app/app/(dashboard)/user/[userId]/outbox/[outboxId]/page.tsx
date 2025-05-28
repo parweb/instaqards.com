@@ -134,16 +134,16 @@ export default async function OutboxDetailPage(props: {
       case 'click':
         return <LuMousePointerClick className="h-4 w-4 text-orange-500" />;
       default:
-        return <LuHistory className="h-4 w-4 text-muted-foreground" />;
+        return <LuHistory className="text-muted-foreground h-4 w-4" />;
     }
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-8 space-y-6 max-w-5xl">
+    <div className="container mx-auto max-w-5xl space-y-6 p-4 md:p-8">
       <div className="flex items-center gap-4">
         <Link
           href={`/user/${userId}`}
-          className="p-2 rounded-md hover:bg-muted"
+          className="hover:bg-muted rounded-md p-2"
           aria-label="Back to User Details"
         >
           <LuArrowLeft className="h-5 w-5" />
@@ -170,13 +170,13 @@ export default async function OutboxDetailPage(props: {
         <CardContent className="space-y-3 text-sm">
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             <div className="flex items-center gap-2">
-              <LuMail className="h-4 w-4 text-muted-foreground" />
+              <LuMail className="text-muted-foreground h-4 w-4" />
               <span className="font-medium">Recipient:</span>
               <span>{outbox.email}</span>
 
               {recipientUser && (
                 <Link href={`/user/${recipientUser.id}`} className="ml-2">
-                  <Avatar className="h-5 w-5 inline-block align-middle">
+                  <Avatar className="inline-block h-5 w-5 align-middle">
                     <AvatarImage
                       src={recipientUser.image ?? undefined}
                       alt={recipientUser.name ?? ''}
@@ -192,7 +192,7 @@ export default async function OutboxDetailPage(props: {
             </div>
 
             <div className="flex items-center gap-2">
-              <LuFileText className="h-4 w-4 text-muted-foreground" />
+              <LuFileText className="text-muted-foreground h-4 w-4" />
               <span className="font-medium">Subject:</span>
               <span>{outbox.subject}</span>
             </div>
@@ -200,7 +200,7 @@ export default async function OutboxDetailPage(props: {
 
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             <div className="flex items-center gap-2">
-              <LuCalendarClock className="h-4 w-4 text-muted-foreground" />
+              <LuCalendarClock className="text-muted-foreground h-4 w-4" />
               <span className="font-medium">Queued:</span>
               <span title={formatDate(outbox.createdAt)}>
                 {formatRelativeTime(outbox.createdAt)}
@@ -216,11 +216,11 @@ export default async function OutboxDetailPage(props: {
           {outbox.metadata &&
             Object.keys(outbox.metadata).length > 0 &&
             !emailEvents.length && (
-              <div className="pt-3 mt-3 border-t">
-                <h4 className="font-medium mb-1 flex items-center gap-1">
-                  <LuCode className="h-4 w-4 text-muted-foreground" /> Metadata:
+              <div className="mt-3 border-t pt-3">
+                <h4 className="mb-1 flex items-center gap-1 font-medium">
+                  <LuCode className="text-muted-foreground h-4 w-4" /> Metadata:
                 </h4>
-                <pre className="text-xs p-2 bg-muted rounded overflow-x-auto">
+                <pre className="bg-muted overflow-x-auto rounded p-2 text-xs">
                   {JSON.stringify(outbox.metadata, null, 2)}
                 </pre>
               </div>
@@ -276,7 +276,7 @@ export default async function OutboxDetailPage(props: {
                       <div className="space-y-1">
                         {event.ip && (
                           <div className="flex items-center gap-1">
-                            <LuGlobe className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                            <LuGlobe className="text-muted-foreground h-3 w-3 flex-shrink-0" />
                             <span>IP: {event.ip}</span>
                           </div>
                         )}
@@ -285,7 +285,7 @@ export default async function OutboxDetailPage(props: {
                             className="flex items-center gap-1"
                             title={event.agent}
                           >
-                            <LuUser className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                            <LuUser className="text-muted-foreground h-3 w-3 flex-shrink-0" />
                             <span className="truncate">
                               Agent: {event.agent}
                             </span>
@@ -294,7 +294,7 @@ export default async function OutboxDetailPage(props: {
 
                         {event.type === 'click' && event.url && (
                           <div className="flex items-center gap-1">
-                            <LuExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                            <LuExternalLink className="text-muted-foreground h-3 w-3 flex-shrink-0" />
                             <span>
                               URL:{' '}
                               <a
@@ -341,7 +341,7 @@ export default async function OutboxDetailPage(props: {
           <iframe
             srcDoc={outbox.body}
             title="Email Preview"
-            className="w-full h-[600px] border rounded-md bg-white"
+            className="h-[600px] w-full rounded-md border bg-white"
             sandbox="allow-same-origin"
           />
         </CardContent>

@@ -23,23 +23,23 @@ export default async function ActivityPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">
+      <h1 className="mb-8 text-3xl font-bold text-gray-800">
         {"Codes d'Activités"}
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {codes.map(code => (
           <div
             key={code.id}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+            className="rounded-lg bg-white p-6 shadow-md transition-shadow duration-200 hover:shadow-lg"
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="rounded bg-blue-50 px-2 py-1 text-sm font-medium text-blue-600">
                 {code.id}
               </span>
             </div>
 
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            <h2 className="mb-2 text-lg font-semibold text-gray-800">
               <Link
                 href={`/explore/activity/${code.id}-${slugify(code.title)}`}
               >
@@ -47,8 +47,8 @@ export default async function ActivityPage() {
               </Link>
             </h2>
 
-            <div className="text-sm text-gray-600 space-y-1">
-              <p className="flex gap-1 items-center">
+            <div className="space-y-1 text-sm text-gray-600">
+              <p className="flex items-center gap-1">
                 <span className="font-medium">Section:</span>
                 <Link
                   href={`/explore/section/${code.class.group.division.section.id}-${slugify(code.class.group.division.section.title)}`}
@@ -57,7 +57,7 @@ export default async function ActivityPage() {
                 </Link>
               </p>
 
-              <p className="flex gap-1 items-center">
+              <p className="flex items-center gap-1">
                 <span className="font-medium">Division:</span>
                 <Link
                   href={`/explore/division/${code.class.group.division.id}-${slugify(code.class.group.division.title)}`}
@@ -66,7 +66,7 @@ export default async function ActivityPage() {
                 </Link>
               </p>
 
-              <p className="flex gap-1 items-center">
+              <p className="flex items-center gap-1">
                 <span className="font-medium">Groupe:</span>
                 <Link
                   href={`/explore/group/${code.class.group.id}-${slugify(code.class.group.title)}`}
@@ -75,7 +75,7 @@ export default async function ActivityPage() {
                 </Link>
               </p>
 
-              <p className="flex gap-1 items-center">
+              <p className="flex items-center gap-1">
                 <span className="font-medium">Classe:</span>
                 <Link
                   href={`/explore/class/${code.class.id}-${slugify(code.class.title)}`}

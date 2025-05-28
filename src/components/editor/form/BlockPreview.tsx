@@ -123,7 +123,7 @@ export function BlockPreview({
 
   return (
     <form
-      className="flex-1 flex flex-col gap-4 h-full"
+      className="flex h-full flex-1 flex-col gap-4"
       onSubmit={handleSubmit(data => {
         setIsLoading(true);
 
@@ -165,8 +165,8 @@ export function BlockPreview({
     >
       <div className="flex-1 self-stretch overflow-y-scroll">
         <div className="flex flex-col gap-4">
-          <div className="px-10 py-5 overflow-hidden relative flex flex-col gap-4">
-            <div className="absolute inset-0 bg-black/30 pointer-events-auto" />
+          <div className="relative flex flex-col gap-4 overflow-hidden px-10 py-5">
+            <div className="pointer-events-auto absolute inset-0 bg-black/30" />
 
             <div className="">
               <Suspense fallback={null}>
@@ -193,7 +193,7 @@ export function BlockPreview({
             </Suspense>
           </div>
 
-          <div className="px-4 flex flex-col gap-4 p-0.5">
+          <div className="flex flex-col gap-4 p-0.5 px-4">
             {(
               Object.entries(
                 // @ts-ignore
@@ -214,7 +214,7 @@ export function BlockPreview({
                     {property.shape.kind === 'upload' && (
                       <>
                         {errors[key] && (
-                          <p className="text-red-500 text-sm text-center">
+                          <p className="text-center text-sm text-red-500">
                             {/* @ts-ignore */}
                             {errors[key]?.message?.toString()}
                           </p>
@@ -240,7 +240,7 @@ export function BlockPreview({
                         />
 
                         {errors[key] && (
-                          <p className="text-red-500 text-sm text-center">
+                          <p className="text-center text-sm text-red-500">
                             {/* @ts-ignore */}
                             {errors[key]?.message?.toString()}
                           </p>
@@ -259,7 +259,7 @@ export function BlockPreview({
                         />
 
                         {errors[key] && (
-                          <p className="text-red-500 text-sm text-center">
+                          <p className="text-center text-sm text-red-500">
                             {/* @ts-ignore */}
                             {errors[key]?.message?.toString()}
                           </p>
@@ -277,7 +277,7 @@ export function BlockPreview({
                         />
 
                         {errors[key] && (
-                          <p className="text-red-500 text-sm text-center">
+                          <p className="text-center text-sm text-red-500">
                             {/* @ts-ignore */}
                             {errors[key]?.message?.toString()}
                           </p>
@@ -288,7 +288,7 @@ export function BlockPreview({
                     {property.shape.kind === 'color' && (
                       <>
                         {errors[key] && (
-                          <p className="text-red-500 text-sm text-center">
+                          <p className="text-center text-sm text-red-500">
                             {/* @ts-ignore */}
                             {errors[key]?.message?.toString()}
                           </p>
@@ -451,7 +451,7 @@ export function BlockPreview({
         </div>
       </div>
 
-      <div className="flex gap-2 items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10">
+      <div className="flex items-center justify-end gap-2 rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10">
         <Button
           type="button"
           onClick={() =>

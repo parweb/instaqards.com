@@ -22,17 +22,17 @@ const statusMap = {
   ok: {
     label: 'Succès',
     color: 'bg-green-100 text-green-700 border-green-300',
-    icon: <CheckCircle2Icon className="w-4 h-4 text-green-500" />
+    icon: <CheckCircle2Icon className="h-4 w-4 text-green-500" />
   },
   error: {
     label: 'Erreur',
     color: 'bg-red-100 text-red-700 border-red-300',
-    icon: <XCircleIcon className="w-4 h-4 text-red-500" />
+    icon: <XCircleIcon className="h-4 w-4 text-red-500" />
   },
   running: {
     label: 'En cours',
     color: 'bg-blue-100 text-blue-700 border-blue-300',
-    icon: <ClockIcon className="w-4 h-4 text-blue-500" />
+    icon: <ClockIcon className="h-4 w-4 text-blue-500" />
   }
 };
 
@@ -50,31 +50,31 @@ const HistoryItem = ({ item }: { item: History }) => {
   return (
     <div
       ref={ref}
-      className="rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm transition-all hover:shadow-md"
+      className="rounded-lg border border-zinc-200 bg-white shadow-sm transition-all hover:shadow-md dark:border-zinc-700 dark:bg-zinc-900"
     >
       <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
+        className="flex cursor-pointer items-center gap-3 px-4 py-3 select-none"
         onClick={() => setOpen(!open)}
       >
         <div
           className={cn(
-            'flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-semibold',
+            'flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold',
             status.color
           )}
         >
           {status.icon}
           {status.label}
         </div>
-        <div className="flex items-center gap-1 text-zinc-700 dark:text-zinc-200 text-xs">
-          <CalendarIcon className="w-4 h-4 opacity-60" />
+        <div className="flex items-center gap-1 text-xs text-zinc-700 dark:text-zinc-200">
+          <CalendarIcon className="h-4 w-4 opacity-60" />
           {new Date(item.startedAt).toLocaleString()}
         </div>
         <div className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
-          <ClockIcon className="w-4 h-4 opacity-60" />
+          <ClockIcon className="h-4 w-4 opacity-60" />
           {item.durationMs} ms
         </div>
-        <div className="flex items-center gap-1 text-xs text-zinc-400 ml-auto">
-          <HashIcon className="w-4 h-4 opacity-60" />
+        <div className="ml-auto flex items-center gap-1 text-xs text-zinc-400">
+          <HashIcon className="h-4 w-4 opacity-60" />
           {item.id}
         </div>
         <Button
@@ -84,37 +84,37 @@ const HistoryItem = ({ item }: { item: History }) => {
           aria-label={open ? 'Réduire' : 'Voir le détail'}
         >
           {open ? (
-            <ChevronUpIcon className="w-5 h-5" />
+            <ChevronUpIcon className="h-5 w-5" />
           ) : (
-            <ChevronDownIcon className="w-5 h-5" />
+            <ChevronDownIcon className="h-5 w-5" />
           )}
         </Button>
       </div>
 
       <div
         className={cn(
-          'overflow-hidden transition-all grid',
-          open ? 'grid-rows-[1fr] py-2 px-4' : 'grid-rows-[0fr] p-0',
-          'bg-zinc-50 dark:bg-zinc-800 rounded-b-lg'
+          'grid overflow-hidden transition-all',
+          open ? 'grid-rows-[1fr] px-4 py-2' : 'grid-rows-[0fr] p-0',
+          'rounded-b-lg bg-zinc-50 dark:bg-zinc-800'
         )}
         style={{ gridTemplateRows: open ? '1fr' : '0fr' }}
       >
         <div
           className={cn(
             'min-h-0',
-            open ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            open ? 'opacity-100' : 'pointer-events-none opacity-0'
           )}
           aria-hidden={!open}
         >
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-              <InfoIcon className="w-4 h-4 opacity-60" />
+              <InfoIcon className="h-4 w-4 opacity-60" />
               <span>Message :</span>
             </div>
 
             <pre
               className={cn(
-                'rounded p-2 overflow-x-auto',
+                'overflow-x-auto rounded p-2',
                 item.status === 'error'
                   ? 'bg-red-50 text-red-700'
                   : 'bg-green-50 text-green-700'
@@ -128,7 +128,7 @@ const HistoryItem = ({ item }: { item: History }) => {
 
             {item.endedAt && (
               <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-                <ClockIcon className="w-4 h-4 opacity-60" />
+                <ClockIcon className="h-4 w-4 opacity-60" />
                 <span>
                   Terminé à : {new Date(item.endedAt).toLocaleString()}
                 </span>
@@ -143,21 +143,21 @@ const HistoryItem = ({ item }: { item: History }) => {
 
 export default function CronHistoryModal({ history }: { history: History[] }) {
   return (
-    <div className="flex flex-col gap-6 p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-2xl max-w-2xl w-full mx-auto">
-      <div className="sticky top-0 z-10 bg-white dark:bg-zinc-900 rounded-t-2xl pb-2">
-        <h2 className="font-extrabold text-2xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-          <ClockIcon className="w-6 h-6 text-blue-500" />
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-700 dark:bg-zinc-900">
+      <div className="sticky top-0 z-10 rounded-t-2xl bg-white pb-2 dark:bg-zinc-900">
+        <h2 className="flex items-center gap-2 text-2xl font-extrabold text-zinc-900 dark:text-zinc-100">
+          <ClockIcon className="h-6 w-6 text-blue-500" />
           {"Historique d'exécution"}
         </h2>
 
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           Toutes les exécutions passées de votre cron, avec détails et statut.
         </p>
       </div>
 
-      <div className="max-h-96 overflow-y-auto flex flex-col gap-3 pr-1 custom-scrollbar">
+      <div className="custom-scrollbar flex max-h-96 flex-col gap-3 overflow-y-auto pr-1">
         {history.length === 0 ? (
-          <div className="text-gray-500 text-center py-8">
+          <div className="py-8 text-center text-gray-500">
             Aucune exécution trouvée.
           </div>
         ) : (

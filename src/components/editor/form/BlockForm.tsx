@@ -32,7 +32,7 @@ export function BlockForm({
   siteId: Site['id'];
 }) {
   return (
-    <div className="bg-white w-full rounded-md md:max-w-md md:border md:border-stone-200 md:shadow-sm overflow-hidden">
+    <div className="w-full overflow-hidden rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm">
       {mode.type === 'main' && (
         <BlockFormMain
           mode={mode}

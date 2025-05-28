@@ -26,7 +26,7 @@ const SearchResultsListComponent = ({
             return (
               <div
                 key={result.place_id}
-                className="location-result-wrapper relative block w-full p-2 hover:bg-accent hover:text-accent-foreground rounded-sm cursor-pointer"
+                className="location-result-wrapper hover:bg-accent hover:text-accent-foreground relative block w-full cursor-pointer rounded-sm p-2"
                 onClick={() => handleResultSelection(result)}
                 onMouseDown={e => {
                   e.preventDefault(); // Évite les problèmes de focus
@@ -37,7 +37,7 @@ const SearchResultsListComponent = ({
                 aria-label={`Select location: ${display_name}`}
               >
                 <div className="flex items-center gap-2">
-                  <LocationIcon className="shrink-0 h-4 w-4" />
+                  <LocationIcon className="h-4 w-4 shrink-0" />
                   <span>{display_name}</span>
                 </div>
               </div>

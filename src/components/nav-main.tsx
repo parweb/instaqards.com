@@ -51,14 +51,14 @@ export function NavMain({
   return (
     <div
       className={cn({
-        'dark z-10 bg-sidebar rounded-md sticky top-2 backdrop-blur-xs mx-1 shadow-lg inset-shadow-md border border-black/80 ring-1 ring-indigo-500/40':
+        'dark bg-sidebar inset-shadow-md sticky top-2 z-10 mx-1 rounded-md border border-black/80 shadow-lg ring-1 ring-indigo-500/40 backdrop-blur-xs':
           dark,
         'bg-gradient-to-b from-stone-900/75 via-stone-800/90 to-stone-900/80':
           dark
       })}
     >
       <SidebarGroup>
-        <SidebarGroupLabel className="flex gap-2 items-center justify-between">
+        <SidebarGroupLabel className="flex items-center justify-between gap-2">
           <span>{label}</span>
 
           {dark && (
@@ -76,7 +76,7 @@ export function NavMain({
         <SidebarMenu>
           {items.map(item => (
             <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
-              <SidebarMenuItem className="gap-2 flex flex-col">
+              <SidebarMenuItem className="flex flex-col gap-2">
                 <SidebarMenuButton
                   asChild
                   tooltip={item.title}
@@ -99,21 +99,21 @@ export function NavMain({
                     </CollapsibleTrigger>
 
                     <CollapsibleContent>
-                      <SidebarMenuSub className="gap-1 flex flex-col mr-0 pr-2">
+                      <SidebarMenuSub className="mr-0 flex flex-col gap-1 pr-2">
                         {item.items?.map(subItem => (
                           <SidebarMenuSubItem
                             className="flex flex-col items-stretch"
                             key={subItem.title}
                           >
                             <SidebarMenuSubButton
-                              className="flex-1 flex gap-2 p-2"
+                              className="flex flex-1 gap-2 p-2"
                               isActive={subItem.isActive}
                               asChild
                             >
                               <Link prefetch href={subItem.url}>
                                 <subItem.icon />
 
-                                <span className="flex-1 text-xs truncate">
+                                <span className="flex-1 truncate text-xs">
                                   {subItem.title}
                                 </span>
 

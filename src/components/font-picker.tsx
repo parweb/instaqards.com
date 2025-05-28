@@ -44,9 +44,9 @@ const FontItem = ({
       onMouseLeave={() => setIsHovered(false)}
       onKeyDown={() => {}}
       className={cn(
-        'p-2 rounded-md cursor-pointer border border-transparent text-left w-full',
-        (focusedFont === font || isHovered) && 'bg-gray-100 border-gray-300',
-        selectedFont === font && 'bg-gray-200 border-gray-400'
+        'w-full cursor-pointer rounded-md border border-transparent p-2 text-left',
+        (focusedFont === font || isHovered) && 'border-gray-300 bg-gray-100',
+        selectedFont === font && 'border-gray-400 bg-gray-200'
       )}
       style={{
         fontFamily: isVisible ? font : 'inherit'
@@ -154,7 +154,7 @@ const FontPickerList = ({
   return (
     <div
       className={cn(
-        'z-1 absolute top-full left-0 right-0 bg-white rounded-b-md border border-gray-300',
+        'absolute top-full right-0 left-0 z-1 rounded-b-md border border-gray-300 bg-white',
         'flex flex-col gap-4 p-4',
         !open && 'invisible'
       )}
@@ -170,22 +170,22 @@ const FontPickerList = ({
           aria-label="Search fonts"
         />
 
-        <div className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-stone-500">
+        <div className="absolute top-1/2 left-2 -translate-y-1/2 text-sm text-stone-500">
           <LuSearch aria-hidden="true" />
         </div>
       </div>
 
       <div
         ref={root}
-        className="flex flex-col gap-1 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2"
+        className="flex max-h-40 flex-col gap-1 overflow-y-auto rounded-md border border-gray-300 p-2"
         id={id ? `${id}-listbox` : undefined}
         aria-label="Font options"
       >
         {filteredFonts.length === 0 && (
-          <div className="p-2 text-stone-500 text-center">No fonts found</div>
+          <div className="p-2 text-center text-stone-500">No fonts found</div>
         )}
         {filteredFonts.length > 0 && (
-          <ul className="list-none p-0 m-0">
+          <ul className="m-0 list-none p-0">
             {filteredFonts.map(font => (
               <li key={font}>
                 <FontItem
@@ -230,7 +230,7 @@ export const FontPicker = memo(
         id={id}
         ref={ref}
         className={cn(
-          'relative w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:outline-hidden focus:ring-black dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white',
+          'relative w-full rounded-md border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600 placeholder:text-stone-400 focus:border-black focus:ring-black focus:outline-hidden dark:border-stone-600 dark:bg-black dark:text-white dark:placeholder-stone-700 dark:focus:ring-white',
           'rounded-md',
           open && 'rounded-b-none'
         )}
@@ -247,7 +247,7 @@ export const FontPicker = memo(
           }}
           type="button"
           style={{ fontFamily: value ?? 'inherit' }}
-          className="flex items-center justify-between cursor-pointer w-full"
+          className="flex w-full cursor-pointer items-center justify-between"
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-controls={`${id}-listbox`}

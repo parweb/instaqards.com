@@ -86,7 +86,7 @@ export const UploaderItem = ({
       style={style}
       className={cn(
         'flex items-center gap-2',
-        isActive && 'p-1 shadow-xs border border-stone-300 rounded-md'
+        isActive && 'rounded-md border border-stone-300 p-1 shadow-xs'
       )}
     >
       {list.length > 1 && (
@@ -100,7 +100,7 @@ export const UploaderItem = ({
         <img
           src={src}
           alt={item.id}
-          className="w-14 aspect-square object-cover rounded-md"
+          className="aspect-square w-14 rounded-md object-cover"
         />
       </div>
 
@@ -213,8 +213,8 @@ export const Uploader = ({
     <div className="relative flex flex-col gap-5">
       <div
         className={cn(
-          'flex flex-col cursor-pointer transition-all p-4 border-2 border-dashed',
-          'border-slate-500 rounded-md text-slate-400 hover:border-slate-900 hover:text-slate-900',
+          'flex cursor-pointer flex-col border-2 border-dashed p-4 transition-all',
+          'rounded-md border-slate-500 text-slate-400 hover:border-slate-900 hover:text-slate-900',
           isDragActive && 'border-slate-900 text-slate-900'
         )}
       >

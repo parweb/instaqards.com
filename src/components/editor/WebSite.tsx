@@ -60,7 +60,7 @@ const Inner = ({
             />
           </AnimatePresence>
 
-          <div className="flex gap-2 items-center justify-center">
+          <div className="flex items-center justify-center gap-2">
             {preview === false && (
               <div className="flex-1">
                 <BlockCreate type="main" siteId={site.id} />
@@ -82,7 +82,7 @@ const Inner = ({
       </Content>
 
       {preview === false && (
-        <div className="absolute left-0 right-0 flex items-center justify-center p-4 pointer-events-none">
+        <div className="pointer-events-none absolute right-0 left-0 flex items-center justify-center p-4">
           <UpdateSiteBackgroundButton>
             <UpdateSiteBackgroundModal
               siteId={site.id}

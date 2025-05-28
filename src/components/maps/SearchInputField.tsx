@@ -42,25 +42,25 @@ const SearchInputField = ({
   );
 
   return (
-    <div className="relative flex items-center gap-2 w-full">
-      <div className="absolute inset-2 flex items-center justify-start pointer-events-none">
+    <div className="relative flex w-full items-center gap-2">
+      <div className="pointer-events-none absolute inset-2 flex items-center justify-start">
         {isSearching ? (
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
         ) : (
           <MapPin className="h-4 w-4 opacity-50" />
         )}
       </div>
 
       {query && (
-        <div className="absolute top-0 right-0 bottom-0 w-7 flex items-center justify-center">
+        <div className="absolute top-0 right-0 bottom-0 flex w-7 items-center justify-center">
           <Button
             variant="ghost"
             size="icon"
-            className="h-4 w-4 hover:bg-transparent p-0 transition-colors duration-200 ring-0"
+            className="h-4 w-4 p-0 ring-0 transition-colors duration-200 hover:bg-transparent"
             onClick={handleClearSearch}
             tabIndex={-1}
           >
-            <X className="h-4 w-4 text-muted-foreground hover:text-red-700 transition-colors duration-200" />
+            <X className="text-muted-foreground h-4 w-4 transition-colors duration-200 hover:text-red-700" />
             <span className="sr-only">Clear search</span>
           </Button>
         </div>

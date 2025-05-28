@@ -34,7 +34,7 @@ export default async function SitePosts(props: {
   return (
     <>
       <div className="flex flex-col gap-6 p-2 sm:p-8">
-        <div className="flex flex-col items-center sm:flex-row flex-1 justify-between">
+        <div className="flex flex-1 flex-col items-center justify-between sm:flex-row">
           <h1 className="font-cal text-xl font-bold sm:text-3xl">
             {translate('dashboard.site.detail.title', {
               name: site.name ?? ''
@@ -45,7 +45,7 @@ export default async function SitePosts(props: {
             href={uri.site(site).link}
             target="_blank"
             rel="noreferrer"
-            className="truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 flex items-center gap-2"
+            className="flex items-center gap-2 truncate rounded-md bg-stone-100 px-2 py-1 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200"
           >
             {uri.site(site).title}
             <LuArrowUpRight />
@@ -53,7 +53,7 @@ export default async function SitePosts(props: {
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 self-stretch overflow-y-auto">
+      <div className="flex flex-1 flex-col self-stretch overflow-y-auto">
         <Suspense fallback={null}>
           <WebSite site={site} />
         </Suspense>

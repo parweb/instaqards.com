@@ -114,7 +114,7 @@ export function Fields({
         <a
           target={site ? '_blank' : undefined}
           rel="noreferrer"
-          className="truncate rounded-md bg-green-400 p-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 inline-flex items-center gap-2 content empty:hidden"
+          className="content inline-flex items-center gap-2 truncate rounded-md bg-green-400 p-2 text-sm font-medium text-stone-600 transition-colors empty:hidden hover:bg-stone-200"
           href={uri.site(site).link}
         >
           {uri.site(site).title}

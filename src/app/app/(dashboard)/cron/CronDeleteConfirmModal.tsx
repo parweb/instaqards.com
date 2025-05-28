@@ -14,8 +14,8 @@ export default function CronDeleteConfirmModal({ cron }: { cron: any }) {
   const router = useRouter();
 
   return (
-    <div className="p-6 max-w-md bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow flex flex-col gap-4">
-      <h2 className="font-bold text-lg text-red-600">
+    <div className="flex max-w-md flex-col gap-4 rounded-lg border border-zinc-200 bg-zinc-50 p-6 shadow dark:border-zinc-700 dark:bg-zinc-800">
+      <h2 className="text-lg font-bold text-red-600">
         Confirmer la suppression
       </h2>
 
@@ -24,7 +24,7 @@ export default function CronDeleteConfirmModal({ cron }: { cron: any }) {
         <span className="font-semibold">{cron.name}</span> ?
       </p>
 
-      <div className="flex gap-2 mt-4">
+      <div className="mt-4 flex gap-2">
         <Button
           variant="destructive"
           disabled={isPending}

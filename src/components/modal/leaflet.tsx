@@ -74,7 +74,7 @@ export const Leaflet = ({
         dragConstraints={{ top: 0, bottom: 0 }}
       >
         <div
-          className="rounded-t-4xl -mb-1 flex h-7 w-full cursor-grab items-center justify-center border-t border-gray-200 active:cursor-grabbing"
+          className="-mb-1 flex h-7 w-full cursor-grab items-center justify-center rounded-t-4xl border-t border-gray-200 active:cursor-grabbing"
           onPointerDown={e => {
             e.preventDefault();
             dragControls.start(e);

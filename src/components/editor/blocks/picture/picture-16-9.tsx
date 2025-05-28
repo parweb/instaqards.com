@@ -59,7 +59,7 @@ export default function Picture169({
   }, [mediaFile]);
 
   const img = (
-    <div className="relative aspect-video w-full mx-auto bg-white rounded-md overflow-hidden">
+    <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-md bg-white">
       <Image
         priority
         className="object-cover"

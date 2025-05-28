@@ -13,25 +13,25 @@ export const MenuVariation62: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-4 h-4" />,
+      icon: <Home className="h-4 w-4" />,
       href: '/',
       shape: 'triangle'
     },
     {
       name: 'Search',
-      icon: <Search className="w-4 h-4" />,
+      icon: <Search className="h-4 w-4" />,
       href: '/explore',
       shape: 'diamond'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-4 h-4" />,
+      icon: <Heart className="h-4 w-4" />,
       href: '/qards',
       shape: 'hexagon'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-4 h-4" />,
+      icon: <MoreHorizontal className="h-4 w-4" />,
       href: '#',
       shape: 'octagon'
     }
@@ -84,23 +84,23 @@ export const MenuVariation62: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       {/* Fond papier origami */}
       <div className="relative bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 p-1">
-        <div className="bg-gradient-to-r from-white via-gray-50 to-white backdrop-blur-sm px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-gradient-to-r from-white via-gray-50 to-white px-4 py-4 backdrop-blur-sm">
           {/* Motifs géométriques de fond */}
           <div className="absolute inset-0 opacity-10">
             <div
               className={cn(
-                'absolute top-2 left-4 w-8 h-8 bg-orange-300 transition-all duration-2000 ease-in-out',
-                foldAnimation ? 'rotate-45 scale-75' : 'rotate-0 scale-100'
+                'absolute top-2 left-4 h-8 w-8 bg-orange-300 transition-all duration-2000 ease-in-out',
+                foldAnimation ? 'scale-75 rotate-45' : 'scale-100 rotate-0'
               )}
               style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
             />
             <div
               className={cn(
-                'absolute top-1 right-8 w-6 h-6 bg-red-300 transition-all duration-2000 ease-in-out',
-                foldAnimation ? 'rotate-90 scale-50' : 'rotate-0 scale-100'
+                'absolute top-1 right-8 h-6 w-6 bg-red-300 transition-all duration-2000 ease-in-out',
+                foldAnimation ? 'scale-50 rotate-90' : 'scale-100 rotate-0'
               )}
               style={{
                 clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)'
@@ -108,8 +108,8 @@ export const MenuVariation62: React.FC = () => {
             />
             <div
               className={cn(
-                'absolute bottom-2 left-12 w-10 h-10 bg-amber-300 transition-all duration-2000 ease-in-out',
-                foldAnimation ? 'rotate-180 scale-125' : 'rotate-0 scale-100'
+                'absolute bottom-2 left-12 h-10 w-10 bg-amber-300 transition-all duration-2000 ease-in-out',
+                foldAnimation ? 'scale-125 rotate-180' : 'scale-100 rotate-0'
               )}
               style={{
                 clipPath:
@@ -118,18 +118,18 @@ export const MenuVariation62: React.FC = () => {
             />
           </div>
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 {/* Conteneur origami */}
                 <div
                   className={cn(
-                    'relative mb-2 transition-all duration-1000 ease-out transform perspective-1000',
+                    'perspective-1000 relative mb-2 transform transition-all duration-1000 ease-out',
                     'group-hover:scale-110 group-active:scale-95',
                     activeTab === index ? 'scale-115' : ''
                   )}
@@ -137,7 +137,7 @@ export const MenuVariation62: React.FC = () => {
                   {/* Ombre portée géométrique */}
                   <div
                     className={cn(
-                      'absolute inset-0 bg-gray-400/20 transition-all duration-1000 transform translate-x-1 translate-y-1',
+                      'absolute inset-0 translate-x-1 translate-y-1 transform bg-gray-400/20 transition-all duration-1000',
                       activeTab === index
                         ? 'translate-x-2 translate-y-2 opacity-60'
                         : 'opacity-30'
@@ -155,7 +155,7 @@ export const MenuVariation62: React.FC = () => {
                   {/* Forme origami principale */}
                   <div
                     className={cn(
-                      'relative z-10 w-14 h-14 transition-all duration-1000 ease-in-out transform',
+                      'relative z-10 h-14 w-14 transform transition-all duration-1000 ease-in-out',
                       'group-hover:rotate-12',
                       activeTab === index
                         ? 'bg-gradient-to-br from-orange-400 via-red-400 to-pink-400 shadow-2xl'
@@ -176,9 +176,9 @@ export const MenuVariation62: React.FC = () => {
                         activeTab === index ? 'opacity-100' : 'opacity-0'
                       )}
                     >
-                      <div className="absolute top-1/4 left-1/4 right-1/4 h-px bg-white/30 transform -rotate-45" />
-                      <div className="absolute top-1/2 left-1/4 right-1/4 h-px bg-white/20 transform rotate-45" />
-                      <div className="absolute top-3/4 left-1/4 right-1/4 h-px bg-white/30 transform -rotate-45" />
+                      <div className="absolute top-1/4 right-1/4 left-1/4 h-px -rotate-45 transform bg-white/30" />
+                      <div className="absolute top-1/2 right-1/4 left-1/4 h-px rotate-45 transform bg-white/20" />
+                      <div className="absolute top-3/4 right-1/4 left-1/4 h-px -rotate-45 transform bg-white/30" />
                     </div>
 
                     {/* Icône */}
@@ -192,7 +192,7 @@ export const MenuVariation62: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -top-1 -left-1 w-2 h-2 bg-orange-400 animate-bounce transition-all duration-1000',
+                          'absolute -top-1 -left-1 h-2 w-2 animate-bounce bg-orange-400 transition-all duration-1000',
                           foldAnimation ? 'rotate-45' : 'rotate-0'
                         )}
                         style={{
@@ -202,7 +202,7 @@ export const MenuVariation62: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-red-400 animate-bounce transition-all duration-1000',
+                          'absolute -right-1 -bottom-1 h-1.5 w-1.5 animate-bounce bg-red-400 transition-all duration-1000',
                           foldAnimation ? 'rotate-90' : 'rotate-0'
                         )}
                         style={{
@@ -213,7 +213,7 @@ export const MenuVariation62: React.FC = () => {
                       />
                       <div
                         className={cn(
-                          'absolute top-0 -right-1 w-1 h-1 bg-pink-400 animate-bounce transition-all duration-1000',
+                          'absolute top-0 -right-1 h-1 w-1 animate-bounce bg-pink-400 transition-all duration-1000',
                           foldAnimation ? 'rotate-180' : 'rotate-0'
                         )}
                         style={{
@@ -229,9 +229,9 @@ export const MenuVariation62: React.FC = () => {
                 {/* Label avec effet pliage */}
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all duration-500 relative',
+                    'relative text-xs font-bold transition-all duration-500',
                     activeTab === index
-                      ? 'text-orange-600 animate-pulse'
+                      ? 'animate-pulse text-orange-600'
                       : 'text-gray-600 group-hover:text-gray-800'
                   )}
                 >
@@ -239,7 +239,7 @@ export const MenuVariation62: React.FC = () => {
                   {activeTab === index && (
                     <div
                       className={cn(
-                        'absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-orange-400 to-red-400 transition-all duration-1000',
+                        'absolute -bottom-1 left-1/2 h-0.5 w-8 -translate-x-1/2 transform bg-gradient-to-r from-orange-400 to-red-400 transition-all duration-1000',
                         foldAnimation
                           ? 'scale-x-50 rotate-45'
                           : 'scale-x-100 rotate-0'

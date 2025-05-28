@@ -184,8 +184,8 @@ export default async function UserPage(props: {
   });
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 space-y-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="space-y-6 lg:col-span-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -199,9 +199,9 @@ export default async function UserPage(props: {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
               <div>
-                <span className="font-medium text-muted-foreground">
+                <span className="text-muted-foreground font-medium">
                   User ID:
                 </span>
 
@@ -209,7 +209,7 @@ export default async function UserPage(props: {
               </div>
 
               <div>
-                <span className="font-medium text-muted-foreground">
+                <span className="text-muted-foreground font-medium">
                   Email Verified:
                 </span>
 
@@ -226,7 +226,7 @@ export default async function UserPage(props: {
               </div>
 
               <div>
-                <span className="font-medium text-muted-foreground">
+                <span className="text-muted-foreground font-medium">
                   Two-Factor Auth:
                 </span>
 
@@ -239,7 +239,7 @@ export default async function UserPage(props: {
                     </>
                   ) : (
                     <>
-                      <LuCircleX className="h-4 w-4 text-muted-foreground" />
+                      <LuCircleX className="text-muted-foreground h-4 w-4" />
                       Disabled
                     </>
                   )}
@@ -247,7 +247,7 @@ export default async function UserPage(props: {
               </div>
 
               <div>
-                <span className="font-medium text-muted-foreground">
+                <span className="text-muted-foreground font-medium">
                   Joined:
                 </span>
                 <p>
@@ -257,7 +257,7 @@ export default async function UserPage(props: {
               </div>
 
               <div>
-                <span className="font-medium text-muted-foreground">
+                <span className="text-muted-foreground font-medium">
                   Last Updated:
                 </span>
                 <p>
@@ -268,7 +268,7 @@ export default async function UserPage(props: {
 
               {user.customer && (
                 <div>
-                  <span className="font-medium text-muted-foreground">
+                  <span className="text-muted-foreground font-medium">
                     Stripe Customer ID:
                   </span>
                   <p className="font-mono break-all">
@@ -279,7 +279,7 @@ export default async function UserPage(props: {
 
               {user.referer && (
                 <div>
-                  <span className="font-medium text-muted-foreground">
+                  <span className="text-muted-foreground font-medium">
                     Referred By:
                   </span>
                   <p>
@@ -297,10 +297,10 @@ export default async function UserPage(props: {
             {user.billing_address &&
               Object.keys(user.billing_address).length > 0 && (
                 <div className="mt-4">
-                  <span className="font-medium text-muted-foreground">
+                  <span className="text-muted-foreground font-medium">
                     Billing Address:
                   </span>
-                  <pre className="mt-1 text-xs p-2 bg-muted rounded overflow-x-auto">
+                  <pre className="bg-muted mt-1 overflow-x-auto rounded p-2 text-xs">
                     {JSON.stringify(user.billing_address, null, 2)}
                   </pre>
                 </div>
@@ -309,10 +309,10 @@ export default async function UserPage(props: {
             {user.payment_method &&
               Object.keys(user.payment_method).length > 0 && (
                 <div className="mt-4">
-                  <span className="font-medium text-muted-foreground">
+                  <span className="text-muted-foreground font-medium">
                     Payment Method:
                   </span>
-                  <pre className="mt-1 text-xs p-2 bg-muted rounded overflow-x-auto">
+                  <pre className="bg-muted mt-1 overflow-x-auto rounded p-2 text-xs">
                     {JSON.stringify(user.payment_method, null, 2)}
                   </pre>
                 </div>
@@ -462,7 +462,7 @@ export default async function UserPage(props: {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline truncate block max-w-xs"
+                          className="block max-w-xs truncate text-blue-600 hover:underline"
                         >
                           {link.url}
                         </a>
@@ -498,8 +498,8 @@ export default async function UserPage(props: {
             <CardContent className="space-y-6">
               {user.events.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-medium mb-2 flex items-center gap-1">
-                    <LuCirclePlay className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="mb-2 flex items-center gap-1 text-lg font-medium">
+                    <LuCirclePlay className="text-muted-foreground h-4 w-4" />
                     Events
                   </h3>
 
@@ -535,8 +535,8 @@ export default async function UserPage(props: {
 
               {user.executions.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-medium mb-2 flex items-center gap-1">
-                    <LuListChecks className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="mb-2 flex items-center gap-1 text-lg font-medium">
+                    <LuListChecks className="text-muted-foreground h-4 w-4" />
                     Action Executions
                   </h3>
 
@@ -568,7 +568,7 @@ export default async function UserPage(props: {
                           </TableCell>
 
                           <TableCell
-                            className="text-red-600 text-xs truncate max-w-xs"
+                            className="max-w-xs truncate text-xs text-red-600"
                             title={exec.errorMessage ?? ''}
                           >
                             {exec.errorMessage}
@@ -582,8 +582,8 @@ export default async function UserPage(props: {
 
               {user.jobs.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-medium mb-2 flex items-center gap-1">
-                    <LuPackage className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="mb-2 flex items-center gap-1 text-lg font-medium">
+                    <LuPackage className="text-muted-foreground h-4 w-4" />
                     Background Jobs
                   </h3>
 
@@ -664,9 +664,9 @@ export default async function UserPage(props: {
         )}
       </div>
 
-      <div className="lg:col-span-1 space-y-6">
+      <div className="space-y-6 lg:col-span-1">
         <Card>
-          <CardHeader className="flex flex-row items-center gap-2 justify-between">
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
             <CardTitle className="flex items-center gap-2">
               <LuShieldCheck />
               Security & Auth
@@ -682,11 +682,11 @@ export default async function UserPage(props: {
           <CardContent className="space-y-4">
             {user.accounts.length > 0 && (
               <div>
-                <h3 className="text-md font-medium mb-2">Linked Accounts</h3>
-                <ul className="space-y-1 list-disc list-inside">
+                <h3 className="text-md mb-2 font-medium">Linked Accounts</h3>
+                <ul className="list-inside list-disc space-y-1">
                   {user.accounts.map(acc => (
-                    <li key={acc.id} className="text-sm text-muted-foreground">
-                      <span className="font-semibold text-foreground">
+                    <li key={acc.id} className="text-muted-foreground text-sm">
+                      <span className="text-foreground font-semibold">
                         {acc.providerId}
                       </span>
                       ({acc.providerAccountId.substring(0, 10)}...)
@@ -698,14 +698,14 @@ export default async function UserPage(props: {
 
             {user.Authenticator.length > 0 && (
               <div>
-                <h3 className="text-md font-medium mb-2 pt-3 border-t">
+                <h3 className="text-md mb-2 border-t pt-3 font-medium">
                   Passkeys / Authenticators
                 </h3>
 
-                <ul className="space-y-1 list-disc list-inside">
+                <ul className="list-inside list-disc space-y-1">
                   {user.Authenticator.map(auth => (
-                    <li key={auth.id} className="text-sm text-muted-foreground">
-                      <span className="font-semibold text-foreground">
+                    <li key={auth.id} className="text-muted-foreground text-sm">
+                      <span className="text-foreground font-semibold">
                         {auth.credentialDeviceType}
                       </span>
                       (ID: ...{auth.credentialID.slice(-8)})
@@ -717,14 +717,14 @@ export default async function UserPage(props: {
 
             {user.sessions.length > 0 && (
               <div>
-                <h3 className="text-md font-medium mb-2 pt-3 border-t">
+                <h3 className="text-md mb-2 border-t pt-3 font-medium">
                   Active Sessions
                 </h3>
-                <ul className="space-y-1 list-disc list-inside">
+                <ul className="list-inside list-disc space-y-1">
                   {user.sessions.map(session => (
                     <li
                       key={session.id}
-                      className="text-sm text-muted-foreground"
+                      className="text-muted-foreground text-sm"
                     >
                       Expires: {formatRelativeTime(session.expires)}
                     </li>
@@ -774,7 +774,7 @@ export default async function UserPage(props: {
               {user.feedback.map(fb => (
                 <div
                   key={fb.id}
-                  className="text-sm border-b pb-2 last:border-b-0"
+                  className="border-b pb-2 text-sm last:border-b-0"
                 >
                   <p className="text-muted-foreground mb-1">
                     {formatRelativeTime(fb.createdAt)}
@@ -800,7 +800,7 @@ export default async function UserPage(props: {
                 {user.likes.map(like => (
                   <li
                     key={like.id}
-                    className="text-sm flex justify-between items-center"
+                    className="flex items-center justify-between text-sm"
                   >
                     <span>{like.site?.name ?? like.siteId}</span>
                     <span className="text-muted-foreground text-xs">
@@ -858,7 +858,7 @@ export default async function UserPage(props: {
               <LuPackage />
               Réservations
             </CardTitle>
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               <ModalButton label={<LuPhone />} size="sm">
                 <ProspectReservationModal
                   user={{
@@ -913,7 +913,7 @@ export default async function UserPage(props: {
               {reservations.map((res: (typeof reservations)[0]) => (
                 <li
                   key={res.id}
-                  className="text-sm flex flex-col border-b pb-2 last:border-b-0"
+                  className="flex flex-col border-b pb-2 text-sm last:border-b-0"
                 >
                   <span className="font-medium">
                     {res.type || 'Type inconnu'}
@@ -932,7 +932,7 @@ export default async function UserPage(props: {
                     )}
                   </span>
                   {res.comment && (
-                    <span className="italic text-xs">{res.comment}</span>
+                    <span className="text-xs italic">{res.comment}</span>
                   )}
                 </li>
               ))}
@@ -956,7 +956,7 @@ export default async function UserPage(props: {
               {user.comments.map(comment => (
                 <li
                   key={comment.id}
-                  className="text-sm border-b pb-2 last:border-b-0"
+                  className="border-b pb-2 text-sm last:border-b-0"
                 >
                   <span className="text-muted-foreground text-xs">
                     {formatRelativeTime(comment.createdAt)}
@@ -996,7 +996,7 @@ export default async function UserPage(props: {
                 <TableBody>
                   {user.outbox.map(o => (
                     <TableRow key={o.id}>
-                      <TableCell className="font-medium truncate max-w-[150px]">
+                      <TableCell className="max-w-[150px] truncate font-medium">
                         <Link href={`/user/${userId}/outbox/${o.id}`}>
                           {o.subject}
                         </Link>

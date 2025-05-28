@@ -12,7 +12,7 @@ export const CopyLink = ({ url }: { url: string }) => {
   return (
     <Button
       className={cn(
-        'hover:text-blue-500 hover:font-bold cursor-pointer',
+        'cursor-pointer hover:font-bold hover:text-blue-500',
         isCopied && 'text-green-500'
       )}
       type="button"

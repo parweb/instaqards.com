@@ -30,25 +30,25 @@ export const MenuVariation93: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       color: 'from-blue-400 to-cyan-400'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       color: 'from-purple-400 to-pink-400'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       color: 'from-red-400 to-orange-400'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'from-green-400 to-teal-400'
     }
@@ -116,11 +116,11 @@ export const MenuVariation93: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative bg-gradient-to-r from-gray-900 via-black to-gray-900 p-1">
         <div
           ref={containerRef}
-          className="bg-black/90 backdrop-blur-lg px-4 py-4 relative overflow-hidden"
+          className="relative overflow-hidden bg-black/90 px-4 py-4 backdrop-blur-lg"
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
@@ -129,9 +129,9 @@ export const MenuVariation93: React.FC = () => {
           <div className="absolute top-2 left-4 flex items-center space-x-2">
             <ChevronLeft
               className={cn(
-                'w-4 h-4 transition-all duration-300',
+                'h-4 w-4 transition-all duration-300',
                 swipeDirection === 'right'
-                  ? 'text-green-400 scale-125'
+                  ? 'scale-125 text-green-400'
                   : 'text-gray-500',
                 activeTab === 0 ? 'opacity-30' : 'opacity-100'
               )}
@@ -139,9 +139,9 @@ export const MenuVariation93: React.FC = () => {
             <span className="text-xs text-gray-400">Swipe</span>
             <ChevronRight
               className={cn(
-                'w-4 h-4 transition-all duration-300',
+                'h-4 w-4 transition-all duration-300',
                 swipeDirection === 'left'
-                  ? 'text-green-400 scale-125'
+                  ? 'scale-125 text-green-400'
                   : 'text-gray-500',
                 activeTab === tabs.length - 1 ? 'opacity-30' : 'opacity-100'
               )}
@@ -152,7 +152,7 @@ export const MenuVariation93: React.FC = () => {
           {swipeDirection && (
             <div
               className={cn(
-                'absolute inset-0 pointer-events-none transition-all duration-300',
+                'pointer-events-none absolute inset-0 transition-all duration-300',
                 swipeDirection === 'left'
                   ? 'bg-gradient-to-l from-green-500/20 to-transparent'
                   : 'bg-gradient-to-r from-green-500/20 to-transparent'
@@ -174,23 +174,23 @@ export const MenuVariation93: React.FC = () => {
             />
           )}
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <div
                 key={tab.name}
                 ref={el => {
                   tabRefs.current[index] = el;
                 }}
-                className="flex-1 flex flex-col items-center"
+                className="flex flex-1 flex-col items-center"
               >
                 <Link
                   href={tab.href}
                   onClick={() => setActiveTab(index)}
-                  className="flex flex-col items-center justify-center px-3 py-2 min-w-0 w-full relative group"
+                  className="group relative flex w-full min-w-0 flex-col items-center justify-center px-3 py-2"
                 >
                   <div
                     className={cn(
-                      'relative mb-2 transition-all duration-500 ease-out transform',
+                      'relative mb-2 transform transition-all duration-500 ease-out',
                       'group-hover:scale-110 group-active:scale-95',
                       activeTab === index ? 'scale-110' : '',
                       swipeDirection && activeTab === index
@@ -200,7 +200,7 @@ export const MenuVariation93: React.FC = () => {
                   >
                     <div
                       className={cn(
-                        'w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 transform relative',
+                        'relative flex h-12 w-12 transform items-center justify-center rounded-2xl transition-all duration-500',
                         'group-hover:rotate-3',
                         activeTab === index
                           ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
@@ -213,19 +213,19 @@ export const MenuVariation93: React.FC = () => {
                       {activeTab === index && swipeDirection && (
                         <div
                           className={cn(
-                            'absolute inset-0 rounded-2xl border-2 border-green-400 animate-ping'
+                            'absolute inset-0 animate-ping rounded-2xl border-2 border-green-400'
                           )}
                         />
                       )}
 
                       {/* Points de navigation */}
                       {activeTab === index && (
-                        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                        <div className="absolute -bottom-1 left-1/2 flex -translate-x-1/2 transform space-x-1">
                           {tabs.map((_, dotIndex) => (
                             <div
                               key={dotIndex}
                               className={cn(
-                                'w-1 h-1 rounded-full transition-all duration-300',
+                                'h-1 w-1 rounded-full transition-all duration-300',
                                 dotIndex === activeTab
                                   ? 'bg-white'
                                   : 'bg-white/30'
@@ -238,7 +238,7 @@ export const MenuVariation93: React.FC = () => {
                   </div>
                   <span
                     className={cn(
-                      'text-xs font-bold transition-all duration-300 relative',
+                      'relative text-xs font-bold transition-all duration-300',
                       activeTab === index
                         ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent`
                         : 'text-gray-400 group-hover:text-gray-300'
@@ -252,7 +252,7 @@ export const MenuVariation93: React.FC = () => {
           </div>
 
           {/* Instructions de geste */}
-          <div className="absolute bottom-1 right-4 text-xs text-gray-500">
+          <div className="absolute right-4 bottom-1 text-xs text-gray-500">
             👆 Swipe to navigate
           </div>
         </div>

@@ -7,9 +7,9 @@ import { uri } from 'settings';
 
 const EmailInPage = async () => {
   return (
-    <div className="flex flex-col items-center justify-center p-4 gap-8 max-w-[500px]">
-      <div className="flex flex-col gap-4 items-center">
-        <div className="h-20 w-20 flex items-center justify-center rounded-full bg-gray-100">
+    <div className="flex max-w-[500px] flex-col items-center justify-center gap-8 p-4">
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
           <svg
             className="h-12 w-12"
             xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@ const EmailInPage = async () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 items-center">
+      <div className="flex flex-col items-center gap-4">
         <Alert>
           <AlertCircle className="h-4 w-4" />
 

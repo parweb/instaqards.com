@@ -25,7 +25,7 @@ export default async function WorkflowsActions() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6">Liste des Actions</h1>
+      <h1 className="mb-6 text-2xl font-bold">Liste des Actions</h1>
       <Table>
         <TableCaption>
           Liste des actions configurées dans le système.
@@ -77,7 +77,7 @@ export default async function WorkflowsActions() {
         </TableBody>
       </Table>
       {actions.length === 0 && (
-        <p className="text-center text-muted-foreground mt-6">
+        <p className="text-muted-foreground mt-6 text-center">
           Aucune action trouvée.
         </p>
       )}

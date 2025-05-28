@@ -130,7 +130,7 @@ const BubbleItem: FC<{
     <button
       ref={imageRef}
       type="button"
-      className={`${className} p-0 border-0 bg-transparent`}
+      className={`${className} border-0 bg-transparent p-0`}
       onClick={handleImageClick}
       onKeyDown={handleKeyDown}
       aria-label="Ouvrir l'image en plein écran"
@@ -139,7 +139,7 @@ const BubbleItem: FC<{
       <img
         src={src}
         alt=""
-        className="w-full h-full object-cover rounded-full"
+        className="h-full w-full rounded-full object-cover"
       />
     </button>
   );
@@ -204,7 +204,7 @@ const AppleWatch: FC<AppleWatchProps> = ({
 }) => {
   if (medias.length === 0) {
     return (
-      <div className="rounded-md overflow-hidden bg-white p-4 flex-1 flex items-center justify-center">
+      <div className="flex flex-1 items-center justify-center overflow-hidden rounded-md bg-white p-4">
         No images
       </div>
     );

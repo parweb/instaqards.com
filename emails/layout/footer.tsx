@@ -19,8 +19,8 @@ const title = {
 
 export const Footer = ({ lang }: { lang: Lang }) => {
   return (
-    <Section className="text-center bg-gray-200 p-4 pt-0">
-      <Text className="text-gray-700 text-2xl m-0 mb-4 p-4">{title[lang]}</Text>
+    <Section className="bg-gray-200 p-4 pt-0 text-center">
+      <Text className="m-0 mb-4 p-4 text-2xl text-gray-700">{title[lang]}</Text>
 
       <Row className="justify-center">
         <Column className="px-0 text-left">
@@ -29,7 +29,7 @@ export const Footer = ({ lang }: { lang: Lang }) => {
               <Link href={`${base}/pro/${job.id}`}>
                 <Text
                   style={{ fontSize: '16px' }}
-                  className="p-0.5 m-0 text-stone-700"
+                  className="m-0 p-0.5 text-stone-700"
                 >
                   {job.profession[lang]}
                 </Text>
@@ -44,7 +44,7 @@ export const Footer = ({ lang }: { lang: Lang }) => {
               <Link href={`${base}/pro/${job.id}`}>
                 <Text
                   style={{ fontSize: '16px' }}
-                  className="p-0.5 m-0 text-stone-700"
+                  className="m-0 p-0.5 text-stone-700"
                 >
                   {job.profession[lang]}
                 </Text>
@@ -59,7 +59,7 @@ export const Footer = ({ lang }: { lang: Lang }) => {
               <Link href={`${base}/pro/${job.id}`}>
                 <Text
                   style={{ fontSize: '16px' }}
-                  className="p-0.5 m-0 text-stone-700"
+                  className="m-0 p-0.5 text-stone-700"
                 >
                   {job.profession[lang]}
                 </Text>

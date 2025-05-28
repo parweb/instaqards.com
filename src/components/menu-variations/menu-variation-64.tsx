@@ -13,28 +13,28 @@ export const MenuVariation64: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-4 h-4" />,
+      icon: <Home className="h-4 w-4" />,
       href: '/',
       color: 'from-amber-600 to-yellow-500',
       rpm: 33
     },
     {
       name: 'Search',
-      icon: <Search className="w-4 h-4" />,
+      icon: <Search className="h-4 w-4" />,
       href: '/explore',
       color: 'from-red-600 to-orange-500',
       rpm: 45
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-4 h-4" />,
+      icon: <Heart className="h-4 w-4" />,
       href: '/qards',
       color: 'from-purple-600 to-pink-500',
       rpm: 78
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-4 h-4" />,
+      icon: <MoreHorizontal className="h-4 w-4" />,
       href: '#',
       color: 'from-green-600 to-teal-500',
       rpm: 16
@@ -58,10 +58,10 @@ export const MenuVariation64: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       {/* Fond vintage */}
       <div className="relative bg-gradient-to-r from-amber-900 via-orange-900 to-red-900 p-1">
-        <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 backdrop-blur-sm px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 px-4 py-4 backdrop-blur-sm">
           {/* Texture vintage */}
           <div className="absolute inset-0 opacity-20">
             <div className="absolute inset-0 bg-gradient-to-r from-amber-200/30 via-transparent to-orange-200/30" />
@@ -69,31 +69,31 @@ export const MenuVariation64: React.FC = () => {
             {Array.from({ length: 15 }, (_, i) => (
               <div
                 key={i}
-                className="absolute w-full h-px bg-amber-800/20"
+                className="absolute h-px w-full bg-amber-800/20"
                 style={{ top: `${(i + 1) * 6}%` }}
               />
             ))}
           </div>
 
           {/* Platine vintage */}
-          <div className="absolute top-2 right-4 w-8 h-8 opacity-10">
-            <div className="w-full h-full border-2 border-amber-800 rounded-full relative">
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-amber-800 rounded-full" />
+          <div className="absolute top-2 right-4 h-8 w-8 opacity-10">
+            <div className="relative h-full w-full rounded-full border-2 border-amber-800">
+              <div className="absolute top-1/2 left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-amber-800" />
             </div>
           </div>
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 {/* Disque vinyle */}
                 <div
                   className={cn(
-                    'relative mb-2 transition-all duration-500 ease-out transform',
+                    'relative mb-2 transform transition-all duration-500 ease-out',
                     'group-hover:scale-110 group-active:scale-95',
                     activeTab === index ? 'scale-115' : ''
                   )}
@@ -101,7 +101,7 @@ export const MenuVariation64: React.FC = () => {
                   {/* Ombre du disque */}
                   <div
                     className={cn(
-                      'absolute inset-0 w-14 h-14 rounded-full bg-black/30 transition-all duration-500 transform translate-x-1 translate-y-1',
+                      'absolute inset-0 h-14 w-14 translate-x-1 translate-y-1 transform rounded-full bg-black/30 transition-all duration-500',
                       activeTab === index
                         ? 'translate-x-2 translate-y-2 opacity-60'
                         : 'opacity-30'
@@ -111,7 +111,7 @@ export const MenuVariation64: React.FC = () => {
                   {/* Disque vinyle principal */}
                   <div
                     className={cn(
-                      'relative z-10 w-14 h-14 rounded-full transition-all duration-500 transform',
+                      'relative z-10 h-14 w-14 transform rounded-full transition-all duration-500',
                       'bg-gradient-to-br from-gray-900 via-gray-800 to-black',
                       activeTab === index ? 'shadow-2xl' : 'shadow-lg'
                     )}
@@ -130,17 +130,17 @@ export const MenuVariation64: React.FC = () => {
                     {/* Centre du disque (label) */}
                     <div
                       className={cn(
-                        'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
-                        'w-8 h-8 rounded-full transition-all duration-500',
+                        'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform',
+                        'h-8 w-8 rounded-full transition-all duration-500',
                         `bg-gradient-to-r ${tab.color}`,
                         activeTab === index ? 'shadow-lg' : 'shadow-md'
                       )}
                     >
                       {/* Trou central */}
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-black rounded-full" />
+                      <div className="absolute top-1/2 left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-black" />
 
                       {/* Icône sur le label */}
-                      <div className="absolute inset-0 flex items-center justify-center text-white text-xs">
+                      <div className="absolute inset-0 flex items-center justify-center text-xs text-white">
                         {tab.icon}
                       </div>
 
@@ -156,31 +156,31 @@ export const MenuVariation64: React.FC = () => {
                     {/* Rayures et usure */}
                     {activeTab === index && (
                       <>
-                        <div className="absolute top-2 left-3 w-6 h-px bg-white/10 transform rotate-12" />
-                        <div className="absolute bottom-3 right-2 w-4 h-px bg-white/10 transform -rotate-45" />
-                        <div className="absolute top-4 right-4 w-2 h-px bg-white/10 transform rotate-90" />
+                        <div className="absolute top-2 left-3 h-px w-6 rotate-12 transform bg-white/10" />
+                        <div className="absolute right-2 bottom-3 h-px w-4 -rotate-45 transform bg-white/10" />
+                        <div className="absolute top-4 right-4 h-px w-2 rotate-90 transform bg-white/10" />
                       </>
                     )}
                   </div>
 
                   {/* Bras de lecture (pour l'onglet actif) */}
                   {activeTab === index && (
-                    <div className="absolute -top-2 -right-1 w-6 h-1 bg-gradient-to-r from-amber-600 to-yellow-500 rounded-full transform rotate-45 origin-left animate-pulse" />
+                    <div className="absolute -top-2 -right-1 h-1 w-6 origin-left rotate-45 transform animate-pulse rounded-full bg-gradient-to-r from-amber-600 to-yellow-500" />
                   )}
 
                   {/* Particules de poussière vintage */}
                   {activeTab === index && (
                     <>
                       <div
-                        className="absolute -top-1 -left-1 w-1 h-1 bg-amber-400 rounded-full animate-bounce opacity-70"
+                        className="absolute -top-1 -left-1 h-1 w-1 animate-bounce rounded-full bg-amber-400 opacity-70"
                         style={{ animationDelay: '0s' }}
                       />
                       <div
-                        className="absolute -bottom-1 -right-1 w-0.5 h-0.5 bg-orange-400 rounded-full animate-bounce opacity-70"
+                        className="absolute -right-1 -bottom-1 h-0.5 w-0.5 animate-bounce rounded-full bg-orange-400 opacity-70"
                         style={{ animationDelay: '0.7s' }}
                       />
                       <div
-                        className="absolute top-0 -right-1 w-0.5 h-0.5 bg-red-400 rounded-full animate-bounce opacity-70"
+                        className="absolute top-0 -right-1 h-0.5 w-0.5 animate-bounce rounded-full bg-red-400 opacity-70"
                         style={{ animationDelay: '1.4s' }}
                       />
                     </>
@@ -190,10 +190,10 @@ export const MenuVariation64: React.FC = () => {
                 {/* Label vintage */}
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all duration-500 relative',
+                    'relative text-xs font-bold transition-all duration-500',
                     'font-serif', // Police vintage
                     activeTab === index
-                      ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent animate-pulse`
+                      ? `bg-gradient-to-r ${tab.color} animate-pulse bg-clip-text text-transparent`
                       : 'text-amber-800 group-hover:text-amber-900'
                   )}
                 >
@@ -202,12 +202,12 @@ export const MenuVariation64: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-0.5 rounded-full',
+                          'absolute -bottom-1 left-1/2 h-0.5 w-8 -translate-x-1/2 transform rounded-full',
                           `bg-gradient-to-r ${tab.color}`
                         )}
                       />
                       {/* Indicateur RPM */}
-                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-[8px] text-amber-600 font-mono">
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 transform font-mono text-[8px] text-amber-600">
                         {tab.rpm} RPM
                       </div>
                     </>
@@ -218,7 +218,7 @@ export const MenuVariation64: React.FC = () => {
           </div>
 
           {/* Signature vintage */}
-          <div className="absolute bottom-1 right-2 text-[8px] text-amber-700/50 font-serif italic">
+          <div className="absolute right-2 bottom-1 font-serif text-[8px] text-amber-700/50 italic">
             Est. 1950
           </div>
         </div>

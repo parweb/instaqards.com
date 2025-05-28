@@ -127,16 +127,16 @@ export const BlockTypesItemVariantsItem = ({
     return (
       <>
         <div
-          className="relative flex-1 flex items-center justify-center overflow-hidden p-2"
+          className="relative flex flex-1 items-center justify-center overflow-hidden p-2"
           onClick={() => onClick({ type, id })}
           onKeyDown={() => onClick({ type, id })}
         >
-          <div className={cn('px-1 w-full', { 'px-4': expanded })}>
+          <div className={cn('w-full px-1', { 'px-4': expanded })}>
             {/* @ts-ignore */}
             <Component label="Press Me" />
           </div>
 
-          <div className="absolute inset-0 flex items-start justify-end cursor-pointer" />
+          <div className="absolute inset-0 flex cursor-pointer items-start justify-end" />
         </div>
 
         {expanded === false && (
@@ -167,9 +167,9 @@ export const BlockTypesItemVariantsItem = ({
     return createPortal(
       <div
         className={cn(
-          'z-20 touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px] border border-stone-200 rounded-md p-2',
+          'z-20 flex aspect-video w-[320px] touch-pan-y touch-pinch-zoom flex-col justify-between gap-1 rounded-md border border-stone-200 p-2',
           {
-            'fixed inset-0 bg-white w-auto h-auto aspect-auto rounded-none':
+            'fixed inset-0 aspect-auto h-auto w-auto rounded-none bg-white':
               expanded
           }
         )}
@@ -183,10 +183,10 @@ export const BlockTypesItemVariantsItem = ({
   return (
     <div
       className={cn(
-        'touch-pan-y touch-pinch-zoom flex flex-col justify-between gap-1 aspect-video w-[320px]',
-        'border border-stone-200 rounded-md p-2',
+        'flex aspect-video w-[320px] touch-pan-y touch-pinch-zoom flex-col justify-between gap-1',
+        'rounded-md border border-stone-200 p-2',
         {
-          'border-2 border-primary': value?.id === id && value?.type === type
+          'border-primary border-2': value?.id === id && value?.type === type
         }
       )}
     >

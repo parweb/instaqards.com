@@ -14,25 +14,25 @@ export const MenuVariation72: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       color: 'from-emerald-500 to-teal-500'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       color: 'from-violet-500 to-purple-500'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       color: 'from-rose-500 to-pink-500'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'from-amber-500 to-orange-500'
     }
@@ -60,19 +60,19 @@ export const MenuVariation72: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative bg-gradient-to-r from-slate-100 via-white to-slate-100 p-1">
-        <div className="bg-white/90 backdrop-blur-lg px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-white/90 px-4 py-4 backdrop-blur-lg">
           {/* Indicateur élastique */}
-          <div className="absolute bottom-2 left-0 right-0 flex justify-around">
+          <div className="absolute right-0 bottom-2 left-0 flex justify-around">
             {tabs.map((_, index) => (
               <div
                 key={index}
                 className={cn(
-                  'w-12 h-1 rounded-full transition-all duration-600 ease-out',
+                  'h-1 w-12 rounded-full transition-all duration-600 ease-out',
                   activeTab === index
                     ? `bg-gradient-to-r ${tabs[activeTab].color} scale-x-150`
-                    : 'bg-gray-200 scale-x-100',
+                    : 'scale-x-100 bg-gray-200',
                   isTransitioning && index === activeTab ? 'animate-pulse' : ''
                 )}
                 style={{
@@ -83,18 +83,18 @@ export const MenuVariation72: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
                 href={tab.href}
                 onClick={() => handleTabChange(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 {/* Conteneur avec effet de ressort */}
                 <div
                   className={cn(
-                    'relative mb-2 transition-all ease-out transform',
+                    'relative mb-2 transform transition-all ease-out',
                     'group-hover:scale-105 group-active:scale-95',
                     activeTab === index ? 'scale-110' : '',
                     isTransitioning && index === activeTab
@@ -111,7 +111,7 @@ export const MenuVariation72: React.FC = () => {
                   {/* Icône avec effet élastique */}
                   <div
                     className={cn(
-                      'w-12 h-12 rounded-full flex items-center justify-center transition-all transform',
+                      'flex h-12 w-12 transform items-center justify-center rounded-full transition-all',
                       'group-hover:rotate-6',
                       activeTab === index
                         ? `bg-gradient-to-r ${tab.color} text-white shadow-xl`
@@ -134,14 +134,14 @@ export const MenuVariation72: React.FC = () => {
                       <>
                         <div
                           className={cn(
-                            'absolute inset-0 rounded-full animate-ping opacity-40',
+                            'absolute inset-0 animate-ping rounded-full opacity-40',
                             `bg-gradient-to-r ${tab.color}`
                           )}
                           style={{ animationDuration: '0.6s' }}
                         />
                         <div
                           className={cn(
-                            'absolute -inset-2 rounded-full animate-ping opacity-20',
+                            'absolute -inset-2 animate-ping rounded-full opacity-20',
                             `bg-gradient-to-r ${tab.color}`
                           )}
                           style={{
@@ -158,14 +158,14 @@ export const MenuVariation72: React.FC = () => {
                     <>
                       <div
                         className={cn(
-                          'absolute -top-1 -right-1 w-2 h-2 rounded-full transition-all duration-300',
+                          'absolute -top-1 -right-1 h-2 w-2 rounded-full transition-all duration-300',
                           `bg-gradient-to-r ${tab.color}`,
                           isTransitioning ? 'animate-bounce' : 'animate-pulse'
                         )}
                       />
                       <div
                         className={cn(
-                          'absolute -bottom-1 -left-1 w-1.5 h-1.5 rounded-full transition-all duration-300',
+                          'absolute -bottom-1 -left-1 h-1.5 w-1.5 rounded-full transition-all duration-300',
                           `bg-gradient-to-r ${tab.color}`,
                           isTransitioning ? 'animate-bounce' : 'animate-pulse'
                         )}
@@ -178,7 +178,7 @@ export const MenuVariation72: React.FC = () => {
                 {/* Label avec micro-animation */}
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all relative',
+                    'relative text-xs font-bold transition-all',
                     activeTab === index
                       ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent`
                       : 'text-gray-600 group-hover:text-gray-800',
@@ -199,7 +199,7 @@ export const MenuVariation72: React.FC = () => {
                   {activeTab === index && (
                     <div
                       className={cn(
-                        'absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 h-0.5 rounded-full transition-all',
+                        'absolute -bottom-0.5 left-1/2 h-0.5 -translate-x-1/2 transform rounded-full transition-all',
                         `bg-gradient-to-r ${tab.color}`,
                         isTransitioning
                           ? 'w-8 duration-600'

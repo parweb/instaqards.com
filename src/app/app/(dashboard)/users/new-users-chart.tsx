@@ -105,7 +105,7 @@ export const NewUsersChart = ({
             deltaType={
               dailyGrowth >= 0 ? 'moderateIncrease' : 'moderateDecrease'
             }
-            className="dark:bg-green-900 dark:bg-opacity-50 dark:text-green-400"
+            className="dark:bg-opacity-50 dark:bg-green-900 dark:text-green-400"
           >
             {dailyGrowth.toFixed(2)}%
           </BadgeDelta>

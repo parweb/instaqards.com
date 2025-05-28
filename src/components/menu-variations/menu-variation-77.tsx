@@ -13,25 +13,25 @@ export const MenuVariation77: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       color: 'from-blue-500 to-indigo-600'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       color: 'from-purple-500 to-violet-600'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       color: 'from-pink-500 to-rose-600'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       color: 'from-green-500 to-emerald-600'
     }
@@ -55,9 +55,9 @@ export const MenuVariation77: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       <div className="relative bg-gradient-to-r from-white via-gray-50 to-white p-1">
-        <div className="bg-white/95 backdrop-blur-sm px-4 py-4 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-white/95 px-4 py-4 backdrop-blur-sm">
           {/* Indicateur avec physique de ressort */}
           <div
             className={cn(
@@ -75,17 +75,17 @@ export const MenuVariation77: React.FC = () => {
             }}
           />
 
-          <div className="flex items-center justify-around relative z-10">
+          <div className="relative z-10 flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
                 key={tab.name}
                 href={tab.href}
                 onClick={() => handleTabChange(index)}
-                className="flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 relative group"
+                className="group relative flex min-w-0 flex-1 flex-col items-center justify-center px-3 py-2"
               >
                 <div
                   className={cn(
-                    'relative mb-2 transition-all ease-out transform',
+                    'relative mb-2 transform transition-all ease-out',
                     'group-hover:scale-105 group-active:scale-95',
                     activeTab === index ? 'scale-110' : '',
                     springActive && index === activeTab
@@ -101,7 +101,7 @@ export const MenuVariation77: React.FC = () => {
                 >
                   <div
                     className={cn(
-                      'w-12 h-12 rounded-2xl flex items-center justify-center transition-all transform relative',
+                      'relative flex h-12 w-12 transform items-center justify-center rounded-2xl transition-all',
                       'group-hover:rotate-6',
                       activeTab === index
                         ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
@@ -123,7 +123,7 @@ export const MenuVariation77: React.FC = () => {
 
                 <span
                   className={cn(
-                    'text-xs font-bold transition-all duration-300 relative',
+                    'relative text-xs font-bold transition-all duration-300',
                     activeTab === index
                       ? `bg-gradient-to-r ${tab.color} bg-clip-text text-transparent`
                       : 'text-gray-600 group-hover:text-gray-800'

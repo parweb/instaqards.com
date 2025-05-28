@@ -15,25 +15,25 @@ export const MenuVariation4: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       emoji: '🏠'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       emoji: '🔍'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       emoji: '💙'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       emoji: '🌊'
     }
@@ -66,13 +66,13 @@ export const MenuVariation4: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden overflow-hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 overflow-hidden md:hidden">
       {/* Background océan avec vagues */}
       <div className="relative bg-gradient-to-t from-blue-900 via-blue-600 to-cyan-400">
         {/* Vagues animées */}
-        <div className="absolute top-0 left-0 w-full h-full">
+        <div className="absolute top-0 left-0 h-full w-full">
           <svg
-            className="absolute top-0 w-full h-8"
+            className="absolute top-0 h-8 w-full"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
           >
@@ -83,7 +83,7 @@ export const MenuVariation4: React.FC = () => {
             />
           </svg>
           <svg
-            className="absolute top-2 w-full h-8"
+            className="absolute top-2 h-8 w-full"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
           >
@@ -100,7 +100,7 @@ export const MenuVariation4: React.FC = () => {
         {bubbles.map(bubble => (
           <div
             key={bubble.id}
-            className="absolute bottom-0 bg-white/20 rounded-full animate-bounce opacity-60"
+            className="absolute bottom-0 animate-bounce rounded-full bg-white/20 opacity-60"
             style={{
               left: `${bubble.x}%`,
               width: `${bubble.size}px`,
@@ -111,7 +111,7 @@ export const MenuVariation4: React.FC = () => {
           />
         ))}
 
-        <div className="relative px-4 py-4 bg-white/10 backdrop-blur-lg">
+        <div className="relative bg-white/10 px-4 py-4 backdrop-blur-lg">
           <div className="flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
@@ -119,25 +119,25 @@ export const MenuVariation4: React.FC = () => {
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  'flex flex-col items-center justify-center px-3 py-2 rounded-2xl transition-all duration-500 min-w-0 flex-1 relative transform',
+                  'relative flex min-w-0 flex-1 transform flex-col items-center justify-center rounded-2xl px-3 py-2 transition-all duration-500',
                   'hover:scale-110 active:scale-95',
                   activeTab === index ? 'scale-110' : ''
                 )}
               >
                 {/* Vague d'activation */}
                 {activeTab === index && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-16 h-2 bg-white/30 rounded-full animate-pulse">
-                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent rounded-full animate-ping" />
+                  <div className="absolute -top-4 left-1/2 h-2 w-16 -translate-x-1/2 transform animate-pulse rounded-full bg-white/30">
+                    <div className="absolute top-0 left-0 h-full w-full animate-ping rounded-full bg-gradient-to-r from-transparent via-white/50 to-transparent" />
                   </div>
                 )}
 
                 {/* Icône avec effet aquatique */}
                 <div
                   className={cn(
-                    'mb-2 p-3 rounded-2xl transition-all duration-500 transform border-2 border-white/30',
-                    'hover:rotate-12 hover:scale-110',
+                    'mb-2 transform rounded-2xl border-2 border-white/30 p-3 transition-all duration-500',
+                    'hover:scale-110 hover:rotate-12',
                     activeTab === index
-                      ? 'bg-white/90 text-blue-600 shadow-2xl shadow-blue-500/50 scale-110 animate-pulse border-white'
+                      ? 'scale-110 animate-pulse border-white bg-white/90 text-blue-600 shadow-2xl shadow-blue-500/50'
                       : 'bg-white/20 text-white hover:bg-white/30'
                   )}
                 >
@@ -146,7 +146,7 @@ export const MenuVariation4: React.FC = () => {
 
                 {/* Emoji flottant */}
                 {activeTab === index && (
-                  <div className="absolute top-0 right-0 text-lg animate-bounce">
+                  <div className="absolute top-0 right-0 animate-bounce text-lg">
                     {tab.emoji}
                   </div>
                 )}
@@ -156,7 +156,7 @@ export const MenuVariation4: React.FC = () => {
                   className={cn(
                     'text-xs font-bold transition-all duration-500',
                     activeTab === index
-                      ? 'text-white animate-pulse text-shadow-lg'
+                      ? 'animate-pulse text-white text-shadow-lg'
                       : 'text-blue-100'
                   )}
                 >
@@ -167,19 +167,19 @@ export const MenuVariation4: React.FC = () => {
                 {activeTab === index && (
                   <>
                     <div
-                      className="absolute top-1 left-1 w-2 h-2 bg-white/40 rounded-full animate-ping"
+                      className="absolute top-1 left-1 h-2 w-2 animate-ping rounded-full bg-white/40"
                       style={{ animationDelay: '0s' }}
                     />
                     <div
-                      className="absolute top-2 right-1 w-1 h-1 bg-white/40 rounded-full animate-ping"
+                      className="absolute top-2 right-1 h-1 w-1 animate-ping rounded-full bg-white/40"
                       style={{ animationDelay: '0.5s' }}
                     />
                     <div
-                      className="absolute bottom-1 left-2 w-1.5 h-1.5 bg-white/40 rounded-full animate-ping"
+                      className="absolute bottom-1 left-2 h-1.5 w-1.5 animate-ping rounded-full bg-white/40"
                       style={{ animationDelay: '1s' }}
                     />
                     <div
-                      className="absolute bottom-2 right-2 w-1 h-1 bg-white/40 rounded-full animate-ping"
+                      className="absolute right-2 bottom-2 h-1 w-1 animate-ping rounded-full bg-white/40"
                       style={{ animationDelay: '1.5s' }}
                     />
                   </>
@@ -190,10 +190,10 @@ export const MenuVariation4: React.FC = () => {
         </div>
 
         {/* Reflets de lumière sous-marine */}
-        <div className="absolute bottom-0 left-0 w-full h-full pointer-events-none">
-          <div className="absolute bottom-0 left-1/4 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse" />
+        <div className="pointer-events-none absolute bottom-0 left-0 h-full w-full">
+          <div className="absolute bottom-0 left-1/4 h-32 w-32 animate-pulse rounded-full bg-white/5 blur-xl" />
           <div
-            className="absolute bottom-0 right-1/4 w-24 h-24 bg-cyan-300/10 rounded-full blur-xl animate-pulse"
+            className="absolute right-1/4 bottom-0 h-24 w-24 animate-pulse rounded-full bg-cyan-300/10 blur-xl"
             style={{ animationDelay: '1s' }}
           />
         </div>

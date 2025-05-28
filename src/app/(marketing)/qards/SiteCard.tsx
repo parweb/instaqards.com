@@ -131,7 +131,7 @@ const SiteCardComponent = ({
       ref={cardRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full aspect-[9/16] flex sm:rounded-lg overflow-hidden"
+      className="relative flex aspect-[9/16] w-full overflow-hidden sm:rounded-lg"
     >
       <Activity mode={isVisible ? 'visible' : 'hidden'}>
         <>
@@ -153,7 +153,7 @@ const SiteCardComponent = ({
               </Main>
 
               <Footer>
-                <div className="flex gap-3 items-center justify-center">
+                <div className="flex items-center justify-center gap-3">
                   <Suspense fallback={null}>
                     <BlockList blocks={data.social} />
                   </Suspense>
@@ -162,7 +162,7 @@ const SiteCardComponent = ({
             </Content>
           </Wrapper>
 
-          <div className="absolute inset-0 flex gap-4 items-end justify-end p-2 pointer-events-none">
+          <div className="pointer-events-none absolute inset-0 flex items-end justify-end gap-4 p-2">
             <div className="pointer-events-auto">
               <Link
                 href={
@@ -170,7 +170,7 @@ const SiteCardComponent = ({
                   '?utm_source=qards.link&utm_medium=marketing&utm_campaign=lookmeup'
                 }
                 target="_blank"
-                className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
+                className="flex items-center justify-center gap-2 rounded-md border border-stone-200 bg-white p-4 text-3xl shadow-lg"
               >
                 <LuExternalLink className="" />
 
@@ -183,7 +183,7 @@ const SiteCardComponent = ({
 
               <button
                 type="submit"
-                className="flex items-center justify-center gap-2 p-4 text-3xl bg-white rounded-md border border-stone-200 shadow-lg"
+                className="flex items-center justify-center gap-2 rounded-md border border-stone-200 bg-white p-4 text-3xl shadow-lg"
               >
                 {likeState.liked ? (
                   <FaHeart className={cn({ 'animate-wiggle': loading })} />
@@ -208,7 +208,7 @@ const SiteCardComponent = ({
       </Activity>
 
       {!isVisible && (
-        <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 animate-pulse" />
+        <div className="absolute inset-0 animate-pulse bg-gray-100 dark:bg-gray-800" />
       )}
     </div>
   );

@@ -111,14 +111,14 @@ const AvalaibleDays = ({
       type="button"
       onClick={() => onChange(value === day.id ? undefined : day.id)}
       className={cn(
-        'group-hover:scale-100 hover:group-hover:scale-100 transition-all duration-300',
+        'transition-all duration-300 group-hover:scale-100 hover:group-hover:scale-100',
         value === day.id && 'scale-100'
       )}
     >
       <div
         className={cn(
-          'aspect-video h-16 flex items-center justify-center border-4 border-stone-200 hover:border-stone-300 rounded-md flex-col bg-white shadow-xs hover:shadow-md transition-all duration-300 cursor-pointer',
-          value === day.id && 'border-black hover:border-black bg-stone-200'
+          'flex aspect-video h-16 cursor-pointer flex-col items-center justify-center rounded-md border-4 border-stone-200 bg-white shadow-xs transition-all duration-300 hover:border-stone-300 hover:shadow-md',
+          value === day.id && 'border-black bg-stone-200 hover:border-black'
         )}
       >
         <div
@@ -160,15 +160,15 @@ const AvalaibleTimeSlot = ({
       type="button"
       onClick={() => onChange(value === timeSlot.id ? undefined : timeSlot.id)}
       className={cn(
-        'group-hover:scale-100 hover:group-hover:scale-100 transition-all duration-300',
+        'transition-all duration-300 group-hover:scale-100 hover:group-hover:scale-100',
         value === timeSlot.id && 'scale-100'
       )}
     >
       <div
         className={cn(
-          'aspect-video h-16 flex items-center justify-center border-4 border-stone-200 hover:border-stone-300 rounded-md flex-col bg-white shadow-xs hover:shadow-md transition-all duration-300 cursor-pointer',
+          'flex aspect-video h-16 cursor-pointer flex-col items-center justify-center rounded-md border-4 border-stone-200 bg-white shadow-xs transition-all duration-300 hover:border-stone-300 hover:shadow-md',
           value === timeSlot.id &&
-            'border-black hover:border-black bg-stone-200'
+            'border-black bg-stone-200 hover:border-black'
         )}
       >
         <div
@@ -227,7 +227,7 @@ export default function ProspectReservationModal({
           }
         })
       }
-      className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:md:border-stone-700 dark:bg-stone-800"
+      className="w-full rounded-md bg-white md:max-w-md md:border md:border-stone-200 md:shadow-sm dark:bg-stone-800 dark:md:border-stone-700"
     >
       <input type="hidden" name="type" value={data.type} />
       <input type="hidden" name="email" value={user.email} />
@@ -242,7 +242,7 @@ export default function ProspectReservationModal({
       <input type="hidden" name="time" value={data.selectedTimeSlot} />
 
       <div className="flex flex-col gap-2 p-4">
-        <div className="flex gap-2 items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Select
             value={data.type}
             onValueChange={async value => {
@@ -282,7 +282,7 @@ export default function ProspectReservationModal({
           </Select>
 
           {data.type === 'PHONE' && (
-            <div className="text-sm text-stone-700 bg-emerald-400 rounded-md p-2">
+            <div className="rounded-md bg-emerald-400 p-2 text-sm text-stone-700">
               <a
                 href={`tel:${formatPhoneNumber(user.phone).replaceAll(' ', '')}`}
               >
@@ -292,7 +292,7 @@ export default function ProspectReservationModal({
           )}
         </div>
 
-        <div className="flex-1 flex flex-col gap-2">
+        <div className="flex flex-1 flex-col gap-2">
           <div className="group">
             <Carousel
               className="w-full"
@@ -358,7 +358,7 @@ export default function ProspectReservationModal({
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 dark:border-stone-700 dark:bg-stone-800 md:px-10">
+      <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10 dark:border-stone-700 dark:bg-stone-800">
         <ProspectReservationButton />
       </div>
     </form>

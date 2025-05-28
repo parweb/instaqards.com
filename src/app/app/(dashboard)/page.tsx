@@ -215,20 +215,20 @@ export default async function Overview({
   const percent = Math.round((completed / total) * 100);
 
   return (
-    <div className="p-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-100 via-zinc-100 to-zinc-200 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-800 overflow-hidden">
+    <div className="overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-100 via-zinc-100 to-zinc-200 p-0 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-800">
       {sites.length > 0 && (
         <div className="flex flex-col gap-6 p-6">
-          <div className="flex-1 flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex flex-1 flex-col items-center gap-4 sm:flex-row">
             <MetricCard
               title="Total des clics"
               value={totalClicks}
-              icon={<LuMousePointer className="w-6 h-6 text-white" />}
+              icon={<LuMousePointer className="h-6 w-6 text-white" />}
               iconBg="bg-blue-500"
               badge={
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span
-                      className={`px-2 py-1 text-sm rounded-md ${pourcentVisitors >= 0 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}
+                      className={`rounded-md px-2 py-1 text-sm ${pourcentVisitors >= 0 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}
                     >
                       {pourcentVisitors >= 0 ? '+' : ''}
                       {pourcentVisitors.toFixed(1)}%
@@ -246,10 +246,10 @@ export default async function Overview({
             <MetricCard
               title="Abonnés"
               value={totalSubscribers}
-              icon={<LuUsers className="w-6 h-6 text-white" />}
+              icon={<LuUsers className="h-6 w-6 text-white" />}
               iconBg="bg-purple-500"
               badge={
-                <span className="px-2 py-1 text-sm rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400">
+                <span className="rounded-md bg-indigo-100 px-2 py-1 text-sm text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400">
                   {sites.length} {sites.length > 1 ? 'sites' : 'site'}
                 </span>
               }
@@ -260,10 +260,10 @@ export default async function Overview({
             <MetricCard
               title="Réservations"
               value={upcomingReservations}
-              icon={<LuCalendar className="w-6 h-6 text-white" />}
+              icon={<LuCalendar className="h-6 w-6 text-white" />}
               iconBg="bg-amber-500"
               badge={
-                <span className="px-2 py-1 text-sm rounded-md bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                <span className="rounded-md bg-amber-100 px-2 py-1 text-sm text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                   À venir
                 </span>
               }
@@ -313,10 +313,10 @@ export default async function Overview({
       </OnboardingAccordion>
 
       <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-cal font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="font-cal flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-white">
             <LuLayoutDashboard className="text-purple-500" />
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-pink-400">
               {await translate('components.site.title')}
             </span>
           </h2>

@@ -100,12 +100,12 @@ export default async function DivisionPage({
   ]);
 
   return (
-    <div className="flex-1 flex self-stretch gap-0">
-      <div className="relative flex-3/5 flex self-stretch">
-        <div className="isolate flex-1 self-stretch flex flex-col absolute inset-0 overflow-y-auto m-0 bg-stone-100">
-          <div className="z-10 sticky top-0 bg-stone-100/70 drop-shadow-lg backdrop-blur-md">
-            <div className="p-4 flex flex-col lg:flex-row items-center justify-between gap-4">
-              <div className="flex-1 self-stretch flex flex-wrap items-center justify-between gap-4">
+    <div className="flex flex-1 gap-0 self-stretch">
+      <div className="relative flex flex-3/5 self-stretch">
+        <div className="absolute inset-0 isolate m-0 flex flex-1 flex-col self-stretch overflow-y-auto bg-stone-100">
+          <div className="sticky top-0 z-10 bg-stone-100/70 drop-shadow-lg backdrop-blur-md">
+            <div className="flex flex-col items-center justify-between gap-4 p-4 lg:flex-row">
+              <div className="flex flex-1 flex-wrap items-center justify-between gap-4 self-stretch">
                 <div className="flex-1">
                   <InputSearch />
                 </div>
@@ -113,7 +113,7 @@ export default async function DivisionPage({
                 <div>
                   <ModalButton
                     size="icon"
-                    className=" rounded-full"
+                    className="rounded-full"
                     label={<LuFilter />}
                   >
                     <FilterModal />
@@ -129,7 +129,7 @@ export default async function DivisionPage({
         </div>
       </div>
 
-      <div className="hidden sm:flex flex-2/5 self-stretch">
+      <div className="hidden flex-2/5 self-stretch sm:flex">
         <Map sites={sites} />
       </div>
     </div>

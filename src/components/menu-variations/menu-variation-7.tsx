@@ -12,25 +12,25 @@ export const MenuVariation7: React.FC = () => {
   const tabs = [
     {
       name: 'Home',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       href: '/',
       emoji: '🌸'
     },
     {
       name: 'Search',
-      icon: <Search className="w-5 h-5" />,
+      icon: <Search className="h-5 w-5" />,
       href: '/explore',
       emoji: '🎋'
     },
     {
       name: 'Likes',
-      icon: <Heart className="w-5 h-5" />,
+      icon: <Heart className="h-5 w-5" />,
       href: '/qards',
       emoji: '💮'
     },
     {
       name: 'More',
-      icon: <MoreHorizontal className="w-5 h-5" />,
+      icon: <MoreHorizontal className="h-5 w-5" />,
       href: '#',
       emoji: '🌺'
     }
@@ -46,13 +46,13 @@ export const MenuVariation7: React.FC = () => {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden overflow-hidden">
+    <nav className="fixed right-0 bottom-0 left-0 z-50 overflow-hidden md:hidden">
       <div className="relative bg-gradient-to-t from-pink-200 via-rose-100 to-pink-50">
         {/* Pétales qui tombent */}
         {Array.from({ length: 6 }, (_, i) => (
           <div
             key={i}
-            className="absolute text-pink-400 animate-bounce opacity-70"
+            className="absolute animate-bounce text-pink-400 opacity-70"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 40}%`,
@@ -64,7 +64,7 @@ export const MenuVariation7: React.FC = () => {
           </div>
         ))}
 
-        <div className="relative px-4 py-4 bg-white/80 backdrop-blur-lg border-t-2 border-pink-300">
+        <div className="relative border-t-2 border-pink-300 bg-white/80 px-4 py-4 backdrop-blur-lg">
           <div className="flex items-center justify-around">
             {tabs.map((tab, index) => (
               <Link
@@ -72,18 +72,18 @@ export const MenuVariation7: React.FC = () => {
                 href={tab.href}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  'flex flex-col items-center justify-center px-3 py-2 rounded-3xl transition-all duration-700 min-w-0 flex-1 relative transform',
+                  'relative flex min-w-0 flex-1 transform flex-col items-center justify-center rounded-3xl px-3 py-2 transition-all duration-700',
                   'hover:scale-110 active:scale-95',
                   activeTab === index ? 'scale-110' : ''
                 )}
               >
                 <div
                   className={cn(
-                    'mb-2 p-3 rounded-3xl transition-all duration-700 transform border-2',
-                    'hover:rotate-12 hover:scale-110',
+                    'mb-2 transform rounded-3xl border-2 p-3 transition-all duration-700',
+                    'hover:scale-110 hover:rotate-12',
                     activeTab === index
-                      ? 'bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white shadow-2xl shadow-pink-500/50 border-pink-200'
-                      : 'bg-pink-100 text-pink-600 border-pink-200 hover:bg-pink-200'
+                      ? 'border-pink-200 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white shadow-2xl shadow-pink-500/50'
+                      : 'border-pink-200 bg-pink-100 text-pink-600 hover:bg-pink-200'
                   )}
                 >
                   {tab.icon}
@@ -91,7 +91,7 @@ export const MenuVariation7: React.FC = () => {
 
                 {activeTab === index && (
                   <div
-                    className="absolute -top-3 -right-3 text-3xl animate-spin"
+                    className="absolute -top-3 -right-3 animate-spin text-3xl"
                     style={{ animationDuration: '3s' }}
                   >
                     {tab.emoji}
@@ -102,7 +102,7 @@ export const MenuVariation7: React.FC = () => {
                   className={cn(
                     'text-xs font-bold transition-all duration-700',
                     activeTab === index
-                      ? 'text-pink-600 animate-pulse'
+                      ? 'animate-pulse text-pink-600'
                       : 'text-pink-500'
                   )}
                 >

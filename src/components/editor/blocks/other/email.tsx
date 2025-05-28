@@ -30,7 +30,7 @@ export default function Email({
 
   return (
     <form
-      className="relative overflow-hidden flex-1 flex gap-2 items-center bg-white rounded-md p-2"
+      className="relative flex flex-1 items-center gap-2 overflow-hidden rounded-md bg-white p-2"
       action={form => {
         setMode('loading');
 
@@ -61,7 +61,7 @@ export default function Email({
       </div>
 
       {mode === 'success' && (
-        <div className="absolute inset-0 bg-green-600 text-white flex gap-2 items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center gap-2 bg-green-600 text-white">
           <div>
             <LuCheck />
           </div>
