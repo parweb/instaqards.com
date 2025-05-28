@@ -99,10 +99,17 @@ export default async function Overview({
     })
   };
 
+  const select = {
+    createdAt: true,
+    siteId: true,
+    blockId: true
+  };
+
   const clicks = ([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
     auth.role
   )
     ? await db.click.findMany({
+        select,
         orderBy: { createdAt: 'asc' },
         where: {
           ...where,
@@ -110,6 +117,7 @@ export default async function Overview({
         }
       })
     : await db.click.findMany({
+        select,
         orderBy: { createdAt: 'asc' },
         where: {
           ...where,
@@ -148,33 +156,20 @@ export default async function Overview({
       ? (today.Visitors / yesterday.Visitors - 1) * 100
       : 0;
 
-  const [[sites, affiliate], subscription] = await Promise.all([
+  const [[sites, affiliateCount], subscription] = await Promise.all([
     db.$transaction([
       db.site.findMany({
-        where: {
-          userId: auth.id
-        },
-        include: {
-          clicks: true,
+        where: { userId: auth.id },
+        select: {
+          description: true,
+          logo: true,
+          customDomain: true,
           subscribers: true,
-          likes: true,
-          blocks: { include: { _count: { select: { reservations: true } } } },
-          _count: {
-            select: {
-              blocks: true,
-              subscribers: true
-            }
-          }
+          blocks: { include: { _count: { select: { reservations: true } } } }
         },
-        orderBy: {
-          updatedAt: 'desc'
-        }
+        orderBy: { updatedAt: 'desc' }
       }),
-      db.user.findMany({
-        where: {
-          refererId: auth.id
-        }
-      })
+      db.user.count({ where: { refererId: auth.id } })
     ]),
     getSubscription()
   ]);
@@ -206,7 +201,7 @@ export default async function Overview({
     hasSubscriber: sites.some(site => site.subscribers.length > 0),
     hasClick: clicks.length > 0,
     hasSubscription: subscription.isPaid(),
-    hasAffiliate: affiliate.length > 0,
+    hasAffiliate: affiliateCount > 0,
     hasShare: false
   };
 
@@ -270,20 +265,6 @@ export default async function Overview({
               bgGradient="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/10 dark:to-amber-800/10"
               shadowColor="shadow-amber-100 dark:shadow-amber-900/20"
             />
-
-            {/* <MetricCard
-                  title="Produits"
-                  value={-100}
-                  icon={<LuPalette className="w-6 h-6 text-white" />}
-                  iconBg="bg-green-500"
-                  badge={
-                    <span className="px-2 py-1 text-xs rounded-md bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                      Total
-                    </span>
-                  }
-                  bgGradient="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/10 dark:to-green-800/10"
-                  shadowColor="shadow-green-100 dark:shadow-green-900/20"
-                /> */}
           </div>
 
           <OverviewStats
