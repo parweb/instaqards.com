@@ -220,7 +220,9 @@ export default async function UserPage(props: {
         }
       },
       twoFactorConfirmation: {
-        select: {}
+        select: {
+          id: true
+        }
       },
       feedback: {
         select: {
@@ -264,8 +266,7 @@ export default async function UserPage(props: {
           status: true,
           createdAt: true
         },
-        orderBy: { createdAt: 'desc' },
-        take: 20
+        orderBy: { createdAt: 'desc' }
       },
       workflowStates: {
         select: {
@@ -287,10 +288,13 @@ export default async function UserPage(props: {
           status: true,
           executedAt: true,
           errorMessage: true,
-          action: { select: { code: true } }
+          action: {
+            select: {
+              code: true
+            }
+          }
         },
-        orderBy: { executedAt: 'desc' },
-        take: 20
+        orderBy: { executedAt: 'desc' }
       },
       jobs: {
         select: {
@@ -300,8 +304,7 @@ export default async function UserPage(props: {
           attempts: true,
           runAt: true
         },
-        orderBy: { createdAt: 'desc' },
-        take: 20
+        orderBy: { createdAt: 'desc' }
       },
       outbox: {
         select: {
@@ -310,8 +313,7 @@ export default async function UserPage(props: {
           status: true,
           createdAt: true
         },
-        orderBy: { createdAt: 'desc' },
-        take: 20
+        orderBy: { createdAt: 'desc' }
       },
       comments: {
         select: {

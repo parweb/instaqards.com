@@ -103,9 +103,20 @@ export default async function OutboxDetailPage(props: {
   try {
     outbox = await db.outbox.findUniqueOrThrow({
       where: { id: outboxId },
-      include: {
+      select: {
+        id: true,
+        email: true,
+        subject: true,
+        createdAt: true,
+        status: true,
+        metadata: true,
+        body: true,
         user: {
-          select: { id: true, name: true, image: true }
+          select: {
+            id: true,
+            name: true,
+            image: true
+          }
         }
       }
     });

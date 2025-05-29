@@ -135,42 +135,194 @@ export default async function UserPage(props: {
     where: {
       id: userId
     },
-    include: {
-      clicks: true,
-      accounts: true,
-      sessions: { orderBy: { expires: 'desc' } },
-      sites: { orderBy: { createdAt: 'desc' } },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+      updatedAt: true,
+      emailVerified: true,
+      isTwoFactorEnabled: true,
+      billing_address: true,
+      payment_method: true,
+      phone: true,
+      clicks: {
+        select: {
+          id: true,
+          createdAt: true,
+          path: true
+        }
+      },
+      accounts: {
+        select: {
+          id: true,
+          providerId: true,
+          providerAccountId: true
+        }
+      },
+      sessions: {
+        select: {
+          id: true,
+          expires: true
+        },
+        orderBy: { expires: 'desc' }
+      },
+      sites: {
+        select: {
+          id: true,
+          name: true,
+          subdomain: true,
+          createdAt: true
+        },
+        orderBy: { createdAt: 'desc' }
+      },
       subscriptions: {
-        include: {
+        select: {
+          id: true,
+          status: true,
+          current_period_end: true,
+          trial_end: true,
           price: {
-            include: {
-              product: true
+            select: {
+              product: {
+                select: {
+                  name: true
+                }
+              },
+              unit_amount: true,
+              currency: true,
+              type: true,
+              interval: true
             }
           }
         },
         orderBy: { created: 'desc' }
       },
-      authenticator: true,
-      links: { orderBy: { createdAt: 'desc' } },
-      customer: true,
-      twoFactorConfirmation: true,
-      feedback: { orderBy: { createdAt: 'desc' } },
-      likes: { include: { site: true }, orderBy: { createdAt: 'desc' } },
-      affiliates: { select: { id: true, name: true, email: true } },
-      referer: { select: { id: true, name: true, email: true } },
-      events: { orderBy: { createdAt: 'desc' }, take: 20 },
+      authenticator: {
+        select: {
+          id: true,
+          credentialDeviceType: true,
+          credentialID: true
+        }
+      },
+      links: {
+        select: {
+          id: true,
+          name: true,
+          url: true,
+          createdAt: true
+        },
+        orderBy: { createdAt: 'desc' }
+      },
+      customer: {
+        select: {
+          stripe_customer_id: true
+        }
+      },
+      twoFactorConfirmation: {
+        select: {
+          id: true
+        }
+      },
+      feedback: {
+        select: {
+          id: true,
+          createdAt: true,
+          message: true
+        },
+        orderBy: { createdAt: 'desc' }
+      },
+      likes: {
+        select: {
+          id: true,
+          siteId: true,
+          createdAt: true,
+          site: {
+            select: {
+              name: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' }
+      },
+      affiliates: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
+      },
+      referer: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
+      },
+      events: {
+        select: {
+          id: true,
+          eventType: true,
+          status: true,
+          createdAt: true
+        },
+        orderBy: { createdAt: 'desc' }
+      },
       workflowStates: {
-        include: { workflow: true },
+        select: {
+          id: true,
+          status: true,
+          startedAt: true,
+          workflow: {
+            select: {
+              name: true
+            }
+          }
+        },
         orderBy: { updatedAt: 'desc' }
       },
       executions: {
-        include: { action: true },
-        orderBy: { executedAt: 'desc' },
-        take: 20
+        select: {
+          id: true,
+          actionId: true,
+          status: true,
+          executedAt: true,
+          errorMessage: true,
+          action: {
+            select: {
+              code: true
+            }
+          }
+        },
+        orderBy: { executedAt: 'desc' }
       },
-      jobs: { orderBy: { createdAt: 'desc' }, take: 20 },
-      outbox: { orderBy: { createdAt: 'desc' }, take: 20 },
-      comments: { orderBy: { createdAt: 'desc' } }
+      jobs: {
+        select: {
+          id: true,
+          job: true,
+          status: true,
+          attempts: true,
+          runAt: true
+        },
+        orderBy: { createdAt: 'desc' }
+      },
+      outbox: {
+        select: {
+          id: true,
+          subject: true,
+          status: true,
+          createdAt: true
+        },
+        orderBy: { createdAt: 'desc' }
+      },
+      comments: {
+        select: {
+          id: true,
+          createdAt: true,
+          content: true
+        },
+        orderBy: { createdAt: 'desc' }
+      }
     }
   });
 
@@ -179,6 +331,13 @@ export default async function UserPage(props: {
   }
 
   const reservations = await db.reservation.findMany({
+    select: {
+      id: true,
+      type: true,
+      dateStart: true,
+      dateEnd: true,
+      comment: true
+    },
     where: { email: user.email },
     orderBy: { dateStart: 'desc' }
   });

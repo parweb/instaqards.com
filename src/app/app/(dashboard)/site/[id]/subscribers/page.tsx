@@ -32,6 +32,10 @@ export default async function SiteSubscribers(props: {
   }
 
   const subscribers = await db.subscriber.findMany({
+    select: {
+      id: true,
+      email: true
+    },
     where: { siteId: site.id }
   });
 

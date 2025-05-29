@@ -7,6 +7,12 @@ export default async function SiteSettingsAppearance(props: {
 }) {
   const params = await props.params;
   const data = await db.site.findUnique({
+    select: {
+      image: true,
+      logo: true,
+      font: true,
+      message404: true
+    },
     where: {
       id: decodeURIComponent(params.id)
     }

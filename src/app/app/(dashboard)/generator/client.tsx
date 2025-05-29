@@ -138,29 +138,23 @@ export function Fields({
       <form
         action={form =>
           startTransition(() =>
-            generateSite(form).then(data => {
+            generateSite(form).then(site => {
               router.refresh();
-
-              // setRefreshInputs(true);
 
               setButton(
                 // @ts-ignore
-                data
-                  ? // @ts-ignore
-                    data?.blocks?.at?.(0)?.widget
-                  : undefined
+                site ? site?.blocks?.at?.(0)?.widget : undefined
               );
 
               setLinks(
-                data
-                  ? data.blocks
+                site
+                  ? site.blocks
                       // @ts-ignore
-                      .map(item => item?.widget?.data ?? item)
-                      // @ts-ignore
-                      .map(data =>
+                      .map(block => block?.widget?.data ?? block)
+                      .map(block =>
                         [
-                          data?.label,
-                          data?.href
+                          block?.label,
+                          block?.href
                             ?.replace('https://', '')
                             ?.replace('www.', '')
                             ?.replace(/\/$/, '')
@@ -173,9 +167,9 @@ export function Fields({
                   : undefined
               );
 
-              setName(data?.name || undefined);
+              setName(site?.name || undefined);
 
-              setDescription(data?.description || undefined);
+              setDescription(site?.description || undefined);
             })
           )
         }

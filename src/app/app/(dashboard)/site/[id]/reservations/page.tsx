@@ -41,7 +41,24 @@ export default async function SiteReservations(props: {
   }
 
   const reservations = await db.reservation.findMany({
-    include: { block: { include: { site: true } } },
+    select: {
+      id: true,
+      dateStart: true,
+      dateEnd: true,
+      name: true,
+      email: true,
+      comment: true,
+      block: {
+        select: {
+          siteId: true,
+          site: {
+            select: {
+              name: true
+            }
+          }
+        }
+      }
+    },
     where: { block: { siteId: site.id } },
     orderBy: { dateStart: 'asc' }
   });

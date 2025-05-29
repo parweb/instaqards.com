@@ -15,7 +15,10 @@ export const generateSite = async (form: FormData) => {
   const site = siteId
     ? await db.site.findUnique({
         where: { id: siteId },
-        include: {
+        select: {
+          id: true,
+          customDomain: true,
+          subdomain: true,
           blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
         }
       })
@@ -126,7 +129,17 @@ export const generateSite = async (form: FormData) => {
   if (site === null) redirect(`?siteId=${qards.id}`);
 
   return db.site.findUnique({
-    where: { id: qards.id },
-    include: { blocks: true }
+    select: {
+      name: true,
+      description: true,
+      blocks: {
+        select: {
+          widget: true,
+          label: true,
+          href: true
+        }
+      }
+    },
+    where: { id: qards.id }
   });
 };

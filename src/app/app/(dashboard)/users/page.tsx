@@ -58,10 +58,29 @@ export default async function UsersPage({
       orderBy: { createdAt: 'desc' }
     }),
     db.user.findMany({
-      include: {
-        sites: { orderBy: { createdAt: 'desc' } },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        createdAt: true,
+        sites: {
+          select: {
+            id: true,
+            name: true,
+            logo: true,
+            subdomain: true
+          },
+          orderBy: { createdAt: 'desc' }
+        },
         subscriptions: {
-          include: { price: { include: { product: true } } },
+          select: {
+            id: true,
+            status: true,
+            trial_end: true,
+            trial_start: true,
+            ended_at: true
+          },
           orderBy: {
             ended_at: 'desc'
           }

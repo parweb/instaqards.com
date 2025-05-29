@@ -15,7 +15,9 @@ export const Calendar = ({
 }: {
   value: Date | undefined;
   reservations: Prisma.ReservationGetPayload<{
-    include: { block: { include: { site: true } } };
+    select: {
+      dateStart: true;
+    };
   }>[];
 }) => {
   const router = useRouter();

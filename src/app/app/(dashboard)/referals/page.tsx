@@ -11,14 +11,37 @@ export default async function ReferalsPage() {
         some: {}
       }
     },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
       affiliates: {
-        include: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
           affiliates: {
-            include: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
               affiliates: {
-                include: {
-                  affiliates: true
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  affiliates: {
+                    select: {
+                      id: true,
+                      name: true,
+                      email: true,
+                      image: true
+                    }
+                  }
                 }
               }
             }
@@ -44,27 +67,8 @@ export default async function ReferalsPage() {
                 id: 'root',
                 name: 'root',
                 email: 'root',
-                emailVerified: false,
                 image: null,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                isTwoFactorEnabled: false,
-                billing_address: {},
-                payment_method: {},
-                company: null,
-                address: null,
-                postcode: null,
-                city: null,
-                phone: null,
-                codeNaf: null,
-                activity: null,
-                role: UserRole.USER,
-                refererId: null,
-                affiliates: users,
-                location: {},
-                bounced: 0,
-                affiliateRate: 0.05,
-                isAnonymous: false
+                affiliates: users
               }
             ]}
           />

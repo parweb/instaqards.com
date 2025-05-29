@@ -1,6 +1,6 @@
 'use client';
 
-import type { User } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
 import dagre from 'dagre';
 import { cn } from 'lib/utils';
@@ -27,7 +27,14 @@ import {
 
 import 'reactflow/dist/style.css';
 
-type UserWithRecursiveAffiliates = User & {
+type UserWithRecursiveAffiliates = Prisma.UserGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    email: true;
+    image: true;
+  };
+}> & {
   affiliates: UserWithRecursiveAffiliates[];
 };
 

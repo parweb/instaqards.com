@@ -41,7 +41,7 @@ export default async function AllAffiliation({
   const subscription = params.subscription || 'all';
 
   const isSeller = [UserRole.SELLER, UserRole.ADMIN].includes(
-    // @ts-ignore
+    // @ts-expect-error
     auth.role
   );
 

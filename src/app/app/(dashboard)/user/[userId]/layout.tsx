@@ -12,8 +12,7 @@ export default async function UserPage(props: {
   params: Promise<{ userId: string }>;
   children: React.ReactNode;
 }) {
-  const params = await props.params;
-  const userId = params.userId;
+  const { userId } = await props.params;
 
   if (!userId) {
     notFound();
@@ -23,39 +22,11 @@ export default async function UserPage(props: {
     where: {
       id: userId
     },
-    include: {
-      accounts: true,
-      sessions: { orderBy: { expires: 'desc' } },
-      sites: { orderBy: { createdAt: 'desc' } },
-      subscriptions: {
-        include: {
-          price: {
-            include: {
-              product: true
-            }
-          }
-        },
-        orderBy: { created: 'desc' }
-      },
-      links: { orderBy: { createdAt: 'desc' } },
-      customer: true,
-      twoFactorConfirmation: true,
-      feedback: { orderBy: { createdAt: 'desc' } },
-      likes: { include: { site: true }, orderBy: { createdAt: 'desc' } },
-      affiliates: { select: { id: true, name: true, email: true } },
-      referer: { select: { id: true, name: true, email: true } },
-      events: { orderBy: { createdAt: 'desc' }, take: 20 },
-      workflowStates: {
-        include: { workflow: true },
-        orderBy: { updatedAt: 'desc' }
-      },
-      executions: {
-        include: { action: true },
-        orderBy: { executedAt: 'desc' },
-        take: 20
-      },
-      jobs: { orderBy: { createdAt: 'desc' }, take: 20 },
-      outbox: { orderBy: { createdAt: 'desc' }, take: 20 }
+    select: {
+      role: true,
+      name: true,
+      email: true,
+      image: true
     }
   });
 
@@ -73,19 +44,24 @@ export default async function UserPage(props: {
             <LuArrowLeft className="h-5 w-5" />
             <span className="sr-only">Back to Users</span>
           </Link>
+
           <Avatar className="h-12 w-12 rounded-lg">
             <AvatarImage src={avatar} alt={user.name ?? user.email} />
+
             <AvatarFallback className="rounded-lg text-lg">
               {(user.name?.[0] || user.email[0])?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
+
           <div className="ml-2">
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
               {user.name || 'Unnamed User'}
             </h1>
+
             <p className="text-muted-foreground text-sm">{user.email}</p>
           </div>
         </div>
+
         <Badge
           variant={
             (
@@ -102,6 +78,7 @@ export default async function UserPage(props: {
           {user.role}
         </Badge>
       </div>
+
       <Separator />
 
       {props.children}

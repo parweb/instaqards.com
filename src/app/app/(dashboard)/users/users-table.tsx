@@ -124,8 +124,15 @@ export const UsersTable = ({
       name: true;
       email: true;
       image: true;
-      sites: { select: { id: true; name: true; logo: true; subdomain: true } };
       createdAt: true;
+      sites: {
+        select: {
+          id: true;
+          name: true;
+          logo: true;
+          subdomain: true;
+        };
+      };
       subscriptions: {
         select: {
           id: true;
