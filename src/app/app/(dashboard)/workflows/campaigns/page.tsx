@@ -7,10 +7,36 @@ import { CampaignItem } from './client';
 
 export default async function WorkflowsCampaigns() {
   const campaigns = await db.campaign.findMany({
-    include: {
-      list: { include: { contacts: true } },
-      email: true,
-      outboxes: true
+    select: {
+      id: true,
+      smart: true,
+      active: true,
+      title: true,
+      description: true,
+      type: true,
+      email: {
+        select: {
+          id: true
+        }
+      },
+      list: {
+        select: {
+          id: true,
+          contacts: {
+            select: {
+              id: true,
+              email: true,
+              phone: true
+            }
+          }
+        }
+      },
+      outboxes: {
+        select: {
+          email: true,
+          metadata: true
+        }
+      }
     },
     orderBy: { updatedAt: 'desc' }
   });

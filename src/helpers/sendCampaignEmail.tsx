@@ -57,28 +57,25 @@ export function getVariables(
 
 export const sendCampaignEmail = async (
   contact: Prisma.UserGetPayload<{
-    include: {
+    select: {
+      email: true;
       sites: {
-        select: { id: true };
+        select: {
+          id: true;
+        };
         orderBy: [{ updatedAt: 'desc' }];
       };
     };
   }>,
   campaign: Prisma.CampaignGetPayload<{
-    include: {
-      list: {
-        include: {
-          contacts: {
-            include: {
-              sites: {
-                select: { id: true };
-                orderBy: [{ updatedAt: 'desc' }];
-              };
-            };
-          };
+    select: {
+      id: true;
+      email: {
+        select: {
+          subject: true;
+          content: true;
         };
       };
-      email: { select: { id: true; subject: true; content: true } };
     };
   }>
 ) => {

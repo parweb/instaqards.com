@@ -1,5 +1,3 @@
-import { notFound } from 'next/navigation';
-
 import { db } from 'helpers/db';
 import { WorkflowDiagram } from './WorkflowDiagram';
 
@@ -8,29 +6,39 @@ export default async function WorkflowPage(props: {
 }) {
   const params = await props.params;
 
-  const workflow = await db.workflow.findUnique({
+  const workflow = await db.workflow.findUniqueOrThrow({
     where: { id: params.id },
-    include: {
-      // states: { include: { user: true } },
+    select: {
+      name: true,
+      description: true,
+      isActive: true,
+      isDefault: true,
       rules: {
-        include: {
-          action: true,
-          trigger: true,
-          executions: true,
+        select: {
+          id: true,
+          action: {
+            select: {
+              id: true
+            }
+          },
+          trigger: {
+            select: {
+              id: true
+            }
+          },
           ruleConditions: {
-            include: {
-              condition: true,
-              rule: true
+            select: {
+              condition: {
+                select: {
+                  id: true
+                }
+              }
             }
           }
         }
       }
     }
   });
-
-  if (!workflow) {
-    notFound();
-  }
 
   return (
     <div className="flex flex-col space-y-6 p-8">

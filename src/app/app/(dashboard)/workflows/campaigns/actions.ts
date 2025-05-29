@@ -16,20 +16,18 @@ export const toggleCampaign = async (previous: boolean, form: FormData) => {
     async tx => {
       const campaign = await tx.campaign.findUniqueOrThrow({
         where: { id },
-        include: {
+        select: {
+          id: true,
+          smart: true,
           list: {
-            include: {
+            select: {
               contacts: {
-                include: {
-                  sites: {
-                    select: { id: true },
-                    orderBy: [{ updatedAt: 'desc' }]
-                  }
+                select: {
+                  id: true
                 }
               }
             }
-          },
-          email: { select: { id: true, subject: true, content: true } }
+          }
         }
       });
 
@@ -40,11 +38,11 @@ export const toggleCampaign = async (previous: boolean, form: FormData) => {
 
       if (campaign.smart === true) return;
 
-      const alreadies = await tx.queue.findMany({
+      const alreadies = await tx.queue.count({
         where: { correlationId: campaign.id }
       });
 
-      if (alreadies.length > 0) {
+      if (alreadies > 0) {
         await tx.queue.updateMany({
           where: {
             correlationId: campaign.id,

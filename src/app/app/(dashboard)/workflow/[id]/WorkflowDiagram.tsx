@@ -1,5 +1,6 @@
 'use client';
 
+import { Prisma } from '@prisma/client';
 import { useCallback } from 'react';
 
 import ReactFlow, {
@@ -14,10 +15,6 @@ import ReactFlow, {
 } from 'reactflow';
 
 import 'reactflow/dist/style.css';
-
-interface WorkflowDiagramProps {
-  workflow: any;
-}
 
 const TriggerNode = ({ data }: { data: any }) => (
   <div className="rounded-lg border border-gray-200 bg-blue-50 p-4 shadow-sm dark:border-gray-700 dark:bg-blue-900">
@@ -56,13 +53,44 @@ const nodeTypes = {
   condition: ConditionNode
 };
 
-export const WorkflowDiagram = ({ workflow }: WorkflowDiagramProps) => {
+export const WorkflowDiagram = ({
+  workflow
+}: {
+  workflow: Prisma.WorkflowGetPayload<{
+    select: {
+      rules: {
+        select: {
+          id: true;
+          action: {
+            select: {
+              id: true;
+            };
+          };
+          trigger: {
+            select: {
+              id: true;
+            };
+          };
+          ruleConditions: {
+            select: {
+              condition: {
+                select: {
+                  id: true;
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  }>;
+}) => {
   const createNodes = useCallback(() => {
     const nodes: Node[] = [];
     const edges: Edge[] = [];
     let yOffset = 0;
 
-    workflow.rules.forEach((rule: any) => {
+    workflow.rules.forEach(rule => {
       // Add trigger node
       const triggerId = `trigger-${rule.id}`;
       nodes.push({

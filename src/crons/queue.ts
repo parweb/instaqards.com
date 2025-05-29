@@ -35,7 +35,7 @@ const conditionEngine = {
     }>,
     _triggeringEvent: Prisma.EventGetPayload<{
       select: {
-        id: true;
+        eventType: true;
       };
     }>,
     _subscription: Prisma.SubscriptionGetPayload<{
@@ -71,9 +71,7 @@ const actionExecutor = {
     }>,
     _triggeringEvent: Prisma.EventGetPayload<{
       select: {
-        id: true;
         eventType: true;
-        status: true;
       };
     }>,
     job: Prisma.QueueGetPayload<{
@@ -219,10 +217,20 @@ async function processJob(
 
         return;
       }
+
       actionToExecute = rule.action;
 
-      const user = await db.user.findUnique({ where: { id: userId } });
+      const user = await db.user.findUnique({
+        select: {
+          email: true
+        },
+        where: { id: userId }
+      });
+
       const triggeringEvent = await db.event.findUnique({
+        select: {
+          eventType: true
+        },
         where: { id: triggeringEventId }
       });
 
@@ -233,11 +241,17 @@ async function processJob(
       }
 
       const subscription = await db.subscription.findFirst({
+        select: {
+          id: true
+        },
         where: { userId: userId },
         orderBy: { created: 'desc' }
       });
 
       const workflowState = await db.workflowState.findUnique({
+        select: {
+          status: true
+        },
         where: {
           userId_workflowId: { userId: userId, workflowId: rule.workflowId }
         }

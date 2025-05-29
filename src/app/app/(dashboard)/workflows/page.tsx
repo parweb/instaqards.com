@@ -5,17 +5,20 @@ import { db } from 'helpers/db';
 
 export default async function WorkflowsPage() {
   const workflows = await db.workflow.findMany({
-    include: {
-      // states: { include: { user: true } },
+    select: {
+      id: true,
+      name: true,
       rules: {
-        include: {
-          action: true,
-          trigger: true,
-          executions: true,
-          ruleConditions: {
-            include: {
-              condition: true,
-              rule: true
+        select: {
+          id: true,
+          action: {
+            select: {
+              description: true
+            }
+          },
+          trigger: {
+            select: {
+              code: true
             }
           }
         }

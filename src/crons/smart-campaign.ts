@@ -9,22 +9,10 @@ export async function run() {
         smart: true,
         active: true
       },
-      include: {
-        list: {
-          include: {
-            contacts: {
-              include: {
-                sites: {
-                  select: { id: true },
-                  orderBy: [{ updatedAt: 'desc' }]
-                }
-              }
-            }
-          }
-        },
+      select: {
+        id: true,
         email: {
           select: {
-            id: true,
             subject: true,
             content: true
           }
@@ -48,9 +36,12 @@ export async function run() {
       ...lead,
       take: 1,
       skip: Math.floor(Math.random() * total),
-      include: {
+      select: {
+        email: true,
         sites: {
-          select: { id: true },
+          select: {
+            id: true
+          },
           orderBy: [{ updatedAt: 'desc' }]
         }
       }

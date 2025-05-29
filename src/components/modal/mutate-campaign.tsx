@@ -172,7 +172,23 @@ export default function CampaignsMutateModal({
   campaign
 }: {
   campaign?: Prisma.CampaignGetPayload<{
-    include: { list: true; email: true };
+    select: {
+      id: true;
+      title: true;
+      description: true;
+      type: true;
+      smart: true;
+      list: {
+        select: {
+          id: true;
+        };
+      };
+      email: {
+        select: {
+          id: true;
+        };
+      };
+    };
   }>;
 }) {
   const router = useRouter();

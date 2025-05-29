@@ -392,10 +392,16 @@ function CampaignItemDetails({
   $details
 }: {
   campaign: Prisma.CampaignGetPayload<{
-    include: {
-      outboxes: true;
+    select: {
+      id: true;
+      smart: true;
+      outboxes: {
+        select: {
+          email: true;
+        };
+      };
       list: {
-        include: {
+        select: {
           contacts: {
             select: {
               id: true;
@@ -646,10 +652,36 @@ export const CampaignItem = ({
   $details
 }: {
   campaign: Prisma.CampaignGetPayload<{
-    include: {
-      list: { include: { contacts: true } };
-      email: true;
-      outboxes: true;
+    select: {
+      id: true;
+      active: true;
+      smart: true;
+      title: true;
+      description: true;
+      type: true;
+      list: {
+        select: {
+          id: true;
+          contacts: {
+            select: {
+              id: true;
+              email: true;
+              phone: true;
+            };
+          };
+        };
+      };
+      email: {
+        select: {
+          id: true;
+        };
+      };
+      outboxes: {
+        select: {
+          email: true;
+          metadata: true;
+        };
+      };
     };
   }>;
   $details: Promise<
