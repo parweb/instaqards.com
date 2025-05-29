@@ -24,46 +24,13 @@ export default async function UserPage(props: {
     where: {
       id: userId
     },
-    include: {
-      accounts: true,
-      sessions: { orderBy: { expires: 'desc' } },
-      sites: { orderBy: { createdAt: 'desc' } },
-      subscriptions: {
-        include: {
-          price: {
-            include: {
-              product: true
-            }
-          }
-        },
-        orderBy: { created: 'desc' }
-      },
-      Authenticator: true,
-      links: { orderBy: { createdAt: 'desc' } },
-      customer: true,
-      twoFactorConfirmation: true,
-      feedback: { orderBy: { createdAt: 'desc' } },
-      likes: { include: { site: true }, orderBy: { createdAt: 'desc' } },
-      affiliates: { select: { id: true, name: true, email: true } },
-      referer: { select: { id: true, name: true, email: true } },
-      events: { orderBy: { createdAt: 'desc' }, take: 20 },
-      workflowStates: {
-        include: { workflow: true },
-        orderBy: { updatedAt: 'desc' }
-      },
-      executions: {
-        include: { action: true },
-        orderBy: { executedAt: 'desc' },
-        take: 20
-      },
-      jobs: { orderBy: { createdAt: 'desc' }, take: 20 },
-      outbox: { orderBy: { createdAt: 'desc' }, take: 20 }
+    select: {
+      id: true,
+      image: true,
+      name: true,
+      email: true
     }
   });
-
-  if (!user) {
-    notFound();
-  }
 
   const avatar = user.image ?? `https://avatar.vercel.sh/${user.email}?size=40`;
 

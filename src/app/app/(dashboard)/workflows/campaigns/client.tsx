@@ -1,6 +1,6 @@
 'use client';
 
-import { Outbox, Prisma, Queue, Reservation, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { interpolate } from 'motion';
 import Link from 'next/link';
 import { Suspense, use, useActionState, useState } from 'react';
@@ -15,21 +15,17 @@ import {
   LuCopy,
   LuEllipsisVertical,
   LuExternalLink,
-  LuEye,
   LuGlobe,
   LuHandshake,
   LuLoader,
   LuMail,
-  LuMousePointer,
   LuPause,
   LuPencil,
   LuPhone,
   LuPlay,
   LuPointer,
-  LuTarget,
   LuTrash,
   LuUser,
-  LuUsers,
   LuVideo
 } from 'react-icons/lu';
 
@@ -103,13 +99,34 @@ const ContactItem = ({
   outbox,
   phoneReservations
 }: {
-  user: Pick<User, 'id' | 'email' | 'phone'>;
+  user: Prisma.UserGetPayload<{
+    select: {
+      id: true;
+      email: true;
+      phone: true;
+    };
+  }>;
   status: string | undefined;
-  outbox: Pick<Outbox, 'id' | 'status' | 'metadata'> | undefined;
-  phoneReservations?: Pick<
-    Reservation,
-    'id' | 'type' | 'email' | 'dateStart' | 'dateEnd' | 'comment' | 'createdAt'
-  >[];
+  outbox:
+    | Prisma.OutboxGetPayload<{
+        select: {
+          id: true;
+          status: true;
+          metadata: true;
+        };
+      }>
+    | undefined;
+  phoneReservations?: Prisma.ReservationGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      email: true;
+      dateStart: true;
+      dateEnd: true;
+      comment: true;
+      createdAt: true;
+    };
+  }>[];
 }) => {
   return (
     <div
@@ -314,12 +331,27 @@ const ContactItem = ({
 
 // Fonction utilitaire pour déterminer les statuts d'un contact
 const getContactStatuses = (
-  outbox: Pick<Outbox, 'id' | 'status' | 'metadata'> | undefined,
+  outbox:
+    | Prisma.OutboxGetPayload<{
+        select: {
+          id: true;
+          status: true;
+          metadata: true;
+        };
+      }>
+    | undefined,
   status: string | undefined,
-  phoneReservations?: Pick<
-    Reservation,
-    'id' | 'type' | 'email' | 'dateStart' | 'dateEnd' | 'comment' | 'createdAt'
-  >[]
+  phoneReservations?: Prisma.ReservationGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      email: true;
+      dateStart: true;
+      dateEnd: true;
+      comment: true;
+      createdAt: true;
+    };
+  }>[]
 ) => {
   const statuses: string[] = [];
 
@@ -377,19 +409,44 @@ function CampaignItemDetails({
   }>;
   $details: Promise<
     [
-      Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
-      Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[],
-      Pick<User, 'id' | 'email' | 'phone'>[],
-      Pick<
-        Reservation,
-        | 'id'
-        | 'type'
-        | 'email'
-        | 'dateStart'
-        | 'dateEnd'
-        | 'comment'
-        | 'createdAt'
-      >[]
+      Prisma.OutboxGetPayload<{
+        select: {
+          id: true;
+          status: true;
+          metadata: true;
+          email: true;
+          campaignId: true;
+        };
+      }>[],
+
+      Prisma.QueueGetPayload<{
+        select: {
+          id: true;
+          status: true;
+          payload: true;
+          correlationId: true;
+        };
+      }>[],
+
+      Prisma.UserGetPayload<{
+        select: {
+          id: true;
+          email: true;
+          phone: true;
+        };
+      }>[],
+
+      Prisma.ReservationGetPayload<{
+        select: {
+          id: true;
+          type: true;
+          email: true;
+          dateStart: true;
+          dateEnd: true;
+          comment: true;
+          createdAt: true;
+        };
+      }>[]
     ]
   >;
 }) {
@@ -597,19 +654,44 @@ export const CampaignItem = ({
   }>;
   $details: Promise<
     [
-      Pick<Outbox, 'id' | 'status' | 'metadata' | 'email' | 'campaignId'>[],
-      Pick<Queue, 'id' | 'status' | 'payload' | 'correlationId'>[],
-      Pick<User, 'id' | 'email' | 'phone'>[],
-      Pick<
-        Reservation,
-        | 'id'
-        | 'type'
-        | 'email'
-        | 'dateStart'
-        | 'dateEnd'
-        | 'comment'
-        | 'createdAt'
-      >[]
+      Prisma.OutboxGetPayload<{
+        select: {
+          id: true;
+          status: true;
+          metadata: true;
+          email: true;
+          campaignId: true;
+        };
+      }>[],
+
+      Prisma.QueueGetPayload<{
+        select: {
+          id: true;
+          status: true;
+          payload: true;
+          correlationId: true;
+        };
+      }>[],
+
+      Prisma.UserGetPayload<{
+        select: {
+          id: true;
+          email: true;
+          phone: true;
+        };
+      }>[],
+
+      Prisma.ReservationGetPayload<{
+        select: {
+          id: true;
+          type: true;
+          email: true;
+          dateStart: true;
+          dateEnd: true;
+          comment: true;
+          createdAt: true;
+        };
+      }>[]
     ]
   >;
 }) => {
@@ -621,58 +703,6 @@ export const CampaignItem = ({
   );
 
   const [, actionDelete, loadingDelete] = useActionState(deleteCampaign, false);
-
-  const funnelData = [
-    {
-      id: 'sent',
-      name: 'Envoyé',
-      icon: <LuUsers />,
-      value: campaign.outboxes.length,
-      total: campaign.list?.contacts.length ?? 0,
-      color: '#10b981'
-    },
-    {
-      id: 'delivered',
-      name: 'Délivré',
-      icon: <LuTarget />,
-      value: campaign.outboxes.filter(
-        ({ metadata }) =>
-          // @ts-expect-error
-          metadata?.events?.find(e => e.type === 'bounced') === undefined
-      ).length,
-      total: campaign.outboxes.length,
-      color: '#3b82f6'
-    },
-    {
-      id: 'opened',
-      name: 'Ouvert',
-      icon: <LuEye />,
-      value: campaign.outboxes.filter(({ metadata }) =>
-        // @ts-expect-error
-        metadata?.events?.find(e => e.type === 'open')
-      ).length,
-      total: campaign.outboxes.filter(
-        ({ metadata }) =>
-          // @ts-expect-error
-          metadata?.events?.find(e => e.type === 'bounced') === undefined
-      ).length,
-      color: '#f59e0b'
-    },
-    {
-      id: 'clicked',
-      name: 'Cliqué',
-      icon: <LuMousePointer />,
-      value: campaign.outboxes.filter(({ metadata }) =>
-        // @ts-expect-error
-        metadata?.events?.find(e => e.type === 'click')
-      ).length,
-      total: campaign.outboxes.filter(({ metadata }) =>
-        // @ts-expect-error
-        metadata?.events?.find(e => e.type === 'open')
-      ).length,
-      color: '#8b5cf6'
-    }
-  ];
 
   return (
     <div

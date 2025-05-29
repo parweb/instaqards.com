@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { db } from 'helpers/db';
-import { getSession } from 'lib/auth';
 
 const input = z.object({
   path: z.string(),

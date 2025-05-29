@@ -1,11 +1,11 @@
+import { WebSite } from 'components/editor/WebSite';
+import * as job from 'data/job';
+import { db } from 'helpers/db';
 import { getLang } from 'helpers/translate';
 import Image from 'next/image';
+import { Suspense } from 'react';
 import { Begin } from '../home/section/begin';
 import { Personas } from './personas';
-import { Suspense } from 'react';
-import { WebSite } from 'components/editor/WebSite';
-import { db } from 'helpers/db';
-import * as job from 'data/job';
 
 export default async function ProPage() {
   const lang = await getLang();

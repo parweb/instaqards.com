@@ -1,6 +1,6 @@
 'use client';
 
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -13,7 +13,15 @@ import { cn } from 'lib/utils';
 import { uri } from 'settings';
 import { useModal } from './provider';
 
-export default function CreateSiteModal({ user }: { user?: User }) {
+export default function CreateSiteModal({
+  user
+}: {
+  user?: Prisma.UserGetPayload<{
+    select: {
+      id: true;
+    };
+  }>;
+}) {
   const router = useRouter();
   const modal = useModal();
 

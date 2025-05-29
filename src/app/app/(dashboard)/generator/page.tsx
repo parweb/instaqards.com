@@ -1,8 +1,6 @@
 import { db } from 'helpers/db';
-import { redirect } from 'next/navigation';
 
 import { WebSite } from 'components/editor/WebSite';
-import { getSession } from 'lib/auth';
 import { Fields } from './client';
 
 export default async function Generator(props: {
@@ -15,7 +13,12 @@ export default async function Generator(props: {
   const site = siteId
     ? await db.site.findUnique({
         where: { id: siteId },
-        include: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          subdomain: true,
+          background: true,
           blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
         }
       })

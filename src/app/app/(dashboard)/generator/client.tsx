@@ -16,7 +16,15 @@ import { generateSite } from './action';
 export function Fields({
   site
 }: {
-  site: Prisma.SiteGetPayload<{ include: { blocks: true } }> | null;
+  site: Prisma.SiteGetPayload<{
+    select: {
+      id: true;
+      name: true;
+      description: true;
+      blocks: true;
+      subdomain: true;
+    };
+  }> | null;
 }) {
   const [refreshInputs, setRefreshInputs] = useState(false);
 

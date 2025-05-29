@@ -65,16 +65,19 @@ export default async function ProPage({
   while (true) {
     newSubdomain = `${template.subdomain}-${slug}`;
 
-    const taken = await db.site.findUnique({
+    const taken = await db.site.count({
       where: { subdomain: newSubdomain }
     });
 
-    if (!taken) break;
+    if (taken === 0) break;
 
     slug = nanoid(5);
   }
 
   const already = await db.site.findFirst({
+    select: {
+      id: true
+    },
     where: {
       subdomain: { startsWith: `${template.subdomain}-` },
       user: { id: auth.id }
@@ -122,7 +125,9 @@ export default async function ProPage({
   }
 
   const site = await db.site.findUnique({
-    include: {
+    select: {
+      id: true,
+      background: true,
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     },
     where: {

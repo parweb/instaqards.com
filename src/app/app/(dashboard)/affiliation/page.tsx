@@ -1,4 +1,4 @@
-import { Prisma, SubscriptionStatus, User, UserRole } from '@prisma/client';
+import { Prisma, SubscriptionStatus, UserRole } from '@prisma/client';
 import { eachDayOfInterval, format } from 'date-fns';
 import Link from 'next/link';
 import { LuArrowUpRight } from 'react-icons/lu';
@@ -13,9 +13,9 @@ import { rangeParser } from 'helpers/rangeParser';
 import { translate } from 'helpers/translate';
 import { getAuth } from 'lib/auth';
 import * as lead from 'services/lead';
+import { UserKanban } from 'services/lead/type';
 import { uri } from 'settings';
 import { AffiliationChart } from './affiliation-chart';
-import { UserKanban } from 'services/lead/type';
 
 export default async function AllAffiliation({
   searchParams
@@ -104,10 +104,24 @@ export default async function AllAffiliation({
       }
     }),
     db.user.findMany({
-      include: {
-        sites: { orderBy: { createdAt: 'desc' } },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        createdAt: true,
+        sites: {
+          select: { id: true, name: true, logo: true, subdomain: true },
+          orderBy: { createdAt: 'desc' }
+        },
         subscriptions: {
-          include: { price: { include: { product: true } } },
+          select: {
+            id: true,
+            status: true,
+            trial_end: true,
+            trial_start: true,
+            ended_at: true
+          },
           orderBy: { ended_at: 'desc' }
         }
       },

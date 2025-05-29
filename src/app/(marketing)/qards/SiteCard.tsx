@@ -7,9 +7,9 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { LuExternalLink } from 'react-icons/lu';
 
 import {
+  unstable_Activity as Activity,
   memo,
   Suspense,
-  unstable_Activity as Activity,
   useActionState,
   useEffect,
   useRef,
@@ -35,10 +35,11 @@ const SiteCardComponent = ({
 }: {
   ip: string;
   site: Prisma.SiteGetPayload<{
-    include: {
-      user: true;
-      clicks: true;
-      likes: true;
+    select: {
+      id: true;
+      background: true;
+      subdomain: true;
+      likes: { select: { ip: true } };
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] };
     };
   }>;

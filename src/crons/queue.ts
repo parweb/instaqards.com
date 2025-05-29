@@ -1,13 +1,6 @@
 import { ExecutionStatus, WorkflowStateStatus } from '@prisma/client';
 
-import type {
-  Action,
-  Event,
-  Prisma,
-  Queue,
-  Subscription,
-  User
-} from '@prisma/client';
+import type { Action, Prisma, Queue } from '@prisma/client';
 
 import { db } from 'helpers/db';
 import * as template from 'helpers/mail';
@@ -35,9 +28,21 @@ const conditionEngine = {
         };
       };
     }>[],
-    _user: User,
-    _triggeringEvent: Event,
-    _subscription: Subscription | null
+    _user: Prisma.UserGetPayload<{
+      select: {
+        // id: true;
+      };
+    }>,
+    _triggeringEvent: Prisma.EventGetPayload<{
+      select: {
+        id: true;
+      };
+    }>,
+    _subscription: Prisma.SubscriptionGetPayload<{
+      select: {
+        id: true;
+      };
+    }> | null
   ): Promise<boolean> => {
     console.info(`[Condition Engine] Evaluating conditions for rule...`);
     if (!ruleConditions || ruleConditions.length === 0) {
@@ -59,9 +64,25 @@ const actionExecutor = {
   execute: async (
     type: Action['type'],
     config: Prisma.JsonValue,
-    user: User,
-    _triggeringEvent: Event,
-    job: Queue
+    user: Prisma.UserGetPayload<{
+      select: {
+        email: true;
+      };
+    }>,
+    _triggeringEvent: Prisma.EventGetPayload<{
+      select: {
+        id: true;
+        eventType: true;
+        status: true;
+      };
+    }>,
+    job: Prisma.QueueGetPayload<{
+      select: {
+        // id: true;
+        // job: true;
+        // status: true;
+      };
+    }>
   ): Promise<{
     success: boolean;
     resultPayload?: any;
@@ -111,7 +132,15 @@ const actionExecutor = {
   }
 };
 
-async function processJob(job: Queue): Promise<void> {
+async function processJob(
+  job: Prisma.QueueGetPayload<{
+    select: {
+      id: true;
+      job: true;
+      payload: true;
+    };
+  }>
+): Promise<void> {
   console.info(`Processing job ${job.id} (Type: ${job.job})`);
 
   if (job.job === 'EXECUTE_WORKFLOW_ACTION') {
@@ -132,7 +161,11 @@ async function processJob(job: Queue): Promise<void> {
     let executionStatus: ExecutionStatus = ExecutionStatus.PENDING;
     let executionResultPayload: Prisma.JsonValue | null = null;
     let executionErrorMessage: string | null = null;
-    let actionToExecute: Action | null = null;
+    let actionToExecute: Prisma.ActionGetPayload<{
+      select: {
+        id: true;
+      };
+    }> | null = null;
 
     try {
       const rule = await db.rule.findUnique({
@@ -141,12 +174,28 @@ async function processJob(job: Queue): Promise<void> {
           id: true,
           isActive: true,
           workflowId: true,
-          action: true,
-          trigger: true,
-          workflow: true,
+          action: {
+            select: {
+              id: true,
+              code: true,
+              type: true,
+              config: true
+            }
+          },
+          workflow: {
+            select: {
+              isActive: true
+            }
+          },
           ruleConditions: {
             select: {
-              condition: { select: { id: true, name: true, type: true } }
+              condition: {
+                select: {
+                  id: true,
+                  name: true,
+                  type: true
+                }
+              }
             }
           }
         }

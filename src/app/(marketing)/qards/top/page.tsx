@@ -14,24 +14,14 @@ const QardsPage = async () => {
     : (headersList.get('x-forwarded-for') ?? 'none');
 
   const sites = await db.site.findMany({
-    include: {
-      user: true,
-      clicks: true,
-      likes: true,
+    orderBy: { clicks: { _count: 'desc' } },
+    select: {
+      id: true,
+      subdomain: true,
+      background: true,
+      likes: { select: { ip: true } },
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
-    },
-    // take: 12,
-    orderBy: { clicks: { _count: 'desc' } }
-    // where: {
-    //   user: {
-    //     id: 'cljxegubd0000xiugs1tqdjdu'
-    //   }
-    // }
-    // where: {
-    //   background: {
-    //     startsWith: 'component:'
-    //   }
-    // }
+    }
   });
 
   return (

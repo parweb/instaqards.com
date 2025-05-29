@@ -1,7 +1,7 @@
 import type { Block } from '@prisma/client';
 import Link from 'next/link';
 import { FaDirections } from 'react-icons/fa';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { SchemaAddress } from 'components/maps/services/google-maps';
 import { cn, json } from 'lib/utils';

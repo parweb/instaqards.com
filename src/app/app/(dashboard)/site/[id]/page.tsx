@@ -17,7 +17,12 @@ export default async function SitePosts(props: {
     getAuth(),
     db.site.findUnique({
       where: { id: decodeURIComponent(params.id) },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        userId: true,
+        subdomain: true,
+        background: true,
         blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
       }
     })

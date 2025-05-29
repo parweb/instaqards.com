@@ -4,22 +4,7 @@ import { Suspense } from 'react';
 import { db } from 'helpers/db';
 import { SiteCard } from './SiteCard';
 
-// const range = (start: number, end: number) => {
-//   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-// };
-
 const QardsPage = async () => {
-  // const sites = await db.site.findMany();
-  // for (const site of sites) {
-  //   await db.like.createMany({
-  //     data: range(30, Math.floor(Math.random() * 100)).map(i => ({
-  //       ip: nanoid(),
-  //       siteId: site.id
-  //     }))
-  //   });
-  // }
-  // return null;
-
   const headersList = await headers();
 
   const ip = ['qards.local', 'qards.local:11000', 'localhost:11000'].includes(
@@ -29,24 +14,14 @@ const QardsPage = async () => {
     : (headersList.get('x-forwarded-for') ?? 'none');
 
   const sites = await db.site.findMany({
-    include: {
-      user: true,
-      clicks: true,
-      likes: true,
+    orderBy: { clicks: { _count: 'desc' } },
+    select: {
+      id: true,
+      subdomain: true,
+      background: true,
+      likes: { select: { ip: true } },
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
-    },
-    // take: 4,
-    orderBy: { clicks: { _count: 'desc' } }
-    // where: {
-    //   user: {
-    //     id: 'cljxegubd0000xiugs1tqdjdu'
-    //   }
-    // }
-    // where: {
-    //   background: {
-    //     startsWith: 'component:'
-    //   }
-    // }
+    }
   });
 
   return (

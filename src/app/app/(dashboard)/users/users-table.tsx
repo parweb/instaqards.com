@@ -112,7 +112,11 @@ const Pages = ({ total }: { total: number }) => {
   );
 };
 
-interface UsersTableProps {
+export const UsersTable = ({
+  users,
+  affiliate = false,
+  total
+}: {
   affiliate?: boolean;
   users: Prisma.UserGetPayload<{
     select: {
@@ -120,7 +124,7 @@ interface UsersTableProps {
       name: true;
       email: true;
       image: true;
-      sites: true;
+      sites: { select: { id: true; name: true; logo: true; subdomain: true } };
       createdAt: true;
       subscriptions: {
         select: {
@@ -134,13 +138,7 @@ interface UsersTableProps {
     };
   }>[];
   total?: number;
-}
-
-export const UsersTable = ({
-  users,
-  affiliate = false,
-  total
-}: UsersTableProps) => {
+}) => {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useQueryState(

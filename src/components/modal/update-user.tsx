@@ -1,6 +1,6 @@
 'use client';
 
-import type { User } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -17,7 +17,13 @@ import { useModal } from './provider';
 export default function UserUpdateModal({
   user
 }: {
-  user: Pick<User, 'id' | 'name' | 'email'>;
+  user: Prisma.UserGetPayload<{
+    select: {
+      id: true;
+      name: true;
+      email: true;
+    };
+  }>;
 }) {
   const router = useRouter();
   const modal = useModal();
