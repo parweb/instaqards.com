@@ -2,9 +2,6 @@
 
 import { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
-import { isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
 import { Suspense, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -41,22 +38,6 @@ export const ListsSchema = z.object({
   take: z.number().nullable(),
   skip: z.number().nullable()
 });
-
-const $lists = atomFamily(
-  (params: Prisma.ListFindManyArgs) =>
-    atom(() =>
-      fetch('/api/lake/list/findMany?paginated', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(params)
-      })
-        .then(res => res.json())
-        .then(data => ListsSchema.parse(data))
-    ),
-  isEqual
-);
-
-const $selection = atom<z.infer<typeof ListsSchema>['data'][number]['id']>();
 
 export default function EmailsMutateModal({
   email

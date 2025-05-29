@@ -4,9 +4,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
 
-import useWindowSize from 'hooks/use-window-size';
-import Leaflet from './leaflet';
 import { useIsMobile } from 'hooks/use-mobile';
+import Leaflet from './leaflet';
 
 export default function Modal({
   children,

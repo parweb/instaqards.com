@@ -118,7 +118,7 @@ export const BlockTypesItemVariantsItem = ({
   onClick: (data: { type: string; id: string }) => void;
   value?: { type: string; id: string };
 }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded] = useState(false);
 
   const Component = blocks[type][id];
   Component.displayName = `Block${type}${id}`;

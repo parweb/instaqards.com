@@ -4,7 +4,6 @@ import { ChevronRight, type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { LuExternalLink } from 'react-icons/lu';
 
-import { MiniGold } from 'components/editor/blocks/button/gold';
 import { Badge } from 'components/ui/badge';
 import { cn } from 'lib/utils';
 

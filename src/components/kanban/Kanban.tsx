@@ -112,9 +112,6 @@ const SortableItem = React.memo(function SortableItem({
   );
 });
 
-/**
- * Generic Kanban board (dumb/presentational), supports drag & drop via dnd-kit.
- */
 export default function Kanban<T>({
   columns: initialColumns,
   statuses,
@@ -238,7 +235,6 @@ export default function Kanban<T>({
         return;
       }
 
-      const activeItems = columns[activeContainer];
       const overItems = columns[overContainer];
 
       let finalIndex: number;

@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 import type { Item } from 'components/maps/services/google-maps';
 
 export type SearchResult = Item[];

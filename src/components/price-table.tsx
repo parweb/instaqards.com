@@ -1,4 +1,4 @@
-import type { Price, Prisma, Product } from '@prisma/client';
+import type { Prisma, Product } from '@prisma/client';
 
 import { PriceTableButton } from 'components/price-table-button';
 import { translate } from 'helpers/translate';

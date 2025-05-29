@@ -9,22 +9,6 @@ import { subYears } from 'date-fns';
 import { rangeParser as dateRangeParser } from 'helpers/rangeParser';
 import useTranslation from 'hooks/use-translation';
 
-const filterDataByDateRange = (
-  data: { date: string; Clicks: number }[],
-  startDate: DateRange['from'],
-  endDate: DateRange['to']
-) => {
-  return data.filter(item => {
-    const itemDate = new Date(item.date);
-
-    if (!startDate || !endDate) {
-      return true;
-    }
-
-    return itemDate >= startDate && itemDate <= endDate;
-  });
-};
-
 export default function OverviewStats({
   chartdata,
   total,

@@ -2,11 +2,9 @@ import { ExecutionStatus, WorkflowStateStatus } from '@prisma/client';
 
 import type {
   Action,
-  Condition,
   Event,
   Prisma,
   Queue,
-  RuleCondition,
   Subscription,
   User
 } from '@prisma/client';

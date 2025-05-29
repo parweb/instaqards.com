@@ -1,7 +1,7 @@
 'use client';
 
+import { Bell, ImageIcon, TrendingUp } from 'lucide-react';
 import type React from 'react';
-import { TrendingUp, Bell, ImageIcon } from 'lucide-react';
 
 interface TooltipCardProps {
   title: string;
@@ -9,7 +9,7 @@ interface TooltipCardProps {
   children: React.ReactNode;
 }
 
-export function TooltipCard({ title, variant, children }: TooltipCardProps) {
+export function TooltipCard({ title, children }: TooltipCardProps) {
   return (
     <div className="rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800">
       <h4 className="mb-3 text-sm font-medium text-gray-500 dark:text-gray-400">

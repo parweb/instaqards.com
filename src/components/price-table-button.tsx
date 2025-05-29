@@ -28,8 +28,7 @@ export const PriceTableButton = ({
   const router = useRouter();
 
   const onClick = async ({
-    price,
-    quantity
+    price
   }: {
     price: Prisma.PriceGetPayload<{
       select: {

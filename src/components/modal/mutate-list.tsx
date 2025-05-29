@@ -1,6 +1,6 @@
 'use client';
 
-import { Prisma, UserRole } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { atom, useAtomValue } from 'jotai';
 import { atomFamily } from 'jotai/utils';

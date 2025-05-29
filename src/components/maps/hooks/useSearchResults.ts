@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { searchPlaces, Item } from 'components/maps/services/google-maps';
-import type { Location, SearchResult } from 'components/maps/types';
+import { Item, searchPlaces } from 'components/maps/services/google-maps';
 
 interface SearchStateUpdates {
   results?: Item[];

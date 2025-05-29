@@ -2,7 +2,7 @@
 
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import Image from 'next/image';
-import { cache, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 import { LuLoader } from 'react-icons/lu';
 import * as z from 'zod';
@@ -81,7 +81,7 @@ function YoutubeVideo({
     return () => {
       controller.abort();
     };
-  }, [title]);
+  }, [title, url]);
 
   return (
     <div className="relative aspect-video min-h-40 w-full overflow-hidden rounded-md">
@@ -242,17 +242,6 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
 }
 
 const placeholder = 'https://www.youtube.com/watch?v=VCyuZhnm71I';
-
-const getValidatedUrl = cache(
-  async (urlToValidate: string, fallbackUrl: string): Promise<string> => {
-    const [, result] = await trySafe(async () => {
-      new URL(urlToValidate);
-      return urlToValidate;
-    }, fallbackUrl);
-
-    return result as string;
-  }
-);
 
 export default function Youtube({
   url = placeholder
