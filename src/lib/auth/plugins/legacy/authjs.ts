@@ -28,8 +28,6 @@ export const authjs = () => {
 
             const plain = ctx.body?.password;
             if (!plain) return;
-
-            const newHash = await ctx.context.password.hash(plain);
           })
         }
       ]

@@ -86,11 +86,11 @@ export default async function AllAffiliation({
       select: { createdAt: true }
     }),
     db.click.findMany({
+      select: { createdAt: true },
       where: {
         refererId: auth.id,
         createdAt: { gte: range?.from, lte: range?.to }
-      },
-      select: { createdAt: true }
+      }
     }),
     db.subscription.findMany({
       select: {

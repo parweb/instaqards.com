@@ -1,6 +1,6 @@
 'use client';
 
-import type { Link } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -16,7 +16,14 @@ import useTranslation from 'hooks/use-translation';
 import { mutateLink } from 'lib/actions';
 
 type MutateModalProps = {
-  link: Link | null;
+  link: Prisma.LinkGetPayload<{
+    select: {
+      id: true;
+      url: true;
+      name: true;
+      description: true;
+    };
+  }> | null;
 };
 
 export function MutateModal({ link }: MutateModalProps) {

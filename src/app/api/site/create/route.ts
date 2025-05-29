@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   }
 
   const already = await db.site.findFirst({
+    select: { id: true },
     where: { subdomain }
   });
 
@@ -25,6 +26,7 @@ export async function GET(request: NextRequest) {
 
   if (session && session.user) {
     const last = await db.site.findFirst({
+      select: { id: true },
       where: { userId: session.user.id },
       orderBy: { updatedAt: 'desc' }
     });

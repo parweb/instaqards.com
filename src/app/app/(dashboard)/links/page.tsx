@@ -11,7 +11,15 @@ export default async function AllLinks() {
   const auth = await getAuth();
 
   const links = await db.link.findMany({
-    include: { clicks: true },
+    select: {
+      id: true,
+      url: true,
+      name: true,
+      description: true,
+      _count: {
+        select: { clicks: true }
+      }
+    },
     where: { userId: auth.id }
   });
 
@@ -19,7 +27,22 @@ export default async function AllLinks() {
     auth.role
   )
     ? await db.user.findMany({
-        include: { links: { include: { clicks: true } } },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          links: {
+            select: {
+              id: true,
+              url: true,
+              name: true,
+              description: true,
+              _count: {
+                select: { clicks: true }
+              }
+            }
+          }
+        },
         where: { id: { not: auth.id }, links: { some: {} } }
       })
     : [];

@@ -5,29 +5,12 @@ import { db } from 'helpers/db';
 import { marketingRoutes, uri } from 'settings';
 
 export default async function Sitemap() {
-  const [sites, allCities] = await Promise.all([
-    db.site.findMany({
-      select: { subdomain: true },
-      orderBy: { updatedAt: 'desc' }
-    }),
-    city.all()
-  ]);
+  const [allCities] = await Promise.all([city.all()]);
 
   const marketingUrls = marketingRoutes.map(route => ({
     url: uri.base(route),
     lastModified: new Date()
   }));
-
-  const siteUrls = sites.flatMap(site => [
-    {
-      url: uri.app('/').replace('app.', `${site.subdomain}.`),
-      lastModified: new Date()
-    },
-    {
-      url: uri.base(`/${site.subdomain}`),
-      lastModified: new Date()
-    }
-  ]);
 
   const jobUrls = job.all.flatMap(job => [
     {

@@ -7,7 +7,6 @@ import {
   LuCircleCheck,
   LuGlobe,
   LuLayoutDashboard,
-  LuLink,
   LuLoader,
   LuRocket,
   LuShare,

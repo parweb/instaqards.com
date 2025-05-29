@@ -1,30 +1,8 @@
-import { IconType } from 'react-icons';
 import { LuPencil, LuPlus } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
 import EmailsMutateModal from 'components/modal/mutate-email';
 import { db } from 'helpers/db';
-
-const Stat = ({
-  label,
-  value,
-  Icon
-}: {
-  label: string;
-  value: number;
-  Icon: IconType;
-}) => (
-  <div className="flex items-center gap-4 rounded-md border px-4 py-2 shadow-sm">
-    <div className="flex items-center justify-center rounded-full bg-stone-100 p-4">
-      <Icon className="h-7 w-7" />
-    </div>
-
-    <div>
-      <h4 className="text-muted-foreground">{label}</h4>
-      <span className="font-medium">{value}</span>
-    </div>
-  </div>
-);
 
 export default async function WorkflowsEmails() {
   const emails = await db.email.findMany({

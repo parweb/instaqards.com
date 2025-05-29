@@ -14,7 +14,13 @@ export default async function SiteFeed(props: {
     getAuth(),
     db.site.findUnique({
       where: { id: decodeURIComponent(params.id) },
-      include: { feed: true }
+      select: {
+        id: true,
+        name: true,
+        userId: true,
+        subdomain: true,
+        feed: { select: { id: true } }
+      }
     })
   ]);
 

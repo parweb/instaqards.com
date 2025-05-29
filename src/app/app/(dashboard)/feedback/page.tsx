@@ -11,8 +11,11 @@ export default async function FeedbackPage() {
   const auth = await getAuth();
 
   const feedbacks = await db.feedback.findMany({
-    include: {
-      user: true
+    select: {
+      id: true,
+      message: true,
+      createdAt: true,
+      user: { select: { name: true } }
     },
     where: {
       userId: auth.id

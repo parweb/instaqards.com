@@ -43,11 +43,21 @@ const CopyLink = ({ url }: { url: string }) => {
   );
 };
 
-type LinkCardProps = {
-  link: Prisma.LinkGetPayload<{ include: { clicks: true } }>;
-};
-
-export function LinkCard({ link }: LinkCardProps) {
+export function LinkCard({
+  link
+}: {
+  link: Prisma.LinkGetPayload<{
+    select: {
+      id: true;
+      url: true;
+      name: true;
+      description: true;
+      _count: {
+        select: { clicks: true };
+      };
+    };
+  }>;
+}) {
   const url = uri.app(`/${link.id}`).replace('app.', 'short.');
 
   return (
@@ -111,7 +121,7 @@ export function LinkCard({ link }: LinkCardProps) {
               href={`/site/${link.id}/analytics`}
               className="dark:bg-opacity-50 dark:hover:bg-opacity-50 flex items-center gap-2 rounded-md bg-green-100 px-2 py-1 text-sm font-medium text-green-600 transition-colors hover:bg-green-200 dark:bg-green-900 dark:text-green-400 dark:hover:bg-green-800"
             >
-              <p>{link.clicks.length}</p>
+              <p>{link._count.clicks}</p>
               <LuMousePointer />
             </Link>
           </div>

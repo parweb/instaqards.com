@@ -31,6 +31,7 @@ export async function POST(request: Request) {
   });
 
   const site = await db.site.findUnique({
+    select: { id: true },
     where: subdomain
       ? { subdomain: subdomain.toLowerCase() }
       : { customDomain: body.subdomain?.toLowerCase() }

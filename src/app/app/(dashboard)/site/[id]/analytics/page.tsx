@@ -18,6 +18,12 @@ export default async function SiteAnalytics(props: {
   const [auth, site] = await Promise.all([
     getAuth(),
     db.site.findUnique({
+      select: {
+        id: true,
+        name: true,
+        userId: true,
+        subdomain: true
+      },
       where: { id: decodeURIComponent(params.id) }
     })
   ]);
@@ -35,8 +41,18 @@ export default async function SiteAnalytics(props: {
       OR: [{ siteId: site.id }, { block: { siteId: site.id } }]
     },
     orderBy: { createdAt: 'asc' },
-    include: {
-      block: true
+    select: {
+      siteId: true,
+      createdAt: true,
+      blockId: true,
+      request: true,
+      block: {
+        select: {
+          id: true,
+          widget: true,
+          label: true
+        }
+      }
     }
   });
 

@@ -11,6 +11,7 @@ async function processEvent(event: Event): Promise<void> {
 
   // 1. Trouver le Trigger correspondant
   const trigger = await db.trigger.findUnique({
+    select: { id: true, code: true },
     where: { code: event.eventType }
   });
 
@@ -24,14 +25,18 @@ async function processEvent(event: Event): Promise<void> {
 
   // 2. Trouver les Règles Actives liées à ce Trigger
   const rules = await db.rule.findMany({
+    select: {
+      id: true,
+      workflowId: true,
+      actionId: true,
+      order: true,
+      delayMinutes: true,
+      workflow: { select: { name: true, isActive: true } }
+    },
     where: {
       triggerId: trigger.id,
-      isActive: true
-      // Optionnel : on pourrait aussi filtrer par workflow actif ici
-      // workflow: { isActive: true }
-    },
-    include: {
-      workflow: true // Inclure le workflow pour obtenir workflowId et vérifier son état
+      isActive: true,
+      workflow: { isActive: true }
     }
   });
 

@@ -1,10 +1,10 @@
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { ulid } from 'ulid';
 
 import { getLang, sendHtmlWithCampaign } from 'helpers/mail';
 import { createMagicLink } from 'lib/actions';
 import { Lang } from 'translations';
-import { base, app } from '../../emails/layout/settings';
+import { app, base } from '../../emails/layout/settings';
 
 export const link =
   (id: string, { lang }: { lang: Lang }) =>

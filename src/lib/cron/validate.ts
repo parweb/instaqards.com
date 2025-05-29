@@ -6,6 +6,7 @@ export async function validateCronFunction(
   try {
     mod = await import(`crons/${modulePath}`);
   } catch (e) {
+    console.error(e);
     throw new Error(`Module ${modulePath} introuvable`);
   }
   if (!mod[functionName] || typeof mod[functionName] !== 'function') {

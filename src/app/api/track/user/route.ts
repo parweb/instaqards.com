@@ -18,6 +18,7 @@ export async function POST(request: Request) {
   const user = body.email
     ? await db.user
         .findUnique({
+          select: { id: true },
           where: { email: body.email ?? undefined }
         })
         .catch(() => undefined)
