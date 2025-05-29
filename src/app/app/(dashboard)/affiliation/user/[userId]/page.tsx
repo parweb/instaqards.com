@@ -198,7 +198,7 @@ export default async function UserPage(props: {
         },
         orderBy: { created: 'desc' }
       },
-      Authenticator: {
+      authenticator: {
         select: {
           id: true,
           credentialDeviceType: true,
@@ -852,14 +852,14 @@ export default async function UserPage(props: {
               </div>
             )}
 
-            {user.Authenticator.length > 0 && (
+            {user.authenticator.length > 0 && (
               <div>
                 <h3 className="text-md mb-2 border-t pt-3 font-medium">
                   Passkeys / Authenticators
                 </h3>
 
                 <ul className="list-inside list-disc space-y-1">
-                  {user.Authenticator.map(auth => (
+                  {user.authenticator.map(auth => (
                     <li key={auth.id} className="text-muted-foreground text-sm">
                       <span className="text-foreground font-semibold">
                         {auth.credentialDeviceType}

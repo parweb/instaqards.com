@@ -37,7 +37,6 @@ export default async function UserPage(props: {
         },
         orderBy: { created: 'desc' }
       },
-      Authenticator: true,
       links: { orderBy: { createdAt: 'desc' } },
       customer: true,
       twoFactorConfirmation: true,

@@ -6,7 +6,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
 }
 
@@ -52,7 +52,7 @@ model User {
   sessions              Session[]
   sites                 Site[]
   subscriptions         Subscription[]
-  Authenticator         Authenticator[]
+  authenticator         Authenticator[]
   links                 Link[]
   customer              Customer?
   twoFactorConfirmation TwoFactorConfirmation?
@@ -803,9 +803,9 @@ model Campaign {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  list     List?     @relation(fields: [listId], references: [id])
+  list     List?    @relation(fields: [listId], references: [id])
   listId   String?
-  email    Email     @relation(fields: [emailId], references: [id])
+  email    Email    @relation(fields: [emailId], references: [id])
   emailId  String
   outboxes Outbox[]
 }

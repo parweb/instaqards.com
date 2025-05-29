@@ -1459,7 +1459,7 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z
     subscriptions: z
       .union([z.boolean(), z.lazy(() => SubscriptionFindManyArgsSchema)])
       .optional(),
-    Authenticator: z
+    authenticator: z
       .union([z.boolean(), z.lazy(() => AuthenticatorFindManyArgsSchema)])
       .optional(),
     links: z
@@ -1554,7 +1554,7 @@ export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTy
       sessions: z.boolean().optional(),
       sites: z.boolean().optional(),
       subscriptions: z.boolean().optional(),
-      Authenticator: z.boolean().optional(),
+      authenticator: z.boolean().optional(),
       links: z.boolean().optional(),
       feedback: z.boolean().optional(),
       likes: z.boolean().optional(),
@@ -1614,7 +1614,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     subscriptions: z
       .union([z.boolean(), z.lazy(() => SubscriptionFindManyArgsSchema)])
       .optional(),
-    Authenticator: z
+    authenticator: z
       .union([z.boolean(), z.lazy(() => AuthenticatorFindManyArgsSchema)])
       .optional(),
     links: z
@@ -3696,7 +3696,7 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
     subscriptions: z
       .lazy(() => SubscriptionListRelationFilterSchema)
       .optional(),
-    Authenticator: z
+    authenticator: z
       .lazy(() => AuthenticatorListRelationFilterSchema)
       .optional(),
     links: z.lazy(() => LinkListRelationFilterSchema).optional(),
@@ -3852,7 +3852,7 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
       subscriptions: z
         .lazy(() => SubscriptionOrderByRelationAggregateInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorOrderByRelationAggregateInputSchema)
         .optional(),
       links: z.lazy(() => LinkOrderByRelationAggregateInputSchema).optional(),
@@ -4016,7 +4016,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
           subscriptions: z
             .lazy(() => SubscriptionListRelationFilterSchema)
             .optional(),
-          Authenticator: z
+          authenticator: z
             .lazy(() => AuthenticatorListRelationFilterSchema)
             .optional(),
           links: z.lazy(() => LinkListRelationFilterSchema).optional(),
@@ -14607,7 +14607,7 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
     subscriptions: z
       .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
       .optional(),
-    Authenticator: z
+    authenticator: z
       .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
       .optional(),
     links: z.lazy(() => LinkCreateNestedManyWithoutUserInputSchema).optional(),
@@ -14719,7 +14719,7 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -14930,7 +14930,7 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
     subscriptions: z
       .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
       .optional(),
-    Authenticator: z
+    authenticator: z
       .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
       .optional(),
     links: z.lazy(() => LinkUpdateManyWithoutUserNestedInputSchema).optional(),
@@ -15154,7 +15154,7 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -46163,7 +46163,7 @@ export const UserCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserCreate
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -46280,7 +46280,7 @@ export const UserUncheckedCreateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -46526,7 +46526,7 @@ export const UserCreateWithoutRefererInputSchema: z.ZodType<Prisma.UserCreateWit
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -46642,7 +46642,7 @@ export const UserUncheckedCreateWithoutRefererInputSchema: z.ZodType<Prisma.User
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -48388,7 +48388,7 @@ export const UserUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.UserUpdate
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -48617,7 +48617,7 @@ export const UserUncheckedUpdateWithoutAffiliatesInputSchema: z.ZodType<Prisma.U
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -50177,7 +50177,7 @@ export const UserCreateWithoutSentInputSchema: z.ZodType<Prisma.UserCreateWithou
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -50294,7 +50294,7 @@ export const UserUncheckedCreateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -50425,7 +50425,7 @@ export const UserCreateWithoutReceivedInputSchema: z.ZodType<Prisma.UserCreateWi
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -50542,7 +50542,7 @@ export const UserUncheckedCreateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -50799,7 +50799,7 @@ export const UserUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUpdateWithou
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -51028,7 +51028,7 @@ export const UserUncheckedUpdateWithoutSentInputSchema: z.ZodType<Prisma.UserUnc
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -51274,7 +51274,7 @@ export const UserUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.UserUpdateWi
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -51503,7 +51503,7 @@ export const UserUncheckedUpdateWithoutReceivedInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -51623,7 +51623,7 @@ export const UserCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserCreateWi
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -51740,7 +51740,7 @@ export const UserUncheckedCreateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -51997,7 +51997,7 @@ export const UserUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.UserUpdateWi
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -52226,7 +52226,7 @@ export const UserUncheckedUpdateWithoutFeedbackInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -52346,7 +52346,7 @@ export const UserCreateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -52463,7 +52463,7 @@ export const UserUncheckedCreateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -52717,7 +52717,7 @@ export const UserUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodType<Prisma
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -52946,7 +52946,7 @@ export const UserUncheckedUpdateWithoutTwoFactorConfirmationInputSchema: z.ZodTy
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -53063,7 +53063,7 @@ export const UserCreateWithoutCustomerInputSchema: z.ZodType<Prisma.UserCreateWi
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -53180,7 +53180,7 @@ export const UserUncheckedCreateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -53437,7 +53437,7 @@ export const UserUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.UserUpdateWi
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -53666,7 +53666,7 @@ export const UserUncheckedUpdateWithoutCustomerInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -54252,7 +54252,7 @@ export const UserCreateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserCre
       sites: z
         .lazy(() => SiteCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -54369,7 +54369,7 @@ export const UserUncheckedCreateWithoutSubscriptionsInputSchema: z.ZodType<Prism
       sites: z
         .lazy(() => SiteUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -54801,7 +54801,7 @@ export const UserUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prisma.UserUpd
       sites: z
         .lazy(() => SiteUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -55030,7 +55030,7 @@ export const UserUncheckedUpdateWithoutSubscriptionsInputSchema: z.ZodType<Prism
       sites: z
         .lazy(() => SiteUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -55150,7 +55150,7 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -55267,7 +55267,7 @@ export const UserUncheckedCreateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -55524,7 +55524,7 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -55753,7 +55753,7 @@ export const UserUncheckedUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -55873,7 +55873,7 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -55990,7 +55990,7 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -56247,7 +56247,7 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -56476,7 +56476,7 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -57501,7 +57501,7 @@ export const UserCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserCreateWith
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -57618,7 +57618,7 @@ export const UserUncheckedCreateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -57749,7 +57749,7 @@ export const UserCreateWithoutReferralsInputSchema: z.ZodType<Prisma.UserCreateW
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -57866,7 +57866,7 @@ export const UserUncheckedCreateWithoutReferralsInputSchema: z.ZodType<Prisma.Us
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -58681,7 +58681,7 @@ export const UserUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserUpdateWith
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -58910,7 +58910,7 @@ export const UserUncheckedUpdateWithoutClicksInputSchema: z.ZodType<Prisma.UserU
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -59156,7 +59156,7 @@ export const UserUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.UserUpdateW
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -59385,7 +59385,7 @@ export const UserUncheckedUpdateWithoutReferralsInputSchema: z.ZodType<Prisma.Us
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -59575,7 +59575,7 @@ export const UserCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserCreateWitho
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       customer: z
@@ -59692,7 +59692,7 @@ export const UserUncheckedCreateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -59986,7 +59986,7 @@ export const UserUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUpdateWitho
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       customer: z
@@ -60215,7 +60215,7 @@ export const UserUncheckedUpdateWithoutLinksInputSchema: z.ZodType<Prisma.UserUn
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -60942,7 +60942,7 @@ export const UserCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserCreateWitho
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -61059,7 +61059,7 @@ export const UserUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -61622,7 +61622,7 @@ export const UserUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUpdateWitho
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -61851,7 +61851,7 @@ export const UserUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.UserUn
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -62096,7 +62096,7 @@ export const UserCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserCreateWitho
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -62213,7 +62213,7 @@ export const UserUncheckedCreateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -62774,7 +62774,7 @@ export const UserUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUpdateWitho
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -63003,7 +63003,7 @@ export const UserUncheckedUpdateWithoutSitesInputSchema: z.ZodType<Prisma.UserUn
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -63463,7 +63463,7 @@ export const UserCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserCreateWithou
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -63582,7 +63582,7 @@ export const UserUncheckedCreateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -64184,7 +64184,7 @@ export const UserUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUpdateWithou
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -64415,7 +64415,7 @@ export const UserUncheckedUpdateWithoutFeedInputSchema: z.ZodType<Prisma.UserUnc
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -64656,7 +64656,7 @@ export const UserCreateWithoutCommentsInputSchema: z.ZodType<Prisma.UserCreateWi
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -64773,7 +64773,7 @@ export const UserUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -65156,7 +65156,7 @@ export const UserUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.UserUpdateWi
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -65385,7 +65385,7 @@ export const UserUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Use
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -65908,7 +65908,7 @@ export const UserCreateWithoutReservationsInputSchema: z.ZodType<Prisma.UserCrea
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -66025,7 +66025,7 @@ export const UserUncheckedCreateWithoutReservationsInputSchema: z.ZodType<Prisma
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -66459,7 +66459,7 @@ export const UserUpdateWithoutReservationsInputSchema: z.ZodType<Prisma.UserUpda
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -66688,7 +66688,7 @@ export const UserUncheckedUpdateWithoutReservationsInputSchema: z.ZodType<Prisma
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -66806,7 +66806,7 @@ export const UserCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserCreateWithou
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -66923,7 +66923,7 @@ export const UserUncheckedCreateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -67180,7 +67180,7 @@ export const UserUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUpdateWithou
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -67409,7 +67409,7 @@ export const UserUncheckedUpdateWithoutJobsInputSchema: z.ZodType<Prisma.UserUnc
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -69154,7 +69154,7 @@ export const UserCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserCreateWith
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -69271,7 +69271,7 @@ export const UserUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -69528,7 +69528,7 @@ export const UserUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserUpdateWith
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -69757,7 +69757,7 @@ export const UserUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.UserU
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -69877,7 +69877,7 @@ export const UserCreateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserCr
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -69994,7 +69994,7 @@ export const UserUncheckedCreateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -70292,7 +70292,7 @@ export const UserUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Prisma.UserUp
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -70521,7 +70521,7 @@ export const UserUncheckedUpdateWithoutWorkflowStatesInputSchema: z.ZodType<Pris
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -70769,7 +70769,7 @@ export const UserCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserCreate
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -70886,7 +70886,7 @@ export const UserUncheckedCreateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -71243,7 +71243,7 @@ export const UserUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.UserUpdate
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -71472,7 +71472,7 @@ export const UserUncheckedUpdateWithoutExecutionsInputSchema: z.ZodType<Prisma.U
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -71918,7 +71918,7 @@ export const UserCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserCreateWith
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -72035,7 +72035,7 @@ export const UserUncheckedCreateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -72447,7 +72447,7 @@ export const UserUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserUpdateWith
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -72676,7 +72676,7 @@ export const UserUncheckedUpdateWithoutOutboxInputSchema: z.ZodType<Prisma.UserU
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -72796,7 +72796,7 @@ export const UserCreateWithoutListsManageInputSchema: z.ZodType<Prisma.UserCreat
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -72913,7 +72913,7 @@ export const UserUncheckedCreateWithoutListsManageInputSchema: z.ZodType<Prisma.
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -73044,7 +73044,7 @@ export const UserCreateWithoutListsInputSchema: z.ZodType<Prisma.UserCreateWitho
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -73161,7 +73161,7 @@ export const UserUncheckedCreateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -73946,7 +73946,7 @@ export const UserCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserCreateWith
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -74063,7 +74063,7 @@ export const UserUncheckedCreateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -74380,7 +74380,7 @@ export const UserUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserUpdateWith
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -74609,7 +74609,7 @@ export const UserUncheckedUpdateWithoutEmailsInputSchema: z.ZodType<Prisma.UserU
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -75518,7 +75518,7 @@ export const UserCreateWithoutNafInputSchema: z.ZodType<Prisma.UserCreateWithout
       subscriptions: z
         .lazy(() => SubscriptionCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorCreateNestedManyWithoutUserInputSchema)
         .optional(),
       links: z
@@ -75634,7 +75634,7 @@ export const UserUncheckedCreateWithoutNafInputSchema: z.ZodType<Prisma.UserUnch
       subscriptions: z
         .lazy(() => SubscriptionUncheckedCreateNestedManyWithoutUserInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedCreateNestedManyWithoutUserInputSchema
         )
@@ -78219,7 +78219,7 @@ export const UserUpdateWithoutRefererInputSchema: z.ZodType<Prisma.UserUpdateWit
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -78441,7 +78441,7 @@ export const UserUncheckedUpdateWithoutRefererInputSchema: z.ZodType<Prisma.User
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -84387,7 +84387,7 @@ export const UserUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.UserUpdat
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -84616,7 +84616,7 @@ export const UserUncheckedUpdateWithoutListsManageInputSchema: z.ZodType<Prisma.
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -84986,7 +84986,7 @@ export const UserUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUpdateWitho
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -85215,7 +85215,7 @@ export const UserUncheckedUpdateWithoutListsInputSchema: z.ZodType<Prisma.UserUn
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
@@ -86438,7 +86438,7 @@ export const UserUpdateWithoutNafInputSchema: z.ZodType<Prisma.UserUpdateWithout
       subscriptions: z
         .lazy(() => SubscriptionUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(() => AuthenticatorUpdateManyWithoutUserNestedInputSchema)
         .optional(),
       links: z
@@ -86660,7 +86660,7 @@ export const UserUncheckedUpdateWithoutNafInputSchema: z.ZodType<Prisma.UserUnch
       subscriptions: z
         .lazy(() => SubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema)
         .optional(),
-      Authenticator: z
+      authenticator: z
         .lazy(
           () => AuthenticatorUncheckedUpdateManyWithoutUserNestedInputSchema
         )
