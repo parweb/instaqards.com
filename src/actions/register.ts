@@ -1,7 +1,7 @@
 'use server';
 
 import { UserRole } from '@prisma/client';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { APIError } from 'better-auth/api';
 import { translate } from 'helpers/translate';

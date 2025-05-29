@@ -5,7 +5,7 @@ import { setSessionCookie } from 'better-auth/cookies';
 
 import { hashPassword } from 'better-auth/crypto';
 import { cookies } from 'next/headers';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { RegisterSchema } from 'schemas';
 

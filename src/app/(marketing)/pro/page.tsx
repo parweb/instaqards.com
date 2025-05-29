@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import Image from 'next/image';
 import { Suspense } from 'react';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { Begin } from 'app/(marketing)/home/section/begin';
 import { WebSite } from 'components/editor/WebSite';

@@ -4,7 +4,7 @@ import type { Block } from '@prisma/client';
 import Link from 'next/link';
 import { LuLink } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { cn, json } from 'lib/utils';
 

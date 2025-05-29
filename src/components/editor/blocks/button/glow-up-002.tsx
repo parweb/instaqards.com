@@ -1,6 +1,6 @@
 import type { Block } from '@prisma/client';
 import Link from 'next/link';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { json } from 'lib/utils';
 

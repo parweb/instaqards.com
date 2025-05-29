@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { LuCheck, LuSend } from 'react-icons/lu';
 import { toast } from 'sonner';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import type { Block } from '@prisma/client';
 import LoadingDots from 'components/icons/loading-dots';

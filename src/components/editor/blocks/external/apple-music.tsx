@@ -1,4 +1,4 @@
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { trySafe } from 'helpers/trySafe';
 import { json } from 'lib/utils';

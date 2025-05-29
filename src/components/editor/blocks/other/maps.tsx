@@ -1,7 +1,7 @@
 'use client';
 
 import type { Block } from '@prisma/client';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import MapContainer from 'components/maps/MapContainer';
 import { json } from 'lib/utils';

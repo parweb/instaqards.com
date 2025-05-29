@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 import { LuLoader } from 'react-icons/lu';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import type { input as galleryInput } from 'components/editor/blocks/picture/gallery';
 import { trySafe } from 'helpers/trySafe';

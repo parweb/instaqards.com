@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { json } from 'lib/utils';
 

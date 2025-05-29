@@ -2,7 +2,7 @@ import type { Block } from '@prisma/client';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FC } from 'react';
 import BubbleUI from 'react-bubble-ui';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import ImageFullscreen from 'components/modal/image-fullscreen';
 import { json } from 'lib/utils';

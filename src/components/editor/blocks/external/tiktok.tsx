@@ -1,6 +1,6 @@
 'use client';
 
-import * as z from 'zod';
+import { z } from 'zod';
 import { TikTokEmbed } from 'react-social-media-embed';
 
 import { json } from 'lib/utils';

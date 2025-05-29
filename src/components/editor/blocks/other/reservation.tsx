@@ -7,7 +7,7 @@ import { motion } from 'motion/react';
 import { useState } from 'react';
 import { LuCheck } from 'react-icons/lu';
 import { toast } from 'sonner';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { book } from 'components/editor/blocks/other/actions';
 import LoadingDots from 'components/icons/loading-dots';

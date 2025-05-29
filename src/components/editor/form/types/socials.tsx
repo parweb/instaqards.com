@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type Control, type FieldValues } from 'react-hook-form';
 import { LuLink, LuMove, LuPlus, LuTrash } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import {
   closestCenter,

@@ -1,6 +1,6 @@
 'use client';
 
-import * as z from 'zod';
+import { z } from 'zod';
 import Image from 'next/image';
 
 import { json } from 'lib/utils';

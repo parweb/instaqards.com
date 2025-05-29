@@ -10,7 +10,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { LuChevronLeft } from 'react-icons/lu';
 import { toast } from 'sonner';
-import * as z from 'zod';
+import { z } from 'zod';
 import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
 
 import { $lastSelected } from 'components/editor/form/BlockForm';

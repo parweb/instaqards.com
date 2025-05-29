@@ -2,7 +2,7 @@ import type { Block } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { json } from 'lib/utils';
 

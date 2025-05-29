@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { LuLink } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import Arcange from 'components/arcange';
 import { cn, json } from 'lib/utils';
