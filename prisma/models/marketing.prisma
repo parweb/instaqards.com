@@ -1,0 +1,77 @@
+model Outbox {
+  id String @id @default(cuid())
+
+  email    String
+  subject  String
+  body     String
+  status   String @default("pending")
+  metadata Json?  @default("{}")
+
+  createdAt DateTime @default(now())
+
+  campaign   Campaign? @relation(fields: [campaignId], references: [id])
+  campaignId String?
+
+  user User? @relation(fields: [email], references: [email], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([status])
+}
+
+model List {
+  id String @id @default(cuid())
+
+  title       String
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owners    User[]     @relation("ContactsOwners")
+  contacts  User[]     @relation("Contacts")
+  campaigns Campaign[]
+}
+
+enum CampaignType {
+  email
+  sms
+  ads
+  push
+  offline
+}
+
+model Campaign {
+  id String @id @default(cuid())
+
+  type        CampaignType @default(email)
+  smart       Boolean      @default(false)
+  title       String
+  description String?
+  active      Boolean      @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  list     List?    @relation(fields: [listId], references: [id])
+  listId   String?
+  email    Email    @relation(fields: [emailId], references: [id])
+  emailId  String
+  outboxes Outbox[]
+}
+
+model Email {
+  id String @id @default(cuid())
+
+  title       String
+  description String?
+  subject     String
+  content     String
+  design      Json    @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaigns Campaign[]
+} 

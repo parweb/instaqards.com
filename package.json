@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "prisma": {
+    "schema": "./prisma",
     "seed": "bun run prisma/seed.ts"
   },
   "scripts": {

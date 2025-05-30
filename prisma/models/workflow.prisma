@@ -1,0 +1,189 @@
+model Queue {
+  id String @id @default(cuid())
+
+  job                 String    @default("none")
+  payload             Json      @default("{}")
+  status              String    @default("pending")
+  attempts            Int       @default(0)
+  lastError           String?
+  runAt               DateTime  @default(now())
+  priority            Int       @default(0)
+  processingStartedAt DateTime?
+  correlationId       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User?   @relation("UserQueueJobs", fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+
+  @@index([priority(sort: Desc), status, runAt])
+  @@index([status, runAt])
+  @@index([correlationId])
+  @@index([userId])
+  @@index([job])
+}
+
+model Action {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String?
+  type        String
+  config      Json
+  isPublished Boolean  @default(true)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rules      Rule[]      @relation("ActionRules")
+  executions Execution[] @relation("ActionLogs")
+}
+
+model Workflow {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rules  Rule[]          @relation("Rules")
+  states WorkflowState[] @relation("WorkflowStates")
+}
+
+model Trigger {
+  id          String  @id @default(cuid())
+  code        String  @unique
+  description String?
+
+  rules Rule[] @relation("TriggerRules")
+}
+
+model Rule {
+  id           String  @id @default(cuid())
+  workflowId   String
+  actionId     String
+  triggerId    String
+  delayMinutes Int     @default(0)
+  order        Int     @default(1)
+  isActive     Boolean @default(true)
+  version      Int     @default(1)
+
+  ruleConditions RuleCondition[] @relation("RuleConditions")
+
+  workflow   Workflow    @relation("Rules", fields: [workflowId], references: [id], onDelete: Cascade)
+  action     Action      @relation("ActionRules", fields: [actionId], references: [id])
+  trigger    Trigger     @relation("TriggerRules", fields: [triggerId], references: [id])
+  executions Execution[] @relation("RuleActionLogs")
+
+  @@index([workflowId, isActive])
+  @@index([triggerId, isActive])
+  @@index([actionId])
+}
+
+enum ConditionType {
+  USER_PROPERTY
+  SUBSCRIPTION_STATUS
+  EVENT_HISTORY_COUNT
+  EVENT_HISTORY_EXISTS
+  TRIGGER_PAYLOAD
+}
+
+model Condition {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  description String?
+  type        ConditionType
+  parameters  Json
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  rules RuleCondition[] @relation("ConditionUsage")
+}
+
+enum Operator {
+  AND
+  OR
+}
+
+model RuleCondition {
+  ruleId      String
+  conditionId String
+  group       Int      @default(1)
+  logic       Operator @default(AND)
+
+  rule      Rule      @relation("RuleConditions", fields: [ruleId], references: [id], onDelete: Cascade)
+  condition Condition @relation("ConditionUsage", fields: [conditionId], references: [id], onDelete: Cascade)
+
+  @@id([ruleId, conditionId])
+  @@index([conditionId])
+}
+
+model Event {
+  id            String   @id @default(cuid())
+  userId        String
+  eventType     String
+  payload       Json?
+  correlationId String?
+  createdAt     DateTime @default(now())
+  status        String   @default("pending")
+  attempts      Int      @default(0)
+  lastError     String?
+  user          User     @relation("UserEvents", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([eventType, createdAt])
+  @@index([correlationId])
+}
+
+enum WorkflowStateStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+model WorkflowState {
+  id         String              @id @default(cuid())
+  userId     String
+  workflowId String
+  status     WorkflowStateStatus @default(ACTIVE)
+  startedAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workflow Workflow @relation("WorkflowStates", fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workflowId])
+  @@index([status])
+}
+
+enum ExecutionStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+}
+
+model Execution {
+  id            String          @id @default(cuid())
+  userId        String
+  actionId      String
+  ruleId        String?
+  executedAt    DateTime?
+  status        ExecutionStatus @default(PENDING)
+  errorMessage  String?
+  resultPayload Json?
+  correlationId String?
+
+  user   User   @relation("UserActionLogs", fields: [userId], references: [id], onDelete: Cascade)
+  action Action @relation("ActionLogs", fields: [actionId], references: [id])
+  rule   Rule?  @relation("RuleActionLogs", fields: [ruleId], references: [id], onDelete: SetNull)
+
+  @@index([userId, executedAt])
+  @@index([actionId])
+  @@index([status])
+  @@index([executedAt])
+  @@index([correlationId])
+  @@index([ruleId])
+} 

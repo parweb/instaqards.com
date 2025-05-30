@@ -1,0 +1,83 @@
+model City {
+  id             Int     @id @default(autoincrement())
+  departement    String?
+  slug           String? @unique
+  nom            String?
+  nomSimple      String?
+  nomReel        String?
+  nomSoundex     String?
+  nomMetaphone   String?
+  codePostal     String?
+  commune        String?
+  codeCommune    String  @unique
+  arrondissement Int?
+  canton         String?
+  amdi           Int?
+  population2010 Int?
+  population1999 Int?
+  population2012 Int?
+  densite2010    Int?
+  surface        Float?
+  longitudeDeg   Float?
+  latitudeDeg    Float?
+  longitudeGrd   String?
+  latitudeGrd    String?
+  longitudeDms   String?
+  latitudeDms    String?
+  zmin           Int?
+  zmax           Int?
+
+  @@index([departement])
+  @@index([nom])
+  @@index([nomReel])
+  @@index([codePostal])
+  @@index([longitudeDeg, latitudeDeg])
+  @@index([nomSoundex])
+  @@index([nomMetaphone])
+  @@index([population2010])
+  @@index([nomSimple])
+}
+
+model NafSection {
+  id    String @id
+  title String
+
+  divisions NafDivision[]
+}
+
+model NafDivision {
+  id    String @id
+  title String
+
+  groups    NafGroup[]
+  section   NafSection @relation(fields: [sectionId], references: [id])
+  sectionId String
+}
+
+model NafGroup {
+  id    String @id
+  title String
+
+  classes    NafClass[]
+  division   NafDivision @relation(fields: [divisionId], references: [id])
+  divisionId String
+}
+
+model NafClass {
+  id    String @id
+  title String
+
+  codes   NafCode[]
+  group   NafGroup  @relation(fields: [groupId], references: [id])
+  groupId String
+}
+
+model NafCode {
+  id    String @id
+  title String
+
+  class   NafClass @relation(fields: [classId], references: [id])
+  classId String
+
+  users User[]
+} 

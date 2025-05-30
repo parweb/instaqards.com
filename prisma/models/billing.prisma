@@ -1,0 +1,88 @@
+model Customer {
+  stripe_customer_id String @unique
+
+  user User   @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id   String @unique
+}
+
+model Product {
+  id          String  @id
+  active      Boolean
+  name        String
+  description String
+  image       String
+  metadata    Json    @default("{}")
+
+  prices Price[]
+}
+
+enum PricingType {
+  one_time
+  recurring
+}
+
+enum PricingPlanInterval {
+  day
+  week
+  month
+  year
+}
+
+model Price {
+  id                String               @id
+  active            Boolean
+  description       String
+  unit_amount       Int?
+  currency          String
+  type              PricingType
+  interval          PricingPlanInterval?
+  interval_count    Int?
+  trial_period_days Int?
+  metadata          Json                 @default("{}")
+
+  subscriptions Subscription[]
+  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId     String
+
+  @@index([productId])
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  canceled
+  incomplete
+  incomplete_expired
+  past_due
+  unpaid
+  paused
+}
+
+model Subscription {
+  id String @id
+
+  status               SubscriptionStatus
+  metadata             Json               @default("{}")
+  quantity             Int
+  cancel_at_period_end Boolean
+  created              DateTime           @default(now())
+  current_period_start DateTime           @default(now())
+  current_period_end   DateTime           @default(now())
+  ended_at             DateTime?
+  cancel_at            DateTime?
+  canceled_at          DateTime?
+  trial_start          DateTime?
+  trial_end            DateTime?
+
+  price   Price  @relation(fields: [priceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  priceId String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId  String
+
+  @@index([userId, status])
+  @@index([status])
+  @@index([userId])
+  @@index([current_period_end])
+  @@index([priceId])
+  @@index([trial_end])
+} 
