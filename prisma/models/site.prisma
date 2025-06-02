@@ -24,6 +24,7 @@ model Click {
   @@index([blockId])
   @@index([userId])
   @@index([refererId])
+  @@index([siteId, createdAt])
 }
 
 model Link {
@@ -163,4 +164,4 @@ model Reservation {
   @@index([blockId])
   @@index([email])
   @@index([blockId, email])
-} 
+}

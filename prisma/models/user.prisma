@@ -67,6 +67,7 @@ model User {
 
   @@index([email])
   @@index([role])
+  @@index([bounced])
   @@index([emailVerified])
   @@index([createdAt, id])
   @@index([refererId, createdAt])
@@ -78,6 +79,7 @@ model User {
   @@index([activity])
   @@index([activity, codeNaf])
   @@index([city, postcode])
+  @@index([bounced, createdAt])
 }
 
 model Message {
@@ -104,4 +106,4 @@ model Feedback {
   userId String?
 
   @@index([userId])
-} 
+}
