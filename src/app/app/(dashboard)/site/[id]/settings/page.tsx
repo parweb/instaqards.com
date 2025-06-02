@@ -67,13 +67,8 @@ export default async function SiteSettingsIndex(props: {
               name: `${user.name}${user.email ? ` (${user.email})` : ''}`
             }))
           }}
-          handleSubmit={
-            updateSite as <T>(
-              data: FormData, // eslint-disable-line no-unused-vars
-              id: string, // eslint-disable-line no-unused-vars
-              name: string // eslint-disable-line no-unused-vars
-            ) => Promise<T | { error?: string }>
-          }
+          // @ts-expect-error
+          handleSubmit={updateSite}
           helpText=""
         />
       )}
@@ -89,13 +84,8 @@ export default async function SiteSettingsIndex(props: {
           placeholder: 'My Awesome Site',
           maxLength: 32
         }}
-        handleSubmit={
-          updateSite as <T>(
-            data: FormData, // eslint-disable-line no-unused-vars
-            id: string, // eslint-disable-line no-unused-vars
-            name: string // eslint-disable-line no-unused-vars
-          ) => Promise<T | { error?: string }>
-        }
+        // @ts-expect-error
+        handleSubmit={updateSite}
       />
 
       <Form
@@ -108,13 +98,8 @@ export default async function SiteSettingsIndex(props: {
           defaultValue: site?.description ?? '',
           placeholder: 'A blog about really interesting things.'
         }}
-        handleSubmit={
-          updateSite as <T>(
-            data: FormData, // eslint-disable-line no-unused-vars
-            id: string, // eslint-disable-line no-unused-vars
-            name: string // eslint-disable-line no-unused-vars
-          ) => Promise<T | { error?: string }>
-        }
+        // @ts-expect-error
+        handleSubmit={updateSite}
       />
 
       <DeleteSiteForm siteName={site?.name ?? ''} />
