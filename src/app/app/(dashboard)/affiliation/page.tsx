@@ -34,7 +34,7 @@ export default async function AllAffiliation({
   const auth = await getAuth();
 
   // Si l'utilisateur est un Creator, afficher l'interface d'affiliation Creator
-  if (session.user.role === UserRole.CREATOR) {
+  if (auth.role === UserRole.CREATOR) {
     return <CreatorAffiliation />;
   }
 

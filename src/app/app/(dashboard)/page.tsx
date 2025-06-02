@@ -108,7 +108,7 @@ export default async function Overview({
   };
 
   // Si l'utilisateur est un Creator, afficher le dashboard Creator
-  if (session.user.role === UserRole.CREATOR) {
+  if (auth.role === UserRole.CREATOR) {
     return <CreatorDashboard />;
   }
 
