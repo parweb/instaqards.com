@@ -1175,6 +1175,12 @@ const translations = {
     en: 'Create a category',
     it: 'Crea una categoria',
     es: 'Crear una categoría'
+  },
+  'components.inventory.mutate.title': {
+    fr: 'Créer un produit',
+    en: 'Create a product',
+    it: 'Crea un prodotto',
+    es: 'Crear un producto'
   }
 } as const;
 

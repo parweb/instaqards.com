@@ -426,7 +426,7 @@ export const CategoryScalarFieldEnumSchema = z.enum([
   'name',
   'description',
   'slug',
-  'isActive',
+  'active',
   'position',
   'createdAt',
   'updatedAt',
@@ -441,11 +441,12 @@ export const InventoryScalarFieldEnumSchema = z.enum([
   'slug',
   'sku',
   'basePrice',
-  'isActive',
+  'active',
   'isFeatured',
   'metaTitle',
   'metaDescription',
   'tags',
+  'stock',
   'createdAt',
   'updatedAt',
   'categoryId',
@@ -460,7 +461,7 @@ export const InventoryVariantScalarFieldEnumSchema = z.enum([
   'type',
   'price',
   'stock',
-  'isActive',
+  'active',
   'position',
   'createdAt',
   'updatedAt'
@@ -1312,7 +1313,7 @@ export const CategorySchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   slug: z.string(),
-  isActive: z.boolean(),
+  active: z.boolean(),
   position: z.number().int(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
@@ -1332,15 +1333,13 @@ export const InventorySchema = z.object({
   description: z.string().nullable(),
   slug: z.string(),
   sku: z.string().nullable(),
-  basePrice: z.instanceof(Prisma.Decimal, {
-    message:
-      "Field 'basePrice' must be a Decimal. Location: ['Models', 'Inventory']"
-  }),
-  isActive: z.boolean(),
+  basePrice: z.number(),
+  active: z.boolean(),
   isFeatured: z.boolean(),
   metaTitle: z.string().nullable(),
   metaDescription: z.string().nullable(),
   tags: z.string().array(),
+  stock: z.number().int(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   categoryId: z.string().nullable(),
@@ -1366,7 +1365,7 @@ export const InventoryVariantSchema = z.object({
     })
     .nullable(),
   stock: z.number().int(),
-  isActive: z.boolean(),
+  active: z.boolean(),
   position: z.number().int(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
@@ -3018,7 +3017,7 @@ export const CategorySelectSchema: z.ZodType<Prisma.CategorySelect> = z
     name: z.boolean().optional(),
     description: z.boolean().optional(),
     slug: z.boolean().optional(),
-    isActive: z.boolean().optional(),
+    active: z.boolean().optional(),
     position: z.boolean().optional(),
     createdAt: z.boolean().optional(),
     updatedAt: z.boolean().optional(),
@@ -3087,11 +3086,12 @@ export const InventorySelectSchema: z.ZodType<Prisma.InventorySelect> = z
     slug: z.boolean().optional(),
     sku: z.boolean().optional(),
     basePrice: z.boolean().optional(),
-    isActive: z.boolean().optional(),
+    active: z.boolean().optional(),
     isFeatured: z.boolean().optional(),
     metaTitle: z.boolean().optional(),
     metaDescription: z.boolean().optional(),
     tags: z.boolean().optional(),
+    stock: z.boolean().optional(),
     createdAt: z.boolean().optional(),
     updatedAt: z.boolean().optional(),
     categoryId: z.boolean().optional(),
@@ -3139,7 +3139,7 @@ export const InventoryVariantSelectSchema: z.ZodType<Prisma.InventoryVariantSele
       type: z.boolean().optional(),
       price: z.boolean().optional(),
       stock: z.boolean().optional(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.boolean().optional(),
       createdAt: z.boolean().optional(),
       updatedAt: z.boolean().optional(),
@@ -11490,7 +11490,7 @@ export const CategoryWhereInputSchema: z.ZodType<Prisma.CategoryWhereInput> = z
       .optional()
       .nullable(),
     slug: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-    isActive: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
+    active: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
     position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
     createdAt: z
       .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
@@ -11533,7 +11533,7 @@ export const CategoryOrderByWithRelationInputSchema: z.ZodType<Prisma.CategoryOr
         ])
         .optional(),
       slug: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -11611,7 +11611,7 @@ export const CategoryWhereUniqueInputSchema: z.ZodType<Prisma.CategoryWhereUniqu
             .union([z.lazy(() => StringNullableFilterSchema), z.string()])
             .optional()
             .nullable(),
-          isActive: z
+          active: z
             .union([z.lazy(() => BoolFilterSchema), z.boolean()])
             .optional(),
           position: z
@@ -11663,7 +11663,7 @@ export const CategoryOrderByWithAggregationInputSchema: z.ZodType<Prisma.Categor
         ])
         .optional(),
       slug: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -11717,7 +11717,7 @@ export const CategoryScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Cate
       slug: z
         .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
         .optional(),
-      isActive: z
+      active: z
         .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
         .optional(),
       position: z
@@ -11779,24 +11779,9 @@ export const InventoryWhereInputSchema: z.ZodType<Prisma.InventoryWhereInput> =
         .optional()
         .nullable(),
       basePrice: z
-        .union([
-          z.lazy(() => DecimalFilterSchema),
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            })
-        ])
+        .union([z.lazy(() => FloatFilterSchema), z.number()])
         .optional(),
-      isActive: z
-        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
-        .optional(),
+      active: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
       isFeatured: z
         .union([z.lazy(() => BoolFilterSchema), z.boolean()])
         .optional(),
@@ -11809,6 +11794,7 @@ export const InventoryWhereInputSchema: z.ZodType<Prisma.InventoryWhereInput> =
         .optional()
         .nullable(),
       tags: z.lazy(() => StringNullableListFilterSchema).optional(),
+      stock: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
       createdAt: z
         .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
         .optional(),
@@ -11860,7 +11846,7 @@ export const InventoryOrderByWithRelationInputSchema: z.ZodType<Prisma.Inventory
         ])
         .optional(),
       basePrice: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       isFeatured: z.lazy(() => SortOrderSchema).optional(),
       metaTitle: z
         .union([
@@ -11875,6 +11861,7 @@ export const InventoryOrderByWithRelationInputSchema: z.ZodType<Prisma.Inventory
         ])
         .optional(),
       tags: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       categoryId: z
@@ -11952,22 +11939,9 @@ export const InventoryWhereUniqueInputSchema: z.ZodType<Prisma.InventoryWhereUni
             .optional()
             .nullable(),
           basePrice: z
-            .union([
-              z.lazy(() => DecimalFilterSchema),
-              z
-                .union([
-                  z.number(),
-                  z.string(),
-                  z.instanceof(Decimal),
-                  z.instanceof(Prisma.Decimal),
-                  DecimalJsLikeSchema
-                ])
-                .refine(v => isValidDecimalInput(v), {
-                  message: 'Must be a Decimal'
-                })
-            ])
+            .union([z.lazy(() => FloatFilterSchema), z.number()])
             .optional(),
-          isActive: z
+          active: z
             .union([z.lazy(() => BoolFilterSchema), z.boolean()])
             .optional(),
           isFeatured: z
@@ -11982,6 +11956,9 @@ export const InventoryWhereUniqueInputSchema: z.ZodType<Prisma.InventoryWhereUni
             .optional()
             .nullable(),
           tags: z.lazy(() => StringNullableListFilterSchema).optional(),
+          stock: z
+            .union([z.lazy(() => IntFilterSchema), z.number().int()])
+            .optional(),
           createdAt: z
             .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
             .optional(),
@@ -12034,7 +12011,7 @@ export const InventoryOrderByWithAggregationInputSchema: z.ZodType<Prisma.Invent
         ])
         .optional(),
       basePrice: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       isFeatured: z.lazy(() => SortOrderSchema).optional(),
       metaTitle: z
         .union([
@@ -12049,6 +12026,7 @@ export const InventoryOrderByWithAggregationInputSchema: z.ZodType<Prisma.Invent
         ])
         .optional(),
       tags: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       categoryId: z
@@ -12111,22 +12089,9 @@ export const InventoryScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Inv
         .optional()
         .nullable(),
       basePrice: z
-        .union([
-          z.lazy(() => DecimalWithAggregatesFilterSchema),
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            })
-        ])
+        .union([z.lazy(() => FloatWithAggregatesFilterSchema), z.number()])
         .optional(),
-      isActive: z
+      active: z
         .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
         .optional(),
       isFeatured: z
@@ -12147,6 +12112,9 @@ export const InventoryScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Inv
         .optional()
         .nullable(),
       tags: z.lazy(() => StringNullableListFilterSchema).optional(),
+      stock: z
+        .union([z.lazy(() => IntWithAggregatesFilterSchema), z.number()])
+        .optional(),
       createdAt: z
         .union([
           z.lazy(() => DateTimeWithAggregatesFilterSchema),
@@ -12221,9 +12189,7 @@ export const InventoryVariantWhereInputSchema: z.ZodType<Prisma.InventoryVariant
         .optional()
         .nullable(),
       stock: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
-      isActive: z
-        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
-        .optional(),
+      active: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
       position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
       createdAt: z
         .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
@@ -12255,7 +12221,7 @@ export const InventoryVariantOrderByWithRelationInputSchema: z.ZodType<Prisma.In
         ])
         .optional(),
       stock: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -12344,7 +12310,7 @@ export const InventoryVariantWhereUniqueInputSchema: z.ZodType<Prisma.InventoryV
           stock: z
             .union([z.lazy(() => IntFilterSchema), z.number().int()])
             .optional(),
-          isActive: z
+          active: z
             .union([z.lazy(() => BoolFilterSchema), z.boolean()])
             .optional(),
           position: z
@@ -12381,7 +12347,7 @@ export const InventoryVariantOrderByWithAggregationInputSchema: z.ZodType<Prisma
         ])
         .optional(),
       stock: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -12464,7 +12430,7 @@ export const InventoryVariantScalarWhereWithAggregatesInputSchema: z.ZodType<Pri
       stock: z
         .union([z.lazy(() => IntWithAggregatesFilterSchema), z.number()])
         .optional(),
-      isActive: z
+      active: z
         .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
         .optional(),
       position: z
@@ -24239,7 +24205,7 @@ export const CategoryCreateInputSchema: z.ZodType<Prisma.CategoryCreateInput> =
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -24263,7 +24229,7 @@ export const CategoryUncheckedCreateInputSchema: z.ZodType<Prisma.CategoryUnchec
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -24308,7 +24274,7 @@ export const CategoryUpdateInputSchema: z.ZodType<Prisma.CategoryUpdateInput> =
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -24375,7 +24341,7 @@ export const CategoryUncheckedUpdateInputSchema: z.ZodType<Prisma.CategoryUnchec
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -24430,7 +24396,7 @@ export const CategoryCreateManyInputSchema: z.ZodType<Prisma.CategoryCreateManyI
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -24467,7 +24433,7 @@ export const CategoryUpdateManyMutationInputSchema: z.ZodType<Prisma.CategoryUpd
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -24522,7 +24488,7 @@ export const CategoryUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CategoryUn
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -24570,16 +24536,8 @@ export const InventoryCreateInputSchema: z.ZodType<Prisma.InventoryCreateInput> 
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -24589,6 +24547,7 @@ export const InventoryCreateInputSchema: z.ZodType<Prisma.InventoryCreateInput> 
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       category: z
@@ -24609,16 +24568,8 @@ export const InventoryUncheckedCreateInputSchema: z.ZodType<Prisma.InventoryUnch
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -24628,6 +24579,7 @@ export const InventoryUncheckedCreateInputSchema: z.ZodType<Prisma.InventoryUnch
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       categoryId: z.string().optional().nullable(),
@@ -24678,21 +24630,11 @@ export const InventoryUpdateInputSchema: z.ZodType<Prisma.InventoryUpdateInput> 
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -24722,6 +24664,12 @@ export const InventoryUpdateInputSchema: z.ZodType<Prisma.InventoryUpdateInput> 
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -24785,21 +24733,11 @@ export const InventoryUncheckedUpdateInputSchema: z.ZodType<Prisma.InventoryUnch
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -24829,6 +24767,12 @@ export const InventoryUncheckedUpdateInputSchema: z.ZodType<Prisma.InventoryUnch
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -24873,16 +24817,8 @@ export const InventoryCreateManyInputSchema: z.ZodType<Prisma.InventoryCreateMan
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -24892,6 +24828,7 @@ export const InventoryCreateManyInputSchema: z.ZodType<Prisma.InventoryCreateMan
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       categoryId: z.string().optional().nullable(),
@@ -24936,21 +24873,11 @@ export const InventoryUpdateManyMutationInputSchema: z.ZodType<Prisma.InventoryU
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -24980,6 +24907,12 @@ export const InventoryUpdateManyMutationInputSchema: z.ZodType<Prisma.InventoryU
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -25034,21 +24967,11 @@ export const InventoryUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Inventory
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -25078,6 +25001,12 @@ export const InventoryUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Inventory
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -25127,7 +25056,7 @@ export const InventoryVariantCreateInputSchema: z.ZodType<Prisma.InventoryVarian
         .optional()
         .nullable(),
       stock: z.number().int().optional(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -25157,7 +25086,7 @@ export const InventoryVariantUncheckedCreateInputSchema: z.ZodType<Prisma.Invent
         .optional()
         .nullable(),
       stock: z.number().int().optional(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional()
@@ -25214,7 +25143,7 @@ export const InventoryVariantUpdateInputSchema: z.ZodType<Prisma.InventoryVarian
           z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -25300,7 +25229,7 @@ export const InventoryVariantUncheckedUpdateInputSchema: z.ZodType<Prisma.Invent
           z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -25347,7 +25276,7 @@ export const InventoryVariantCreateManyInputSchema: z.ZodType<Prisma.InventoryVa
         .optional()
         .nullable(),
       stock: z.number().int().optional(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional()
@@ -25404,7 +25333,7 @@ export const InventoryVariantUpdateManyMutationInputSchema: z.ZodType<Prisma.Inv
           z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -25487,7 +25416,7 @@ export const InventoryVariantUncheckedUpdateManyInputSchema: z.ZodType<Prisma.In
           z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -32614,7 +32543,7 @@ export const CategoryCountOrderByAggregateInputSchema: z.ZodType<Prisma.Category
       name: z.lazy(() => SortOrderSchema).optional(),
       description: z.lazy(() => SortOrderSchema).optional(),
       slug: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -32637,7 +32566,7 @@ export const CategoryMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CategoryMa
       name: z.lazy(() => SortOrderSchema).optional(),
       description: z.lazy(() => SortOrderSchema).optional(),
       slug: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -32653,7 +32582,7 @@ export const CategoryMinOrderByAggregateInputSchema: z.ZodType<Prisma.CategoryMi
       name: z.lazy(() => SortOrderSchema).optional(),
       description: z.lazy(() => SortOrderSchema).optional(),
       slug: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -32669,102 +32598,16 @@ export const CategorySumOrderByAggregateInputSchema: z.ZodType<Prisma.CategorySu
     })
     .strict();
 
-export const DecimalFilterSchema: z.ZodType<Prisma.DecimalFilter> = z
+export const FloatFilterSchema: z.ZodType<Prisma.FloatFilter> = z
   .object({
-    equals: z
-      .union([
-        z.number(),
-        z.string(),
-        z.instanceof(Decimal),
-        z.instanceof(Prisma.Decimal),
-        DecimalJsLikeSchema
-      ])
-      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-      .optional(),
-    in: z
-      .union([
-        z.number().array(),
-        z.string().array(),
-        z.instanceof(Decimal).array(),
-        z.instanceof(Prisma.Decimal).array(),
-        DecimalJsLikeSchema.array()
-      ])
-      .refine(
-        v =>
-          Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
-        { message: 'Must be a Decimal' }
-      )
-      .optional(),
-    notIn: z
-      .union([
-        z.number().array(),
-        z.string().array(),
-        z.instanceof(Decimal).array(),
-        z.instanceof(Prisma.Decimal).array(),
-        DecimalJsLikeSchema.array()
-      ])
-      .refine(
-        v =>
-          Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
-        { message: 'Must be a Decimal' }
-      )
-      .optional(),
-    lt: z
-      .union([
-        z.number(),
-        z.string(),
-        z.instanceof(Decimal),
-        z.instanceof(Prisma.Decimal),
-        DecimalJsLikeSchema
-      ])
-      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-      .optional(),
-    lte: z
-      .union([
-        z.number(),
-        z.string(),
-        z.instanceof(Decimal),
-        z.instanceof(Prisma.Decimal),
-        DecimalJsLikeSchema
-      ])
-      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-      .optional(),
-    gt: z
-      .union([
-        z.number(),
-        z.string(),
-        z.instanceof(Decimal),
-        z.instanceof(Prisma.Decimal),
-        DecimalJsLikeSchema
-      ])
-      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-      .optional(),
-    gte: z
-      .union([
-        z.number(),
-        z.string(),
-        z.instanceof(Decimal),
-        z.instanceof(Prisma.Decimal),
-        DecimalJsLikeSchema
-      ])
-      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-      .optional(),
-    not: z
-      .union([
-        z
-          .union([
-            z.number(),
-            z.string(),
-            z.instanceof(Decimal),
-            z.instanceof(Prisma.Decimal),
-            DecimalJsLikeSchema
-          ])
-          .refine(v => isValidDecimalInput(v), {
-            message: 'Must be a Decimal'
-          }),
-        z.lazy(() => NestedDecimalFilterSchema)
-      ])
-      .optional()
+    equals: z.number().optional(),
+    in: z.number().array().optional(),
+    notIn: z.number().array().optional(),
+    lt: z.number().optional(),
+    lte: z.number().optional(),
+    gt: z.number().optional(),
+    gte: z.number().optional(),
+    not: z.union([z.number(), z.lazy(() => NestedFloatFilterSchema)]).optional()
   })
   .strict();
 
@@ -32804,11 +32647,12 @@ export const InventoryCountOrderByAggregateInputSchema: z.ZodType<Prisma.Invento
       slug: z.lazy(() => SortOrderSchema).optional(),
       sku: z.lazy(() => SortOrderSchema).optional(),
       basePrice: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       isFeatured: z.lazy(() => SortOrderSchema).optional(),
       metaTitle: z.lazy(() => SortOrderSchema).optional(),
       metaDescription: z.lazy(() => SortOrderSchema).optional(),
       tags: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       categoryId: z.lazy(() => SortOrderSchema).optional(),
@@ -32819,7 +32663,8 @@ export const InventoryCountOrderByAggregateInputSchema: z.ZodType<Prisma.Invento
 export const InventoryAvgOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryAvgOrderByAggregateInput> =
   z
     .object({
-      basePrice: z.lazy(() => SortOrderSchema).optional()
+      basePrice: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
@@ -32832,10 +32677,11 @@ export const InventoryMaxOrderByAggregateInputSchema: z.ZodType<Prisma.Inventory
       slug: z.lazy(() => SortOrderSchema).optional(),
       sku: z.lazy(() => SortOrderSchema).optional(),
       basePrice: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       isFeatured: z.lazy(() => SortOrderSchema).optional(),
       metaTitle: z.lazy(() => SortOrderSchema).optional(),
       metaDescription: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       categoryId: z.lazy(() => SortOrderSchema).optional(),
@@ -32852,10 +32698,11 @@ export const InventoryMinOrderByAggregateInputSchema: z.ZodType<Prisma.Inventory
       slug: z.lazy(() => SortOrderSchema).optional(),
       sku: z.lazy(() => SortOrderSchema).optional(),
       basePrice: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       isFeatured: z.lazy(() => SortOrderSchema).optional(),
       metaTitle: z.lazy(() => SortOrderSchema).optional(),
       metaDescription: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       categoryId: z.lazy(() => SortOrderSchema).optional(),
@@ -32866,112 +32713,32 @@ export const InventoryMinOrderByAggregateInputSchema: z.ZodType<Prisma.Inventory
 export const InventorySumOrderByAggregateInputSchema: z.ZodType<Prisma.InventorySumOrderByAggregateInput> =
   z
     .object({
-      basePrice: z.lazy(() => SortOrderSchema).optional()
+      basePrice: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional()
     })
     .strict();
 
-export const DecimalWithAggregatesFilterSchema: z.ZodType<Prisma.DecimalWithAggregatesFilter> =
+export const FloatWithAggregatesFilterSchema: z.ZodType<Prisma.FloatWithAggregatesFilter> =
   z
     .object({
-      equals: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      in: z
-        .union([
-          z.number().array(),
-          z.string().array(),
-          z.instanceof(Decimal).array(),
-          z.instanceof(Prisma.Decimal).array(),
-          DecimalJsLikeSchema.array()
-        ])
-        .refine(
-          v =>
-            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
-          { message: 'Must be a Decimal' }
-        )
-        .optional(),
-      notIn: z
-        .union([
-          z.number().array(),
-          z.string().array(),
-          z.instanceof(Decimal).array(),
-          z.instanceof(Prisma.Decimal).array(),
-          DecimalJsLikeSchema.array()
-        ])
-        .refine(
-          v =>
-            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
-          { message: 'Must be a Decimal' }
-        )
-        .optional(),
-      lt: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      lte: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      gt: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      gte: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
+      equals: z.number().optional(),
+      in: z.number().array().optional(),
+      notIn: z.number().array().optional(),
+      lt: z.number().optional(),
+      lte: z.number().optional(),
+      gt: z.number().optional(),
+      gte: z.number().optional(),
       not: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => NestedDecimalWithAggregatesFilterSchema)
+          z.number(),
+          z.lazy(() => NestedFloatWithAggregatesFilterSchema)
         ])
         .optional(),
       _count: z.lazy(() => NestedIntFilterSchema).optional(),
-      _avg: z.lazy(() => NestedDecimalFilterSchema).optional(),
-      _sum: z.lazy(() => NestedDecimalFilterSchema).optional(),
-      _min: z.lazy(() => NestedDecimalFilterSchema).optional(),
-      _max: z.lazy(() => NestedDecimalFilterSchema).optional()
+      _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+      _sum: z.lazy(() => NestedFloatFilterSchema).optional(),
+      _min: z.lazy(() => NestedFloatFilterSchema).optional(),
+      _max: z.lazy(() => NestedFloatFilterSchema).optional()
     })
     .strict();
 
@@ -33127,7 +32894,7 @@ export const InventoryVariantCountOrderByAggregateInputSchema: z.ZodType<Prisma.
       type: z.lazy(() => SortOrderSchema).optional(),
       price: z.lazy(() => SortOrderSchema).optional(),
       stock: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional()
@@ -33153,7 +32920,7 @@ export const InventoryVariantMaxOrderByAggregateInputSchema: z.ZodType<Prisma.In
       type: z.lazy(() => SortOrderSchema).optional(),
       price: z.lazy(() => SortOrderSchema).optional(),
       stock: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional()
@@ -33170,7 +32937,7 @@ export const InventoryVariantMinOrderByAggregateInputSchema: z.ZodType<Prisma.In
       type: z.lazy(() => SortOrderSchema).optional(),
       price: z.lazy(() => SortOrderSchema).optional(),
       stock: z.lazy(() => SortOrderSchema).optional(),
-      isActive: z.lazy(() => SortOrderSchema).optional(),
+      active: z.lazy(() => SortOrderSchema).optional(),
       position: z.lazy(() => SortOrderSchema).optional(),
       createdAt: z.lazy(() => SortOrderSchema).optional(),
       updatedAt: z.lazy(() => SortOrderSchema).optional()
@@ -42070,59 +41837,14 @@ export const InventoryVariantUncheckedCreateNestedManyWithoutInventoryInputSchem
     })
     .strict();
 
-export const DecimalFieldUpdateOperationsInputSchema: z.ZodType<Prisma.DecimalFieldUpdateOperationsInput> =
+export const FloatFieldUpdateOperationsInputSchema: z.ZodType<Prisma.FloatFieldUpdateOperationsInput> =
   z
     .object({
-      set: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      increment: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      decrement: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      multiply: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      divide: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional()
+      set: z.number().optional(),
+      increment: z.number().optional(),
+      decrement: z.number().optional(),
+      multiply: z.number().optional(),
+      divide: z.number().optional()
     })
     .strict();
 
@@ -51313,208 +51035,27 @@ export const NestedEnumMediaTypeWithAggregatesFilterSchema: z.ZodType<Prisma.Nes
     })
     .strict();
 
-export const NestedDecimalFilterSchema: z.ZodType<Prisma.NestedDecimalFilter> =
+export const NestedFloatWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloatWithAggregatesFilter> =
   z
     .object({
-      equals: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      in: z
-        .union([
-          z.number().array(),
-          z.string().array(),
-          z.instanceof(Decimal).array(),
-          z.instanceof(Prisma.Decimal).array(),
-          DecimalJsLikeSchema.array()
-        ])
-        .refine(
-          v =>
-            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
-          { message: 'Must be a Decimal' }
-        )
-        .optional(),
-      notIn: z
-        .union([
-          z.number().array(),
-          z.string().array(),
-          z.instanceof(Decimal).array(),
-          z.instanceof(Prisma.Decimal).array(),
-          DecimalJsLikeSchema.array()
-        ])
-        .refine(
-          v =>
-            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
-          { message: 'Must be a Decimal' }
-        )
-        .optional(),
-      lt: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      lte: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      gt: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      gte: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
+      equals: z.number().optional(),
+      in: z.number().array().optional(),
+      notIn: z.number().array().optional(),
+      lt: z.number().optional(),
+      lte: z.number().optional(),
+      gt: z.number().optional(),
+      gte: z.number().optional(),
       not: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => NestedDecimalFilterSchema)
-        ])
-        .optional()
-    })
-    .strict();
-
-export const NestedDecimalWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDecimalWithAggregatesFilter> =
-  z
-    .object({
-      equals: z
-        .union([
           z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      in: z
-        .union([
-          z.number().array(),
-          z.string().array(),
-          z.instanceof(Decimal).array(),
-          z.instanceof(Prisma.Decimal).array(),
-          DecimalJsLikeSchema.array()
-        ])
-        .refine(
-          v =>
-            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
-          { message: 'Must be a Decimal' }
-        )
-        .optional(),
-      notIn: z
-        .union([
-          z.number().array(),
-          z.string().array(),
-          z.instanceof(Decimal).array(),
-          z.instanceof(Prisma.Decimal).array(),
-          DecimalJsLikeSchema.array()
-        ])
-        .refine(
-          v =>
-            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
-          { message: 'Must be a Decimal' }
-        )
-        .optional(),
-      lt: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      lte: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      gt: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      gte: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
-        .optional(),
-      not: z
-        .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => NestedDecimalWithAggregatesFilterSchema)
+          z.lazy(() => NestedFloatWithAggregatesFilterSchema)
         ])
         .optional(),
       _count: z.lazy(() => NestedIntFilterSchema).optional(),
-      _avg: z.lazy(() => NestedDecimalFilterSchema).optional(),
-      _sum: z.lazy(() => NestedDecimalFilterSchema).optional(),
-      _min: z.lazy(() => NestedDecimalFilterSchema).optional(),
-      _max: z.lazy(() => NestedDecimalFilterSchema).optional()
+      _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+      _sum: z.lazy(() => NestedFloatFilterSchema).optional(),
+      _min: z.lazy(() => NestedFloatFilterSchema).optional(),
+      _max: z.lazy(() => NestedFloatFilterSchema).optional()
     })
     .strict();
 
@@ -66711,7 +66252,7 @@ export const CategoryCreateWithoutBlockInputSchema: z.ZodType<Prisma.CategoryCre
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -66734,7 +66275,7 @@ export const CategoryUncheckedCreateWithoutBlockInputSchema: z.ZodType<Prisma.Ca
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -66780,16 +66321,8 @@ export const InventoryCreateWithoutBlockInputSchema: z.ZodType<Prisma.InventoryC
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -66799,6 +66332,7 @@ export const InventoryCreateWithoutBlockInputSchema: z.ZodType<Prisma.InventoryC
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       category: z
@@ -66818,16 +66352,8 @@ export const InventoryUncheckedCreateWithoutBlockInputSchema: z.ZodType<Prisma.I
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -66837,6 +66363,7 @@ export const InventoryUncheckedCreateWithoutBlockInputSchema: z.ZodType<Prisma.I
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       categoryId: z.string().optional().nullable(),
@@ -67322,9 +66849,7 @@ export const CategoryScalarWhereInputSchema: z.ZodType<Prisma.CategoryScalarWher
         .optional()
         .nullable(),
       slug: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-      isActive: z
-        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
-        .optional(),
+      active: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
       position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
       createdAt: z
         .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
@@ -67410,24 +66935,9 @@ export const InventoryScalarWhereInputSchema: z.ZodType<Prisma.InventoryScalarWh
         .optional()
         .nullable(),
       basePrice: z
-        .union([
-          z.lazy(() => DecimalFilterSchema),
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            })
-        ])
+        .union([z.lazy(() => FloatFilterSchema), z.number()])
         .optional(),
-      isActive: z
-        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
-        .optional(),
+      active: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
       isFeatured: z
         .union([z.lazy(() => BoolFilterSchema), z.boolean()])
         .optional(),
@@ -67440,6 +66950,7 @@ export const InventoryScalarWhereInputSchema: z.ZodType<Prisma.InventoryScalarWh
         .optional()
         .nullable(),
       tags: z.lazy(() => StringNullableListFilterSchema).optional(),
+      stock: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
       createdAt: z
         .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
         .optional(),
@@ -71365,16 +70876,8 @@ export const InventoryCreateWithoutCategoryInputSchema: z.ZodType<Prisma.Invento
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -71384,6 +70887,7 @@ export const InventoryCreateWithoutCategoryInputSchema: z.ZodType<Prisma.Invento
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       variants: z
@@ -71401,16 +70905,8 @@ export const InventoryUncheckedCreateWithoutCategoryInputSchema: z.ZodType<Prism
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -71420,6 +70916,7 @@ export const InventoryUncheckedCreateWithoutCategoryInputSchema: z.ZodType<Prism
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       blockId: z.string(),
@@ -71461,7 +70958,7 @@ export const CategoryCreateWithoutCategoryInputSchema: z.ZodType<Prisma.Category
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -71482,7 +70979,7 @@ export const CategoryUncheckedCreateWithoutCategoryInputSchema: z.ZodType<Prisma
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -71527,7 +71024,7 @@ export const CategoryCreateWithoutCategoriesInputSchema: z.ZodType<Prisma.Catego
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -71548,7 +71045,7 @@ export const CategoryUncheckedCreateWithoutCategoriesInputSchema: z.ZodType<Pris
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -71784,7 +71281,7 @@ export const CategoryUpdateWithoutCategoriesInputSchema: z.ZodType<Prisma.Catego
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -71848,7 +71345,7 @@ export const CategoryUncheckedUpdateWithoutCategoriesInputSchema: z.ZodType<Pris
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -72091,7 +71588,7 @@ export const CategoryCreateWithoutInventoriesInputSchema: z.ZodType<Prisma.Categ
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -72112,7 +71609,7 @@ export const CategoryUncheckedCreateWithoutInventoriesInputSchema: z.ZodType<Pri
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -72154,7 +71651,7 @@ export const InventoryVariantCreateWithoutInventoryInputSchema: z.ZodType<Prisma
         .optional()
         .nullable(),
       stock: z.number().int().optional(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional()
@@ -72180,7 +71677,7 @@ export const InventoryVariantUncheckedCreateWithoutInventoryInputSchema: z.ZodTy
         .optional()
         .nullable(),
       stock: z.number().int().optional(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional()
@@ -72346,7 +71843,7 @@ export const CategoryUpdateWithoutInventoriesInputSchema: z.ZodType<Prisma.Categ
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -72410,7 +71907,7 @@ export const CategoryUncheckedUpdateWithoutInventoriesInputSchema: z.ZodType<Pri
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -72541,9 +72038,7 @@ export const InventoryVariantScalarWhereInputSchema: z.ZodType<Prisma.InventoryV
         .optional()
         .nullable(),
       stock: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
-      isActive: z
-        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
-        .optional(),
+      active: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
       position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
       createdAt: z
         .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
@@ -72753,16 +72248,8 @@ export const InventoryCreateWithoutVariantsInputSchema: z.ZodType<Prisma.Invento
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -72772,6 +72259,7 @@ export const InventoryCreateWithoutVariantsInputSchema: z.ZodType<Prisma.Invento
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       category: z
@@ -72789,16 +72277,8 @@ export const InventoryUncheckedCreateWithoutVariantsInputSchema: z.ZodType<Prism
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -72808,6 +72288,7 @@ export const InventoryUncheckedCreateWithoutVariantsInputSchema: z.ZodType<Prism
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       categoryId: z.string().optional().nullable(),
@@ -72889,21 +72370,11 @@ export const InventoryUpdateWithoutVariantsInputSchema: z.ZodType<Prisma.Invento
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -72933,6 +72404,12 @@ export const InventoryUpdateWithoutVariantsInputSchema: z.ZodType<Prisma.Invento
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -72993,21 +72470,11 @@ export const InventoryUncheckedUpdateWithoutVariantsInputSchema: z.ZodType<Prism
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -73037,6 +72504,12 @@ export const InventoryUncheckedUpdateWithoutVariantsInputSchema: z.ZodType<Prism
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -88349,7 +87822,7 @@ export const CategoryCreateManyBlockInputSchema: z.ZodType<Prisma.CategoryCreate
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -88365,16 +87838,8 @@ export const InventoryCreateManyBlockInputSchema: z.ZodType<Prisma.InventoryCrea
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -88384,6 +87849,7 @@ export const InventoryCreateManyBlockInputSchema: z.ZodType<Prisma.InventoryCrea
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       categoryId: z.string().optional().nullable()
@@ -88809,7 +88275,7 @@ export const CategoryUpdateWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUpd
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -88873,7 +88339,7 @@ export const CategoryUncheckedUpdateWithoutBlockInputSchema: z.ZodType<Prisma.Ca
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -88943,7 +88409,7 @@ export const CategoryUncheckedUpdateManyWithoutBlockInputSchema: z.ZodType<Prism
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -89014,21 +88480,11 @@ export const InventoryUpdateWithoutBlockInputSchema: z.ZodType<Prisma.InventoryU
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -89058,6 +88514,12 @@ export const InventoryUpdateWithoutBlockInputSchema: z.ZodType<Prisma.InventoryU
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -89118,21 +88580,11 @@ export const InventoryUncheckedUpdateWithoutBlockInputSchema: z.ZodType<Prisma.I
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -89162,6 +88614,12 @@ export const InventoryUncheckedUpdateWithoutBlockInputSchema: z.ZodType<Prisma.I
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -89229,21 +88687,11 @@ export const InventoryUncheckedUpdateManyWithoutBlockInputSchema: z.ZodType<Pris
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -89273,6 +88721,12 @@ export const InventoryUncheckedUpdateManyWithoutBlockInputSchema: z.ZodType<Pris
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -90134,16 +89588,8 @@ export const InventoryCreateManyCategoryInputSchema: z.ZodType<Prisma.InventoryC
       description: z.string().optional().nullable(),
       slug: z.string(),
       sku: z.string().optional().nullable(),
-      basePrice: z
-        .union([
-          z.number(),
-          z.string(),
-          z.instanceof(Decimal),
-          z.instanceof(Prisma.Decimal),
-          DecimalJsLikeSchema
-        ])
-        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      isActive: z.boolean().optional(),
+      basePrice: z.number(),
+      active: z.boolean().optional(),
       isFeatured: z.boolean().optional(),
       metaTitle: z.string().optional().nullable(),
       metaDescription: z.string().optional().nullable(),
@@ -90153,6 +89599,7 @@ export const InventoryCreateManyCategoryInputSchema: z.ZodType<Prisma.InventoryC
           z.string().array()
         ])
         .optional(),
+      stock: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
       blockId: z.string()
@@ -90166,7 +89613,7 @@ export const CategoryCreateManyCategoryInputSchema: z.ZodType<Prisma.CategoryCre
       name: z.string(),
       description: z.string().optional().nullable(),
       slug: z.string(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional(),
@@ -90211,21 +89658,11 @@ export const InventoryUpdateWithoutCategoryInputSchema: z.ZodType<Prisma.Invento
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -90255,6 +89692,12 @@ export const InventoryUpdateWithoutCategoryInputSchema: z.ZodType<Prisma.Invento
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -90315,21 +89758,11 @@ export const InventoryUncheckedUpdateWithoutCategoryInputSchema: z.ZodType<Prism
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -90359,6 +89792,12 @@ export const InventoryUncheckedUpdateWithoutCategoryInputSchema: z.ZodType<Prism
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -90425,21 +89864,11 @@ export const InventoryUncheckedUpdateManyWithoutCategoryInputSchema: z.ZodType<P
         .nullable(),
       basePrice: z
         .union([
-          z
-            .union([
-              z.number(),
-              z.string(),
-              z.instanceof(Decimal),
-              z.instanceof(Prisma.Decimal),
-              DecimalJsLikeSchema
-            ])
-            .refine(v => isValidDecimalInput(v), {
-              message: 'Must be a Decimal'
-            }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+          z.number(),
+          z.lazy(() => FloatFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -90469,6 +89898,12 @@ export const InventoryUncheckedUpdateManyWithoutCategoryInputSchema: z.ZodType<P
         .union([
           z.lazy(() => InventoryUpdatetagsInputSchema),
           z.string().array()
+        ])
+        .optional(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
       createdAt: z
@@ -90520,7 +89955,7 @@ export const CategoryUpdateWithoutCategoryInputSchema: z.ZodType<Prisma.Category
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -90584,7 +90019,7 @@ export const CategoryUncheckedUpdateWithoutCategoryInputSchema: z.ZodType<Prisma
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -90653,7 +90088,7 @@ export const CategoryUncheckedUpdateManyWithoutCategoryInputSchema: z.ZodType<Pr
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -90705,7 +90140,7 @@ export const InventoryVariantCreateManyInventoryInputSchema: z.ZodType<Prisma.In
         .optional()
         .nullable(),
       stock: z.number().int().optional(),
-      isActive: z.boolean().optional(),
+      active: z.boolean().optional(),
       position: z.number().int().optional(),
       createdAt: z.coerce.date().optional(),
       updatedAt: z.coerce.date().optional()
@@ -90762,7 +90197,7 @@ export const InventoryVariantUpdateWithoutInventoryInputSchema: z.ZodType<Prisma
           z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -90839,7 +90274,7 @@ export const InventoryVariantUncheckedUpdateWithoutInventoryInputSchema: z.ZodTy
           z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)
@@ -90916,7 +90351,7 @@ export const InventoryVariantUncheckedUpdateManyWithoutInventoryInputSchema: z.Z
           z.lazy(() => IntFieldUpdateOperationsInputSchema)
         ])
         .optional(),
-      isActive: z
+      active: z
         .union([
           z.boolean(),
           z.lazy(() => BoolFieldUpdateOperationsInputSchema)

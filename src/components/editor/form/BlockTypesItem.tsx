@@ -80,6 +80,7 @@ export const BlockTypesItem = ({
     { id: 'profile', label: 'Profile', type: 'other' },
     { id: 'reservation', label: 'Reservation', type: 'other' },
     { id: 'maps', label: 'Maps', type: 'other' },
+    { id: 'store', label: 'Store', type: 'other' },
 
     { id: 'simple', label: 'Simple', type: 'social' },
     { id: 'arc', label: 'Arc', type: 'social' }

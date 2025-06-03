@@ -3,25 +3,25 @@
 import { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
-import { Suspense, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import EmailEditor, { EditorRef, EmailEditorProps } from 'react-email-editor';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
 import { AutosizeTextarea } from 'components/ui/autosize-textarea';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
+import { Switch } from 'components/ui/switch';
 import useTranslation from 'hooks/use-translation';
 import { mutateCategory } from 'lib/actions';
-import { LucideLoader2 } from 'lucide-react';
 import { useModal } from './provider';
 
 export default function CategoryMutateModal({
-  site,
-  category
+  block,
+  category,
+  parent
 }: {
-  site: Prisma.SiteGetPayload<{
+  block: Prisma.SiteGetPayload<{
     select: {
       id: true;
     };
@@ -31,6 +31,12 @@ export default function CategoryMutateModal({
       id: true;
       name: true;
       description: true;
+      active: true;
+    };
+  }>;
+  parent?: Prisma.CategoryGetPayload<{
+    select: {
+      id: true;
     };
   }>;
 }) {
@@ -38,7 +44,13 @@ export default function CategoryMutateModal({
   const modal = useModal();
   const translate = useTranslation();
 
-  const [data, setData] = useState(category ?? { name: '', description: '' });
+  const [data, setData] = useState(
+    category ?? {
+      name: '',
+      description: '',
+      active: true
+    }
+  );
 
   return (
     <form
@@ -50,19 +62,39 @@ export default function CategoryMutateModal({
           } else {
             router.refresh();
             modal?.hide();
-            toast.success('Email saved!');
-            va.track('Email saved');
+            toast.success('Category saved!');
+            va.track('Category saved');
           }
         })
       }
       className="w-full max-w-3xl rounded-md bg-white md:border md:border-stone-200 md:shadow-sm dark:bg-stone-800 dark:md:border-stone-700"
     >
+      <input type="hidden" name="blockId" value={block.id} />
       {category?.id && <input type="hidden" name="id" value={category.id} />}
+      {parent?.id && (
+        <input type="hidden" name="categoryId" value={parent.id} />
+      )}
 
       <div className="relative flex flex-col gap-4 p-4">
         <h2 className="font-cal text-2xl dark:text-white">
           {translate('components.category.mutate.title')}
         </h2>
+
+        <div className="flex flex-col space-y-2">
+          <label
+            htmlFor="active"
+            className="text-sm font-medium text-stone-500 dark:text-stone-400"
+          >
+            Active
+          </label>
+
+          <Switch
+            id="active"
+            name="active"
+            checked={data.active}
+            onCheckedChange={active => setData({ ...data, active })}
+          />
+        </div>
 
         <div className="flex flex-col space-y-2">
           <label

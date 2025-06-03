@@ -34,6 +34,7 @@ import Email from 'components/editor/blocks/other/email';
 import Maps from 'components/editor/blocks/other/maps';
 import Profile from 'components/editor/blocks/other/profile';
 import Reservation from 'components/editor/blocks/other/reservation';
+import Store from 'components/editor/blocks/other/store';
 import AppleWatch from 'components/editor/blocks/picture/apple-watch';
 import Bento from 'components/editor/blocks/picture/bento';
 import Gallery from 'components/editor/blocks/picture/gallery';
@@ -96,7 +97,8 @@ const blocks: Record<string, Record<string, React.ComponentType>> = {
     email: Email,
     profile: Profile,
     reservation: Reservation,
-    maps: Maps
+    maps: Maps,
+    store: Store
   },
   social: {
     simple: Simple,

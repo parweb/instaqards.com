@@ -13,7 +13,7 @@ enum EntityType {
 
 model Media {
   id         String     @id @default(cuid())
-  entityId   String     // ID de l'entité à laquelle le média est attaché
+  entityId   String // ID de l'entité à laquelle le média est attaché
   entityType EntityType // Type de l'entité (INVENTORY, CATEGORY, etc.)
   url        String
   alt        String?
@@ -25,4 +25,4 @@ model Media {
 
   @@index([entityId, entityType])
   @@index([entityType, isMain])
-} 
+}

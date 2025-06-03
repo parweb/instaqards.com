@@ -9,7 +9,9 @@ import { z } from 'zod';
 import {
   type Block,
   type CampaignType,
+  Category,
   type Cron,
+  Inventory,
   type Link,
   type Prisma,
   type Site,
@@ -35,6 +37,7 @@ import {
   removeDomainFromVercelProject,
   validDomainRegex
 } from 'lib/domains';
+import { revalidatePath } from 'next/cache';
 
 const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -1593,24 +1596,120 @@ export const mutateCategory = async (form: FormData) => {
 
   const blockId = String(form.get('blockId'));
   const id = form.has('id') ? String(form.get('id')) : ulid();
+  const active = form.get('active') === 'on';
   const name = String(form.get('name'));
   const description = String(form.get('description'));
+  const categoryId = form.get('categoryId')
+    ? String(form.get('categoryId'))
+    : null;
 
   const response = await db.category.upsert({
     where: { id },
     create: {
       slug: slugify(name, { lower: true, strict: true }),
+      active,
       name,
       description,
+      ...(categoryId && { category: { connect: { id: categoryId } } }),
       block: { connect: { id: blockId } }
     },
     update: {
+      active,
       name,
-      description
+      description,
+      ...(categoryId && { category: { connect: { id: categoryId } } })
     }
   });
 
   return response;
+};
+
+export const deleteCategory = async (id: Category['id']) => {
+  try {
+    const category = await db.category.findUniqueOrThrow({
+      where: { id },
+      select: { blockId: true }
+    });
+
+    const response = await db.category.delete({ where: { id } });
+    revalidatePath(`/site/${category.blockId}/store/categories`);
+    return response;
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : 'An unknown error occurred'
+    };
+  }
+};
+
+export const mutateInventory = async (form: FormData) => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  const blockId = String(form.get('blockId'));
+
+  const id = form.has('id') ? String(form.get('id')) : ulid();
+  const active = form.get('active') === 'on';
+  const isFeatured = form.get('isFeatured') === 'on';
+  const name = String(form.get('name'));
+  const slug = slugify(name, { lower: true, strict: true });
+  const description = String(form.get('description'));
+  const sku = String(form.get('sku'));
+  const stock = Number(form.get('stock'));
+  const basePrice = Number(form.get('basePrice'));
+  const categoryId = form.get('categoryId')
+    ? String(form.get('categoryId'))
+    : null;
+
+  const response = await db.inventory.upsert({
+    where: { id },
+    create: {
+      active,
+      name,
+      slug,
+      description,
+      sku,
+      stock,
+      basePrice,
+      isFeatured,
+      ...(categoryId && { category: { connect: { id: categoryId } } }),
+      block: { connect: { id: blockId } }
+    },
+    update: {
+      active,
+      name,
+      slug,
+      description,
+      sku,
+      stock,
+      basePrice,
+      isFeatured,
+      ...(categoryId && { category: { connect: { id: categoryId } } })
+    }
+  });
+
+  return response;
+};
+
+export const deleteInventory = async (id: Inventory['id']) => {
+  try {
+    const inventory = await db.inventory.findUniqueOrThrow({
+      where: { id },
+      select: { blockId: true }
+    });
+
+    const response = await db.inventory.delete({ where: { id } });
+    revalidatePath(`/site/${inventory.blockId}/store/products`);
+    return response;
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : 'An unknown error occurred'
+    };
+  }
 };
 
 export const addCron = async (data: Prisma.CronCreateInput) => {
