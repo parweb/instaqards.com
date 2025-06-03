@@ -304,7 +304,9 @@ export const BlockList = ({
   editor = false
 }: {
   blocks: Block[];
-  site: Prisma.SiteGetPayload<{ select: { id: true } }>;
+  site: Prisma.SiteGetPayload<{
+    select: { id: true; customDomain: true; subdomain: true };
+  }>;
   type: 'main' | 'social';
   editor?: boolean;
 }) => {

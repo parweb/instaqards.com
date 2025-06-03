@@ -8,17 +8,21 @@ import { Begin } from '../home/section/begin';
 import { Personas } from './personas';
 
 export default async function ProPage() {
-  const lang = await getLang();
-  const site = await db.site.findUnique({
-    select: {
-      id: true,
-      background: true,
-      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
-    },
-    where: {
-      id: 'cm8dqblta000vspcs6c7giksg'
-    }
-  });
+  const [lang, site] = await Promise.all([
+    getLang(),
+    db.site.findUnique({
+      select: {
+        id: true,
+        background: true,
+        customDomain: true,
+        subdomain: true,
+        blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
+      },
+      where: {
+        id: 'cm8dqblta000vspcs6c7giksg'
+      }
+    })
+  ]);
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-12 self-stretch p-4">

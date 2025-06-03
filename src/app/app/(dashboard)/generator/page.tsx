@@ -18,6 +18,7 @@ export default async function Generator(props: {
           name: true,
           description: true,
           subdomain: true,
+          customDomain: true,
           background: true,
           blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
         }

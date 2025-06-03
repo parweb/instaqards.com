@@ -22,6 +22,7 @@ export default async function SitePosts(props: {
         name: true,
         userId: true,
         subdomain: true,
+        customDomain: true,
         background: true,
         blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
       }

@@ -44,7 +44,13 @@ const Inner = ({
   setPreview: Dispatch<SetStateAction<boolean>>;
   data: Record<Block['type'], Block[]>;
   site: Prisma.SiteGetPayload<{
-    select: { background: true; id: true; blocks: true };
+    select: {
+      background: true;
+      id: true;
+      blocks: true;
+      customDomain: true;
+      subdomain: true;
+    };
   }>;
 }) => {
   return (
@@ -101,7 +107,13 @@ export const WebSite = ({
   site
 }: {
   site: Prisma.SiteGetPayload<{
-    select: { background: true; id: true; blocks: true };
+    select: {
+      background: true;
+      id: true;
+      blocks: true;
+      customDomain: true;
+      subdomain: true;
+    };
   }>;
 }) => {
   const [preview, setPreview] = useState(false);

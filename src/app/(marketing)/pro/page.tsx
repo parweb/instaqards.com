@@ -128,6 +128,8 @@ export default async function ProPage({
     select: {
       id: true,
       background: true,
+      customDomain: true,
+      subdomain: true,
       blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }
     },
     where: {
