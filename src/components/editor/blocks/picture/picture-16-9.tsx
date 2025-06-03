@@ -45,6 +45,7 @@ export default function Picture169({
   medias: [media] = [{ id: '1', kind: 'remote', url: placeholder }],
   block
 }: Partial<z.infer<typeof input>> & { block?: Block }) {
+  media ??= { id: '1', kind: 'remote', url: placeholder };
   const [src, setSrc] = useState<string>(
     media.kind === 'remote' ? media.url : ''
   );

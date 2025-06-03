@@ -70,14 +70,13 @@ export const UploaderItem = ({
   };
 
   const itemFile = item.kind === 'local' ? item.file : null;
+
   useEffect(() => {
-    return () => {
-      if (itemFile) {
-        const reader = new FileReader();
-        reader.onloadend = () => setSrc(reader.result?.toString() || '');
-        reader.readAsDataURL(itemFile);
-      }
-    };
+    if (itemFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => setSrc(reader.result?.toString() || '');
+      reader.readAsDataURL(itemFile);
+    }
   }, [itemFile]);
 
   return (
@@ -141,7 +140,7 @@ export const Uploader = ({
 
   const medias = useMemo(
     () => (props?.data?.[props.name] ?? []) as Media[],
-    [name] // eslint-disable-line react-hooks/exhaustive-deps
+    [props.name] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const [items, setItems] = useState(medias);

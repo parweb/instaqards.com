@@ -104,7 +104,6 @@ export function BlockPreview({
   } = useForm({
     defaultValues: {
       ...block_data,
-
       widget: JSON.stringify(block_widget)
     },
     resolver: zodResolver(
