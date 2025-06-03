@@ -13,104 +13,71 @@ import { AutosizeTextarea } from 'components/ui/autosize-textarea';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import useTranslation from 'hooks/use-translation';
-import { mutateEmails } from 'lib/actions';
+import { mutateCategory } from 'lib/actions';
 import { LucideLoader2 } from 'lucide-react';
 import { useModal } from './provider';
 
-export default function EmailsMutateModal({
-  email
+export default function CategoryMutateModal({
+  site,
+  category
 }: {
-  email?: Prisma.EmailGetPayload<{
+  site: Prisma.SiteGetPayload<{
     select: {
       id: true;
-      title: true;
+    };
+  }>;
+  category?: Prisma.CategoryGetPayload<{
+    select: {
+      id: true;
+      name: true;
       description: true;
-      design: true;
-      subject: true;
     };
   }>;
 }) {
-  const emailEditorRef = useRef<EditorRef>(null);
-
   const router = useRouter();
   const modal = useModal();
   const translate = useTranslation();
 
-  const [data, setData] = useState(
-    email ?? { title: '', description: '', subject: '', design: {} }
-  );
-
-  const onReady: EmailEditorProps['onReady'] = unlayer => {
-    const design = JSON.parse(JSON.stringify(data.design));
-
-    unlayer.loadDesign(design);
-  };
+  const [data, setData] = useState(category ?? { name: '', description: '' });
 
   return (
     <form
-      action={async (form: FormData) => {
-        const unlayer = emailEditorRef.current?.editor;
-
-        unlayer?.exportHtml(data => {
-          const { design, html } = data;
-
-          form.append('content', html);
-          form.append('design', JSON.stringify(design));
-
-          mutateEmails(form).then(res => {
-            if ('error' in res) {
-              toast.error(res.error);
-              console.error(res.error);
-            } else {
-              router.refresh();
-              modal?.hide();
-              toast.success('Email saved!');
-              va.track('Email saved');
-            }
-          });
-        });
-      }}
+      action={async (form: FormData) =>
+        mutateCategory(form).then(res => {
+          if ('error' in res) {
+            toast.error(res.error);
+            console.error(res.error);
+          } else {
+            router.refresh();
+            modal?.hide();
+            toast.success('Email saved!');
+            va.track('Email saved');
+          }
+        })
+      }
       className="w-full max-w-3xl rounded-md bg-white md:border md:border-stone-200 md:shadow-sm dark:bg-stone-800 dark:md:border-stone-700"
     >
-      {email?.id && <input type="hidden" name="id" value={email.id} />}
+      {category?.id && <input type="hidden" name="id" value={category.id} />}
 
       <div className="relative flex flex-col gap-4 p-4">
         <h2 className="font-cal text-2xl dark:text-white">
-          {translate('components.email.mutate.title')}
+          {translate('components.category.mutate.title')}
         </h2>
 
         <div className="flex flex-col space-y-2">
           <label
-            htmlFor="title"
+            htmlFor="name"
             className="text-sm font-medium text-stone-500 dark:text-stone-400"
           >
-            Title
+            Name
           </label>
 
           <Input
-            id="title"
-            name="title"
-            placeholder="Title"
-            value={data.title}
-            onChange={e => setData({ ...data, title: e.target.value })}
-            required
-          />
-        </div>
-
-        <div className="flex flex-col space-y-2">
-          <label
-            htmlFor="subject"
-            className="text-sm font-medium text-stone-500 dark:text-stone-400"
-          >
-            Subject
-          </label>
-
-          <Input
-            id="subject"
-            name="subject"
-            placeholder="Subject"
-            value={data?.subject ?? ''}
-            onChange={e => setData({ ...data, subject: e.target.value })}
+            id="name"
+            name="name"
+            placeholder="Name"
+            value={data.name}
+            onChange={e => setData({ ...data, name: e.target.value })}
             required
           />
         </div>
@@ -132,18 +99,6 @@ export default function EmailsMutateModal({
             required
           />
         </div>
-
-        <EmailEditor ref={emailEditorRef} onReady={onReady} />
-
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center p-4">
-              <LucideLoader2 className="animate-spin" />
-            </div>
-          }
-        >
-          {/* <Lists defaultValue={email?.list?.id} /> */}
-        </Suspense>
       </div>
 
       <div className="flex flex-col items-center justify-end rounded-b-lg border-t border-stone-200 bg-stone-50 p-3 md:px-10 dark:border-stone-700 dark:bg-stone-800">

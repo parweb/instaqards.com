@@ -720,6 +720,12 @@ const translations = {
     it: 'Abbonati',
     es: 'Suscriptores'
   },
+  'menu.store': {
+    fr: 'Boutique',
+    en: 'Store',
+    it: 'Negozio',
+    es: 'Tienda'
+  },
   'menu.reservations': {
     fr: 'Réservations',
     en: 'Reservations',
@@ -1163,6 +1169,12 @@ const translations = {
     en: 'Email template',
     it: 'Template di email',
     es: 'Plantilla de email'
+  },
+  'components.category.mutate.title': {
+    fr: 'Créer une catégorie',
+    en: 'Create a category',
+    it: 'Crea una categoria',
+    es: 'Crear una categoría'
   }
 } as const;
 

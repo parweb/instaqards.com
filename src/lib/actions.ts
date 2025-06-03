@@ -2,6 +2,7 @@
 
 import { customAlphabet } from 'nanoid';
 import { after } from 'next/server';
+import slugify from 'slugify';
 import { ulid } from 'ulid';
 import { z } from 'zod';
 
@@ -25,6 +26,7 @@ import { translate } from 'helpers/translate';
 import { trySafe } from 'helpers/trySafe';
 import { shorten } from 'helpers/url';
 import { getSession, withSiteAuth } from 'lib/auth';
+import { CronExecutor } from 'lib/cron/executor';
 import { getBlurDataURL } from 'lib/utils';
 import { uri } from 'settings';
 
@@ -33,8 +35,6 @@ import {
   removeDomainFromVercelProject,
   validDomainRegex
 } from 'lib/domains';
-
-import { CronExecutor } from 'lib/cron/executor';
 
 const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -1582,6 +1582,35 @@ export const mutateEmails = async (form: FormData) => {
             : 'An unknown error occurred'
     };
   }
+};
+
+export const mutateCategory = async (form: FormData) => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  const blockId = String(form.get('blockId'));
+  const id = form.has('id') ? String(form.get('id')) : ulid();
+  const name = String(form.get('name'));
+  const description = String(form.get('description'));
+
+  const response = await db.category.upsert({
+    where: { id },
+    create: {
+      slug: slugify(name, { lower: true, strict: true }),
+      name,
+      description,
+      block: { connect: { id: blockId } }
+    },
+    update: {
+      name,
+      description
+    }
+  });
+
+  return response;
 };
 
 export const addCron = async (data: Prisma.CronCreateInput) => {

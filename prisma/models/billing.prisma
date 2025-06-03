@@ -85,4 +85,4 @@ model Subscription {
   @@index([current_period_end])
   @@index([priceId])
   @@index([trial_end])
-} 
+}

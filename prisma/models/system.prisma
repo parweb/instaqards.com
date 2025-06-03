@@ -33,4 +33,4 @@ model History {
   createdAt DateTime @default(now())
 
   @@index([cronId])
-} 
+}

@@ -20,6 +20,7 @@ import {
   Play,
   Send,
   Settings,
+  ShoppingBag,
   Timer,
   Users,
   Workflow
@@ -168,6 +169,13 @@ export function AppSidebar(
             url: `/site/${openProject.id}/subscribers`,
             isActive: segments.includes('subscribers'),
             icon: Users,
+            count: openProject._count.subscribers
+          },
+          {
+            title: translate('menu.store'),
+            url: `/site/${openProject.id}/store`,
+            isActive: segments.includes('store'),
+            icon: ShoppingBag,
             count: openProject._count.subscribers
           },
           {

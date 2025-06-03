@@ -65,6 +65,8 @@ model Block {
   reservations Reservation[]
   site         Site          @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   siteId       String
+  categories   Category[]
+  inventories  Inventory[]
 
   @@index([siteId])
   @@index([type])

@@ -92,4 +92,4 @@ model TwoFactorToken {
   expires DateTime
 
   @@unique([email, token])
-} 
+}

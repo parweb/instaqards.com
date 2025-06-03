@@ -80,4 +80,4 @@ model NafCode {
   classId String
 
   users User[]
-} 
+}

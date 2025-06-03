@@ -1,0 +1,28 @@
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum EntityType {
+  INVENTORY
+  CATEGORY
+  BLOCK
+  USER
+  // Ajoutez d'autres types d'entités selon vos besoins
+}
+
+model Media {
+  id         String     @id @default(cuid())
+  entityId   String     // ID de l'entité à laquelle le média est attaché
+  entityType EntityType // Type de l'entité (INVENTORY, CATEGORY, etc.)
+  url        String
+  alt        String?
+  type       MediaType  @default(IMAGE)
+  position   Int        @default(0)
+  isMain     Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([entityId, entityType])
+  @@index([entityType, isMain])
+} 

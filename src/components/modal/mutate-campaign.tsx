@@ -40,7 +40,7 @@ import {
 import { Badge } from 'components/ui/badge';
 import { cn } from 'lib/utils';
 
-export const ListsSchema = z.object({
+const ListsSchema = z.object({
   data: z.array(
     ListSchema.merge(
       z.object({

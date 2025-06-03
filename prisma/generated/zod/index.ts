@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
+import Decimal from 'decimal.js';
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -55,6 +56,34 @@ export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.lazy(
 );
 
 export type InputJsonValueType = z.infer<typeof InputJsonValueSchema>;
+
+// DECIMAL
+//------------------------------------------------------
+
+export const DecimalJsLikeSchema: z.ZodType<Prisma.DecimalJsLike> = z.object({
+  d: z.array(z.number()),
+  e: z.number(),
+  s: z.number(),
+  toFixed: z.function(z.tuple([]), z.string())
+});
+
+export const DECIMAL_STRING_REGEX =
+  /^(?:-?Infinity|NaN|-?(?:0[bB][01]+(?:\.[01]+)?(?:[pP][-+]?\d+)?|0[oO][0-7]+(?:\.[0-7]+)?(?:[pP][-+]?\d+)?|0[xX][\da-fA-F]+(?:\.[\da-fA-F]+)?(?:[pP][-+]?\d+)?|(?:\d+|\d*\.\d+)(?:[eE][-+]?\d+)?))$/;
+
+export const isValidDecimalInput = (
+  v?: null | string | number | Prisma.DecimalJsLike
+): v is string | number | Prisma.DecimalJsLike => {
+  if (v === undefined || v === null) return false;
+  return (
+    (typeof v === 'object' &&
+      'd' in v &&
+      'e' in v &&
+      's' in v &&
+      'toFixed' in v) ||
+    (typeof v === 'string' && DECIMAL_STRING_REGEX.test(v)) ||
+    typeof v === 'number'
+  );
+};
 
 /////////////////////////////////////////
 // ENUMS
@@ -293,6 +322,19 @@ export const EmailScalarFieldEnumSchema = z.enum([
   'userId'
 ]);
 
+export const MediaScalarFieldEnumSchema = z.enum([
+  'id',
+  'entityId',
+  'entityType',
+  'url',
+  'alt',
+  'type',
+  'position',
+  'isMain',
+  'createdAt',
+  'updatedAt'
+]);
+
 export const ClickScalarFieldEnumSchema = z.enum([
   'id',
   'part',
@@ -377,6 +419,51 @@ export const ReservationScalarFieldEnumSchema = z.enum([
   'updatedAt',
   'blockId',
   'affiliateId'
+]);
+
+export const CategoryScalarFieldEnumSchema = z.enum([
+  'id',
+  'name',
+  'description',
+  'slug',
+  'isActive',
+  'position',
+  'createdAt',
+  'updatedAt',
+  'categoryId',
+  'blockId'
+]);
+
+export const InventoryScalarFieldEnumSchema = z.enum([
+  'id',
+  'name',
+  'description',
+  'slug',
+  'sku',
+  'basePrice',
+  'isActive',
+  'isFeatured',
+  'metaTitle',
+  'metaDescription',
+  'tags',
+  'createdAt',
+  'updatedAt',
+  'categoryId',
+  'blockId'
+]);
+
+export const InventoryVariantScalarFieldEnumSchema = z.enum([
+  'id',
+  'inventoryId',
+  'name',
+  'value',
+  'type',
+  'price',
+  'stock',
+  'isActive',
+  'position',
+  'createdAt',
+  'updatedAt'
 ]);
 
 export const CronScalarFieldEnumSchema = z.enum([
@@ -626,6 +713,29 @@ export const CampaignTypeSchema = z.enum([
 ]);
 
 export type CampaignTypeType = `${z.infer<typeof CampaignTypeSchema>}`;
+
+export const MediaTypeSchema = z.enum(['IMAGE', 'VIDEO']);
+
+export type MediaTypeType = `${z.infer<typeof MediaTypeSchema>}`;
+
+export const EntityTypeSchema = z.enum([
+  'INVENTORY',
+  'CATEGORY',
+  'BLOCK',
+  'USER'
+]);
+
+export type EntityTypeType = `${z.infer<typeof EntityTypeSchema>}`;
+
+export const VariantTypeSchema = z.enum([
+  'SIZE',
+  'COLOR',
+  'MATERIAL',
+  'STYLE',
+  'OTHER'
+]);
+
+export type VariantTypeType = `${z.infer<typeof VariantTypeSchema>}`;
 
 export const UserRoleSchema = z.enum([
   'USER',
@@ -1047,6 +1157,25 @@ export const EmailSchema = z.object({
 export type Email = z.infer<typeof EmailSchema>;
 
 /////////////////////////////////////////
+// MEDIA SCHEMA
+/////////////////////////////////////////
+
+export const MediaSchema = z.object({
+  entityType: EntityTypeSchema,
+  type: MediaTypeSchema,
+  id: z.string().cuid(),
+  entityId: z.string(),
+  url: z.string(),
+  alt: z.string().nullable(),
+  position: z.number().int(),
+  isMain: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+});
+
+export type Media = z.infer<typeof MediaSchema>;
+
+/////////////////////////////////////////
 // CLICK SCHEMA
 /////////////////////////////////////////
 
@@ -1173,6 +1302,77 @@ export const ReservationSchema = z.object({
 });
 
 export type Reservation = z.infer<typeof ReservationSchema>;
+
+/////////////////////////////////////////
+// CATEGORY SCHEMA
+/////////////////////////////////////////
+
+export const CategorySchema = z.object({
+  id: z.string().cuid(),
+  name: z.string(),
+  description: z.string().nullable(),
+  slug: z.string(),
+  isActive: z.boolean(),
+  position: z.number().int(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  categoryId: z.string().nullable(),
+  blockId: z.string()
+});
+
+export type Category = z.infer<typeof CategorySchema>;
+
+/////////////////////////////////////////
+// INVENTORY SCHEMA
+/////////////////////////////////////////
+
+export const InventorySchema = z.object({
+  id: z.string().cuid(),
+  name: z.string(),
+  description: z.string().nullable(),
+  slug: z.string(),
+  sku: z.string().nullable(),
+  basePrice: z.instanceof(Prisma.Decimal, {
+    message:
+      "Field 'basePrice' must be a Decimal. Location: ['Models', 'Inventory']"
+  }),
+  isActive: z.boolean(),
+  isFeatured: z.boolean(),
+  metaTitle: z.string().nullable(),
+  metaDescription: z.string().nullable(),
+  tags: z.string().array(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  categoryId: z.string().nullable(),
+  blockId: z.string()
+});
+
+export type Inventory = z.infer<typeof InventorySchema>;
+
+/////////////////////////////////////////
+// INVENTORY VARIANT SCHEMA
+/////////////////////////////////////////
+
+export const InventoryVariantSchema = z.object({
+  type: VariantTypeSchema,
+  id: z.string().cuid(),
+  inventoryId: z.string(),
+  name: z.string(),
+  value: z.string(),
+  price: z
+    .instanceof(Prisma.Decimal, {
+      message:
+        "Field 'price' must be a Decimal. Location: ['Models', 'InventoryVariant']"
+    })
+    .nullable(),
+  stock: z.number().int(),
+  isActive: z.boolean(),
+  position: z.number().int(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+});
+
+export type InventoryVariant = z.infer<typeof InventoryVariantSchema>;
 
 /////////////////////////////////////////
 // CRON SCHEMA
@@ -2391,6 +2591,24 @@ export const EmailSelectSchema: z.ZodType<Prisma.EmailSelect> = z
   })
   .strict();
 
+// MEDIA
+//------------------------------------------------------
+
+export const MediaSelectSchema: z.ZodType<Prisma.MediaSelect> = z
+  .object({
+    id: z.boolean().optional(),
+    entityId: z.boolean().optional(),
+    entityType: z.boolean().optional(),
+    url: z.boolean().optional(),
+    alt: z.boolean().optional(),
+    type: z.boolean().optional(),
+    position: z.boolean().optional(),
+    isMain: z.boolean().optional(),
+    createdAt: z.boolean().optional(),
+    updatedAt: z.boolean().optional()
+  })
+  .strict();
+
 // CLICK
 //------------------------------------------------------
 
@@ -2498,6 +2716,12 @@ export const BlockIncludeSchema: z.ZodType<Prisma.BlockInclude> = z
       .union([z.boolean(), z.lazy(() => ReservationFindManyArgsSchema)])
       .optional(),
     site: z.union([z.boolean(), z.lazy(() => SiteArgsSchema)]).optional(),
+    categories: z
+      .union([z.boolean(), z.lazy(() => CategoryFindManyArgsSchema)])
+      .optional(),
+    inventories: z
+      .union([z.boolean(), z.lazy(() => InventoryFindManyArgsSchema)])
+      .optional(),
     _count: z
       .union([z.boolean(), z.lazy(() => BlockCountOutputTypeArgsSchema)])
       .optional()
@@ -2522,7 +2746,9 @@ export const BlockCountOutputTypeSelectSchema: z.ZodType<Prisma.BlockCountOutput
   z
     .object({
       clicks: z.boolean().optional(),
-      reservations: z.boolean().optional()
+      reservations: z.boolean().optional(),
+      categories: z.boolean().optional(),
+      inventories: z.boolean().optional()
     })
     .strict();
 
@@ -2546,6 +2772,12 @@ export const BlockSelectSchema: z.ZodType<Prisma.BlockSelect> = z
       .union([z.boolean(), z.lazy(() => ReservationFindManyArgsSchema)])
       .optional(),
     site: z.union([z.boolean(), z.lazy(() => SiteArgsSchema)]).optional(),
+    categories: z
+      .union([z.boolean(), z.lazy(() => CategoryFindManyArgsSchema)])
+      .optional(),
+    inventories: z
+      .union([z.boolean(), z.lazy(() => InventoryFindManyArgsSchema)])
+      .optional(),
     _count: z
       .union([z.boolean(), z.lazy(() => BlockCountOutputTypeArgsSchema)])
       .optional()
@@ -2736,6 +2968,186 @@ export const ReservationSelectSchema: z.ZodType<Prisma.ReservationSelect> = z
     affiliate: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional()
   })
   .strict();
+
+// CATEGORY
+//------------------------------------------------------
+
+export const CategoryIncludeSchema: z.ZodType<Prisma.CategoryInclude> = z
+  .object({
+    inventories: z
+      .union([z.boolean(), z.lazy(() => InventoryFindManyArgsSchema)])
+      .optional(),
+    categories: z
+      .union([z.boolean(), z.lazy(() => CategoryFindManyArgsSchema)])
+      .optional(),
+    category: z
+      .union([z.boolean(), z.lazy(() => CategoryArgsSchema)])
+      .optional(),
+    block: z.union([z.boolean(), z.lazy(() => BlockArgsSchema)]).optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => CategoryCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+export const CategoryArgsSchema: z.ZodType<Prisma.CategoryDefaultArgs> = z
+  .object({
+    select: z.lazy(() => CategorySelectSchema).optional(),
+    include: z.lazy(() => CategoryIncludeSchema).optional()
+  })
+  .strict();
+
+export const CategoryCountOutputTypeArgsSchema: z.ZodType<Prisma.CategoryCountOutputTypeDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => CategoryCountOutputTypeSelectSchema).nullish()
+    })
+    .strict();
+
+export const CategoryCountOutputTypeSelectSchema: z.ZodType<Prisma.CategoryCountOutputTypeSelect> =
+  z
+    .object({
+      inventories: z.boolean().optional(),
+      categories: z.boolean().optional()
+    })
+    .strict();
+
+export const CategorySelectSchema: z.ZodType<Prisma.CategorySelect> = z
+  .object({
+    id: z.boolean().optional(),
+    name: z.boolean().optional(),
+    description: z.boolean().optional(),
+    slug: z.boolean().optional(),
+    isActive: z.boolean().optional(),
+    position: z.boolean().optional(),
+    createdAt: z.boolean().optional(),
+    updatedAt: z.boolean().optional(),
+    categoryId: z.boolean().optional(),
+    blockId: z.boolean().optional(),
+    inventories: z
+      .union([z.boolean(), z.lazy(() => InventoryFindManyArgsSchema)])
+      .optional(),
+    categories: z
+      .union([z.boolean(), z.lazy(() => CategoryFindManyArgsSchema)])
+      .optional(),
+    category: z
+      .union([z.boolean(), z.lazy(() => CategoryArgsSchema)])
+      .optional(),
+    block: z.union([z.boolean(), z.lazy(() => BlockArgsSchema)]).optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => CategoryCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+// INVENTORY
+//------------------------------------------------------
+
+export const InventoryIncludeSchema: z.ZodType<Prisma.InventoryInclude> = z
+  .object({
+    category: z
+      .union([z.boolean(), z.lazy(() => CategoryArgsSchema)])
+      .optional(),
+    variants: z
+      .union([z.boolean(), z.lazy(() => InventoryVariantFindManyArgsSchema)])
+      .optional(),
+    block: z.union([z.boolean(), z.lazy(() => BlockArgsSchema)]).optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => InventoryCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+export const InventoryArgsSchema: z.ZodType<Prisma.InventoryDefaultArgs> = z
+  .object({
+    select: z.lazy(() => InventorySelectSchema).optional(),
+    include: z.lazy(() => InventoryIncludeSchema).optional()
+  })
+  .strict();
+
+export const InventoryCountOutputTypeArgsSchema: z.ZodType<Prisma.InventoryCountOutputTypeDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => InventoryCountOutputTypeSelectSchema).nullish()
+    })
+    .strict();
+
+export const InventoryCountOutputTypeSelectSchema: z.ZodType<Prisma.InventoryCountOutputTypeSelect> =
+  z
+    .object({
+      variants: z.boolean().optional()
+    })
+    .strict();
+
+export const InventorySelectSchema: z.ZodType<Prisma.InventorySelect> = z
+  .object({
+    id: z.boolean().optional(),
+    name: z.boolean().optional(),
+    description: z.boolean().optional(),
+    slug: z.boolean().optional(),
+    sku: z.boolean().optional(),
+    basePrice: z.boolean().optional(),
+    isActive: z.boolean().optional(),
+    isFeatured: z.boolean().optional(),
+    metaTitle: z.boolean().optional(),
+    metaDescription: z.boolean().optional(),
+    tags: z.boolean().optional(),
+    createdAt: z.boolean().optional(),
+    updatedAt: z.boolean().optional(),
+    categoryId: z.boolean().optional(),
+    blockId: z.boolean().optional(),
+    category: z
+      .union([z.boolean(), z.lazy(() => CategoryArgsSchema)])
+      .optional(),
+    variants: z
+      .union([z.boolean(), z.lazy(() => InventoryVariantFindManyArgsSchema)])
+      .optional(),
+    block: z.union([z.boolean(), z.lazy(() => BlockArgsSchema)]).optional(),
+    _count: z
+      .union([z.boolean(), z.lazy(() => InventoryCountOutputTypeArgsSchema)])
+      .optional()
+  })
+  .strict();
+
+// INVENTORY VARIANT
+//------------------------------------------------------
+
+export const InventoryVariantIncludeSchema: z.ZodType<Prisma.InventoryVariantInclude> =
+  z
+    .object({
+      inventory: z
+        .union([z.boolean(), z.lazy(() => InventoryArgsSchema)])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantArgsSchema: z.ZodType<Prisma.InventoryVariantDefaultArgs> =
+  z
+    .object({
+      select: z.lazy(() => InventoryVariantSelectSchema).optional(),
+      include: z.lazy(() => InventoryVariantIncludeSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantSelectSchema: z.ZodType<Prisma.InventoryVariantSelect> =
+  z
+    .object({
+      id: z.boolean().optional(),
+      inventoryId: z.boolean().optional(),
+      name: z.boolean().optional(),
+      value: z.boolean().optional(),
+      type: z.boolean().optional(),
+      price: z.boolean().optional(),
+      stock: z.boolean().optional(),
+      isActive: z.boolean().optional(),
+      position: z.boolean().optional(),
+      createdAt: z.boolean().optional(),
+      updatedAt: z.boolean().optional(),
+      inventory: z
+        .union([z.boolean(), z.lazy(() => InventoryArgsSchema)])
+        .optional()
+    })
+    .strict();
 
 // CRON
 //------------------------------------------------------
@@ -8733,6 +9145,234 @@ export const EmailScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.EmailSc
     })
     .strict();
 
+export const MediaWhereInputSchema: z.ZodType<Prisma.MediaWhereInput> = z
+  .object({
+    AND: z
+      .union([
+        z.lazy(() => MediaWhereInputSchema),
+        z.lazy(() => MediaWhereInputSchema).array()
+      ])
+      .optional(),
+    OR: z
+      .lazy(() => MediaWhereInputSchema)
+      .array()
+      .optional(),
+    NOT: z
+      .union([
+        z.lazy(() => MediaWhereInputSchema),
+        z.lazy(() => MediaWhereInputSchema).array()
+      ])
+      .optional(),
+    id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    entityId: z
+      .union([z.lazy(() => StringFilterSchema), z.string()])
+      .optional(),
+    entityType: z
+      .union([
+        z.lazy(() => EnumEntityTypeFilterSchema),
+        z.lazy(() => EntityTypeSchema)
+      ])
+      .optional(),
+    url: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    alt: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    type: z
+      .union([
+        z.lazy(() => EnumMediaTypeFilterSchema),
+        z.lazy(() => MediaTypeSchema)
+      ])
+      .optional(),
+    position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+    isMain: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
+    createdAt: z
+      .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+      .optional(),
+    updatedAt: z
+      .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+      .optional()
+  })
+  .strict();
+
+export const MediaOrderByWithRelationInputSchema: z.ZodType<Prisma.MediaOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      entityId: z.lazy(() => SortOrderSchema).optional(),
+      entityType: z.lazy(() => SortOrderSchema).optional(),
+      url: z.lazy(() => SortOrderSchema).optional(),
+      alt: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      isMain: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const MediaWhereUniqueInputSchema: z.ZodType<Prisma.MediaWhereUniqueInput> =
+  z
+    .object({
+      id: z.string().cuid()
+    })
+    .and(
+      z
+        .object({
+          id: z.string().cuid().optional(),
+          AND: z
+            .union([
+              z.lazy(() => MediaWhereInputSchema),
+              z.lazy(() => MediaWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => MediaWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => MediaWhereInputSchema),
+              z.lazy(() => MediaWhereInputSchema).array()
+            ])
+            .optional(),
+          entityId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          entityType: z
+            .union([
+              z.lazy(() => EnumEntityTypeFilterSchema),
+              z.lazy(() => EntityTypeSchema)
+            ])
+            .optional(),
+          url: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          alt: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          type: z
+            .union([
+              z.lazy(() => EnumMediaTypeFilterSchema),
+              z.lazy(() => MediaTypeSchema)
+            ])
+            .optional(),
+          position: z
+            .union([z.lazy(() => IntFilterSchema), z.number().int()])
+            .optional(),
+          isMain: z
+            .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+            .optional(),
+          createdAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          updatedAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional()
+        })
+        .strict()
+    );
+
+export const MediaOrderByWithAggregationInputSchema: z.ZodType<Prisma.MediaOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      entityId: z.lazy(() => SortOrderSchema).optional(),
+      entityType: z.lazy(() => SortOrderSchema).optional(),
+      url: z.lazy(() => SortOrderSchema).optional(),
+      alt: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      isMain: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      _count: z.lazy(() => MediaCountOrderByAggregateInputSchema).optional(),
+      _avg: z.lazy(() => MediaAvgOrderByAggregateInputSchema).optional(),
+      _max: z.lazy(() => MediaMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => MediaMinOrderByAggregateInputSchema).optional(),
+      _sum: z.lazy(() => MediaSumOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const MediaScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.MediaScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => MediaScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => MediaScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => MediaScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => MediaScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => MediaScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      entityId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      entityType: z
+        .union([
+          z.lazy(() => EnumEntityTypeWithAggregatesFilterSchema),
+          z.lazy(() => EntityTypeSchema)
+        ])
+        .optional(),
+      url: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      alt: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      type: z
+        .union([
+          z.lazy(() => EnumMediaTypeWithAggregatesFilterSchema),
+          z.lazy(() => MediaTypeSchema)
+        ])
+        .optional(),
+      position: z
+        .union([z.lazy(() => IntWithAggregatesFilterSchema), z.number()])
+        .optional(),
+      isMain: z
+        .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
+        .optional(),
+      createdAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional()
+    })
+    .strict();
+
 export const ClickWhereInputSchema: z.ZodType<Prisma.ClickWhereInput> = z
   .object({
     AND: z
@@ -9397,7 +10037,9 @@ export const BlockWhereInputSchema: z.ZodType<Prisma.BlockWhereInput> = z
         z.lazy(() => SiteScalarRelationFilterSchema),
         z.lazy(() => SiteWhereInputSchema)
       ])
-      .optional()
+      .optional(),
+    categories: z.lazy(() => CategoryListRelationFilterSchema).optional(),
+    inventories: z.lazy(() => InventoryListRelationFilterSchema).optional()
   })
   .strict();
 
@@ -9444,7 +10086,13 @@ export const BlockOrderByWithRelationInputSchema: z.ZodType<Prisma.BlockOrderByW
       reservations: z
         .lazy(() => ReservationOrderByRelationAggregateInputSchema)
         .optional(),
-      site: z.lazy(() => SiteOrderByWithRelationInputSchema).optional()
+      site: z.lazy(() => SiteOrderByWithRelationInputSchema).optional(),
+      categories: z
+        .lazy(() => CategoryOrderByRelationAggregateInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryOrderByRelationAggregateInputSchema)
+        .optional()
     })
     .strict();
 
@@ -9511,6 +10159,10 @@ export const BlockWhereUniqueInputSchema: z.ZodType<Prisma.BlockWhereUniqueInput
               z.lazy(() => SiteScalarRelationFilterSchema),
               z.lazy(() => SiteWhereInputSchema)
             ])
+            .optional(),
+          categories: z.lazy(() => CategoryListRelationFilterSchema).optional(),
+          inventories: z
+            .lazy(() => InventoryListRelationFilterSchema)
             .optional()
         })
         .strict()
@@ -10810,6 +11462,1026 @@ export const ReservationScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.R
         ])
         .optional()
         .nullable()
+    })
+    .strict();
+
+export const CategoryWhereInputSchema: z.ZodType<Prisma.CategoryWhereInput> = z
+  .object({
+    AND: z
+      .union([
+        z.lazy(() => CategoryWhereInputSchema),
+        z.lazy(() => CategoryWhereInputSchema).array()
+      ])
+      .optional(),
+    OR: z
+      .lazy(() => CategoryWhereInputSchema)
+      .array()
+      .optional(),
+    NOT: z
+      .union([
+        z.lazy(() => CategoryWhereInputSchema),
+        z.lazy(() => CategoryWhereInputSchema).array()
+      ])
+      .optional(),
+    id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    name: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    description: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    slug: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    isActive: z.union([z.lazy(() => BoolFilterSchema), z.boolean()]).optional(),
+    position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+    createdAt: z
+      .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+      .optional(),
+    updatedAt: z
+      .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+      .optional(),
+    categoryId: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    blockId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+    inventories: z.lazy(() => InventoryListRelationFilterSchema).optional(),
+    categories: z.lazy(() => CategoryListRelationFilterSchema).optional(),
+    category: z
+      .union([
+        z.lazy(() => CategoryNullableScalarRelationFilterSchema),
+        z.lazy(() => CategoryWhereInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    block: z
+      .union([
+        z.lazy(() => BlockScalarRelationFilterSchema),
+        z.lazy(() => BlockWhereInputSchema)
+      ])
+      .optional()
+  })
+  .strict();
+
+export const CategoryOrderByWithRelationInputSchema: z.ZodType<Prisma.CategoryOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional(),
+      inventories: z
+        .lazy(() => InventoryOrderByRelationAggregateInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryOrderByRelationAggregateInputSchema)
+        .optional(),
+      category: z.lazy(() => CategoryOrderByWithRelationInputSchema).optional(),
+      block: z.lazy(() => BlockOrderByWithRelationInputSchema).optional()
+    })
+    .strict();
+
+export const CategoryWhereUniqueInputSchema: z.ZodType<Prisma.CategoryWhereUniqueInput> =
+  z
+    .union([
+      z.object({
+        id: z.string().cuid(),
+        name: z.string(),
+        slug: z.string()
+      }),
+      z.object({
+        id: z.string().cuid(),
+        name: z.string()
+      }),
+      z.object({
+        id: z.string().cuid(),
+        slug: z.string()
+      }),
+      z.object({
+        id: z.string().cuid()
+      }),
+      z.object({
+        name: z.string(),
+        slug: z.string()
+      }),
+      z.object({
+        name: z.string()
+      }),
+      z.object({
+        slug: z.string()
+      })
+    ])
+    .and(
+      z
+        .object({
+          id: z.string().cuid().optional(),
+          name: z.string().optional(),
+          slug: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => CategoryWhereInputSchema),
+              z.lazy(() => CategoryWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => CategoryWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => CategoryWhereInputSchema),
+              z.lazy(() => CategoryWhereInputSchema).array()
+            ])
+            .optional(),
+          description: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          isActive: z
+            .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+            .optional(),
+          position: z
+            .union([z.lazy(() => IntFilterSchema), z.number().int()])
+            .optional(),
+          createdAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          updatedAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          categoryId: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          blockId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          inventories: z
+            .lazy(() => InventoryListRelationFilterSchema)
+            .optional(),
+          categories: z.lazy(() => CategoryListRelationFilterSchema).optional(),
+          category: z
+            .union([
+              z.lazy(() => CategoryNullableScalarRelationFilterSchema),
+              z.lazy(() => CategoryWhereInputSchema)
+            ])
+            .optional()
+            .nullable(),
+          block: z
+            .union([
+              z.lazy(() => BlockScalarRelationFilterSchema),
+              z.lazy(() => BlockWhereInputSchema)
+            ])
+            .optional()
+        })
+        .strict()
+    );
+
+export const CategoryOrderByWithAggregationInputSchema: z.ZodType<Prisma.CategoryOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional(),
+      _count: z.lazy(() => CategoryCountOrderByAggregateInputSchema).optional(),
+      _avg: z.lazy(() => CategoryAvgOrderByAggregateInputSchema).optional(),
+      _max: z.lazy(() => CategoryMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => CategoryMinOrderByAggregateInputSchema).optional(),
+      _sum: z.lazy(() => CategorySumOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const CategoryScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CategoryScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => CategoryScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => CategoryScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => CategoryScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => CategoryScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => CategoryScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      name: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      description: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      isActive: z
+        .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
+        .optional(),
+      position: z
+        .union([z.lazy(() => IntWithAggregatesFilterSchema), z.number()])
+        .optional(),
+      createdAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const InventoryWhereInputSchema: z.ZodType<Prisma.InventoryWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => InventoryWhereInputSchema),
+          z.lazy(() => InventoryWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => InventoryWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => InventoryWhereInputSchema),
+          z.lazy(() => InventoryWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      name: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      description: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      slug: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      sku: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z.lazy(() => DecimalFilterSchema),
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            })
+        ])
+        .optional(),
+      isActive: z
+        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+        .optional(),
+      isFeatured: z
+        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+        .optional(),
+      metaTitle: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      tags: z.lazy(() => StringNullableListFilterSchema).optional(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      categoryId: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      category: z
+        .union([
+          z.lazy(() => CategoryNullableScalarRelationFilterSchema),
+          z.lazy(() => CategoryWhereInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      variants: z
+        .lazy(() => InventoryVariantListRelationFilterSchema)
+        .optional(),
+      block: z
+        .union([
+          z.lazy(() => BlockScalarRelationFilterSchema),
+          z.lazy(() => BlockWhereInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryOrderByWithRelationInputSchema: z.ZodType<Prisma.InventoryOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      sku: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      basePrice: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      isFeatured: z.lazy(() => SortOrderSchema).optional(),
+      metaTitle: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      metaDescription: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      tags: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional(),
+      category: z.lazy(() => CategoryOrderByWithRelationInputSchema).optional(),
+      variants: z
+        .lazy(() => InventoryVariantOrderByRelationAggregateInputSchema)
+        .optional(),
+      block: z.lazy(() => BlockOrderByWithRelationInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryWhereUniqueInputSchema: z.ZodType<Prisma.InventoryWhereUniqueInput> =
+  z
+    .union([
+      z.object({
+        id: z.string().cuid(),
+        slug: z.string(),
+        sku: z.string()
+      }),
+      z.object({
+        id: z.string().cuid(),
+        slug: z.string()
+      }),
+      z.object({
+        id: z.string().cuid(),
+        sku: z.string()
+      }),
+      z.object({
+        id: z.string().cuid()
+      }),
+      z.object({
+        slug: z.string(),
+        sku: z.string()
+      }),
+      z.object({
+        slug: z.string()
+      }),
+      z.object({
+        sku: z.string()
+      })
+    ])
+    .and(
+      z
+        .object({
+          id: z.string().cuid().optional(),
+          slug: z.string().optional(),
+          sku: z.string().optional(),
+          AND: z
+            .union([
+              z.lazy(() => InventoryWhereInputSchema),
+              z.lazy(() => InventoryWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => InventoryWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => InventoryWhereInputSchema),
+              z.lazy(() => InventoryWhereInputSchema).array()
+            ])
+            .optional(),
+          name: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          description: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          basePrice: z
+            .union([
+              z.lazy(() => DecimalFilterSchema),
+              z
+                .union([
+                  z.number(),
+                  z.string(),
+                  z.instanceof(Decimal),
+                  z.instanceof(Prisma.Decimal),
+                  DecimalJsLikeSchema
+                ])
+                .refine(v => isValidDecimalInput(v), {
+                  message: 'Must be a Decimal'
+                })
+            ])
+            .optional(),
+          isActive: z
+            .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+            .optional(),
+          isFeatured: z
+            .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+            .optional(),
+          metaTitle: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          metaDescription: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          tags: z.lazy(() => StringNullableListFilterSchema).optional(),
+          createdAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          updatedAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          categoryId: z
+            .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+            .optional()
+            .nullable(),
+          blockId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          category: z
+            .union([
+              z.lazy(() => CategoryNullableScalarRelationFilterSchema),
+              z.lazy(() => CategoryWhereInputSchema)
+            ])
+            .optional()
+            .nullable(),
+          variants: z
+            .lazy(() => InventoryVariantListRelationFilterSchema)
+            .optional(),
+          block: z
+            .union([
+              z.lazy(() => BlockScalarRelationFilterSchema),
+              z.lazy(() => BlockWhereInputSchema)
+            ])
+            .optional()
+        })
+        .strict()
+    );
+
+export const InventoryOrderByWithAggregationInputSchema: z.ZodType<Prisma.InventoryOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      sku: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      basePrice: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      isFeatured: z.lazy(() => SortOrderSchema).optional(),
+      metaTitle: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      metaDescription: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      tags: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional(),
+      _count: z
+        .lazy(() => InventoryCountOrderByAggregateInputSchema)
+        .optional(),
+      _avg: z.lazy(() => InventoryAvgOrderByAggregateInputSchema).optional(),
+      _max: z.lazy(() => InventoryMaxOrderByAggregateInputSchema).optional(),
+      _min: z.lazy(() => InventoryMinOrderByAggregateInputSchema).optional(),
+      _sum: z.lazy(() => InventorySumOrderByAggregateInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.InventoryScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => InventoryScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => InventoryScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => InventoryScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => InventoryScalarWhereWithAggregatesInputSchema),
+          z.lazy(() => InventoryScalarWhereWithAggregatesInputSchema).array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      name: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      description: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      sku: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z.lazy(() => DecimalWithAggregatesFilterSchema),
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            })
+        ])
+        .optional(),
+      isActive: z
+        .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
+        .optional(),
+      isFeatured: z
+        .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      tags: z.lazy(() => StringNullableListFilterSchema).optional(),
+      createdAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.lazy(() => StringNullableWithAggregatesFilterSchema),
+          z.string()
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantWhereInputSchema: z.ZodType<Prisma.InventoryVariantWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => InventoryVariantWhereInputSchema),
+          z.lazy(() => InventoryVariantWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => InventoryVariantWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => InventoryVariantWhereInputSchema),
+          z.lazy(() => InventoryVariantWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      inventoryId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      name: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      value: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      type: z
+        .union([
+          z.lazy(() => EnumVariantTypeFilterSchema),
+          z.lazy(() => VariantTypeSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z.lazy(() => DecimalNullableFilterSchema),
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            })
+        ])
+        .optional()
+        .nullable(),
+      stock: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+      isActive: z
+        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+        .optional(),
+      position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      inventory: z
+        .union([
+          z.lazy(() => InventoryScalarRelationFilterSchema),
+          z.lazy(() => InventoryWhereInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantOrderByWithRelationInputSchema: z.ZodType<Prisma.InventoryVariantOrderByWithRelationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      inventoryId: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      value: z.lazy(() => SortOrderSchema).optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      price: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      inventory: z
+        .lazy(() => InventoryOrderByWithRelationInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantWhereUniqueInputSchema: z.ZodType<Prisma.InventoryVariantWhereUniqueInput> =
+  z
+    .union([
+      z.object({
+        id: z.string().cuid(),
+        inventoryId_type_value: z.lazy(
+          () => InventoryVariantInventoryIdTypeValueCompoundUniqueInputSchema
+        )
+      }),
+      z.object({
+        id: z.string().cuid()
+      }),
+      z.object({
+        inventoryId_type_value: z.lazy(
+          () => InventoryVariantInventoryIdTypeValueCompoundUniqueInputSchema
+        )
+      })
+    ])
+    .and(
+      z
+        .object({
+          id: z.string().cuid().optional(),
+          inventoryId_type_value: z
+            .lazy(
+              () =>
+                InventoryVariantInventoryIdTypeValueCompoundUniqueInputSchema
+            )
+            .optional(),
+          AND: z
+            .union([
+              z.lazy(() => InventoryVariantWhereInputSchema),
+              z.lazy(() => InventoryVariantWhereInputSchema).array()
+            ])
+            .optional(),
+          OR: z
+            .lazy(() => InventoryVariantWhereInputSchema)
+            .array()
+            .optional(),
+          NOT: z
+            .union([
+              z.lazy(() => InventoryVariantWhereInputSchema),
+              z.lazy(() => InventoryVariantWhereInputSchema).array()
+            ])
+            .optional(),
+          inventoryId: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          name: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          value: z
+            .union([z.lazy(() => StringFilterSchema), z.string()])
+            .optional(),
+          type: z
+            .union([
+              z.lazy(() => EnumVariantTypeFilterSchema),
+              z.lazy(() => VariantTypeSchema)
+            ])
+            .optional(),
+          price: z
+            .union([
+              z.lazy(() => DecimalNullableFilterSchema),
+              z
+                .union([
+                  z.number(),
+                  z.string(),
+                  z.instanceof(Decimal),
+                  z.instanceof(Prisma.Decimal),
+                  DecimalJsLikeSchema
+                ])
+                .refine(v => isValidDecimalInput(v), {
+                  message: 'Must be a Decimal'
+                })
+            ])
+            .optional()
+            .nullable(),
+          stock: z
+            .union([z.lazy(() => IntFilterSchema), z.number().int()])
+            .optional(),
+          isActive: z
+            .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+            .optional(),
+          position: z
+            .union([z.lazy(() => IntFilterSchema), z.number().int()])
+            .optional(),
+          createdAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          updatedAt: z
+            .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+            .optional(),
+          inventory: z
+            .union([
+              z.lazy(() => InventoryScalarRelationFilterSchema),
+              z.lazy(() => InventoryWhereInputSchema)
+            ])
+            .optional()
+        })
+        .strict()
+    );
+
+export const InventoryVariantOrderByWithAggregationInputSchema: z.ZodType<Prisma.InventoryVariantOrderByWithAggregationInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      inventoryId: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      value: z.lazy(() => SortOrderSchema).optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      price: z
+        .union([
+          z.lazy(() => SortOrderSchema),
+          z.lazy(() => SortOrderInputSchema)
+        ])
+        .optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      _count: z
+        .lazy(() => InventoryVariantCountOrderByAggregateInputSchema)
+        .optional(),
+      _avg: z
+        .lazy(() => InventoryVariantAvgOrderByAggregateInputSchema)
+        .optional(),
+      _max: z
+        .lazy(() => InventoryVariantMaxOrderByAggregateInputSchema)
+        .optional(),
+      _min: z
+        .lazy(() => InventoryVariantMinOrderByAggregateInputSchema)
+        .optional(),
+      _sum: z
+        .lazy(() => InventoryVariantSumOrderByAggregateInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.InventoryVariantScalarWhereWithAggregatesInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => InventoryVariantScalarWhereWithAggregatesInputSchema),
+          z
+            .lazy(() => InventoryVariantScalarWhereWithAggregatesInputSchema)
+            .array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => InventoryVariantScalarWhereWithAggregatesInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => InventoryVariantScalarWhereWithAggregatesInputSchema),
+          z
+            .lazy(() => InventoryVariantScalarWhereWithAggregatesInputSchema)
+            .array()
+        ])
+        .optional(),
+      id: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      inventoryId: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      name: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      value: z
+        .union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()])
+        .optional(),
+      type: z
+        .union([
+          z.lazy(() => EnumVariantTypeWithAggregatesFilterSchema),
+          z.lazy(() => VariantTypeSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z.lazy(() => DecimalNullableWithAggregatesFilterSchema),
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            })
+        ])
+        .optional()
+        .nullable(),
+      stock: z
+        .union([z.lazy(() => IntWithAggregatesFilterSchema), z.number()])
+        .optional(),
+      isActive: z
+        .union([z.lazy(() => BoolWithAggregatesFilterSchema), z.boolean()])
+        .optional(),
+      position: z
+        .union([z.lazy(() => IntWithAggregatesFilterSchema), z.number()])
+        .optional(),
+      createdAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.lazy(() => DateTimeWithAggregatesFilterSchema),
+          z.coerce.date()
+        ])
+        .optional()
     })
     .strict();
 
@@ -20100,6 +21772,311 @@ export const EmailUncheckedUpdateManyInputSchema: z.ZodType<Prisma.EmailUnchecke
     })
     .strict();
 
+export const MediaCreateInputSchema: z.ZodType<Prisma.MediaCreateInput> = z
+  .object({
+    id: z.string().cuid().optional(),
+    entityId: z.string(),
+    entityType: z.lazy(() => EntityTypeSchema),
+    url: z.string(),
+    alt: z.string().optional().nullable(),
+    type: z.lazy(() => MediaTypeSchema).optional(),
+    position: z.number().int().optional(),
+    isMain: z.boolean().optional(),
+    createdAt: z.coerce.date().optional(),
+    updatedAt: z.coerce.date().optional()
+  })
+  .strict();
+
+export const MediaUncheckedCreateInputSchema: z.ZodType<Prisma.MediaUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      entityId: z.string(),
+      entityType: z.lazy(() => EntityTypeSchema),
+      url: z.string(),
+      alt: z.string().optional().nullable(),
+      type: z.lazy(() => MediaTypeSchema).optional(),
+      position: z.number().int().optional(),
+      isMain: z.boolean().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const MediaUpdateInputSchema: z.ZodType<Prisma.MediaUpdateInput> = z
+  .object({
+    id: z
+      .union([
+        z.string().cuid(),
+        z.lazy(() => StringFieldUpdateOperationsInputSchema)
+      ])
+      .optional(),
+    entityId: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    entityType: z
+      .union([
+        z.lazy(() => EntityTypeSchema),
+        z.lazy(() => EnumEntityTypeFieldUpdateOperationsInputSchema)
+      ])
+      .optional(),
+    url: z
+      .union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)])
+      .optional(),
+    alt: z
+      .union([
+        z.string(),
+        z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+      .nullable(),
+    type: z
+      .union([
+        z.lazy(() => MediaTypeSchema),
+        z.lazy(() => EnumMediaTypeFieldUpdateOperationsInputSchema)
+      ])
+      .optional(),
+    position: z
+      .union([
+        z.number().int(),
+        z.lazy(() => IntFieldUpdateOperationsInputSchema)
+      ])
+      .optional(),
+    isMain: z
+      .union([z.boolean(), z.lazy(() => BoolFieldUpdateOperationsInputSchema)])
+      .optional(),
+    createdAt: z
+      .union([
+        z.coerce.date(),
+        z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+      ])
+      .optional(),
+    updatedAt: z
+      .union([
+        z.coerce.date(),
+        z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+      ])
+      .optional()
+  })
+  .strict();
+
+export const MediaUncheckedUpdateInputSchema: z.ZodType<Prisma.MediaUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      entityId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      entityType: z
+        .union([
+          z.lazy(() => EntityTypeSchema),
+          z.lazy(() => EnumEntityTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      url: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      alt: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      type: z
+        .union([
+          z.lazy(() => MediaTypeSchema),
+          z.lazy(() => EnumMediaTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isMain: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const MediaCreateManyInputSchema: z.ZodType<Prisma.MediaCreateManyInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      entityId: z.string(),
+      entityType: z.lazy(() => EntityTypeSchema),
+      url: z.string(),
+      alt: z.string().optional().nullable(),
+      type: z.lazy(() => MediaTypeSchema).optional(),
+      position: z.number().int().optional(),
+      isMain: z.boolean().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const MediaUpdateManyMutationInputSchema: z.ZodType<Prisma.MediaUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      entityId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      entityType: z
+        .union([
+          z.lazy(() => EntityTypeSchema),
+          z.lazy(() => EnumEntityTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      url: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      alt: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      type: z
+        .union([
+          z.lazy(() => MediaTypeSchema),
+          z.lazy(() => EnumMediaTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isMain: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const MediaUncheckedUpdateManyInputSchema: z.ZodType<Prisma.MediaUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      entityId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      entityType: z
+        .union([
+          z.lazy(() => EntityTypeSchema),
+          z.lazy(() => EnumEntityTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      url: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      alt: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      type: z
+        .union([
+          z.lazy(() => MediaTypeSchema),
+          z.lazy(() => EnumMediaTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isMain: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
 export const ClickCreateInputSchema: z.ZodType<Prisma.ClickCreateInput> = z
   .object({
     id: z.string().cuid().optional(),
@@ -20658,7 +22635,13 @@ export const BlockCreateInputSchema: z.ZodType<Prisma.BlockCreateInput> = z
     reservations: z
       .lazy(() => ReservationCreateNestedManyWithoutBlockInputSchema)
       .optional(),
-    site: z.lazy(() => SiteCreateNestedOneWithoutBlocksInputSchema)
+    site: z.lazy(() => SiteCreateNestedOneWithoutBlocksInputSchema),
+    categories: z
+      .lazy(() => CategoryCreateNestedManyWithoutBlockInputSchema)
+      .optional(),
+    inventories: z
+      .lazy(() => InventoryCreateNestedManyWithoutBlockInputSchema)
+      .optional()
   })
   .strict();
 
@@ -20691,6 +22674,12 @@ export const BlockUncheckedCreateInputSchema: z.ZodType<Prisma.BlockUncheckedCre
         .optional(),
       reservations: z
         .lazy(() => ReservationUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedCreateNestedManyWithoutBlockInputSchema)
         .optional()
     })
     .strict();
@@ -20765,6 +22754,12 @@ export const BlockUpdateInputSchema: z.ZodType<Prisma.BlockUpdateInput> = z
       .optional(),
     site: z
       .lazy(() => SiteUpdateOneRequiredWithoutBlocksNestedInputSchema)
+      .optional(),
+    categories: z
+      .lazy(() => CategoryUpdateManyWithoutBlockNestedInputSchema)
+      .optional(),
+    inventories: z
+      .lazy(() => InventoryUpdateManyWithoutBlockNestedInputSchema)
       .optional()
   })
   .strict();
@@ -20846,6 +22841,12 @@ export const BlockUncheckedUpdateInputSchema: z.ZodType<Prisma.BlockUncheckedUpd
         .optional(),
       reservations: z
         .lazy(() => ReservationUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
         .optional()
     })
     .strict();
@@ -22228,6 +24229,1288 @@ export const ReservationUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Reserva
         ])
         .optional()
         .nullable()
+    })
+    .strict();
+
+export const CategoryCreateInputSchema: z.ZodType<Prisma.CategoryCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      inventories: z
+        .lazy(() => InventoryCreateNestedManyWithoutCategoryInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryCreateNestedManyWithoutCategoryInputSchema)
+        .optional(),
+      category: z
+        .lazy(() => CategoryCreateNestedOneWithoutCategoriesInputSchema)
+        .optional(),
+      block: z.lazy(() => BlockCreateNestedOneWithoutCategoriesInputSchema)
+    })
+    .strict();
+
+export const CategoryUncheckedCreateInputSchema: z.ZodType<Prisma.CategoryUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      blockId: z.string(),
+      inventories: z
+        .lazy(
+          () => InventoryUncheckedCreateNestedManyWithoutCategoryInputSchema
+        )
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutCategoryInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUpdateInputSchema: z.ZodType<Prisma.CategoryUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUpdateManyWithoutCategoryNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUpdateManyWithoutCategoryNestedInputSchema)
+        .optional(),
+      category: z
+        .lazy(() => CategoryUpdateOneWithoutCategoriesNestedInputSchema)
+        .optional(),
+      block: z
+        .lazy(() => BlockUpdateOneRequiredWithoutCategoriesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventories: z
+        .lazy(
+          () => InventoryUncheckedUpdateManyWithoutCategoryNestedInputSchema
+        )
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutCategoryNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryCreateManyInputSchema: z.ZodType<Prisma.CategoryCreateManyInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      blockId: z.string()
+    })
+    .strict();
+
+export const CategoryUpdateManyMutationInputSchema: z.ZodType<Prisma.CategoryUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateInputSchema: z.ZodType<Prisma.InventoryCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      category: z
+        .lazy(() => CategoryCreateNestedOneWithoutInventoriesInputSchema)
+        .optional(),
+      variants: z
+        .lazy(() => InventoryVariantCreateNestedManyWithoutInventoryInputSchema)
+        .optional(),
+      block: z.lazy(() => BlockCreateNestedOneWithoutInventoriesInputSchema)
+    })
+    .strict();
+
+export const InventoryUncheckedCreateInputSchema: z.ZodType<Prisma.InventoryUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      blockId: z.string(),
+      variants: z
+        .lazy(
+          () =>
+            InventoryVariantUncheckedCreateNestedManyWithoutInventoryInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const InventoryUpdateInputSchema: z.ZodType<Prisma.InventoryUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      category: z
+        .lazy(() => CategoryUpdateOneWithoutInventoriesNestedInputSchema)
+        .optional(),
+      variants: z
+        .lazy(() => InventoryVariantUpdateManyWithoutInventoryNestedInputSchema)
+        .optional(),
+      block: z
+        .lazy(() => BlockUpdateOneRequiredWithoutInventoriesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      variants: z
+        .lazy(
+          () =>
+            InventoryVariantUncheckedUpdateManyWithoutInventoryNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateManyInputSchema: z.ZodType<Prisma.InventoryCreateManyInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      blockId: z.string()
+    })
+    .strict();
+
+export const InventoryUpdateManyMutationInputSchema: z.ZodType<Prisma.InventoryUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateManyInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantCreateInputSchema: z.ZodType<Prisma.InventoryVariantCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      value: z.string(),
+      type: z.lazy(() => VariantTypeSchema),
+      price: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      stock: z.number().int().optional(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      inventory: z.lazy(
+        () => InventoryCreateNestedOneWithoutVariantsInputSchema
+      )
+    })
+    .strict();
+
+export const InventoryVariantUncheckedCreateInputSchema: z.ZodType<Prisma.InventoryVariantUncheckedCreateInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      inventoryId: z.string(),
+      name: z.string(),
+      value: z.string(),
+      type: z.lazy(() => VariantTypeSchema),
+      price: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      stock: z.number().int().optional(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const InventoryVariantUpdateInputSchema: z.ZodType<Prisma.InventoryVariantUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      value: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => EnumVariantTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventory: z
+        .lazy(() => InventoryUpdateOneRequiredWithoutVariantsNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantUncheckedUpdateInputSchema: z.ZodType<Prisma.InventoryVariantUncheckedUpdateInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      value: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => EnumVariantTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantCreateManyInputSchema: z.ZodType<Prisma.InventoryVariantCreateManyInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      inventoryId: z.string(),
+      name: z.string(),
+      value: z.string(),
+      type: z.lazy(() => VariantTypeSchema),
+      price: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      stock: z.number().int().optional(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const InventoryVariantUpdateManyMutationInputSchema: z.ZodType<Prisma.InventoryVariantUpdateManyMutationInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      value: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => EnumVariantTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantUncheckedUpdateManyInputSchema: z.ZodType<Prisma.InventoryVariantUncheckedUpdateManyInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      value: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => EnumVariantTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
     })
     .strict();
 
@@ -28667,6 +31950,158 @@ export const EmailMinOrderByAggregateInputSchema: z.ZodType<Prisma.EmailMinOrder
     })
     .strict();
 
+export const EnumEntityTypeFilterSchema: z.ZodType<Prisma.EnumEntityTypeFilter> =
+  z
+    .object({
+      equals: z.lazy(() => EntityTypeSchema).optional(),
+      in: z
+        .lazy(() => EntityTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => EntityTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => EntityTypeSchema),
+          z.lazy(() => NestedEnumEntityTypeFilterSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const EnumMediaTypeFilterSchema: z.ZodType<Prisma.EnumMediaTypeFilter> =
+  z
+    .object({
+      equals: z.lazy(() => MediaTypeSchema).optional(),
+      in: z
+        .lazy(() => MediaTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => MediaTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => MediaTypeSchema),
+          z.lazy(() => NestedEnumMediaTypeFilterSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const MediaCountOrderByAggregateInputSchema: z.ZodType<Prisma.MediaCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      entityId: z.lazy(() => SortOrderSchema).optional(),
+      entityType: z.lazy(() => SortOrderSchema).optional(),
+      url: z.lazy(() => SortOrderSchema).optional(),
+      alt: z.lazy(() => SortOrderSchema).optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      isMain: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const MediaAvgOrderByAggregateInputSchema: z.ZodType<Prisma.MediaAvgOrderByAggregateInput> =
+  z
+    .object({
+      position: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const MediaMaxOrderByAggregateInputSchema: z.ZodType<Prisma.MediaMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      entityId: z.lazy(() => SortOrderSchema).optional(),
+      entityType: z.lazy(() => SortOrderSchema).optional(),
+      url: z.lazy(() => SortOrderSchema).optional(),
+      alt: z.lazy(() => SortOrderSchema).optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      isMain: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const MediaMinOrderByAggregateInputSchema: z.ZodType<Prisma.MediaMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      entityId: z.lazy(() => SortOrderSchema).optional(),
+      entityType: z.lazy(() => SortOrderSchema).optional(),
+      url: z.lazy(() => SortOrderSchema).optional(),
+      alt: z.lazy(() => SortOrderSchema).optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      isMain: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const MediaSumOrderByAggregateInputSchema: z.ZodType<Prisma.MediaSumOrderByAggregateInput> =
+  z
+    .object({
+      position: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const EnumEntityTypeWithAggregatesFilterSchema: z.ZodType<Prisma.EnumEntityTypeWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.lazy(() => EntityTypeSchema).optional(),
+      in: z
+        .lazy(() => EntityTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => EntityTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => EntityTypeSchema),
+          z.lazy(() => NestedEnumEntityTypeWithAggregatesFilterSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => NestedIntFilterSchema).optional(),
+      _min: z.lazy(() => NestedEnumEntityTypeFilterSchema).optional(),
+      _max: z.lazy(() => NestedEnumEntityTypeFilterSchema).optional()
+    })
+    .strict();
+
+export const EnumMediaTypeWithAggregatesFilterSchema: z.ZodType<Prisma.EnumMediaTypeWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.lazy(() => MediaTypeSchema).optional(),
+      in: z
+        .lazy(() => MediaTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => MediaTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => MediaTypeSchema),
+          z.lazy(() => NestedEnumMediaTypeWithAggregatesFilterSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => NestedIntFilterSchema).optional(),
+      _min: z.lazy(() => NestedEnumMediaTypeFilterSchema).optional(),
+      _max: z.lazy(() => NestedEnumMediaTypeFilterSchema).optional()
+    })
+    .strict();
+
 export const BlockNullableScalarRelationFilterSchema: z.ZodType<Prisma.BlockNullableScalarRelationFilter> =
   z
     .object({
@@ -28819,7 +32254,39 @@ export const ReservationListRelationFilterSchema: z.ZodType<Prisma.ReservationLi
     })
     .strict();
 
+export const CategoryListRelationFilterSchema: z.ZodType<Prisma.CategoryListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => CategoryWhereInputSchema).optional(),
+      some: z.lazy(() => CategoryWhereInputSchema).optional(),
+      none: z.lazy(() => CategoryWhereInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryListRelationFilterSchema: z.ZodType<Prisma.InventoryListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => InventoryWhereInputSchema).optional(),
+      some: z.lazy(() => InventoryWhereInputSchema).optional(),
+      none: z.lazy(() => InventoryWhereInputSchema).optional()
+    })
+    .strict();
+
 export const ReservationOrderByRelationAggregateInputSchema: z.ZodType<Prisma.ReservationOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CategoryOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CategoryOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryOrderByRelationAggregateInputSchema: z.ZodType<Prisma.InventoryOrderByRelationAggregateInput> =
   z
     .object({
       _count: z.lazy(() => SortOrderSchema).optional()
@@ -29115,6 +32582,740 @@ export const ReservationMinOrderByAggregateInputSchema: z.ZodType<Prisma.Reserva
       updatedAt: z.lazy(() => SortOrderSchema).optional(),
       blockId: z.lazy(() => SortOrderSchema).optional(),
       affiliateId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CategoryNullableScalarRelationFilterSchema: z.ZodType<Prisma.CategoryNullableScalarRelationFilter> =
+  z
+    .object({
+      is: z
+        .lazy(() => CategoryWhereInputSchema)
+        .optional()
+        .nullable(),
+      isNot: z
+        .lazy(() => CategoryWhereInputSchema)
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const BlockScalarRelationFilterSchema: z.ZodType<Prisma.BlockScalarRelationFilter> =
+  z
+    .object({
+      is: z.lazy(() => BlockWhereInputSchema).optional(),
+      isNot: z.lazy(() => BlockWhereInputSchema).optional()
+    })
+    .strict();
+
+export const CategoryCountOrderByAggregateInputSchema: z.ZodType<Prisma.CategoryCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z.lazy(() => SortOrderSchema).optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CategoryAvgOrderByAggregateInputSchema: z.ZodType<Prisma.CategoryAvgOrderByAggregateInput> =
+  z
+    .object({
+      position: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CategoryMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CategoryMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z.lazy(() => SortOrderSchema).optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CategoryMinOrderByAggregateInputSchema: z.ZodType<Prisma.CategoryMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z.lazy(() => SortOrderSchema).optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const CategorySumOrderByAggregateInputSchema: z.ZodType<Prisma.CategorySumOrderByAggregateInput> =
+  z
+    .object({
+      position: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const DecimalFilterSchema: z.ZodType<Prisma.DecimalFilter> = z
+  .object({
+    equals: z
+      .union([
+        z.number(),
+        z.string(),
+        z.instanceof(Decimal),
+        z.instanceof(Prisma.Decimal),
+        DecimalJsLikeSchema
+      ])
+      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+      .optional(),
+    in: z
+      .union([
+        z.number().array(),
+        z.string().array(),
+        z.instanceof(Decimal).array(),
+        z.instanceof(Prisma.Decimal).array(),
+        DecimalJsLikeSchema.array()
+      ])
+      .refine(
+        v =>
+          Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+        { message: 'Must be a Decimal' }
+      )
+      .optional(),
+    notIn: z
+      .union([
+        z.number().array(),
+        z.string().array(),
+        z.instanceof(Decimal).array(),
+        z.instanceof(Prisma.Decimal).array(),
+        DecimalJsLikeSchema.array()
+      ])
+      .refine(
+        v =>
+          Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+        { message: 'Must be a Decimal' }
+      )
+      .optional(),
+    lt: z
+      .union([
+        z.number(),
+        z.string(),
+        z.instanceof(Decimal),
+        z.instanceof(Prisma.Decimal),
+        DecimalJsLikeSchema
+      ])
+      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+      .optional(),
+    lte: z
+      .union([
+        z.number(),
+        z.string(),
+        z.instanceof(Decimal),
+        z.instanceof(Prisma.Decimal),
+        DecimalJsLikeSchema
+      ])
+      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+      .optional(),
+    gt: z
+      .union([
+        z.number(),
+        z.string(),
+        z.instanceof(Decimal),
+        z.instanceof(Prisma.Decimal),
+        DecimalJsLikeSchema
+      ])
+      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+      .optional(),
+    gte: z
+      .union([
+        z.number(),
+        z.string(),
+        z.instanceof(Decimal),
+        z.instanceof(Prisma.Decimal),
+        DecimalJsLikeSchema
+      ])
+      .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+      .optional(),
+    not: z
+      .union([
+        z
+          .union([
+            z.number(),
+            z.string(),
+            z.instanceof(Decimal),
+            z.instanceof(Prisma.Decimal),
+            DecimalJsLikeSchema
+          ])
+          .refine(v => isValidDecimalInput(v), {
+            message: 'Must be a Decimal'
+          }),
+        z.lazy(() => NestedDecimalFilterSchema)
+      ])
+      .optional()
+  })
+  .strict();
+
+export const StringNullableListFilterSchema: z.ZodType<Prisma.StringNullableListFilter> =
+  z
+    .object({
+      equals: z.string().array().optional().nullable(),
+      has: z.string().optional().nullable(),
+      hasEvery: z.string().array().optional(),
+      hasSome: z.string().array().optional(),
+      isEmpty: z.boolean().optional()
+    })
+    .strict();
+
+export const InventoryVariantListRelationFilterSchema: z.ZodType<Prisma.InventoryVariantListRelationFilter> =
+  z
+    .object({
+      every: z.lazy(() => InventoryVariantWhereInputSchema).optional(),
+      some: z.lazy(() => InventoryVariantWhereInputSchema).optional(),
+      none: z.lazy(() => InventoryVariantWhereInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantOrderByRelationAggregateInputSchema: z.ZodType<Prisma.InventoryVariantOrderByRelationAggregateInput> =
+  z
+    .object({
+      _count: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryCountOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      sku: z.lazy(() => SortOrderSchema).optional(),
+      basePrice: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      isFeatured: z.lazy(() => SortOrderSchema).optional(),
+      metaTitle: z.lazy(() => SortOrderSchema).optional(),
+      metaDescription: z.lazy(() => SortOrderSchema).optional(),
+      tags: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z.lazy(() => SortOrderSchema).optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryAvgOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryAvgOrderByAggregateInput> =
+  z
+    .object({
+      basePrice: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryMaxOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      sku: z.lazy(() => SortOrderSchema).optional(),
+      basePrice: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      isFeatured: z.lazy(() => SortOrderSchema).optional(),
+      metaTitle: z.lazy(() => SortOrderSchema).optional(),
+      metaDescription: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z.lazy(() => SortOrderSchema).optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryMinOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      description: z.lazy(() => SortOrderSchema).optional(),
+      slug: z.lazy(() => SortOrderSchema).optional(),
+      sku: z.lazy(() => SortOrderSchema).optional(),
+      basePrice: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      isFeatured: z.lazy(() => SortOrderSchema).optional(),
+      metaTitle: z.lazy(() => SortOrderSchema).optional(),
+      metaDescription: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional(),
+      categoryId: z.lazy(() => SortOrderSchema).optional(),
+      blockId: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventorySumOrderByAggregateInputSchema: z.ZodType<Prisma.InventorySumOrderByAggregateInput> =
+  z
+    .object({
+      basePrice: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const DecimalWithAggregatesFilterSchema: z.ZodType<Prisma.DecimalWithAggregatesFilter> =
+  z
+    .object({
+      equals: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      in: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional(),
+      notIn: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional(),
+      lt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      lte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      not: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NestedDecimalWithAggregatesFilterSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => NestedIntFilterSchema).optional(),
+      _avg: z.lazy(() => NestedDecimalFilterSchema).optional(),
+      _sum: z.lazy(() => NestedDecimalFilterSchema).optional(),
+      _min: z.lazy(() => NestedDecimalFilterSchema).optional(),
+      _max: z.lazy(() => NestedDecimalFilterSchema).optional()
+    })
+    .strict();
+
+export const EnumVariantTypeFilterSchema: z.ZodType<Prisma.EnumVariantTypeFilter> =
+  z
+    .object({
+      equals: z.lazy(() => VariantTypeSchema).optional(),
+      in: z
+        .lazy(() => VariantTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => VariantTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => NestedEnumVariantTypeFilterSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const DecimalNullableFilterSchema: z.ZodType<Prisma.DecimalNullableFilter> =
+  z
+    .object({
+      equals: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      in: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional()
+        .nullable(),
+      notIn: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional()
+        .nullable(),
+      lt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      lte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      not: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NestedDecimalNullableFilterSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const InventoryScalarRelationFilterSchema: z.ZodType<Prisma.InventoryScalarRelationFilter> =
+  z
+    .object({
+      is: z.lazy(() => InventoryWhereInputSchema).optional(),
+      isNot: z.lazy(() => InventoryWhereInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantInventoryIdTypeValueCompoundUniqueInputSchema: z.ZodType<Prisma.InventoryVariantInventoryIdTypeValueCompoundUniqueInput> =
+  z
+    .object({
+      inventoryId: z.string(),
+      type: z.lazy(() => VariantTypeSchema),
+      value: z.string()
+    })
+    .strict();
+
+export const InventoryVariantCountOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryVariantCountOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      inventoryId: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      value: z.lazy(() => SortOrderSchema).optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      price: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantAvgOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryVariantAvgOrderByAggregateInput> =
+  z
+    .object({
+      price: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantMaxOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryVariantMaxOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      inventoryId: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      value: z.lazy(() => SortOrderSchema).optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      price: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantMinOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryVariantMinOrderByAggregateInput> =
+  z
+    .object({
+      id: z.lazy(() => SortOrderSchema).optional(),
+      inventoryId: z.lazy(() => SortOrderSchema).optional(),
+      name: z.lazy(() => SortOrderSchema).optional(),
+      value: z.lazy(() => SortOrderSchema).optional(),
+      type: z.lazy(() => SortOrderSchema).optional(),
+      price: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
+      isActive: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional(),
+      createdAt: z.lazy(() => SortOrderSchema).optional(),
+      updatedAt: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantSumOrderByAggregateInputSchema: z.ZodType<Prisma.InventoryVariantSumOrderByAggregateInput> =
+  z
+    .object({
+      price: z.lazy(() => SortOrderSchema).optional(),
+      stock: z.lazy(() => SortOrderSchema).optional(),
+      position: z.lazy(() => SortOrderSchema).optional()
+    })
+    .strict();
+
+export const EnumVariantTypeWithAggregatesFilterSchema: z.ZodType<Prisma.EnumVariantTypeWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.lazy(() => VariantTypeSchema).optional(),
+      in: z
+        .lazy(() => VariantTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => VariantTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => NestedEnumVariantTypeWithAggregatesFilterSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => NestedIntFilterSchema).optional(),
+      _min: z.lazy(() => NestedEnumVariantTypeFilterSchema).optional(),
+      _max: z.lazy(() => NestedEnumVariantTypeFilterSchema).optional()
+    })
+    .strict();
+
+export const DecimalNullableWithAggregatesFilterSchema: z.ZodType<Prisma.DecimalNullableWithAggregatesFilter> =
+  z
+    .object({
+      equals: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      in: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional()
+        .nullable(),
+      notIn: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional()
+        .nullable(),
+      lt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      lte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      not: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NestedDecimalNullableWithAggregatesFilterSchema)
+        ])
+        .optional()
+        .nullable(),
+      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+      _avg: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
+      _sum: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
+      _min: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
+      _max: z.lazy(() => NestedDecimalNullableFilterSchema).optional()
     })
     .strict();
 
@@ -34474,6 +38675,20 @@ export const CampaignUncheckedUpdateManyWithoutEmailNestedInputSchema: z.ZodType
     })
     .strict();
 
+export const EnumEntityTypeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumEntityTypeFieldUpdateOperationsInput> =
+  z
+    .object({
+      set: z.lazy(() => EntityTypeSchema).optional()
+    })
+    .strict();
+
+export const EnumMediaTypeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumMediaTypeFieldUpdateOperationsInput> =
+  z
+    .object({
+      set: z.lazy(() => MediaTypeSchema).optional()
+    })
+    .strict();
+
 export const BlockCreateNestedOneWithoutClicksInputSchema: z.ZodType<Prisma.BlockCreateNestedOneWithoutClicksInput> =
   z
     .object({
@@ -35028,6 +39243,64 @@ export const SiteCreateNestedOneWithoutBlocksInputSchema: z.ZodType<Prisma.SiteC
     })
     .strict();
 
+export const CategoryCreateNestedManyWithoutBlockInputSchema: z.ZodType<Prisma.CategoryCreateNestedManyWithoutBlockInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutBlockInputSchema),
+          z.lazy(() => CategoryCreateWithoutBlockInputSchema).array(),
+          z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema),
+          z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => CategoryCreateOrConnectWithoutBlockInputSchema),
+          z.lazy(() => CategoryCreateOrConnectWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => CategoryCreateManyBlockInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateNestedManyWithoutBlockInputSchema: z.ZodType<Prisma.InventoryCreateNestedManyWithoutBlockInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutBlockInputSchema),
+          z.lazy(() => InventoryCreateWithoutBlockInputSchema).array(),
+          z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema),
+          z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => InventoryCreateOrConnectWithoutBlockInputSchema),
+          z.lazy(() => InventoryCreateOrConnectWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryCreateManyBlockInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
 export const ClickUncheckedCreateNestedManyWithoutBlockInputSchema: z.ZodType<Prisma.ClickUncheckedCreateNestedManyWithoutBlockInput> =
   z
     .object({
@@ -35085,6 +39358,64 @@ export const ReservationUncheckedCreateNestedManyWithoutBlockInputSchema: z.ZodT
         .union([
           z.lazy(() => ReservationWhereUniqueInputSchema),
           z.lazy(() => ReservationWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedCreateNestedManyWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUncheckedCreateNestedManyWithoutBlockInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutBlockInputSchema),
+          z.lazy(() => CategoryCreateWithoutBlockInputSchema).array(),
+          z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema),
+          z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => CategoryCreateOrConnectWithoutBlockInputSchema),
+          z.lazy(() => CategoryCreateOrConnectWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => CategoryCreateManyBlockInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedCreateNestedManyWithoutBlockInputSchema: z.ZodType<Prisma.InventoryUncheckedCreateNestedManyWithoutBlockInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutBlockInputSchema),
+          z.lazy(() => InventoryCreateWithoutBlockInputSchema).array(),
+          z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema),
+          z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => InventoryCreateOrConnectWithoutBlockInputSchema),
+          z.lazy(() => InventoryCreateOrConnectWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryCreateManyBlockInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
         ])
         .optional()
     })
@@ -35270,6 +39601,160 @@ export const SiteUpdateOneRequiredWithoutBlocksNestedInputSchema: z.ZodType<Pris
     })
     .strict();
 
+export const CategoryUpdateManyWithoutBlockNestedInputSchema: z.ZodType<Prisma.CategoryUpdateManyWithoutBlockNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutBlockInputSchema),
+          z.lazy(() => CategoryCreateWithoutBlockInputSchema).array(),
+          z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema),
+          z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => CategoryCreateOrConnectWithoutBlockInputSchema),
+          z.lazy(() => CategoryCreateOrConnectWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => CategoryUpsertWithWhereUniqueWithoutBlockInputSchema),
+          z
+            .lazy(() => CategoryUpsertWithWhereUniqueWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => CategoryCreateManyBlockInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => CategoryUpdateWithWhereUniqueWithoutBlockInputSchema),
+          z
+            .lazy(() => CategoryUpdateWithWhereUniqueWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => CategoryUpdateManyWithWhereWithoutBlockInputSchema),
+          z
+            .lazy(() => CategoryUpdateManyWithWhereWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => CategoryScalarWhereInputSchema),
+          z.lazy(() => CategoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryUpdateManyWithoutBlockNestedInputSchema: z.ZodType<Prisma.InventoryUpdateManyWithoutBlockNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutBlockInputSchema),
+          z.lazy(() => InventoryCreateWithoutBlockInputSchema).array(),
+          z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema),
+          z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => InventoryCreateOrConnectWithoutBlockInputSchema),
+          z.lazy(() => InventoryCreateOrConnectWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => InventoryUpsertWithWhereUniqueWithoutBlockInputSchema),
+          z
+            .lazy(() => InventoryUpsertWithWhereUniqueWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryCreateManyBlockInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => InventoryUpdateWithWhereUniqueWithoutBlockInputSchema),
+          z
+            .lazy(() => InventoryUpdateWithWhereUniqueWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => InventoryUpdateManyWithWhereWithoutBlockInputSchema),
+          z
+            .lazy(() => InventoryUpdateManyWithWhereWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => InventoryScalarWhereInputSchema),
+          z.lazy(() => InventoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
 export const ClickUncheckedUpdateManyWithoutBlockNestedInputSchema: z.ZodType<Prisma.ClickUncheckedUpdateManyWithoutBlockNestedInput> =
   z
     .object({
@@ -35421,6 +39906,160 @@ export const ReservationUncheckedUpdateManyWithoutBlockNestedInputSchema: z.ZodT
         .union([
           z.lazy(() => ReservationScalarWhereInputSchema),
           z.lazy(() => ReservationScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateManyWithoutBlockNestedInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateManyWithoutBlockNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutBlockInputSchema),
+          z.lazy(() => CategoryCreateWithoutBlockInputSchema).array(),
+          z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema),
+          z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => CategoryCreateOrConnectWithoutBlockInputSchema),
+          z.lazy(() => CategoryCreateOrConnectWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => CategoryUpsertWithWhereUniqueWithoutBlockInputSchema),
+          z
+            .lazy(() => CategoryUpsertWithWhereUniqueWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => CategoryCreateManyBlockInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => CategoryUpdateWithWhereUniqueWithoutBlockInputSchema),
+          z
+            .lazy(() => CategoryUpdateWithWhereUniqueWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => CategoryUpdateManyWithWhereWithoutBlockInputSchema),
+          z
+            .lazy(() => CategoryUpdateManyWithWhereWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => CategoryScalarWhereInputSchema),
+          z.lazy(() => CategoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateManyWithoutBlockNestedInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateManyWithoutBlockNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutBlockInputSchema),
+          z.lazy(() => InventoryCreateWithoutBlockInputSchema).array(),
+          z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema),
+          z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => InventoryCreateOrConnectWithoutBlockInputSchema),
+          z.lazy(() => InventoryCreateOrConnectWithoutBlockInputSchema).array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => InventoryUpsertWithWhereUniqueWithoutBlockInputSchema),
+          z
+            .lazy(() => InventoryUpsertWithWhereUniqueWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryCreateManyBlockInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => InventoryUpdateWithWhereUniqueWithoutBlockInputSchema),
+          z
+            .lazy(() => InventoryUpdateWithWhereUniqueWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => InventoryUpdateManyWithWhereWithoutBlockInputSchema),
+          z
+            .lazy(() => InventoryUpdateManyWithWhereWithoutBlockInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => InventoryScalarWhereInputSchema),
+          z.lazy(() => InventoryScalarWhereInputSchema).array()
         ])
         .optional()
     })
@@ -36739,6 +41378,1137 @@ export const UserUpdateOneWithoutReservationsNestedInputSchema: z.ZodType<Prisma
           z.lazy(() => UserUpdateToOneWithWhereWithoutReservationsInputSchema),
           z.lazy(() => UserUpdateWithoutReservationsInputSchema),
           z.lazy(() => UserUncheckedUpdateWithoutReservationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateNestedManyWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryCreateNestedManyWithoutCategoryInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutCategoryInputSchema),
+          z.lazy(() => InventoryCreateWithoutCategoryInputSchema).array(),
+          z.lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => InventoryCreateOrConnectWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryCreateOrConnectWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryCreateManyCategoryInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryCreateNestedManyWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryCreateNestedManyWithoutCategoryInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutCategoryInputSchema),
+          z.lazy(() => CategoryCreateWithoutCategoryInputSchema).array(),
+          z.lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => CategoryCreateOrConnectWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryCreateOrConnectWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => CategoryCreateManyCategoryInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryCreateNestedOneWithoutCategoriesInputSchema: z.ZodType<Prisma.CategoryCreateNestedOneWithoutCategoriesInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutCategoriesInputSchema),
+          z.lazy(() => CategoryUncheckedCreateWithoutCategoriesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => CategoryCreateOrConnectWithoutCategoriesInputSchema)
+        .optional(),
+      connect: z.lazy(() => CategoryWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const BlockCreateNestedOneWithoutCategoriesInputSchema: z.ZodType<Prisma.BlockCreateNestedOneWithoutCategoriesInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => BlockCreateWithoutCategoriesInputSchema),
+          z.lazy(() => BlockUncheckedCreateWithoutCategoriesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => BlockCreateOrConnectWithoutCategoriesInputSchema)
+        .optional(),
+      connect: z.lazy(() => BlockWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryUncheckedCreateNestedManyWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryUncheckedCreateNestedManyWithoutCategoryInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutCategoryInputSchema),
+          z.lazy(() => InventoryCreateWithoutCategoryInputSchema).array(),
+          z.lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => InventoryCreateOrConnectWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryCreateOrConnectWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryCreateManyCategoryInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedCreateNestedManyWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryUncheckedCreateNestedManyWithoutCategoryInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutCategoryInputSchema),
+          z.lazy(() => CategoryCreateWithoutCategoryInputSchema).array(),
+          z.lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => CategoryCreateOrConnectWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryCreateOrConnectWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => CategoryCreateManyCategoryInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryUpdateManyWithoutCategoryNestedInputSchema: z.ZodType<Prisma.InventoryUpdateManyWithoutCategoryNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutCategoryInputSchema),
+          z.lazy(() => InventoryCreateWithoutCategoryInputSchema).array(),
+          z.lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => InventoryCreateOrConnectWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryCreateOrConnectWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () => InventoryUpsertWithWhereUniqueWithoutCategoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryUpsertWithWhereUniqueWithoutCategoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryCreateManyCategoryInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () => InventoryUpdateWithWhereUniqueWithoutCategoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryUpdateWithWhereUniqueWithoutCategoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => InventoryUpdateManyWithWhereWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryUpdateManyWithWhereWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => InventoryScalarWhereInputSchema),
+          z.lazy(() => InventoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryUpdateManyWithoutCategoryNestedInputSchema: z.ZodType<Prisma.CategoryUpdateManyWithoutCategoryNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutCategoryInputSchema),
+          z.lazy(() => CategoryCreateWithoutCategoryInputSchema).array(),
+          z.lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => CategoryCreateOrConnectWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryCreateOrConnectWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => CategoryUpsertWithWhereUniqueWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUpsertWithWhereUniqueWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => CategoryCreateManyCategoryInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => CategoryUpdateWithWhereUniqueWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUpdateWithWhereUniqueWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => CategoryUpdateManyWithWhereWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUpdateManyWithWhereWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => CategoryScalarWhereInputSchema),
+          z.lazy(() => CategoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryUpdateOneWithoutCategoriesNestedInputSchema: z.ZodType<Prisma.CategoryUpdateOneWithoutCategoriesNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutCategoriesInputSchema),
+          z.lazy(() => CategoryUncheckedCreateWithoutCategoriesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => CategoryCreateOrConnectWithoutCategoriesInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => CategoryUpsertWithoutCategoriesInputSchema)
+        .optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => CategoryWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => CategoryWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => CategoryWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(
+            () => CategoryUpdateToOneWithWhereWithoutCategoriesInputSchema
+          ),
+          z.lazy(() => CategoryUpdateWithoutCategoriesInputSchema),
+          z.lazy(() => CategoryUncheckedUpdateWithoutCategoriesInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const BlockUpdateOneRequiredWithoutCategoriesNestedInputSchema: z.ZodType<Prisma.BlockUpdateOneRequiredWithoutCategoriesNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => BlockCreateWithoutCategoriesInputSchema),
+          z.lazy(() => BlockUncheckedCreateWithoutCategoriesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => BlockCreateOrConnectWithoutCategoriesInputSchema)
+        .optional(),
+      upsert: z.lazy(() => BlockUpsertWithoutCategoriesInputSchema).optional(),
+      connect: z.lazy(() => BlockWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => BlockUpdateToOneWithWhereWithoutCategoriesInputSchema),
+          z.lazy(() => BlockUpdateWithoutCategoriesInputSchema),
+          z.lazy(() => BlockUncheckedUpdateWithoutCategoriesInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateManyWithoutCategoryNestedInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateManyWithoutCategoryNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutCategoryInputSchema),
+          z.lazy(() => InventoryCreateWithoutCategoryInputSchema).array(),
+          z.lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => InventoryCreateOrConnectWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryCreateOrConnectWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () => InventoryUpsertWithWhereUniqueWithoutCategoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryUpsertWithWhereUniqueWithoutCategoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryCreateManyCategoryInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryWhereUniqueInputSchema),
+          z.lazy(() => InventoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () => InventoryUpdateWithWhereUniqueWithoutCategoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryUpdateWithWhereUniqueWithoutCategoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => InventoryUpdateManyWithWhereWithoutCategoryInputSchema),
+          z
+            .lazy(() => InventoryUpdateManyWithWhereWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => InventoryScalarWhereInputSchema),
+          z.lazy(() => InventoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateManyWithoutCategoryNestedInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateManyWithoutCategoryNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutCategoryInputSchema),
+          z.lazy(() => CategoryCreateWithoutCategoryInputSchema).array(),
+          z.lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(() => CategoryCreateOrConnectWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryCreateOrConnectWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(() => CategoryUpsertWithWhereUniqueWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUpsertWithWhereUniqueWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => CategoryCreateManyCategoryInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => CategoryWhereUniqueInputSchema),
+          z.lazy(() => CategoryWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(() => CategoryUpdateWithWhereUniqueWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUpdateWithWhereUniqueWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(() => CategoryUpdateManyWithWhereWithoutCategoryInputSchema),
+          z
+            .lazy(() => CategoryUpdateManyWithWhereWithoutCategoryInputSchema)
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => CategoryScalarWhereInputSchema),
+          z.lazy(() => CategoryScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreatetagsInputSchema: z.ZodType<Prisma.InventoryCreatetagsInput> =
+  z
+    .object({
+      set: z.string().array()
+    })
+    .strict();
+
+export const CategoryCreateNestedOneWithoutInventoriesInputSchema: z.ZodType<Prisma.CategoryCreateNestedOneWithoutInventoriesInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutInventoriesInputSchema),
+          z.lazy(() => CategoryUncheckedCreateWithoutInventoriesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => CategoryCreateOrConnectWithoutInventoriesInputSchema)
+        .optional(),
+      connect: z.lazy(() => CategoryWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantCreateNestedManyWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantCreateNestedManyWithoutInventoryInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryVariantCreateWithoutInventoryInputSchema),
+          z
+            .lazy(() => InventoryVariantCreateWithoutInventoryInputSchema)
+            .array(),
+          z.lazy(
+            () => InventoryVariantUncheckedCreateWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryVariantUncheckedCreateWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () => InventoryVariantCreateOrConnectWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryVariantCreateOrConnectWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryVariantCreateManyInventoryInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const BlockCreateNestedOneWithoutInventoriesInputSchema: z.ZodType<Prisma.BlockCreateNestedOneWithoutInventoriesInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => BlockCreateWithoutInventoriesInputSchema),
+          z.lazy(() => BlockUncheckedCreateWithoutInventoriesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => BlockCreateOrConnectWithoutInventoriesInputSchema)
+        .optional(),
+      connect: z.lazy(() => BlockWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryVariantUncheckedCreateNestedManyWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantUncheckedCreateNestedManyWithoutInventoryInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryVariantCreateWithoutInventoryInputSchema),
+          z
+            .lazy(() => InventoryVariantCreateWithoutInventoryInputSchema)
+            .array(),
+          z.lazy(
+            () => InventoryVariantUncheckedCreateWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryVariantUncheckedCreateWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () => InventoryVariantCreateOrConnectWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryVariantCreateOrConnectWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryVariantCreateManyInventoryInputEnvelopeSchema)
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const DecimalFieldUpdateOperationsInputSchema: z.ZodType<Prisma.DecimalFieldUpdateOperationsInput> =
+  z
+    .object({
+      set: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      increment: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      decrement: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      multiply: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      divide: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+    })
+    .strict();
+
+export const InventoryUpdatetagsInputSchema: z.ZodType<Prisma.InventoryUpdatetagsInput> =
+  z
+    .object({
+      set: z.string().array().optional(),
+      push: z.union([z.string(), z.string().array()]).optional()
+    })
+    .strict();
+
+export const CategoryUpdateOneWithoutInventoriesNestedInputSchema: z.ZodType<Prisma.CategoryUpdateOneWithoutInventoriesNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => CategoryCreateWithoutInventoriesInputSchema),
+          z.lazy(() => CategoryUncheckedCreateWithoutInventoriesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => CategoryCreateOrConnectWithoutInventoriesInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => CategoryUpsertWithoutInventoriesInputSchema)
+        .optional(),
+      disconnect: z
+        .union([z.boolean(), z.lazy(() => CategoryWhereInputSchema)])
+        .optional(),
+      delete: z
+        .union([z.boolean(), z.lazy(() => CategoryWhereInputSchema)])
+        .optional(),
+      connect: z.lazy(() => CategoryWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(
+            () => CategoryUpdateToOneWithWhereWithoutInventoriesInputSchema
+          ),
+          z.lazy(() => CategoryUpdateWithoutInventoriesInputSchema),
+          z.lazy(() => CategoryUncheckedUpdateWithoutInventoriesInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantUpdateManyWithoutInventoryNestedInputSchema: z.ZodType<Prisma.InventoryVariantUpdateManyWithoutInventoryNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryVariantCreateWithoutInventoryInputSchema),
+          z
+            .lazy(() => InventoryVariantCreateWithoutInventoryInputSchema)
+            .array(),
+          z.lazy(
+            () => InventoryVariantUncheckedCreateWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryVariantUncheckedCreateWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () => InventoryVariantCreateOrConnectWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryVariantCreateOrConnectWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () =>
+              InventoryVariantUpsertWithWhereUniqueWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                InventoryVariantUpsertWithWhereUniqueWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryVariantCreateManyInventoryInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () =>
+              InventoryVariantUpdateWithWhereUniqueWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                InventoryVariantUpdateWithWhereUniqueWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(
+            () => InventoryVariantUpdateManyWithWhereWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                InventoryVariantUpdateManyWithWhereWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => InventoryVariantScalarWhereInputSchema),
+          z.lazy(() => InventoryVariantScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const BlockUpdateOneRequiredWithoutInventoriesNestedInputSchema: z.ZodType<Prisma.BlockUpdateOneRequiredWithoutInventoriesNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => BlockCreateWithoutInventoriesInputSchema),
+          z.lazy(() => BlockUncheckedCreateWithoutInventoriesInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => BlockCreateOrConnectWithoutInventoriesInputSchema)
+        .optional(),
+      upsert: z.lazy(() => BlockUpsertWithoutInventoriesInputSchema).optional(),
+      connect: z.lazy(() => BlockWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => BlockUpdateToOneWithWhereWithoutInventoriesInputSchema),
+          z.lazy(() => BlockUpdateWithoutInventoriesInputSchema),
+          z.lazy(() => BlockUncheckedUpdateWithoutInventoriesInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantUncheckedUpdateManyWithoutInventoryNestedInputSchema: z.ZodType<Prisma.InventoryVariantUncheckedUpdateManyWithoutInventoryNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryVariantCreateWithoutInventoryInputSchema),
+          z
+            .lazy(() => InventoryVariantCreateWithoutInventoryInputSchema)
+            .array(),
+          z.lazy(
+            () => InventoryVariantUncheckedCreateWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryVariantUncheckedCreateWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      connectOrCreate: z
+        .union([
+          z.lazy(
+            () => InventoryVariantCreateOrConnectWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () => InventoryVariantCreateOrConnectWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      upsert: z
+        .union([
+          z.lazy(
+            () =>
+              InventoryVariantUpsertWithWhereUniqueWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                InventoryVariantUpsertWithWhereUniqueWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      createMany: z
+        .lazy(() => InventoryVariantCreateManyInventoryInputEnvelopeSchema)
+        .optional(),
+      set: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      disconnect: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      delete: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      connect: z
+        .union([
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+          z.lazy(() => InventoryVariantWhereUniqueInputSchema).array()
+        ])
+        .optional(),
+      update: z
+        .union([
+          z.lazy(
+            () =>
+              InventoryVariantUpdateWithWhereUniqueWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                InventoryVariantUpdateWithWhereUniqueWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      updateMany: z
+        .union([
+          z.lazy(
+            () => InventoryVariantUpdateManyWithWhereWithoutInventoryInputSchema
+          ),
+          z
+            .lazy(
+              () =>
+                InventoryVariantUpdateManyWithWhereWithoutInventoryInputSchema
+            )
+            .array()
+        ])
+        .optional(),
+      deleteMany: z
+        .union([
+          z.lazy(() => InventoryVariantScalarWhereInputSchema),
+          z.lazy(() => InventoryVariantScalarWhereInputSchema).array()
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateNestedOneWithoutVariantsInputSchema: z.ZodType<Prisma.InventoryCreateNestedOneWithoutVariantsInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutVariantsInputSchema),
+          z.lazy(() => InventoryUncheckedCreateWithoutVariantsInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => InventoryCreateOrConnectWithoutVariantsInputSchema)
+        .optional(),
+      connect: z.lazy(() => InventoryWhereUniqueInputSchema).optional()
+    })
+    .strict();
+
+export const EnumVariantTypeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumVariantTypeFieldUpdateOperationsInput> =
+  z
+    .object({
+      set: z.lazy(() => VariantTypeSchema).optional()
+    })
+    .strict();
+
+export const NullableDecimalFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableDecimalFieldUpdateOperationsInput> =
+  z
+    .object({
+      set: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      increment: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      decrement: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      multiply: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      divide: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+    })
+    .strict();
+
+export const InventoryUpdateOneRequiredWithoutVariantsNestedInputSchema: z.ZodType<Prisma.InventoryUpdateOneRequiredWithoutVariantsNestedInput> =
+  z
+    .object({
+      create: z
+        .union([
+          z.lazy(() => InventoryCreateWithoutVariantsInputSchema),
+          z.lazy(() => InventoryUncheckedCreateWithoutVariantsInputSchema)
+        ])
+        .optional(),
+      connectOrCreate: z
+        .lazy(() => InventoryCreateOrConnectWithoutVariantsInputSchema)
+        .optional(),
+      upsert: z
+        .lazy(() => InventoryUpsertWithoutVariantsInputSchema)
+        .optional(),
+      connect: z.lazy(() => InventoryWhereUniqueInputSchema).optional(),
+      update: z
+        .union([
+          z.lazy(() => InventoryUpdateToOneWithWhereWithoutVariantsInputSchema),
+          z.lazy(() => InventoryUpdateWithoutVariantsInputSchema),
+          z.lazy(() => InventoryUncheckedUpdateWithoutVariantsInputSchema)
         ])
         .optional()
     })
@@ -45450,6 +51220,559 @@ export const NestedEnumCampaignTypeWithAggregatesFilterSchema: z.ZodType<Prisma.
       _count: z.lazy(() => NestedIntFilterSchema).optional(),
       _min: z.lazy(() => NestedEnumCampaignTypeFilterSchema).optional(),
       _max: z.lazy(() => NestedEnumCampaignTypeFilterSchema).optional()
+    })
+    .strict();
+
+export const NestedEnumEntityTypeFilterSchema: z.ZodType<Prisma.NestedEnumEntityTypeFilter> =
+  z
+    .object({
+      equals: z.lazy(() => EntityTypeSchema).optional(),
+      in: z
+        .lazy(() => EntityTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => EntityTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => EntityTypeSchema),
+          z.lazy(() => NestedEnumEntityTypeFilterSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NestedEnumMediaTypeFilterSchema: z.ZodType<Prisma.NestedEnumMediaTypeFilter> =
+  z
+    .object({
+      equals: z.lazy(() => MediaTypeSchema).optional(),
+      in: z
+        .lazy(() => MediaTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => MediaTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => MediaTypeSchema),
+          z.lazy(() => NestedEnumMediaTypeFilterSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NestedEnumEntityTypeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumEntityTypeWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.lazy(() => EntityTypeSchema).optional(),
+      in: z
+        .lazy(() => EntityTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => EntityTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => EntityTypeSchema),
+          z.lazy(() => NestedEnumEntityTypeWithAggregatesFilterSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => NestedIntFilterSchema).optional(),
+      _min: z.lazy(() => NestedEnumEntityTypeFilterSchema).optional(),
+      _max: z.lazy(() => NestedEnumEntityTypeFilterSchema).optional()
+    })
+    .strict();
+
+export const NestedEnumMediaTypeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumMediaTypeWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.lazy(() => MediaTypeSchema).optional(),
+      in: z
+        .lazy(() => MediaTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => MediaTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => MediaTypeSchema),
+          z.lazy(() => NestedEnumMediaTypeWithAggregatesFilterSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => NestedIntFilterSchema).optional(),
+      _min: z.lazy(() => NestedEnumMediaTypeFilterSchema).optional(),
+      _max: z.lazy(() => NestedEnumMediaTypeFilterSchema).optional()
+    })
+    .strict();
+
+export const NestedDecimalFilterSchema: z.ZodType<Prisma.NestedDecimalFilter> =
+  z
+    .object({
+      equals: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      in: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional(),
+      notIn: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional(),
+      lt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      lte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      not: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NestedDecimalFilterSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NestedDecimalWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDecimalWithAggregatesFilter> =
+  z
+    .object({
+      equals: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      in: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional(),
+      notIn: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional(),
+      lt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      lte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      not: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NestedDecimalWithAggregatesFilterSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => NestedIntFilterSchema).optional(),
+      _avg: z.lazy(() => NestedDecimalFilterSchema).optional(),
+      _sum: z.lazy(() => NestedDecimalFilterSchema).optional(),
+      _min: z.lazy(() => NestedDecimalFilterSchema).optional(),
+      _max: z.lazy(() => NestedDecimalFilterSchema).optional()
+    })
+    .strict();
+
+export const NestedEnumVariantTypeFilterSchema: z.ZodType<Prisma.NestedEnumVariantTypeFilter> =
+  z
+    .object({
+      equals: z.lazy(() => VariantTypeSchema).optional(),
+      in: z
+        .lazy(() => VariantTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => VariantTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => NestedEnumVariantTypeFilterSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const NestedDecimalNullableFilterSchema: z.ZodType<Prisma.NestedDecimalNullableFilter> =
+  z
+    .object({
+      equals: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      in: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional()
+        .nullable(),
+      notIn: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional()
+        .nullable(),
+      lt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      lte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      not: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NestedDecimalNullableFilterSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const NestedEnumVariantTypeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumVariantTypeWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.lazy(() => VariantTypeSchema).optional(),
+      in: z
+        .lazy(() => VariantTypeSchema)
+        .array()
+        .optional(),
+      notIn: z
+        .lazy(() => VariantTypeSchema)
+        .array()
+        .optional(),
+      not: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => NestedEnumVariantTypeWithAggregatesFilterSchema)
+        ])
+        .optional(),
+      _count: z.lazy(() => NestedIntFilterSchema).optional(),
+      _min: z.lazy(() => NestedEnumVariantTypeFilterSchema).optional(),
+      _max: z.lazy(() => NestedEnumVariantTypeFilterSchema).optional()
+    })
+    .strict();
+
+export const NestedDecimalNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDecimalNullableWithAggregatesFilter> =
+  z
+    .object({
+      equals: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      in: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional()
+        .nullable(),
+      notIn: z
+        .union([
+          z.number().array(),
+          z.string().array(),
+          z.instanceof(Decimal).array(),
+          z.instanceof(Prisma.Decimal).array(),
+          DecimalJsLikeSchema.array()
+        ])
+        .refine(
+          v =>
+            Array.isArray(v) && (v as any[]).every(v => isValidDecimalInput(v)),
+          { message: 'Must be a Decimal' }
+        )
+        .optional()
+        .nullable(),
+      lt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      lte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gt: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      gte: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional(),
+      not: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NestedDecimalNullableWithAggregatesFilterSchema)
+        ])
+        .optional()
+        .nullable(),
+      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+      _avg: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
+      _sum: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
+      _min: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
+      _max: z.lazy(() => NestedDecimalNullableFilterSchema).optional()
     })
     .strict();
 
@@ -57110,7 +63433,13 @@ export const BlockCreateWithoutClicksInputSchema: z.ZodType<Prisma.BlockCreateWi
       reservations: z
         .lazy(() => ReservationCreateNestedManyWithoutBlockInputSchema)
         .optional(),
-      site: z.lazy(() => SiteCreateNestedOneWithoutBlocksInputSchema)
+      site: z.lazy(() => SiteCreateNestedOneWithoutBlocksInputSchema),
+      categories: z
+        .lazy(() => CategoryCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryCreateNestedManyWithoutBlockInputSchema)
+        .optional()
     })
     .strict();
 
@@ -57140,6 +63469,12 @@ export const BlockUncheckedCreateWithoutClicksInputSchema: z.ZodType<Prisma.Bloc
       siteId: z.string(),
       reservations: z
         .lazy(() => ReservationUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedCreateNestedManyWithoutBlockInputSchema)
         .optional()
     })
     .strict();
@@ -57860,6 +64195,12 @@ export const BlockUpdateWithoutClicksInputSchema: z.ZodType<Prisma.BlockUpdateWi
         .optional(),
       site: z
         .lazy(() => SiteUpdateOneRequiredWithoutBlocksNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUpdateManyWithoutBlockNestedInputSchema)
         .optional()
     })
     .strict();
@@ -57938,6 +64279,12 @@ export const BlockUncheckedUpdateWithoutClicksInputSchema: z.ZodType<Prisma.Bloc
         .optional(),
       reservations: z
         .lazy(() => ReservationUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
         .optional()
     })
     .strict();
@@ -60357,6 +66704,173 @@ export const SiteCreateOrConnectWithoutBlocksInputSchema: z.ZodType<Prisma.SiteC
     })
     .strict();
 
+export const CategoryCreateWithoutBlockInputSchema: z.ZodType<Prisma.CategoryCreateWithoutBlockInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      inventories: z
+        .lazy(() => InventoryCreateNestedManyWithoutCategoryInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryCreateNestedManyWithoutCategoryInputSchema)
+        .optional(),
+      category: z
+        .lazy(() => CategoryCreateNestedOneWithoutCategoriesInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedCreateWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUncheckedCreateWithoutBlockInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      inventories: z
+        .lazy(
+          () => InventoryUncheckedCreateNestedManyWithoutCategoryInputSchema
+        )
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutCategoryInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryCreateOrConnectWithoutBlockInputSchema: z.ZodType<Prisma.CategoryCreateOrConnectWithoutBlockInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => CategoryCreateWithoutBlockInputSchema),
+        z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryCreateManyBlockInputEnvelopeSchema: z.ZodType<Prisma.CategoryCreateManyBlockInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => CategoryCreateManyBlockInputSchema),
+        z.lazy(() => CategoryCreateManyBlockInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const InventoryCreateWithoutBlockInputSchema: z.ZodType<Prisma.InventoryCreateWithoutBlockInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      category: z
+        .lazy(() => CategoryCreateNestedOneWithoutInventoriesInputSchema)
+        .optional(),
+      variants: z
+        .lazy(() => InventoryVariantCreateNestedManyWithoutInventoryInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedCreateWithoutBlockInputSchema: z.ZodType<Prisma.InventoryUncheckedCreateWithoutBlockInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      variants: z
+        .lazy(
+          () =>
+            InventoryVariantUncheckedCreateNestedManyWithoutInventoryInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateOrConnectWithoutBlockInputSchema: z.ZodType<Prisma.InventoryCreateOrConnectWithoutBlockInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => InventoryCreateWithoutBlockInputSchema),
+        z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryCreateManyBlockInputEnvelopeSchema: z.ZodType<Prisma.InventoryCreateManyBlockInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => InventoryCreateManyBlockInputSchema),
+        z.lazy(() => InventoryCreateManyBlockInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
 export const ClickUpsertWithWhereUniqueWithoutBlockInputSchema: z.ZodType<Prisma.ClickUpsertWithWhereUniqueWithoutBlockInput> =
   z
     .object({
@@ -60741,6 +67255,203 @@ export const SiteUncheckedUpdateWithoutBlocksInputSchema: z.ZodType<Prisma.SiteU
         .optional(),
       feed: z
         .lazy(() => FeedUncheckedUpdateManyWithoutSiteNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUpsertWithWhereUniqueWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUpsertWithWhereUniqueWithoutBlockInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => CategoryUpdateWithoutBlockInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateWithoutBlockInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => CategoryCreateWithoutBlockInputSchema),
+        z.lazy(() => CategoryUncheckedCreateWithoutBlockInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpdateWithWhereUniqueWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUpdateWithWhereUniqueWithoutBlockInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => CategoryUpdateWithoutBlockInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateWithoutBlockInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpdateManyWithWhereWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUpdateManyWithWhereWithoutBlockInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => CategoryUpdateManyMutationInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateManyWithoutBlockInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryScalarWhereInputSchema: z.ZodType<Prisma.CategoryScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => CategoryScalarWhereInputSchema),
+          z.lazy(() => CategoryScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => CategoryScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => CategoryScalarWhereInputSchema),
+          z.lazy(() => CategoryScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      name: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      description: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      slug: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      isActive: z
+        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+        .optional(),
+      position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      categoryId: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional()
+    })
+    .strict();
+
+export const InventoryUpsertWithWhereUniqueWithoutBlockInputSchema: z.ZodType<Prisma.InventoryUpsertWithWhereUniqueWithoutBlockInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => InventoryUpdateWithoutBlockInputSchema),
+        z.lazy(() => InventoryUncheckedUpdateWithoutBlockInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => InventoryCreateWithoutBlockInputSchema),
+        z.lazy(() => InventoryUncheckedCreateWithoutBlockInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryUpdateWithWhereUniqueWithoutBlockInputSchema: z.ZodType<Prisma.InventoryUpdateWithWhereUniqueWithoutBlockInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => InventoryUpdateWithoutBlockInputSchema),
+        z.lazy(() => InventoryUncheckedUpdateWithoutBlockInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryUpdateManyWithWhereWithoutBlockInputSchema: z.ZodType<Prisma.InventoryUpdateManyWithWhereWithoutBlockInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => InventoryUpdateManyMutationInputSchema),
+        z.lazy(() => InventoryUncheckedUpdateManyWithoutBlockInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryScalarWhereInputSchema: z.ZodType<Prisma.InventoryScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => InventoryScalarWhereInputSchema),
+          z.lazy(() => InventoryScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => InventoryScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => InventoryScalarWhereInputSchema),
+          z.lazy(() => InventoryScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      name: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      description: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      slug: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      sku: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z.lazy(() => DecimalFilterSchema),
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            })
+        ])
+        .optional(),
+      isActive: z
+        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+        .optional(),
+      isFeatured: z
+        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+        .optional(),
+      metaTitle: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      tags: z.lazy(() => StringNullableListFilterSchema).optional(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      categoryId: z
+        .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
         .optional()
     })
     .strict();
@@ -62253,6 +68964,12 @@ export const BlockCreateWithoutSiteInputSchema: z.ZodType<Prisma.BlockCreateWith
         .optional(),
       reservations: z
         .lazy(() => ReservationCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryCreateNestedManyWithoutBlockInputSchema)
         .optional()
     })
     .strict();
@@ -62285,6 +69002,12 @@ export const BlockUncheckedCreateWithoutSiteInputSchema: z.ZodType<Prisma.BlockU
         .optional(),
       reservations: z
         .lazy(() => ReservationUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedCreateNestedManyWithoutBlockInputSchema)
         .optional()
     })
     .strict();
@@ -63667,7 +70390,13 @@ export const BlockCreateWithoutReservationsInputSchema: z.ZodType<Prisma.BlockCr
       clicks: z
         .lazy(() => ClickCreateNestedManyWithoutBlockInputSchema)
         .optional(),
-      site: z.lazy(() => SiteCreateNestedOneWithoutBlocksInputSchema)
+      site: z.lazy(() => SiteCreateNestedOneWithoutBlocksInputSchema),
+      categories: z
+        .lazy(() => CategoryCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryCreateNestedManyWithoutBlockInputSchema)
+        .optional()
     })
     .strict();
 
@@ -63697,6 +70426,12 @@ export const BlockUncheckedCreateWithoutReservationsInputSchema: z.ZodType<Prism
       siteId: z.string(),
       clicks: z
         .lazy(() => ClickUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedCreateNestedManyWithoutBlockInputSchema)
         .optional()
     })
     .strict();
@@ -64055,6 +70790,12 @@ export const BlockUpdateWithoutReservationsInputSchema: z.ZodType<Prisma.BlockUp
         .optional(),
       site: z
         .lazy(() => SiteUpdateOneRequiredWithoutBlocksNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUpdateManyWithoutBlockNestedInputSchema)
         .optional()
     })
     .strict();
@@ -64133,6 +70874,12 @@ export const BlockUncheckedUpdateWithoutReservationsInputSchema: z.ZodType<Prism
         .optional(),
       clicks: z
         .lazy(() => ClickUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
         .optional()
     })
     .strict();
@@ -64606,6 +71353,1716 @@ export const UserUncheckedUpdateWithoutReservationsInputSchema: z.ZodType<Prisma
         .optional(),
       referrals: z
         .lazy(() => ClickUncheckedUpdateManyWithoutRefererNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryCreateWithoutCategoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      variants: z
+        .lazy(() => InventoryVariantCreateNestedManyWithoutInventoryInputSchema)
+        .optional(),
+      block: z.lazy(() => BlockCreateNestedOneWithoutInventoriesInputSchema)
+    })
+    .strict();
+
+export const InventoryUncheckedCreateWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryUncheckedCreateWithoutCategoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      blockId: z.string(),
+      variants: z
+        .lazy(
+          () =>
+            InventoryVariantUncheckedCreateNestedManyWithoutInventoryInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateOrConnectWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryCreateOrConnectWithoutCategoryInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => InventoryCreateWithoutCategoryInputSchema),
+        z.lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryCreateManyCategoryInputEnvelopeSchema: z.ZodType<Prisma.InventoryCreateManyCategoryInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => InventoryCreateManyCategoryInputSchema),
+        z.lazy(() => InventoryCreateManyCategoryInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const CategoryCreateWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryCreateWithoutCategoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      inventories: z
+        .lazy(() => InventoryCreateNestedManyWithoutCategoryInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryCreateNestedManyWithoutCategoryInputSchema)
+        .optional(),
+      block: z.lazy(() => BlockCreateNestedOneWithoutCategoriesInputSchema)
+    })
+    .strict();
+
+export const CategoryUncheckedCreateWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryUncheckedCreateWithoutCategoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      blockId: z.string(),
+      inventories: z
+        .lazy(
+          () => InventoryUncheckedCreateNestedManyWithoutCategoryInputSchema
+        )
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutCategoryInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryCreateOrConnectWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryCreateOrConnectWithoutCategoryInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => CategoryCreateWithoutCategoryInputSchema),
+        z.lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryCreateManyCategoryInputEnvelopeSchema: z.ZodType<Prisma.CategoryCreateManyCategoryInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => CategoryCreateManyCategoryInputSchema),
+        z.lazy(() => CategoryCreateManyCategoryInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const CategoryCreateWithoutCategoriesInputSchema: z.ZodType<Prisma.CategoryCreateWithoutCategoriesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      inventories: z
+        .lazy(() => InventoryCreateNestedManyWithoutCategoryInputSchema)
+        .optional(),
+      category: z
+        .lazy(() => CategoryCreateNestedOneWithoutCategoriesInputSchema)
+        .optional(),
+      block: z.lazy(() => BlockCreateNestedOneWithoutCategoriesInputSchema)
+    })
+    .strict();
+
+export const CategoryUncheckedCreateWithoutCategoriesInputSchema: z.ZodType<Prisma.CategoryUncheckedCreateWithoutCategoriesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      blockId: z.string(),
+      inventories: z
+        .lazy(
+          () => InventoryUncheckedCreateNestedManyWithoutCategoryInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const CategoryCreateOrConnectWithoutCategoriesInputSchema: z.ZodType<Prisma.CategoryCreateOrConnectWithoutCategoriesInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => CategoryCreateWithoutCategoriesInputSchema),
+        z.lazy(() => CategoryUncheckedCreateWithoutCategoriesInputSchema)
+      ])
+    })
+    .strict();
+
+export const BlockCreateWithoutCategoriesInputSchema: z.ZodType<Prisma.BlockCreateWithoutCategoriesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      type: z.string(),
+      position: z.number().int().optional(),
+      label: z.string().optional().nullable(),
+      href: z.string().optional().nullable(),
+      logo: z.string().optional().nullable(),
+      style: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      widget: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      clicks: z
+        .lazy(() => ClickCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      site: z.lazy(() => SiteCreateNestedOneWithoutBlocksInputSchema),
+      inventories: z
+        .lazy(() => InventoryCreateNestedManyWithoutBlockInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const BlockUncheckedCreateWithoutCategoriesInputSchema: z.ZodType<Prisma.BlockUncheckedCreateWithoutCategoriesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      type: z.string(),
+      position: z.number().int().optional(),
+      label: z.string().optional().nullable(),
+      href: z.string().optional().nullable(),
+      logo: z.string().optional().nullable(),
+      style: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      widget: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      siteId: z.string(),
+      clicks: z
+        .lazy(() => ClickUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const BlockCreateOrConnectWithoutCategoriesInputSchema: z.ZodType<Prisma.BlockCreateOrConnectWithoutCategoriesInput> =
+  z
+    .object({
+      where: z.lazy(() => BlockWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => BlockCreateWithoutCategoriesInputSchema),
+        z.lazy(() => BlockUncheckedCreateWithoutCategoriesInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryUpsertWithWhereUniqueWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryUpsertWithWhereUniqueWithoutCategoryInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => InventoryUpdateWithoutCategoryInputSchema),
+        z.lazy(() => InventoryUncheckedUpdateWithoutCategoryInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => InventoryCreateWithoutCategoryInputSchema),
+        z.lazy(() => InventoryUncheckedCreateWithoutCategoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryUpdateWithWhereUniqueWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryUpdateWithWhereUniqueWithoutCategoryInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => InventoryUpdateWithoutCategoryInputSchema),
+        z.lazy(() => InventoryUncheckedUpdateWithoutCategoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryUpdateManyWithWhereWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryUpdateManyWithWhereWithoutCategoryInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => InventoryUpdateManyMutationInputSchema),
+        z.lazy(() => InventoryUncheckedUpdateManyWithoutCategoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpsertWithWhereUniqueWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryUpsertWithWhereUniqueWithoutCategoryInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => CategoryUpdateWithoutCategoryInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateWithoutCategoryInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => CategoryCreateWithoutCategoryInputSchema),
+        z.lazy(() => CategoryUncheckedCreateWithoutCategoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpdateWithWhereUniqueWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryUpdateWithWhereUniqueWithoutCategoryInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => CategoryUpdateWithoutCategoryInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateWithoutCategoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpdateManyWithWhereWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryUpdateManyWithWhereWithoutCategoryInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => CategoryUpdateManyMutationInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateManyWithoutCategoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpsertWithoutCategoriesInputSchema: z.ZodType<Prisma.CategoryUpsertWithoutCategoriesInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => CategoryUpdateWithoutCategoriesInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateWithoutCategoriesInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => CategoryCreateWithoutCategoriesInputSchema),
+        z.lazy(() => CategoryUncheckedCreateWithoutCategoriesInputSchema)
+      ]),
+      where: z.lazy(() => CategoryWhereInputSchema).optional()
+    })
+    .strict();
+
+export const CategoryUpdateToOneWithWhereWithoutCategoriesInputSchema: z.ZodType<Prisma.CategoryUpdateToOneWithWhereWithoutCategoriesInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => CategoryUpdateWithoutCategoriesInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateWithoutCategoriesInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpdateWithoutCategoriesInputSchema: z.ZodType<Prisma.CategoryUpdateWithoutCategoriesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUpdateManyWithoutCategoryNestedInputSchema)
+        .optional(),
+      category: z
+        .lazy(() => CategoryUpdateOneWithoutCategoriesNestedInputSchema)
+        .optional(),
+      block: z
+        .lazy(() => BlockUpdateOneRequiredWithoutCategoriesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateWithoutCategoriesInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateWithoutCategoriesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventories: z
+        .lazy(
+          () => InventoryUncheckedUpdateManyWithoutCategoryNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const BlockUpsertWithoutCategoriesInputSchema: z.ZodType<Prisma.BlockUpsertWithoutCategoriesInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => BlockUpdateWithoutCategoriesInputSchema),
+        z.lazy(() => BlockUncheckedUpdateWithoutCategoriesInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => BlockCreateWithoutCategoriesInputSchema),
+        z.lazy(() => BlockUncheckedCreateWithoutCategoriesInputSchema)
+      ]),
+      where: z.lazy(() => BlockWhereInputSchema).optional()
+    })
+    .strict();
+
+export const BlockUpdateToOneWithWhereWithoutCategoriesInputSchema: z.ZodType<Prisma.BlockUpdateToOneWithWhereWithoutCategoriesInput> =
+  z
+    .object({
+      where: z.lazy(() => BlockWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => BlockUpdateWithoutCategoriesInputSchema),
+        z.lazy(() => BlockUncheckedUpdateWithoutCategoriesInputSchema)
+      ])
+    })
+    .strict();
+
+export const BlockUpdateWithoutCategoriesInputSchema: z.ZodType<Prisma.BlockUpdateWithoutCategoriesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      label: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      href: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      logo: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      style: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      widget: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      site: z
+        .lazy(() => SiteUpdateOneRequiredWithoutBlocksNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUpdateManyWithoutBlockNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const BlockUncheckedUpdateWithoutCategoriesInputSchema: z.ZodType<Prisma.BlockUncheckedUpdateWithoutCategoriesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      label: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      href: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      logo: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      style: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      widget: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      siteId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryCreateWithoutInventoriesInputSchema: z.ZodType<Prisma.CategoryCreateWithoutInventoriesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categories: z
+        .lazy(() => CategoryCreateNestedManyWithoutCategoryInputSchema)
+        .optional(),
+      category: z
+        .lazy(() => CategoryCreateNestedOneWithoutCategoriesInputSchema)
+        .optional(),
+      block: z.lazy(() => BlockCreateNestedOneWithoutCategoriesInputSchema)
+    })
+    .strict();
+
+export const CategoryUncheckedCreateWithoutInventoriesInputSchema: z.ZodType<Prisma.CategoryUncheckedCreateWithoutInventoriesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      blockId: z.string(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutCategoryInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryCreateOrConnectWithoutInventoriesInputSchema: z.ZodType<Prisma.CategoryCreateOrConnectWithoutInventoriesInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => CategoryCreateWithoutInventoriesInputSchema),
+        z.lazy(() => CategoryUncheckedCreateWithoutInventoriesInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryVariantCreateWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantCreateWithoutInventoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      value: z.string(),
+      type: z.lazy(() => VariantTypeSchema),
+      price: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      stock: z.number().int().optional(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const InventoryVariantUncheckedCreateWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantUncheckedCreateWithoutInventoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      value: z.string(),
+      type: z.lazy(() => VariantTypeSchema),
+      price: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      stock: z.number().int().optional(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const InventoryVariantCreateOrConnectWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantCreateOrConnectWithoutInventoryInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => InventoryVariantCreateWithoutInventoryInputSchema),
+        z.lazy(() => InventoryVariantUncheckedCreateWithoutInventoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryVariantCreateManyInventoryInputEnvelopeSchema: z.ZodType<Prisma.InventoryVariantCreateManyInventoryInputEnvelope> =
+  z
+    .object({
+      data: z.union([
+        z.lazy(() => InventoryVariantCreateManyInventoryInputSchema),
+        z.lazy(() => InventoryVariantCreateManyInventoryInputSchema).array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const BlockCreateWithoutInventoriesInputSchema: z.ZodType<Prisma.BlockCreateWithoutInventoriesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      type: z.string(),
+      position: z.number().int().optional(),
+      label: z.string().optional().nullable(),
+      href: z.string().optional().nullable(),
+      logo: z.string().optional().nullable(),
+      style: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      widget: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      clicks: z
+        .lazy(() => ClickCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      site: z.lazy(() => SiteCreateNestedOneWithoutBlocksInputSchema),
+      categories: z
+        .lazy(() => CategoryCreateNestedManyWithoutBlockInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const BlockUncheckedCreateWithoutInventoriesInputSchema: z.ZodType<Prisma.BlockUncheckedCreateWithoutInventoriesInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      type: z.string(),
+      position: z.number().int().optional(),
+      label: z.string().optional().nullable(),
+      href: z.string().optional().nullable(),
+      logo: z.string().optional().nullable(),
+      style: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      widget: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      siteId: z.string(),
+      clicks: z
+        .lazy(() => ClickUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedCreateNestedManyWithoutBlockInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const BlockCreateOrConnectWithoutInventoriesInputSchema: z.ZodType<Prisma.BlockCreateOrConnectWithoutInventoriesInput> =
+  z
+    .object({
+      where: z.lazy(() => BlockWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => BlockCreateWithoutInventoriesInputSchema),
+        z.lazy(() => BlockUncheckedCreateWithoutInventoriesInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpsertWithoutInventoriesInputSchema: z.ZodType<Prisma.CategoryUpsertWithoutInventoriesInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => CategoryUpdateWithoutInventoriesInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateWithoutInventoriesInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => CategoryCreateWithoutInventoriesInputSchema),
+        z.lazy(() => CategoryUncheckedCreateWithoutInventoriesInputSchema)
+      ]),
+      where: z.lazy(() => CategoryWhereInputSchema).optional()
+    })
+    .strict();
+
+export const CategoryUpdateToOneWithWhereWithoutInventoriesInputSchema: z.ZodType<Prisma.CategoryUpdateToOneWithWhereWithoutInventoriesInput> =
+  z
+    .object({
+      where: z.lazy(() => CategoryWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => CategoryUpdateWithoutInventoriesInputSchema),
+        z.lazy(() => CategoryUncheckedUpdateWithoutInventoriesInputSchema)
+      ])
+    })
+    .strict();
+
+export const CategoryUpdateWithoutInventoriesInputSchema: z.ZodType<Prisma.CategoryUpdateWithoutInventoriesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUpdateManyWithoutCategoryNestedInputSchema)
+        .optional(),
+      category: z
+        .lazy(() => CategoryUpdateOneWithoutCategoriesNestedInputSchema)
+        .optional(),
+      block: z
+        .lazy(() => BlockUpdateOneRequiredWithoutCategoriesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateWithoutInventoriesInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateWithoutInventoriesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutCategoryNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantUpsertWithWhereUniqueWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantUpsertWithWhereUniqueWithoutInventoryInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+      update: z.union([
+        z.lazy(() => InventoryVariantUpdateWithoutInventoryInputSchema),
+        z.lazy(() => InventoryVariantUncheckedUpdateWithoutInventoryInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => InventoryVariantCreateWithoutInventoryInputSchema),
+        z.lazy(() => InventoryVariantUncheckedCreateWithoutInventoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryVariantUpdateWithWhereUniqueWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantUpdateWithWhereUniqueWithoutInventoryInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryVariantWhereUniqueInputSchema),
+      data: z.union([
+        z.lazy(() => InventoryVariantUpdateWithoutInventoryInputSchema),
+        z.lazy(() => InventoryVariantUncheckedUpdateWithoutInventoryInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryVariantUpdateManyWithWhereWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantUpdateManyWithWhereWithoutInventoryInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryVariantScalarWhereInputSchema),
+      data: z.union([
+        z.lazy(() => InventoryVariantUpdateManyMutationInputSchema),
+        z.lazy(
+          () => InventoryVariantUncheckedUpdateManyWithoutInventoryInputSchema
+        )
+      ])
+    })
+    .strict();
+
+export const InventoryVariantScalarWhereInputSchema: z.ZodType<Prisma.InventoryVariantScalarWhereInput> =
+  z
+    .object({
+      AND: z
+        .union([
+          z.lazy(() => InventoryVariantScalarWhereInputSchema),
+          z.lazy(() => InventoryVariantScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      OR: z
+        .lazy(() => InventoryVariantScalarWhereInputSchema)
+        .array()
+        .optional(),
+      NOT: z
+        .union([
+          z.lazy(() => InventoryVariantScalarWhereInputSchema),
+          z.lazy(() => InventoryVariantScalarWhereInputSchema).array()
+        ])
+        .optional(),
+      id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      inventoryId: z
+        .union([z.lazy(() => StringFilterSchema), z.string()])
+        .optional(),
+      name: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      value: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
+      type: z
+        .union([
+          z.lazy(() => EnumVariantTypeFilterSchema),
+          z.lazy(() => VariantTypeSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z.lazy(() => DecimalNullableFilterSchema),
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            })
+        ])
+        .optional()
+        .nullable(),
+      stock: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+      isActive: z
+        .union([z.lazy(() => BoolFilterSchema), z.boolean()])
+        .optional(),
+      position: z.union([z.lazy(() => IntFilterSchema), z.number()]).optional(),
+      createdAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional(),
+      updatedAt: z
+        .union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()])
+        .optional()
+    })
+    .strict();
+
+export const BlockUpsertWithoutInventoriesInputSchema: z.ZodType<Prisma.BlockUpsertWithoutInventoriesInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => BlockUpdateWithoutInventoriesInputSchema),
+        z.lazy(() => BlockUncheckedUpdateWithoutInventoriesInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => BlockCreateWithoutInventoriesInputSchema),
+        z.lazy(() => BlockUncheckedCreateWithoutInventoriesInputSchema)
+      ]),
+      where: z.lazy(() => BlockWhereInputSchema).optional()
+    })
+    .strict();
+
+export const BlockUpdateToOneWithWhereWithoutInventoriesInputSchema: z.ZodType<Prisma.BlockUpdateToOneWithWhereWithoutInventoriesInput> =
+  z
+    .object({
+      where: z.lazy(() => BlockWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => BlockUpdateWithoutInventoriesInputSchema),
+        z.lazy(() => BlockUncheckedUpdateWithoutInventoriesInputSchema)
+      ])
+    })
+    .strict();
+
+export const BlockUpdateWithoutInventoriesInputSchema: z.ZodType<Prisma.BlockUpdateWithoutInventoriesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      label: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      href: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      logo: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      style: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      widget: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      site: z
+        .lazy(() => SiteUpdateOneRequiredWithoutBlocksNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUpdateManyWithoutBlockNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const BlockUncheckedUpdateWithoutInventoriesInputSchema: z.ZodType<Prisma.BlockUncheckedUpdateWithoutInventoriesInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      label: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      href: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      logo: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      style: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      widget: z
+        .union([
+          z.lazy(() => NullableJsonNullValueInputSchema),
+          InputJsonValueSchema
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      siteId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      clicks: z
+        .lazy(() => ClickUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      reservations: z
+        .lazy(() => ReservationUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateWithoutVariantsInputSchema: z.ZodType<Prisma.InventoryCreateWithoutVariantsInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      category: z
+        .lazy(() => CategoryCreateNestedOneWithoutInventoriesInputSchema)
+        .optional(),
+      block: z.lazy(() => BlockCreateNestedOneWithoutInventoriesInputSchema)
+    })
+    .strict();
+
+export const InventoryUncheckedCreateWithoutVariantsInputSchema: z.ZodType<Prisma.InventoryUncheckedCreateWithoutVariantsInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable(),
+      blockId: z.string()
+    })
+    .strict();
+
+export const InventoryCreateOrConnectWithoutVariantsInputSchema: z.ZodType<Prisma.InventoryCreateOrConnectWithoutVariantsInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryWhereUniqueInputSchema),
+      create: z.union([
+        z.lazy(() => InventoryCreateWithoutVariantsInputSchema),
+        z.lazy(() => InventoryUncheckedCreateWithoutVariantsInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryUpsertWithoutVariantsInputSchema: z.ZodType<Prisma.InventoryUpsertWithoutVariantsInput> =
+  z
+    .object({
+      update: z.union([
+        z.lazy(() => InventoryUpdateWithoutVariantsInputSchema),
+        z.lazy(() => InventoryUncheckedUpdateWithoutVariantsInputSchema)
+      ]),
+      create: z.union([
+        z.lazy(() => InventoryCreateWithoutVariantsInputSchema),
+        z.lazy(() => InventoryUncheckedCreateWithoutVariantsInputSchema)
+      ]),
+      where: z.lazy(() => InventoryWhereInputSchema).optional()
+    })
+    .strict();
+
+export const InventoryUpdateToOneWithWhereWithoutVariantsInputSchema: z.ZodType<Prisma.InventoryUpdateToOneWithWhereWithoutVariantsInput> =
+  z
+    .object({
+      where: z.lazy(() => InventoryWhereInputSchema).optional(),
+      data: z.union([
+        z.lazy(() => InventoryUpdateWithoutVariantsInputSchema),
+        z.lazy(() => InventoryUncheckedUpdateWithoutVariantsInputSchema)
+      ])
+    })
+    .strict();
+
+export const InventoryUpdateWithoutVariantsInputSchema: z.ZodType<Prisma.InventoryUpdateWithoutVariantsInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      category: z
+        .lazy(() => CategoryUpdateOneWithoutInventoriesNestedInputSchema)
+        .optional(),
+      block: z
+        .lazy(() => BlockUpdateOneRequiredWithoutInventoriesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateWithoutVariantsInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateWithoutVariantsInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
         .optional()
     })
     .strict();
@@ -79885,6 +88342,54 @@ export const ReservationCreateManyBlockInputSchema: z.ZodType<Prisma.Reservation
     })
     .strict();
 
+export const CategoryCreateManyBlockInputSchema: z.ZodType<Prisma.CategoryCreateManyBlockInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable()
+    })
+    .strict();
+
+export const InventoryCreateManyBlockInputSchema: z.ZodType<Prisma.InventoryCreateManyBlockInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      categoryId: z.string().optional().nullable()
+    })
+    .strict();
+
 export const ClickUpdateWithoutBlockInputSchema: z.ZodType<Prisma.ClickUpdateWithoutBlockInput> =
   z
     .object({
@@ -80276,6 +88781,522 @@ export const ReservationUncheckedUpdateManyWithoutBlockInputSchema: z.ZodType<Pr
     })
     .strict();
 
+export const CategoryUpdateWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUpdateWithoutBlockInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUpdateManyWithoutCategoryNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUpdateManyWithoutCategoryNestedInputSchema)
+        .optional(),
+      category: z
+        .lazy(() => CategoryUpdateOneWithoutCategoriesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateWithoutBlockInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      inventories: z
+        .lazy(
+          () => InventoryUncheckedUpdateManyWithoutCategoryNestedInputSchema
+        )
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutCategoryNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateManyWithoutBlockInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateManyWithoutBlockInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
+export const InventoryUpdateWithoutBlockInputSchema: z.ZodType<Prisma.InventoryUpdateWithoutBlockInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      category: z
+        .lazy(() => CategoryUpdateOneWithoutInventoriesNestedInputSchema)
+        .optional(),
+      variants: z
+        .lazy(() => InventoryVariantUpdateManyWithoutInventoryNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateWithoutBlockInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateWithoutBlockInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      variants: z
+        .lazy(
+          () =>
+            InventoryVariantUncheckedUpdateManyWithoutInventoryNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateManyWithoutBlockInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateManyWithoutBlockInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      categoryId: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable()
+    })
+    .strict();
+
 export const BlockCreateManySiteInputSchema: z.ZodType<Prisma.BlockCreateManySiteInput> =
   z
     .object({
@@ -80429,6 +89450,12 @@ export const BlockUpdateWithoutSiteInputSchema: z.ZodType<Prisma.BlockUpdateWith
         .optional(),
       reservations: z
         .lazy(() => ReservationUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUpdateManyWithoutBlockNestedInputSchema)
         .optional()
     })
     .strict();
@@ -80504,6 +89531,12 @@ export const BlockUncheckedUpdateWithoutSiteInputSchema: z.ZodType<Prisma.BlockU
         .optional(),
       reservations: z
         .lazy(() => ReservationUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUncheckedUpdateManyWithoutBlockNestedInputSchema)
         .optional()
     })
     .strict();
@@ -81088,6 +90121,823 @@ export const FeedUncheckedUpdateManyWithoutSiteInputSchema: z.ZodType<Prisma.Fee
         .union([
           z.string(),
           z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryCreateManyCategoryInputSchema: z.ZodType<Prisma.InventoryCreateManyCategoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      sku: z.string().optional().nullable(),
+      basePrice: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryCreatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      blockId: z.string()
+    })
+    .strict();
+
+export const CategoryCreateManyCategoryInputSchema: z.ZodType<Prisma.CategoryCreateManyCategoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      description: z.string().optional().nullable(),
+      slug: z.string(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional(),
+      blockId: z.string()
+    })
+    .strict();
+
+export const InventoryUpdateWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryUpdateWithoutCategoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      variants: z
+        .lazy(() => InventoryVariantUpdateManyWithoutInventoryNestedInputSchema)
+        .optional(),
+      block: z
+        .lazy(() => BlockUpdateOneRequiredWithoutInventoriesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateWithoutCategoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      variants: z
+        .lazy(
+          () =>
+            InventoryVariantUncheckedUpdateManyWithoutInventoryNestedInputSchema
+        )
+        .optional()
+    })
+    .strict();
+
+export const InventoryUncheckedUpdateManyWithoutCategoryInputSchema: z.ZodType<Prisma.InventoryUncheckedUpdateManyWithoutCategoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      sku: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      basePrice: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => DecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isFeatured: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      metaTitle: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      metaDescription: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      tags: z
+        .union([
+          z.lazy(() => InventoryUpdatetagsInputSchema),
+          z.string().array()
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const CategoryUpdateWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryUpdateWithoutCategoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventories: z
+        .lazy(() => InventoryUpdateManyWithoutCategoryNestedInputSchema)
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUpdateManyWithoutCategoryNestedInputSchema)
+        .optional(),
+      block: z
+        .lazy(() => BlockUpdateOneRequiredWithoutCategoriesNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateWithoutCategoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      inventories: z
+        .lazy(
+          () => InventoryUncheckedUpdateManyWithoutCategoryNestedInputSchema
+        )
+        .optional(),
+      categories: z
+        .lazy(() => CategoryUncheckedUpdateManyWithoutCategoryNestedInputSchema)
+        .optional()
+    })
+    .strict();
+
+export const CategoryUncheckedUpdateManyWithoutCategoryInputSchema: z.ZodType<Prisma.CategoryUncheckedUpdateManyWithoutCategoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      description: z
+        .union([
+          z.string(),
+          z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      slug: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      blockId: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantCreateManyInventoryInputSchema: z.ZodType<Prisma.InventoryVariantCreateManyInventoryInput> =
+  z
+    .object({
+      id: z.string().cuid().optional(),
+      name: z.string(),
+      value: z.string(),
+      type: z.lazy(() => VariantTypeSchema),
+      price: z
+        .union([
+          z.number(),
+          z.string(),
+          z.instanceof(Decimal),
+          z.instanceof(Prisma.Decimal),
+          DecimalJsLikeSchema
+        ])
+        .refine(v => isValidDecimalInput(v), { message: 'Must be a Decimal' })
+        .optional()
+        .nullable(),
+      stock: z.number().int().optional(),
+      isActive: z.boolean().optional(),
+      position: z.number().int().optional(),
+      createdAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date().optional()
+    })
+    .strict();
+
+export const InventoryVariantUpdateWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantUpdateWithoutInventoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      value: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => EnumVariantTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantUncheckedUpdateWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantUncheckedUpdateWithoutInventoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      value: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => EnumVariantTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+    })
+    .strict();
+
+export const InventoryVariantUncheckedUpdateManyWithoutInventoryInputSchema: z.ZodType<Prisma.InventoryVariantUncheckedUpdateManyWithoutInventoryInput> =
+  z
+    .object({
+      id: z
+        .union([
+          z.string().cuid(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      name: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      value: z
+        .union([
+          z.string(),
+          z.lazy(() => StringFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      type: z
+        .union([
+          z.lazy(() => VariantTypeSchema),
+          z.lazy(() => EnumVariantTypeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      price: z
+        .union([
+          z
+            .union([
+              z.number(),
+              z.string(),
+              z.instanceof(Decimal),
+              z.instanceof(Prisma.Decimal),
+              DecimalJsLikeSchema
+            ])
+            .refine(v => isValidDecimalInput(v), {
+              message: 'Must be a Decimal'
+            }),
+          z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema)
+        ])
+        .optional()
+        .nullable(),
+      stock: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      isActive: z
+        .union([
+          z.boolean(),
+          z.lazy(() => BoolFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      position: z
+        .union([
+          z.number().int(),
+          z.lazy(() => IntFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      createdAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
+        ])
+        .optional(),
+      updatedAt: z
+        .union([
+          z.coerce.date(),
+          z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)
         ])
         .optional()
     })
@@ -89894,6 +99744,116 @@ export const EmailFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.EmailFindUniqueO
     })
     .strict();
 
+export const MediaFindFirstArgsSchema: z.ZodType<Prisma.MediaFindFirstArgs> = z
+  .object({
+    select: MediaSelectSchema.optional(),
+    where: MediaWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        MediaOrderByWithRelationInputSchema.array(),
+        MediaOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: MediaWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional(),
+    distinct: z
+      .union([MediaScalarFieldEnumSchema, MediaScalarFieldEnumSchema.array()])
+      .optional(),
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const MediaFindFirstOrThrowArgsSchema: z.ZodType<Prisma.MediaFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: MediaSelectSchema.optional(),
+      where: MediaWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          MediaOrderByWithRelationInputSchema.array(),
+          MediaOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: MediaWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([MediaScalarFieldEnumSchema, MediaScalarFieldEnumSchema.array()])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const MediaFindManyArgsSchema: z.ZodType<Prisma.MediaFindManyArgs> = z
+  .object({
+    select: MediaSelectSchema.optional(),
+    where: MediaWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        MediaOrderByWithRelationInputSchema.array(),
+        MediaOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: MediaWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional(),
+    distinct: z
+      .union([MediaScalarFieldEnumSchema, MediaScalarFieldEnumSchema.array()])
+      .optional(),
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const MediaAggregateArgsSchema: z.ZodType<Prisma.MediaAggregateArgs> = z
+  .object({
+    where: MediaWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        MediaOrderByWithRelationInputSchema.array(),
+        MediaOrderByWithRelationInputSchema
+      ])
+      .optional(),
+    cursor: MediaWhereUniqueInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional()
+  })
+  .strict();
+
+export const MediaGroupByArgsSchema: z.ZodType<Prisma.MediaGroupByArgs> = z
+  .object({
+    where: MediaWhereInputSchema.optional(),
+    orderBy: z
+      .union([
+        MediaOrderByWithAggregationInputSchema.array(),
+        MediaOrderByWithAggregationInputSchema
+      ])
+      .optional(),
+    by: MediaScalarFieldEnumSchema.array(),
+    having: MediaScalarWhereWithAggregatesInputSchema.optional(),
+    take: z.number().optional(),
+    skip: z.number().optional()
+  })
+  .strict();
+
+export const MediaFindUniqueArgsSchema: z.ZodType<Prisma.MediaFindUniqueArgs> =
+  z
+    .object({
+      select: MediaSelectSchema.optional(),
+      where: MediaWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const MediaFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.MediaFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: MediaSelectSchema.optional(),
+      where: MediaWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
 export const ClickFindFirstArgsSchema: z.ZodType<Prisma.ClickFindFirstArgs> = z
   .object({
     select: ClickSelectSchema.optional(),
@@ -90718,6 +100678,390 @@ export const ReservationFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.Reservatio
       select: ReservationSelectSchema.optional(),
       include: ReservationIncludeSchema.optional(),
       where: ReservationWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const CategoryFindFirstArgsSchema: z.ZodType<Prisma.CategoryFindFirstArgs> =
+  z
+    .object({
+      select: CategorySelectSchema.optional(),
+      include: CategoryIncludeSchema.optional(),
+      where: CategoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          CategoryOrderByWithRelationInputSchema.array(),
+          CategoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: CategoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          CategoryScalarFieldEnumSchema,
+          CategoryScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const CategoryFindFirstOrThrowArgsSchema: z.ZodType<Prisma.CategoryFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: CategorySelectSchema.optional(),
+      include: CategoryIncludeSchema.optional(),
+      where: CategoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          CategoryOrderByWithRelationInputSchema.array(),
+          CategoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: CategoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          CategoryScalarFieldEnumSchema,
+          CategoryScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const CategoryFindManyArgsSchema: z.ZodType<Prisma.CategoryFindManyArgs> =
+  z
+    .object({
+      select: CategorySelectSchema.optional(),
+      include: CategoryIncludeSchema.optional(),
+      where: CategoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          CategoryOrderByWithRelationInputSchema.array(),
+          CategoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: CategoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          CategoryScalarFieldEnumSchema,
+          CategoryScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const CategoryAggregateArgsSchema: z.ZodType<Prisma.CategoryAggregateArgs> =
+  z
+    .object({
+      where: CategoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          CategoryOrderByWithRelationInputSchema.array(),
+          CategoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: CategoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const CategoryGroupByArgsSchema: z.ZodType<Prisma.CategoryGroupByArgs> =
+  z
+    .object({
+      where: CategoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          CategoryOrderByWithAggregationInputSchema.array(),
+          CategoryOrderByWithAggregationInputSchema
+        ])
+        .optional(),
+      by: CategoryScalarFieldEnumSchema.array(),
+      having: CategoryScalarWhereWithAggregatesInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const CategoryFindUniqueArgsSchema: z.ZodType<Prisma.CategoryFindUniqueArgs> =
+  z
+    .object({
+      select: CategorySelectSchema.optional(),
+      include: CategoryIncludeSchema.optional(),
+      where: CategoryWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const CategoryFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.CategoryFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: CategorySelectSchema.optional(),
+      include: CategoryIncludeSchema.optional(),
+      where: CategoryWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryFindFirstArgsSchema: z.ZodType<Prisma.InventoryFindFirstArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      where: InventoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryOrderByWithRelationInputSchema.array(),
+          InventoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: InventoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          InventoryScalarFieldEnumSchema,
+          InventoryScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryFindFirstOrThrowArgsSchema: z.ZodType<Prisma.InventoryFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      where: InventoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryOrderByWithRelationInputSchema.array(),
+          InventoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: InventoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          InventoryScalarFieldEnumSchema,
+          InventoryScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryFindManyArgsSchema: z.ZodType<Prisma.InventoryFindManyArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      where: InventoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryOrderByWithRelationInputSchema.array(),
+          InventoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: InventoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          InventoryScalarFieldEnumSchema,
+          InventoryScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryAggregateArgsSchema: z.ZodType<Prisma.InventoryAggregateArgs> =
+  z
+    .object({
+      where: InventoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryOrderByWithRelationInputSchema.array(),
+          InventoryOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: InventoryWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const InventoryGroupByArgsSchema: z.ZodType<Prisma.InventoryGroupByArgs> =
+  z
+    .object({
+      where: InventoryWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryOrderByWithAggregationInputSchema.array(),
+          InventoryOrderByWithAggregationInputSchema
+        ])
+        .optional(),
+      by: InventoryScalarFieldEnumSchema.array(),
+      having: InventoryScalarWhereWithAggregatesInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const InventoryFindUniqueArgsSchema: z.ZodType<Prisma.InventoryFindUniqueArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      where: InventoryWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.InventoryFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      where: InventoryWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantFindFirstArgsSchema: z.ZodType<Prisma.InventoryVariantFindFirstArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      where: InventoryVariantWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryVariantOrderByWithRelationInputSchema.array(),
+          InventoryVariantOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: InventoryVariantWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          InventoryVariantScalarFieldEnumSchema,
+          InventoryVariantScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantFindFirstOrThrowArgsSchema: z.ZodType<Prisma.InventoryVariantFindFirstOrThrowArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      where: InventoryVariantWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryVariantOrderByWithRelationInputSchema.array(),
+          InventoryVariantOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: InventoryVariantWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          InventoryVariantScalarFieldEnumSchema,
+          InventoryVariantScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantFindManyArgsSchema: z.ZodType<Prisma.InventoryVariantFindManyArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      where: InventoryVariantWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryVariantOrderByWithRelationInputSchema.array(),
+          InventoryVariantOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: InventoryVariantWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional(),
+      distinct: z
+        .union([
+          InventoryVariantScalarFieldEnumSchema,
+          InventoryVariantScalarFieldEnumSchema.array()
+        ])
+        .optional(),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantAggregateArgsSchema: z.ZodType<Prisma.InventoryVariantAggregateArgs> =
+  z
+    .object({
+      where: InventoryVariantWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryVariantOrderByWithRelationInputSchema.array(),
+          InventoryVariantOrderByWithRelationInputSchema
+        ])
+        .optional(),
+      cursor: InventoryVariantWhereUniqueInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const InventoryVariantGroupByArgsSchema: z.ZodType<Prisma.InventoryVariantGroupByArgs> =
+  z
+    .object({
+      where: InventoryVariantWhereInputSchema.optional(),
+      orderBy: z
+        .union([
+          InventoryVariantOrderByWithAggregationInputSchema.array(),
+          InventoryVariantOrderByWithAggregationInputSchema
+        ])
+        .optional(),
+      by: InventoryVariantScalarFieldEnumSchema.array(),
+      having: InventoryVariantScalarWhereWithAggregatesInputSchema.optional(),
+      take: z.number().optional(),
+      skip: z.number().optional()
+    })
+    .strict();
+
+export const InventoryVariantFindUniqueArgsSchema: z.ZodType<Prisma.InventoryVariantFindUniqueArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      where: InventoryVariantWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.InventoryVariantFindUniqueOrThrowArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      where: InventoryVariantWhereUniqueInputSchema,
       relationLoadStrategy: RelationLoadStrategySchema.optional()
     })
     .strict();
@@ -94922,6 +105266,95 @@ export const EmailDeleteManyArgsSchema: z.ZodType<Prisma.EmailDeleteManyArgs> =
     })
     .strict();
 
+export const MediaCreateArgsSchema: z.ZodType<Prisma.MediaCreateArgs> = z
+  .object({
+    select: MediaSelectSchema.optional(),
+    data: z.union([MediaCreateInputSchema, MediaUncheckedCreateInputSchema]),
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const MediaUpsertArgsSchema: z.ZodType<Prisma.MediaUpsertArgs> = z
+  .object({
+    select: MediaSelectSchema.optional(),
+    where: MediaWhereUniqueInputSchema,
+    create: z.union([MediaCreateInputSchema, MediaUncheckedCreateInputSchema]),
+    update: z.union([MediaUpdateInputSchema, MediaUncheckedUpdateInputSchema]),
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const MediaCreateManyArgsSchema: z.ZodType<Prisma.MediaCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        MediaCreateManyInputSchema,
+        MediaCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const MediaCreateManyAndReturnArgsSchema: z.ZodType<Prisma.MediaCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        MediaCreateManyInputSchema,
+        MediaCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const MediaDeleteArgsSchema: z.ZodType<Prisma.MediaDeleteArgs> = z
+  .object({
+    select: MediaSelectSchema.optional(),
+    where: MediaWhereUniqueInputSchema,
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const MediaUpdateArgsSchema: z.ZodType<Prisma.MediaUpdateArgs> = z
+  .object({
+    select: MediaSelectSchema.optional(),
+    data: z.union([MediaUpdateInputSchema, MediaUncheckedUpdateInputSchema]),
+    where: MediaWhereUniqueInputSchema,
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const MediaUpdateManyArgsSchema: z.ZodType<Prisma.MediaUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        MediaUpdateManyMutationInputSchema,
+        MediaUncheckedUpdateManyInputSchema
+      ]),
+      where: MediaWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const MediaUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.MediaUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        MediaUpdateManyMutationInputSchema,
+        MediaUncheckedUpdateManyInputSchema
+      ]),
+      where: MediaWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const MediaDeleteManyArgsSchema: z.ZodType<Prisma.MediaDeleteManyArgs> =
+  z
+    .object({
+      where: MediaWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
 export const ClickCreateArgsSchema: z.ZodType<Prisma.ClickCreateArgs> = z
   .object({
     select: ClickSelectSchema.optional(),
@@ -95594,6 +106027,329 @@ export const ReservationDeleteManyArgsSchema: z.ZodType<Prisma.ReservationDelete
   z
     .object({
       where: ReservationWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const CategoryCreateArgsSchema: z.ZodType<Prisma.CategoryCreateArgs> = z
+  .object({
+    select: CategorySelectSchema.optional(),
+    include: CategoryIncludeSchema.optional(),
+    data: z.union([
+      CategoryCreateInputSchema,
+      CategoryUncheckedCreateInputSchema
+    ]),
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const CategoryUpsertArgsSchema: z.ZodType<Prisma.CategoryUpsertArgs> = z
+  .object({
+    select: CategorySelectSchema.optional(),
+    include: CategoryIncludeSchema.optional(),
+    where: CategoryWhereUniqueInputSchema,
+    create: z.union([
+      CategoryCreateInputSchema,
+      CategoryUncheckedCreateInputSchema
+    ]),
+    update: z.union([
+      CategoryUpdateInputSchema,
+      CategoryUncheckedUpdateInputSchema
+    ]),
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const CategoryCreateManyArgsSchema: z.ZodType<Prisma.CategoryCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        CategoryCreateManyInputSchema,
+        CategoryCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const CategoryCreateManyAndReturnArgsSchema: z.ZodType<Prisma.CategoryCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        CategoryCreateManyInputSchema,
+        CategoryCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const CategoryDeleteArgsSchema: z.ZodType<Prisma.CategoryDeleteArgs> = z
+  .object({
+    select: CategorySelectSchema.optional(),
+    include: CategoryIncludeSchema.optional(),
+    where: CategoryWhereUniqueInputSchema,
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const CategoryUpdateArgsSchema: z.ZodType<Prisma.CategoryUpdateArgs> = z
+  .object({
+    select: CategorySelectSchema.optional(),
+    include: CategoryIncludeSchema.optional(),
+    data: z.union([
+      CategoryUpdateInputSchema,
+      CategoryUncheckedUpdateInputSchema
+    ]),
+    where: CategoryWhereUniqueInputSchema,
+    relationLoadStrategy: RelationLoadStrategySchema.optional()
+  })
+  .strict();
+
+export const CategoryUpdateManyArgsSchema: z.ZodType<Prisma.CategoryUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        CategoryUpdateManyMutationInputSchema,
+        CategoryUncheckedUpdateManyInputSchema
+      ]),
+      where: CategoryWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const CategoryUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.CategoryUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        CategoryUpdateManyMutationInputSchema,
+        CategoryUncheckedUpdateManyInputSchema
+      ]),
+      where: CategoryWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const CategoryDeleteManyArgsSchema: z.ZodType<Prisma.CategoryDeleteManyArgs> =
+  z
+    .object({
+      where: CategoryWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const InventoryCreateArgsSchema: z.ZodType<Prisma.InventoryCreateArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      data: z.union([
+        InventoryCreateInputSchema,
+        InventoryUncheckedCreateInputSchema
+      ]),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryUpsertArgsSchema: z.ZodType<Prisma.InventoryUpsertArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      where: InventoryWhereUniqueInputSchema,
+      create: z.union([
+        InventoryCreateInputSchema,
+        InventoryUncheckedCreateInputSchema
+      ]),
+      update: z.union([
+        InventoryUpdateInputSchema,
+        InventoryUncheckedUpdateInputSchema
+      ]),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryCreateManyArgsSchema: z.ZodType<Prisma.InventoryCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        InventoryCreateManyInputSchema,
+        InventoryCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const InventoryCreateManyAndReturnArgsSchema: z.ZodType<Prisma.InventoryCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        InventoryCreateManyInputSchema,
+        InventoryCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const InventoryDeleteArgsSchema: z.ZodType<Prisma.InventoryDeleteArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      where: InventoryWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryUpdateArgsSchema: z.ZodType<Prisma.InventoryUpdateArgs> =
+  z
+    .object({
+      select: InventorySelectSchema.optional(),
+      include: InventoryIncludeSchema.optional(),
+      data: z.union([
+        InventoryUpdateInputSchema,
+        InventoryUncheckedUpdateInputSchema
+      ]),
+      where: InventoryWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryUpdateManyArgsSchema: z.ZodType<Prisma.InventoryUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        InventoryUpdateManyMutationInputSchema,
+        InventoryUncheckedUpdateManyInputSchema
+      ]),
+      where: InventoryWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const InventoryUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.InventoryUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        InventoryUpdateManyMutationInputSchema,
+        InventoryUncheckedUpdateManyInputSchema
+      ]),
+      where: InventoryWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const InventoryDeleteManyArgsSchema: z.ZodType<Prisma.InventoryDeleteManyArgs> =
+  z
+    .object({
+      where: InventoryWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const InventoryVariantCreateArgsSchema: z.ZodType<Prisma.InventoryVariantCreateArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      data: z.union([
+        InventoryVariantCreateInputSchema,
+        InventoryVariantUncheckedCreateInputSchema
+      ]),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantUpsertArgsSchema: z.ZodType<Prisma.InventoryVariantUpsertArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      where: InventoryVariantWhereUniqueInputSchema,
+      create: z.union([
+        InventoryVariantCreateInputSchema,
+        InventoryVariantUncheckedCreateInputSchema
+      ]),
+      update: z.union([
+        InventoryVariantUpdateInputSchema,
+        InventoryVariantUncheckedUpdateInputSchema
+      ]),
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantCreateManyArgsSchema: z.ZodType<Prisma.InventoryVariantCreateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        InventoryVariantCreateManyInputSchema,
+        InventoryVariantCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const InventoryVariantCreateManyAndReturnArgsSchema: z.ZodType<Prisma.InventoryVariantCreateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        InventoryVariantCreateManyInputSchema,
+        InventoryVariantCreateManyInputSchema.array()
+      ]),
+      skipDuplicates: z.boolean().optional()
+    })
+    .strict();
+
+export const InventoryVariantDeleteArgsSchema: z.ZodType<Prisma.InventoryVariantDeleteArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      where: InventoryVariantWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantUpdateArgsSchema: z.ZodType<Prisma.InventoryVariantUpdateArgs> =
+  z
+    .object({
+      select: InventoryVariantSelectSchema.optional(),
+      include: InventoryVariantIncludeSchema.optional(),
+      data: z.union([
+        InventoryVariantUpdateInputSchema,
+        InventoryVariantUncheckedUpdateInputSchema
+      ]),
+      where: InventoryVariantWhereUniqueInputSchema,
+      relationLoadStrategy: RelationLoadStrategySchema.optional()
+    })
+    .strict();
+
+export const InventoryVariantUpdateManyArgsSchema: z.ZodType<Prisma.InventoryVariantUpdateManyArgs> =
+  z
+    .object({
+      data: z.union([
+        InventoryVariantUpdateManyMutationInputSchema,
+        InventoryVariantUncheckedUpdateManyInputSchema
+      ]),
+      where: InventoryVariantWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const InventoryVariantUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.InventoryVariantUpdateManyAndReturnArgs> =
+  z
+    .object({
+      data: z.union([
+        InventoryVariantUpdateManyMutationInputSchema,
+        InventoryVariantUncheckedUpdateManyInputSchema
+      ]),
+      where: InventoryVariantWhereInputSchema.optional(),
+      limit: z.number().optional()
+    })
+    .strict();
+
+export const InventoryVariantDeleteManyArgsSchema: z.ZodType<Prisma.InventoryVariantDeleteManyArgs> =
+  z
+    .object({
+      where: InventoryVariantWhereInputSchema.optional(),
       limit: z.number().optional()
     })
     .strict();

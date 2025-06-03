@@ -1,0 +1,66 @@
+enum VariantType {
+  SIZE
+  COLOR
+  MATERIAL
+  STYLE
+  OTHER
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  slug        String   @unique
+  isActive    Boolean  @default(true)
+  position    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inventories Inventory[]
+  categories  Category[]  @relation("SubCategory")
+  category    Category?   @relation("SubCategory", fields: [categoryId], references: [id])
+  categoryId  String?
+  block       Block       @relation(fields: [blockId], references: [id])
+  blockId     String
+}
+
+model Inventory {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  slug            String   @unique
+  sku             String?  @unique
+  basePrice       Decimal  @db.Decimal(10, 2)
+  isActive        Boolean  @default(true)
+  isFeatured      Boolean  @default(false)
+  metaTitle       String?
+  metaDescription String?
+  tags            String[] @default([])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  categoryId String?
+  category   Category?          @relation(fields: [categoryId], references: [id])
+  variants   InventoryVariant[]
+
+  block   Block  @relation(fields: [blockId], references: [id])
+  blockId String
+}
+
+model InventoryVariant {
+  id          String      @id @default(cuid())
+  inventoryId String
+  name        String
+  value       String
+  type        VariantType
+  price       Decimal?    @db.Decimal(10, 2)
+  stock       Int         @default(0)
+  isActive    Boolean     @default(true)
+  position    Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  @@unique([inventoryId, type, value])
+}
