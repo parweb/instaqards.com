@@ -193,12 +193,6 @@
   .safe-area-pb {
     padding-bottom: env(safe-area-inset-bottom);
   }
-
-  @media (max-width: 768px) {
-    body {
-      padding-bottom: 80px; /* Space for mobile bottom nav */
-    }
-  }
 }
 
 /* Animations personnalisées pour le menu mobile */

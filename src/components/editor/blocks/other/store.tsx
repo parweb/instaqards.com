@@ -139,7 +139,7 @@ const Inventories = ({ blockId }: { blockId: string }) => {
     })
   );
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
       {inventories.map(inventory => (
         <Inventory
           key={inventory.id}
