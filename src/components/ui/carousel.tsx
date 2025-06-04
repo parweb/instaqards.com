@@ -3,11 +3,13 @@
 import useEmblaCarousel, {
   type UseEmblaCarouselType
 } from 'embla-carousel-react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import * as React from 'react';
+import { useRef, useState } from 'react';
 
 import { Button } from 'components/ui/button';
 import { cn } from 'lib/utils';
+import Image from 'next/image';
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -252,11 +254,176 @@ const CarouselNext = React.forwardRef<
 });
 CarouselNext.displayName = 'CarouselNext';
 
+interface ImageCarouselProps {
+  pictures: string[];
+  className?: string;
+}
+
+function CarouselPictures({ pictures, className = '' }: ImageCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const nextImage = () => {
+    setCurrentIndex(prev => (prev + 1) % pictures.length);
+  };
+
+  const prevImage = () => {
+    setCurrentIndex(prev => (prev - 1 + pictures.length) % pictures.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  // Gestion du drag
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartX(e.clientX);
+    setTranslateX(0);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - startX;
+    setTranslateX(deltaX);
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+
+    const threshold = 50;
+    if (translateX > threshold) {
+      prevImage();
+    } else if (translateX < -threshold) {
+      nextImage();
+    }
+    setTranslateX(0);
+  };
+
+  // Gestion du touch pour mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    setStartX(e.touches[0].clientX);
+    setTranslateX(0);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const deltaX = e.touches[0].clientX - startX;
+    setTranslateX(deltaX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+
+    const threshold = 50;
+    if (translateX > threshold) {
+      prevImage();
+    } else if (translateX < -threshold) {
+      nextImage();
+    }
+    setTranslateX(0);
+  };
+
+  if (pictures.length === 0) return null;
+
+  return (
+    <div
+      className={cn(
+        'relative h-64 w-full overflow-hidden rounded-lg bg-gray-200',
+        className
+      )}
+    >
+      <div
+        ref={carouselRef}
+        className="relative h-full w-full cursor-grab active:cursor-grabbing"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div
+          className="flex h-full transition-transform duration-300 ease-out"
+          style={{
+            transform: `translateX(${-currentIndex * 100 + (translateX / (carouselRef.current?.offsetWidth || 1)) * 100}%)`
+          }}
+        >
+          {pictures.map((image, index) => (
+            <div key={image} className="relative h-full w-full flex-shrink-0">
+              <Image
+                src={image}
+                alt={`Image ${index + 1}`}
+                className="absolute h-full w-full object-contain"
+                draggable={false}
+                fill
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Boutons de navigation (visibles au hover) */}
+        {pictures.length > 1 && (
+          <>
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                prevImage();
+              }}
+              className="absolute top-1/2 left-2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:bg-white/90"
+            >
+              <ChevronLeft className="h-4 w-4 text-gray-800" />
+            </button>
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                nextImage();
+              }}
+              className="absolute top-1/2 right-2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:bg-white/90"
+            >
+              <ChevronRight className="h-4 w-4 text-gray-800" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Dots de navigation */}
+      {pictures.length > 1 && (
+        <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 space-x-1">
+          {pictures.map((_, index) => (
+            <button
+              key={index}
+              onClick={e => {
+                e.stopPropagation();
+                goToSlide(index);
+              }}
+              className={cn(
+                'h-2 rounded-full transition-all duration-200',
+                index === currentIndex
+                  ? 'w-4 bg-white'
+                  : 'w-2 bg-white/60 hover:bg-white/80'
+              )}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  type CarouselApi
+  type CarouselApi,
+  CarouselPictures
 };

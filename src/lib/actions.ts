@@ -11,8 +11,10 @@ import {
   type CampaignType,
   Category,
   type Cron,
+  EntityType,
   Inventory,
   type Link,
+  MediaType,
   type Prisma,
   type Site,
   type User,
@@ -268,6 +270,8 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
     });
   }
 
+  console.log({ form: [...form.entries()] });
+
   const entries = transformArrayToObject(
     [...form.entries()]
       .map(([key, value]) => [...key.split(/\[|\]/).filter(Boolean), value])
@@ -277,6 +281,8 @@ export const updateBlock = withSiteAuth<Block>(async (form, _, blockId) => {
           : [key, Number(index), attr, value]
       ) as Input[]
   );
+
+  console.log({ entries });
 
   const uploadables = Object.entries(filterEntriesWithFiles(entries));
 
@@ -1664,6 +1670,48 @@ export const mutateInventory = async (form: FormData) => {
     ? String(form.get('categoryId'))
     : null;
 
+  const entries = transformArrayToObject(
+    [...form.entries()]
+      .map(([key, value]) => [...key.split(/\[|\]/).filter(Boolean), value])
+      .map(([key, index, attr, value]) =>
+        attr === undefined && value === undefined
+          ? [key, index]
+          : [key, Number(index), attr, value]
+      ) as Input[]
+  );
+
+  const uploadables = Object.values(filterEntriesWithFiles(entries));
+
+  const medias = (
+    await Promise.all(
+      uploadables.flatMap(
+        async items =>
+          await Promise.all(
+            (
+              (items || []) as {
+                kind: 'local' | 'remote';
+                file: File;
+                [key: string]: string | File;
+              }[]
+            ).map(async ({ kind, file, ...media }) => {
+              if (kind !== 'local') return { kind, ...media };
+
+              const { url } = await put(
+                `${media.id}.${file.type.split('/')[1]}`,
+                file
+              );
+
+              return {
+                ...media,
+                kind: 'remote',
+                url
+              };
+            })
+          )
+      )
+    )
+  ).flat();
+
   const response = await db.inventory.upsert({
     where: { id },
     create: {
@@ -1689,6 +1737,23 @@ export const mutateInventory = async (form: FormData) => {
       isFeatured,
       ...(categoryId && { category: { connect: { id: categoryId } } })
     }
+  });
+
+  await db.media.deleteMany({
+    where: {
+      entityId: response.id,
+      entityType: EntityType.INVENTORY
+    }
+  });
+
+  await db.media.createMany({
+    data: medias.map(media => ({
+      entityId: response.id,
+      entityType: EntityType.INVENTORY,
+      // @ts-ignore
+      url: media.url,
+      type: MediaType.IMAGE
+    }))
   });
 
   return response;

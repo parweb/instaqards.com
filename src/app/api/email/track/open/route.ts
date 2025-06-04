@@ -4,6 +4,8 @@ import { z } from 'zod';
 
 import { db } from 'helpers/db';
 
+export const dynamic = 'force-dynamic';
+
 const QuerySchema = z.object({
   id: z.string().min(1)
 });

@@ -1,5 +1,7 @@
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import { db } from 'helpers/db';
+
 import {
   Select,
   SelectContent,
@@ -7,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue
 } from 'components/ui/select';
-import { db } from 'helpers/db';
 
 export default async function SiteStoreDashboard(props: {
   params: Promise<{ id: string }>;
@@ -34,7 +35,7 @@ export default async function SiteStoreDashboard(props: {
             Dashboard Boutique
           </h1>
           <p className="text-gray-500">
-            Vue d'ensemble de votre magasin en ligne
+            {"Vue d'ensemble de votre magasin en ligne"}
           </p>
         </div>
         <div className="flex gap-3">
@@ -50,7 +51,7 @@ export default async function SiteStoreDashboard(props: {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">
-                  Revenus aujourd'hui
+                  {"Revenus aujourd'hui"}
                 </p>
                 <p className="text-3xl font-bold text-green-600">€1,247</p>
                 <p className="mt-1 text-sm text-green-600">↗ +12% vs hier</p>

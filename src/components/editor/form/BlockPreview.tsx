@@ -126,6 +126,9 @@ export function BlockPreview({
       onSubmit={handleSubmit(data => {
         setIsLoading(true);
 
+        console.log({ data });
+        debugger;
+
         const form = new FormData();
 
         for (const [key, value] of Object.entries(data)) {

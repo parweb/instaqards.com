@@ -72,6 +72,7 @@ const $image = z
       kind: 'upload',
       multiple: false,
       preview: false,
+      linkable: false,
       accept: { 'image/*': [] }
     })
   );

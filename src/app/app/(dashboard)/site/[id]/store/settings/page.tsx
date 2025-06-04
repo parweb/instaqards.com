@@ -242,7 +242,7 @@ export default function SiteStoreSettings() {
                               Mot de passe requis
                             </p>
                             <p className="text-sm text-gray-500">
-                              Protéger l'accès avec un mot de passe
+                              {"Protéger l'accès avec un mot de passe"}
                             </p>
                           </div>
                           <Switch />

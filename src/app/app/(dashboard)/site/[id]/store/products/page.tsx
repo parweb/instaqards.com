@@ -1,8 +1,17 @@
+import { EntityType } from '@prisma/client';
+import { PlusIcon } from 'lucide-react';
+import Form from 'next/form';
+
 import ModalButton from 'components/modal-button';
 import InventoryMutateModal from 'components/modal/mutate-inventory';
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
 import { Input } from 'components/ui/input';
+import { Separator } from 'components/ui/separator';
+import { db } from 'helpers/db';
+import { deleteInventory } from 'lib/actions';
+import ProductMedias from './product-medias';
+
 import {
   Select,
   SelectContent,
@@ -10,11 +19,7 @@ import {
   SelectTrigger,
   SelectValue
 } from 'components/ui/select';
-import { Separator } from 'components/ui/separator';
-import { db } from 'helpers/db';
-import { deleteInventory } from 'lib/actions';
-import { PlusIcon } from 'lucide-react';
-import Form from 'next/form';
+import { CarouselPictures } from 'components/ui/carousel';
 
 export default async function SiteStoreProducts(props: {
   params: Promise<{ id: string }>;
@@ -61,6 +66,23 @@ export default async function SiteStoreProducts(props: {
     // @ts-ignore
     block => block.widget.type === 'other' && block.widget.id === 'store'
   );
+
+  const medias = await db.media.findMany({
+    select: {
+      id: true,
+      url: true,
+      entityId: true,
+      entityType: true,
+      type: true
+    },
+    where: {
+      entityType: EntityType.INVENTORY,
+      entityId: { in: block?.inventories.map(inventory => inventory.id) ?? [] }
+    },
+    orderBy: {
+      position: 'asc'
+    }
+  });
 
   if (!block) {
     return (
@@ -189,13 +211,21 @@ export default async function SiteStoreProducts(props: {
         <CardContent>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {block.inventories.map(inventory => {
+              const pictures = medias.filter(
+                media =>
+                  media.entityId === inventory.id &&
+                  media.entityType === EntityType.INVENTORY
+              );
+
               return (
                 <Card
                   key={inventory.id}
-                  className="overflow-hidden transition-shadow hover:shadow-md"
+                  className="group overflow-hidden transition-shadow hover:shadow-md"
                 >
-                  <div className="flex h-48 items-center justify-center bg-gray-100">
-                    <span className="text-4xl text-gray-400">📷</span>
+                  <div className="flex bg-gray-100">
+                    <CarouselPictures
+                      pictures={pictures.map(picture => picture.url)}
+                    />
                   </div>
 
                   <CardContent className="p-4">
@@ -242,6 +272,7 @@ export default async function SiteStoreProducts(props: {
                           block={block}
                           categories={categories}
                           inventory={inventory}
+                          medias={medias}
                         />
                       </ModalButton>
 

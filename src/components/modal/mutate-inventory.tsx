@@ -1,6 +1,6 @@
 'use client';
 
-import { Prisma } from '@prisma/client';
+import { EntityType, Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -11,11 +11,11 @@ import LoadingDots from 'components/icons/loading-dots';
 import { AutosizeTextarea } from 'components/ui/autosize-textarea';
 import { Button } from 'components/ui/button';
 
+import { Uploader } from 'components/editor/form/types/upload';
 import { Input } from 'components/ui/input';
 import { Label } from 'components/ui/label';
 import { Separator } from 'components/ui/separator';
 import { Switch } from 'components/ui/switch';
-import useTranslation from 'hooks/use-translation';
 import { mutateInventory } from 'lib/actions';
 import { useModal } from './provider';
 
@@ -38,6 +38,7 @@ import {
 export default function InventoryMutateModal({
   block,
   inventory,
+  medias = [],
   categories = []
 }: {
   block: Prisma.SiteGetPayload<{
@@ -45,6 +46,15 @@ export default function InventoryMutateModal({
       id: true;
     };
   }>;
+  medias?: Prisma.MediaGetPayload<{
+    select: {
+      id: true;
+      url: true;
+      entityId: true;
+      entityType: true;
+      type: true;
+    };
+  }>[];
   inventory?: Prisma.InventoryGetPayload<{
     select: {
       id: true;
@@ -65,26 +75,41 @@ export default function InventoryMutateModal({
 }) {
   const router = useRouter();
   const modal = useModal();
-  const translate = useTranslation();
 
   const [data, setData] = useState(
-    inventory ?? {
-      active: true,
-      isFeatured: false,
-      sku: '',
-      name: '',
-      description: '',
-      basePrice: 0,
-      stock: 0,
-      categoryId: 'none'
-    }
+    inventory
+      ? { ...inventory, medias }
+      : {
+          active: true,
+          isFeatured: false,
+          sku: '',
+          name: '',
+          description: '',
+          basePrice: 0,
+          stock: 0,
+          categoryId: 'none',
+          medias: []
+        }
   );
 
   return (
     <Card className="max-w-4xl bg-white dark:bg-stone-800">
       <form
-        action={async (form: FormData) =>
-          mutateInventory(form).then(res => {
+        action={async (form: FormData) => {
+          for (const [key, value] of Object.entries({ medias: data.medias })) {
+            if (Array.isArray(value)) {
+              form.delete(key);
+              for (const [i, item] of value.entries()) {
+                for (const [attr, field] of Object.entries(item)) {
+                  form.append(`${key}[${i}][${attr}]`, field);
+                }
+              }
+            } else form.append(key, value);
+          }
+
+          console.log({ form: Object.fromEntries(form.entries()) });
+
+          return mutateInventory(form).then(res => {
             if ('error' in res) {
               toast.error(res.error);
               console.error(res.error);
@@ -94,8 +119,8 @@ export default function InventoryMutateModal({
               toast.success('Product saved!');
               va.track('Product saved');
             }
-          })
-        }
+          });
+        }}
       >
         <input type="hidden" name="blockId" value={block.id} />
         {inventory?.id && (
@@ -287,20 +312,30 @@ export default function InventoryMutateModal({
 
           <Separator />
 
-          {/* Section Images (placeholder pour futur développement) */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Images
-            </h3>
-            <div className="rounded-lg border-2 border-dashed border-gray-300 p-8 text-center">
-              <div className="space-y-2">
-                <div className="text-4xl text-gray-400">📷</div>
-                <p className="text-sm text-gray-500">
-                  Gestion des images à venir
-                </p>
-              </div>
-            </div>
-          </div>
+          <Uploader
+            ref={null as any}
+            name="medias"
+            data={{
+              medias: data.medias
+                .filter(
+                  item =>
+                    item.entityId === inventory?.id &&
+                    item.entityType === EntityType.INVENTORY
+                )
+                .map(item => ({ id: item.id, url: item.url, kind: 'remote' }))
+            }}
+            shape={{
+              kind: 'upload',
+              multiple: true,
+              preview: true,
+              linkable: false,
+              accept: { image: ['image/*'] },
+              label: 'Images'
+            }}
+            setValue={(name, value) => {
+              setData({ ...data, [name]: value });
+            }}
+          />
         </CardContent>
 
         <CardFooter className="flex justify-end space-x-3 pt-4">

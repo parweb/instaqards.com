@@ -43,12 +43,14 @@ export const UploaderItem = ({
   isActive,
   item,
   list,
+  linkable,
   onDelete,
   onLinkChange
 }: {
   isActive: boolean;
   item: Media;
   list: Media[];
+  linkable: boolean;
   // eslint-disable-next-line no-unused-vars
   onDelete: (id: Media['id']) => void;
   // eslint-disable-next-line no-unused-vars
@@ -97,19 +99,21 @@ export const UploaderItem = ({
       <div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={src}
+          src={src ?? null}
           alt={item.id}
           className="aspect-square w-14 rounded-md object-cover"
         />
       </div>
 
-      <div className="flex-1">
-        <InputLink
-          type="text"
-          value={item.link}
-          onChange={e => onLinkChange(item.id, e.target.value)}
-        />
-      </div>
+      {linkable && (
+        <div className="flex-1">
+          <InputLink
+            type="text"
+            value={item.link}
+            onChange={e => onLinkChange(item.id, e.target.value)}
+          />
+        </div>
+      )}
 
       <div>
         <Button
@@ -250,6 +254,7 @@ export const Uploader = ({
                   isActive={activeId === item.id}
                   item={item}
                   list={list}
+                  linkable={props.shape.linkable}
                   onLinkChange={(id, link) =>
                     setItems(items => {
                       const result = items.map(item =>

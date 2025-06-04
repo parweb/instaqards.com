@@ -56,6 +56,7 @@ export const input = z.object({
         kind: 'upload',
         multiple: false,
         preview: false,
+        linkable: false,
         accept: { 'image/*': [] }
       })
     ),

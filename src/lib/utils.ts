@@ -146,6 +146,7 @@ export type Block = Share &
         kind: 'upload';
         multiple: boolean;
         preview: boolean;
+        linkable: boolean;
         accept: Record<string, string[]>;
       }
     | { kind: 'string' }
