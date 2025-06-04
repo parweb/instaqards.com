@@ -1,0 +1,116 @@
+enum NotificationType {
+  QUEST_NEW
+  QUEST_COMPLETED
+  QUEST_EXPIRED
+  REWARD_AVAILABLE
+  REWARD_CLAIMED
+  LEVEL_UP
+  BADGE_EARNED
+  POINTS_EARNED
+  SYSTEM_ANNOUNCEMENT
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  ARCHIVED
+}
+
+model Notification {
+  id String @id @default(cuid())
+
+  title    String
+  message  String
+  type     NotificationType
+  priority NotificationPriority @default(MEDIUM)
+  status   NotificationStatus   @default(UNREAD)
+
+  // Métadonnées
+  imageUrl  String?
+  actionUrl String? // URL vers l'action à effectuer
+  metadata  Json? // Données additionnelles (quest_id, reward_id, etc.)
+
+  // Dates
+  scheduledFor DateTime? // Pour les notifications programmées
+  expiresAt    DateTime? // Date d'expiration
+  readAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([scheduledFor])
+  @@index([expiresAt])
+  @@index([userId, status])
+}
+
+model NotificationTemplate {
+  id String @id @default(cuid())
+
+  name    String
+  type    NotificationType
+  title   String
+  message String
+
+  // Configuration
+  isActive Boolean              @default(true)
+  priority NotificationPriority @default(MEDIUM)
+
+  // Conditions d'envoi
+  conditions Json? // Conditions pour déclencher la notification
+
+  // Métadonnées
+  imageUrl  String?
+  actionUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([isActive])
+}
+
+model NotificationPreference {
+  id String @id @default(cuid())
+
+  // Préférences par type
+  questNotifications  Boolean @default(true)
+  rewardNotifications Boolean @default(true)
+  levelNotifications  Boolean @default(true)
+  pointsNotifications Boolean @default(true) // Remplace commissionNotifications
+  systemNotifications Boolean @default(true)
+
+  // Préférences par canal
+  emailEnabled Boolean @default(true)
+  pushEnabled  Boolean @default(true)
+  inAppEnabled Boolean @default(true)
+
+  // Fréquence
+  digestFrequency String @default("daily") // "immediate", "daily", "weekly"
+  quietHoursStart Int? // Heure de début du mode silencieux (0-23)
+  quietHoursEnd   Int? // Heure de fin du mode silencieux (0-23)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  @@index([userId])
+}

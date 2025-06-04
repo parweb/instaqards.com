@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  TrendingUp, 
+import {
+  TrendingUp,
   TrendingDown,
-  DollarSign, 
-  Eye, 
+  DollarSign,
+  Eye,
   MousePointer,
   Users,
   Calendar,
@@ -16,7 +16,13 @@ import {
   Star
 } from 'lucide-react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
@@ -48,7 +54,7 @@ const mockEarningsHistory: EarningsHistory[] = [
     id: '1',
     date: new Date('2024-01-20'),
     type: 'commission',
-    amount: 45.50,
+    amount: 45.5,
     description: 'Commission site restaurant "Le Petit Bistro"',
     clientName: 'Le Petit Bistro'
   },
@@ -56,7 +62,7 @@ const mockEarningsHistory: EarningsHistory[] = [
     id: '2',
     date: new Date('2024-01-18'),
     type: 'quest_reward',
-    amount: 25.00,
+    amount: 25.0,
     description: 'Récompense quête "Site Saint-Valentin"',
     questId: 'valentine-2024'
   },
@@ -64,8 +70,8 @@ const mockEarningsHistory: EarningsHistory[] = [
     id: '3',
     date: new Date('2024-01-15'),
     type: 'bonus',
-    amount: 15.00,
-    description: 'Bonus partage réseaux sociaux',
+    amount: 15.0,
+    description: 'Bonus partage réseaux sociaux'
   },
   {
     id: '4',
@@ -79,7 +85,7 @@ const mockEarningsHistory: EarningsHistory[] = [
     id: '5',
     date: new Date('2024-01-10'),
     type: 'quest_reward',
-    amount: 18.00,
+    amount: 18.0,
     description: 'Récompense quête "Modification Lead"',
     questId: 'lead-mod-2024'
   }
@@ -92,7 +98,7 @@ const mockPerformanceData: PerformanceMetric[] = [
     sitesShared: 2,
     totalClicks: 156,
     conversions: 1,
-    earnings: 45.50,
+    earnings: 45.5,
     points: 12,
     conversionRate: 0.6
   },
@@ -102,7 +108,7 @@ const mockPerformanceData: PerformanceMetric[] = [
     sitesShared: 1,
     totalClicks: 89,
     conversions: 0,
-    earnings: 25.00,
+    earnings: 25.0,
     points: 8,
     conversionRate: 0.0
   },
@@ -122,7 +128,7 @@ const mockPerformanceData: PerformanceMetric[] = [
     sitesShared: 3,
     totalClicks: 423,
     conversions: 2,
-    earnings: 134.50,
+    earnings: 134.5,
     points: 28,
     conversionRate: 0.5
   }
@@ -169,11 +175,19 @@ const getEarningTypeLabel = (type: string) => {
 
 export function CreatorAnalytics() {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
-  
-  const totalEarnings = mockEarningsHistory.reduce((sum, earning) => sum + earning.amount, 0);
-  const thisMonthEarnings = mockPerformanceData.find(p => p.period === 'Ce mois')?.earnings || 0;
-  const lastMonthEarnings = mockPerformanceData.find(p => p.period === 'Mois dernier')?.earnings || 0;
-  const earningsGrowth = lastMonthEarnings > 0 ? ((thisMonthEarnings - lastMonthEarnings) / lastMonthEarnings) * 100 : 0;
+
+  const totalEarnings = mockEarningsHistory.reduce(
+    (sum, earning) => sum + earning.amount,
+    0
+  );
+  const thisMonthEarnings =
+    mockPerformanceData.find(p => p.period === 'Ce mois')?.earnings || 0;
+  const lastMonthEarnings =
+    mockPerformanceData.find(p => p.period === 'Mois dernier')?.earnings || 0;
+  const earningsGrowth =
+    lastMonthEarnings > 0
+      ? ((thisMonthEarnings - lastMonthEarnings) / lastMonthEarnings) * 100
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -185,27 +199,33 @@ export function CreatorAnalytics() {
             Analytics & Historique
           </CardTitle>
           <CardDescription>
-            Suivez vos performances et l'évolution de vos gains
+            {"Suivez vos performances et l'évolution de vos gains"}
           </CardDescription>
         </CardHeader>
       </Card>
 
       {/* Métriques principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Gains totaux</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalEarnings.toFixed(2)}€</div>
+            <div className="text-2xl font-bold">
+              {totalEarnings.toFixed(2)}€
+            </div>
             <div className="flex items-center gap-1 text-xs">
               {earningsGrowth >= 0 ? (
                 <TrendingUp className="h-3 w-3 text-green-600" />
               ) : (
                 <TrendingDown className="h-3 w-3 text-red-600" />
               )}
-              <span className={earningsGrowth >= 0 ? 'text-green-600' : 'text-red-600'}>
+              <span
+                className={
+                  earningsGrowth >= 0 ? 'text-green-600' : 'text-red-600'
+                }
+              >
                 {Math.abs(earningsGrowth).toFixed(1)}% vs mois dernier
               </span>
             </div>
@@ -214,14 +234,20 @@ export function CreatorAnalytics() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Taux conversion</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">
+              Taux conversion
+            </CardTitle>
+            <Target className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(mockPerformanceData.find(p => p.period === 'Ce mois')?.conversionRate || 0).toFixed(1)}%
+              {(
+                mockPerformanceData.find(p => p.period === 'Ce mois')
+                  ?.conversionRate || 0
+              ).toFixed(1)}
+              %
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               3 conversions ce mois
             </p>
           </CardContent>
@@ -230,30 +256,28 @@ export function CreatorAnalytics() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Sites créés</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <Activity className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockPerformanceData.find(p => p.period === 'Ce mois')?.sitesCreated || 0}
+              {mockPerformanceData.find(p => p.period === 'Ce mois')
+                ?.sitesCreated || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
-              ce mois-ci
-            </p>
+            <p className="text-muted-foreground text-xs">ce mois-ci</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Clics générés</CardTitle>
-            <MousePointer className="h-4 w-4 text-muted-foreground" />
+            <MousePointer className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockPerformanceData.find(p => p.period === 'Ce mois')?.totalClicks || 0}
+              {mockPerformanceData.find(p => p.period === 'Ce mois')
+                ?.totalClicks || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
-              via vos partages
-            </p>
+            <p className="text-muted-foreground text-xs">via vos partages</p>
           </CardContent>
         </Card>
       </div>
@@ -276,27 +300,30 @@ export function CreatorAnalytics() {
             <CardContent>
               <div className="space-y-4">
                 {mockEarningsHistory.map(earning => (
-                  <div key={earning.id} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100">
+                  <div
+                    key={earning.id}
+                    className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
                       {getEarningTypeIcon(earning.type)}
                     </div>
-                    
+
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="mb-1 flex items-center gap-2">
                         <h4 className="font-medium">{earning.description}</h4>
                         <Badge className={getEarningTypeColor(earning.type)}>
                           {getEarningTypeLabel(earning.type)}
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-500">
-                        {earning.date.toLocaleDateString('fr-FR', { 
-                          day: 'numeric', 
-                          month: 'long', 
-                          year: 'numeric' 
+                        {earning.date.toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
                         })}
                       </p>
                     </div>
-                    
+
                     <div className="text-right">
                       <div className="text-lg font-bold text-green-600">
                         +{earning.amount.toFixed(2)}€
@@ -310,7 +337,7 @@ export function CreatorAnalytics() {
         </TabsContent>
 
         <TabsContent value="performance" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {mockPerformanceData.map(metric => (
               <Card key={metric.period}>
                 <CardHeader>
@@ -320,7 +347,9 @@ export function CreatorAnalytics() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <p className="text-sm text-gray-500">Sites créés</p>
-                      <p className="text-2xl font-bold">{metric.sitesCreated}</p>
+                      <p className="text-2xl font-bold">
+                        {metric.sitesCreated}
+                      </p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm text-gray-500">Sites partagés</p>
@@ -335,22 +364,24 @@ export function CreatorAnalytics() {
                       <p className="text-2xl font-bold">{metric.conversions}</p>
                     </div>
                   </div>
-                  
-                  <div className="pt-4 border-t">
-                    <div className="flex justify-between items-center">
+
+                  <div className="border-t pt-4">
+                    <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-500">Gains</span>
                       <span className="text-xl font-bold text-green-600">
                         {metric.earnings.toFixed(2)}€
                       </span>
                     </div>
-                    <div className="flex justify-between items-center mt-1">
+                    <div className="mt-1 flex items-center justify-between">
                       <span className="text-sm text-gray-500">Points</span>
                       <span className="text-lg font-bold text-blue-600">
                         {metric.points} pts
                       </span>
                     </div>
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="text-sm text-gray-500">Taux conversion</span>
+                    <div className="mt-1 flex items-center justify-between">
+                      <span className="text-sm text-gray-500">
+                        Taux conversion
+                      </span>
                       <span className="text-lg font-bold">
                         {metric.conversionRate.toFixed(1)}%
                       </span>
@@ -364,29 +395,40 @@ export function CreatorAnalytics() {
       </Tabs>
 
       {/* Conseils d'amélioration */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="border-blue-200 bg-blue-50">
         <CardHeader>
-          <CardTitle className="text-blue-800">💡 Conseils pour améliorer vos performances</CardTitle>
+          <CardTitle className="text-blue-800">
+            💡 Conseils pour améliorer vos performances
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-blue-700">
           <div className="flex items-start gap-2">
-            <div className="h-1.5 w-1.5 bg-blue-500 rounded-full mt-2" />
-            <span className="text-sm">Partagez vos sites sur plusieurs réseaux sociaux pour maximiser les clics</span>
+            <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="text-sm">
+              Partagez vos sites sur plusieurs réseaux sociaux pour maximiser
+              les clics
+            </span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="h-1.5 w-1.5 bg-blue-500 rounded-full mt-2" />
-            <span className="text-sm">Utilisez les templates de partage optimisés pour chaque plateforme</span>
+            <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="text-sm">
+              Utilisez les templates de partage optimisés pour chaque plateforme
+            </span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="h-1.5 w-1.5 bg-blue-500 rounded-full mt-2" />
-            <span className="text-sm">Complétez les quêtes pour débloquer des bonus de commission</span>
+            <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="text-sm">
+              Complétez les quêtes pour débloquer des bonus de commission
+            </span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="h-1.5 w-1.5 bg-blue-500 rounded-full mt-2" />
-            <span className="text-sm">Interagissez avec les commentaires pour augmenter l'engagement</span>
+            <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="text-sm">
+              {"Interagissez avec les commentaires pour augmenter l'engagement"}
+            </span>
           </div>
         </CardContent>
       </Card>
     </div>
   );
-} 
+}

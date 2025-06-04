@@ -1,0 +1,221 @@
+enum RewardType {
+  POINTS
+  BADGE
+  POINTS_MULTIPLIER // Multiplicateur de points temporaire
+  LEVEL_UNLOCK
+  SPECIAL_ACCESS
+  PHYSICAL_REWARD
+}
+
+enum RewardRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum RewardStatus {
+  AVAILABLE
+  CLAIMED
+  EXPIRED
+  PENDING_APPROVAL
+}
+
+enum BadgeCategory {
+  ACHIEVEMENT
+  MILESTONE
+  SEASONAL
+  SPECIAL
+  LEVEL
+}
+
+model Reward {
+  id String @id @default(cuid())
+
+  title       String
+  description String
+  type        RewardType
+  rarity      RewardRarity @default(COMMON)
+
+  // Valeurs de récompense
+  pointsValue      Int? // Nombre de points directs
+  pointsMultiplier Float? // Multiplicateur de points (ex: 1.5 = +50% de points)
+  duration         Int? // Durée en jours pour les boosts temporaires
+
+  // Conditions d'obtention
+  requiredPoints Int? // Points requis pour débloquer
+  requiredLevel  Int? // Niveau requis
+  isLimited      Boolean @default(false)
+  maxClaims      Int? // Nombre max de réclamations
+  currentClaims  Int     @default(0)
+
+  // Métadonnées
+  imageUrl String?
+  iconUrl  String?
+  color    String  @default("#3B82F6")
+
+  // Dates
+  availableFrom  DateTime  @default(now())
+  availableUntil DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userRewards  UserReward[]
+  questRewards QuestReward[]
+
+  @@index([type])
+  @@index([rarity])
+  @@index([requiredPoints])
+  @@index([requiredLevel])
+  @@index([availableFrom, availableUntil])
+  @@index([isLimited])
+}
+
+model UserReward {
+  id String @id @default(cuid())
+
+  status    RewardStatus @default(AVAILABLE)
+  claimedAt DateTime?
+  expiresAt DateTime?
+
+  // Métadonnées de réclamation
+  claimData Json? // Données additionnelles (adresse pour envoi physique, etc.)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
+  reward   Reward @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+  rewardId String
+
+  @@unique([userId, rewardId])
+  @@index([userId])
+  @@index([rewardId])
+  @@index([status])
+  @@index([claimedAt])
+  @@index([expiresAt])
+}
+
+model QuestReward {
+  id String @id @default(cuid())
+
+  // Relations
+  quest    Quest  @relation(fields: [questId], references: [id], onDelete: Cascade)
+  questId  String
+  reward   Reward @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+  rewardId String
+
+  @@unique([questId, rewardId])
+  @@index([questId])
+  @@index([rewardId])
+}
+
+model Badge {
+  id String @id @default(cuid())
+
+  name        String
+  description String
+  category    BadgeCategory
+  rarity      RewardRarity  @default(COMMON)
+
+  // Conditions d'obtention
+  condition   String // Description de la condition
+  targetValue Int? // Valeur cible si applicable
+
+  // Métadonnées visuelles
+  iconUrl String
+  color   String @default("#3B82F6")
+
+  // Dates
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userBadges UserBadge[]
+
+  @@index([category])
+  @@index([rarity])
+  @@index([isActive])
+}
+
+model UserBadge {
+  id String @id @default(cuid())
+
+  earnedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  badge   Badge  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  badgeId String
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+  @@index([earnedAt])
+}
+
+// Table de configuration des niveaux Creator (statique)
+model CreatorLevel {
+  id String @id @default(cuid())
+
+  level       Int    @unique
+  name        String
+  description String
+
+  // Conditions pour atteindre ce niveau
+  requiredPoints Int
+  requiredSites  Int? // Nombre de sites requis
+  requiredClicks Int? // Nombre de clics requis
+
+  // Avantages en points de ce niveau
+  pointsMultiplier Float @default(1.0) // Multiplicateur de points pour ce niveau
+  bonusMultiplier  Float @default(1.0) // Multiplicateur de bonus
+
+  // Avantages spéciaux
+  specialPerks Json? // Avantages spéciaux (accès prioritaire, etc.)
+
+  // Métadonnées visuelles
+  color   String  @default("#3B82F6")
+  iconUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([level])
+  @@index([requiredPoints])
+}
+
+// Événements atomiques des points (source of truth)
+model PointsTransaction {
+  id String @id @default(cuid())
+
+  amount      Int
+  type        String // "earned", "spent", "withdrawn"
+  source      String // "quest", "referral", "admin", "level_bonus", "conversion", "social_share"
+  description String
+
+  // Métadonnées
+  metadata Json? // Données additionnelles (quest_id, etc.)
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId])
+  @@index([type])
+  @@index([source])
+  @@index([createdAt])
+  @@index([userId, createdAt])
+}

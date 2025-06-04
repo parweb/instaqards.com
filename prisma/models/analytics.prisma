@@ -1,0 +1,161 @@
+enum MetricType {
+  CLICKS
+  CONVERSIONS
+  POINTS_EARNED
+  SITES_CREATED
+  QUESTS_COMPLETED
+  SOCIAL_SHARES
+  REFERRALS
+}
+
+enum TimePeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+model ConversionTracking {
+  id String @id @default(cuid())
+
+  // Données de conversion (événement pur)
+  conversionType String // "lead", "sale", "signup", etc.
+
+  // Tracking
+  sourceUrl   String? // URL source
+  landingPage String? // Page d'atterrissage
+  userAgent   String? // User agent du visiteur
+  ipAddress   String? // IP du visiteur
+
+  // Attribution
+  clickId      String? // ID du clic associé
+  campaignData Json? // Données de campagne (UTM, etc.)
+
+  // Dates
+  convertedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  creator   User    @relation("CreatorConversions", fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId String
+  site      Site?   @relation(fields: [siteId], references: [id])
+  siteId    String?
+  click     Click?  @relation(fields: [clickId], references: [id])
+
+  @@index([creatorId])
+  @@index([convertedAt])
+  @@index([conversionType])
+  @@index([siteId])
+  @@index([clickId])
+  @@index([creatorId, convertedAt])
+}
+
+model SocialShareTracking {
+  id String @id @default(cuid())
+
+  platform  String // "facebook", "linkedin", "instagram", "twitter"
+  shareUrl  String // URL partagée
+  shareText String? // Texte du partage
+
+  // Métriques (événement pur)
+  clicks   Int @default(0)
+  likes    Int @default(0)
+  shares   Int @default(0)
+  comments Int @default(0)
+
+  // Métadonnées
+  postId   String? // ID du post sur la plateforme
+  metadata Json? // Données additionnelles de la plateforme
+
+  // Dates
+  sharedAt    DateTime @default(now())
+  lastUpdated DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  creator   User    @relation("CreatorShares", fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId String
+  site      Site?   @relation(fields: [siteId], references: [id])
+  siteId    String?
+
+  @@index([creatorId])
+  @@index([platform])
+  @@index([sharedAt])
+  @@index([siteId])
+  @@index([creatorId, platform])
+}
+
+model ReferralTracking {
+  id String @id @default(cuid())
+
+  // Données du référé (événement pur)
+  referredEmail String
+  referredName  String?
+
+  // Statut
+  status      String    @default("pending") // "pending", "signed_up", "converted"
+  signedUpAt  DateTime?
+  convertedAt DateTime?
+
+  // Métadonnées
+  referralCode String?
+  metadata     Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  referrer   User    @relation("ReferralsMade", fields: [referrerId], references: [id], onDelete: Cascade)
+  referrerId String
+  referred   User?   @relation("ReferralsReceived", fields: [referredId], references: [id])
+  referredId String?
+
+  @@index([referrerId])
+  @@index([referredId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([referralCode])
+}
+
+// Nouveau modèle pour les retraits de points en argent
+model Withdrawal {
+  id String @id @default(cuid())
+
+  pointsAmount Int // Nombre de points convertis
+  euroAmount   Float // Montant en euros
+  exchangeRate Float // Taux de change points->euros au moment du retrait
+
+  // Statut
+  status String @default("pending") // "pending", "processing", "completed", "cancelled"
+
+  // Informations de paiement
+  paymentMethod String? // "bank_transfer", "paypal", "stripe", etc.
+  paymentData   Json? // Données de paiement (IBAN, email PayPal, etc.)
+
+  // Dates
+  requestedAt DateTime  @default(now())
+  processedAt DateTime? // Quand le retrait a été traité
+  completedAt DateTime? // Quand l'argent a été reçu
+
+  // Admin
+  processedBy String? // ID de l'admin qui a traité
+  notes       String? // Notes administratives
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId])
+  @@index([status])
+  @@index([requestedAt])
+  @@index([processedAt])
+  @@index([userId, requestedAt])
+}

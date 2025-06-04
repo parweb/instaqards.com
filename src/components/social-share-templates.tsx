@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Share2, 
-  Copy, 
+import {
+  Share2,
+  Copy,
   ExternalLink,
   Facebook,
   Twitter,
@@ -15,7 +15,13 @@ import {
 } from 'lucide-react';
 
 import { Button } from 'components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import { Textarea } from 'components/ui/textarea';
@@ -44,14 +50,16 @@ const shareTemplates: ShareTemplate[] = [
       {
         id: 'fb1',
         name: 'Découverte site',
-        content: '🎉 Découvrez ce site incroyable que j\'ai créé ! Parfait pour [TYPE_BUSINESS] avec toutes les fonctionnalités dont vous avez besoin. Qu\'en pensez-vous ? 👇\n\n[LIEN_SITE]',
+        content:
+          "🎉 Découvrez ce site incroyable que j'ai créé ! Parfait pour [TYPE_BUSINESS] avec toutes les fonctionnalités dont vous avez besoin. Qu'en pensez-vous ? 👇\n\n[LIEN_SITE]",
         hashtags: ['#siteweb', '#business', '#digital'],
         performance: 'high'
       },
       {
         id: 'fb2',
         name: 'Témoignage client',
-        content: '✨ Fier de présenter ce nouveau site pour [NOM_CLIENT] ! Un projet passionnant qui montre tout le potentiel de leur activité. Merci pour votre confiance ! 🙏\n\n[LIEN_SITE]',
+        content:
+          '✨ Fier de présenter ce nouveau site pour [NOM_CLIENT] ! Un projet passionnant qui montre tout le potentiel de leur activité. Merci pour votre confiance ! 🙏\n\n[LIEN_SITE]',
         hashtags: ['#client', '#projet', '#fierté'],
         performance: 'medium'
       }
@@ -66,14 +74,16 @@ const shareTemplates: ShareTemplate[] = [
       {
         id: 'li1',
         name: 'Professionnel',
-        content: '🚀 Nouveau projet terminé ! J\'ai eu le plaisir de créer ce site web pour [NOM_CLIENT], spécialisé dans [SECTEUR]. \n\nLes défis relevés :\n✅ Design moderne et responsive\n✅ Optimisation SEO\n✅ Expérience utilisateur fluide\n\nRésultat : un site qui convertit ! 💼\n\n[LIEN_SITE]',
+        content:
+          "🚀 Nouveau projet terminé ! J'ai eu le plaisir de créer ce site web pour [NOM_CLIENT], spécialisé dans [SECTEUR]. \n\nLes défis relevés :\n✅ Design moderne et responsive\n✅ Optimisation SEO\n✅ Expérience utilisateur fluide\n\nRésultat : un site qui convertit ! 💼\n\n[LIEN_SITE]",
         hashtags: ['#webdesign', '#digital', '#business'],
         performance: 'high'
       },
       {
         id: 'li2',
         name: 'Expertise',
-        content: '💡 Partage d\'expérience : Comment créer un site qui convertit en 2024 ?\n\nAprès [X] projets réalisés, voici mes conseils clés :\n• Design centré utilisateur\n• Temps de chargement optimisé\n• Call-to-action stratégiques\n\nExemple concret avec ce projet : [LIEN_SITE]',
+        content:
+          "💡 Partage d'expérience : Comment créer un site qui convertit en 2024 ?\n\nAprès [X] projets réalisés, voici mes conseils clés :\n• Design centré utilisateur\n• Temps de chargement optimisé\n• Call-to-action stratégiques\n\nExemple concret avec ce projet : [LIEN_SITE]",
         hashtags: ['#expertise', '#conseils', '#webdev'],
         performance: 'medium'
       }
@@ -88,14 +98,16 @@ const shareTemplates: ShareTemplate[] = [
       {
         id: 'ig1',
         name: 'Story visuelle',
-        content: '✨ Nouveau site en ligne ! ✨\n\n🎯 Pour qui ? [TYPE_CLIENT]\n💻 Quoi ? Site moderne & responsive\n🚀 Résultat ? Plus de visibilité !\n\nSwipe pour voir le avant/après 👉\n\n[LIEN_SITE]',
+        content:
+          '✨ Nouveau site en ligne ! ✨\n\n🎯 Pour qui ? [TYPE_CLIENT]\n💻 Quoi ? Site moderne & responsive\n🚀 Résultat ? Plus de visibilité !\n\nSwipe pour voir le avant/après 👉\n\n[LIEN_SITE]',
         hashtags: ['#siteweb', '#design', '#beforeafter'],
         performance: 'high'
       },
       {
         id: 'ig2',
         name: 'Behind the scenes',
-        content: '🔥 Behind the scenes de mon dernier projet !\n\nDe l\'idée au site final, voici le processus créatif pour [NOM_CLIENT] 🎨\n\n📱 Swipe pour voir l\'évolution\n💬 Dis-moi ce que tu en penses !\n\n[LIEN_SITE]',
+        content:
+          "🔥 Behind the scenes de mon dernier projet !\n\nDe l'idée au site final, voici le processus créatif pour [NOM_CLIENT] 🎨\n\n📱 Swipe pour voir l'évolution\n💬 Dis-moi ce que tu en penses !\n\n[LIEN_SITE]",
         hashtags: ['#behindthescenes', '#process', '#creation'],
         performance: 'medium'
       }
@@ -110,14 +122,16 @@ const shareTemplates: ShareTemplate[] = [
       {
         id: 'tw1',
         name: 'Thread projet',
-        content: '🧵 THREAD : Comment j\'ai créé ce site en [X] jours\n\n1/ Le brief client\n2/ La stratégie design\n3/ Le développement\n4/ Le résultat final\n\nTout le processus en détail 👇\n\n[LIEN_SITE]',
+        content:
+          "🧵 THREAD : Comment j'ai créé ce site en [X] jours\n\n1/ Le brief client\n2/ La stratégie design\n3/ Le développement\n4/ Le résultat final\n\nTout le processus en détail 👇\n\n[LIEN_SITE]",
         hashtags: ['#thread', '#webdev', '#process'],
         performance: 'high'
       },
       {
         id: 'tw2',
         name: 'Quick share',
-        content: '🚀 Nouveau site live !\n\n✅ Design moderne\n✅ Performance optimisée\n✅ Mobile-first\n\nFeedback welcome ! 💬\n\n[LIEN_SITE]',
+        content:
+          '🚀 Nouveau site live !\n\n✅ Design moderne\n✅ Performance optimisée\n✅ Mobile-first\n\nFeedback welcome ! 💬\n\n[LIEN_SITE]',
         hashtags: ['#webdesign', '#launch', '#feedback'],
         performance: 'medium'
       }
@@ -179,7 +193,8 @@ export function SocialShareTemplates() {
             Templates de partage
           </CardTitle>
           <CardDescription>
-            Utilisez ces templates optimisés pour partager vos créations sur les réseaux sociaux
+            Utilisez ces templates optimisés pour partager vos créations sur les
+            réseaux sociaux
           </CardDescription>
         </CardHeader>
       </Card>
@@ -190,7 +205,11 @@ export function SocialShareTemplates() {
           {shareTemplates.map(platform => {
             const Icon = platform.icon;
             return (
-              <TabsTrigger key={platform.id} value={platform.id} className="flex items-center gap-2">
+              <TabsTrigger
+                key={platform.id}
+                value={platform.id}
+                className="flex items-center gap-2"
+              >
                 <Icon className={`h-4 w-4 ${platform.color}`} />
                 {platform.platform}
               </TabsTrigger>
@@ -200,22 +219,27 @@ export function SocialShareTemplates() {
 
         {shareTemplates.map(platform => (
           <TabsContent key={platform.id} value={platform.id} className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {platform.templates.map(template => (
-                <Card key={template.id} className="hover:shadow-lg transition-shadow">
+                <Card
+                  key={template.id}
+                  className="transition-shadow hover:shadow-lg"
+                >
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg">{template.name}</CardTitle>
-                      <Badge className={performanceColors[template.performance]}>
+                      <Badge
+                        className={performanceColors[template.performance]}
+                      >
                         {performanceLabels[template.performance]}
                       </Badge>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     {/* Contenu du template */}
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <pre className="text-sm whitespace-pre-wrap font-sans">
+                    <div className="rounded-lg bg-gray-50 p-3">
+                      <pre className="font-sans text-sm whitespace-pre-wrap">
                         {template.content}
                       </pre>
                     </div>
@@ -224,7 +248,11 @@ export function SocialShareTemplates() {
                     {template.hashtags && (
                       <div className="flex flex-wrap gap-1">
                         {template.hashtags.map(hashtag => (
-                          <Badge key={hashtag} variant="outline" className="text-xs">
+                          <Badge
+                            key={hashtag}
+                            variant="outline"
+                            className="text-xs"
+                          >
                             {hashtag}
                           </Badge>
                         ))}
@@ -236,17 +264,21 @@ export function SocialShareTemplates() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => copyToClipboard(template.content, template.id)}
+                        onClick={() =>
+                          copyToClipboard(template.content, template.id)
+                        }
                         className="flex-1"
                       >
-                        <Copy className="h-4 w-4 mr-1" />
+                        <Copy className="mr-1 h-4 w-4" />
                         {copiedTemplate === template.id ? 'Copié !' : 'Copier'}
                       </Button>
-                      
+
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => openSocialShare(platform.id, template.content)}
+                        onClick={() =>
+                          openSocialShare(platform.id, template.content)
+                        }
                       >
                         <ExternalLink className="h-4 w-4" />
                       </Button>
@@ -271,24 +303,24 @@ export function SocialShareTemplates() {
           <Textarea
             placeholder="Écrivez votre message personnalisé ici..."
             value={customContent}
-            onChange={(e) => setCustomContent(e.target.value)}
+            onChange={e => setCustomContent(e.target.value)}
             rows={6}
           />
-          
+
           <div className="flex gap-2">
             <Button
               variant="outline"
               onClick={() => copyToClipboard(customContent, 'custom')}
               disabled={!customContent}
             >
-              <Copy className="h-4 w-4 mr-1" />
+              <Copy className="mr-1 h-4 w-4" />
               Copier
             </Button>
-            
+
             {['facebook', 'twitter', 'linkedin'].map(platform => {
               const platformData = shareTemplates.find(p => p.id === platform);
               const Icon = platformData?.icon || Share2;
-              
+
               return (
                 <Button
                   key={platform}
@@ -305,29 +337,42 @@ export function SocialShareTemplates() {
       </Card>
 
       {/* Conseils de partage */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="border-blue-200 bg-blue-50">
         <CardHeader>
-          <CardTitle className="text-blue-800">💡 Conseils pour maximiser vos partages</CardTitle>
+          <CardTitle className="text-blue-800">
+            💡 Conseils pour maximiser vos partages
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-blue-700">
           <div className="flex items-start gap-2">
-            <div className="h-1.5 w-1.5 bg-blue-500 rounded-full mt-2" />
-            <span className="text-sm">Personnalisez toujours les templates avec le nom du client et le secteur</span>
+            <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="text-sm">
+              Personnalisez toujours les templates avec le nom du client et le
+              secteur
+            </span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="h-1.5 w-1.5 bg-blue-500 rounded-full mt-2" />
-            <span className="text-sm">Partagez aux heures de forte affluence (12h-14h et 18h-20h)</span>
+            <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="text-sm">
+              Partagez aux heures de forte affluence (12h-14h et 18h-20h)
+            </span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="h-1.5 w-1.5 bg-blue-500 rounded-full mt-2" />
-            <span className="text-sm">Ajoutez une image ou capture d'écran du site pour plus d'engagement</span>
+            <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="text-sm">
+              {
+                "Ajoutez une image ou capture d'écran du site pour plus d'engagement"
+              }
+            </span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="h-1.5 w-1.5 bg-blue-500 rounded-full mt-2" />
-            <span className="text-sm">Répondez aux commentaires pour augmenter la portée</span>
+            <div className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="text-sm">
+              Répondez aux commentaires pour augmenter la portée
+            </span>
           </div>
         </CardContent>
       </Card>
     </div>
   );
-} 
+}
