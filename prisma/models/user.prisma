@@ -66,6 +66,23 @@ model User {
   clicks         Click[]         @relation("ClickUser")
   referrals      Click[]         @relation("ClickReferer")
 
+  // Relations pour le système de quêtes et récompenses (données atomiques)
+  userQuests         UserQuest[]
+  userRewards        UserReward[]
+  userBadges         UserBadge[]
+  pointsTransactions PointsTransaction[]
+
+  // Relations pour les notifications
+  notifications           Notification[]
+  notificationPreferences NotificationPreference?
+
+  // Relations pour les analytics (données atomiques)
+  creatorConversions ConversionTracking[]  @relation("CreatorConversions")
+  creatorShares      SocialShareTracking[] @relation("CreatorShares")
+  referralsMade      ReferralTracking[]    @relation("ReferralsMade")
+  referralsReceived  ReferralTracking[]    @relation("ReferralsReceived")
+  withdrawals        Withdrawal[]
+
   @@index([email])
   @@index([role])
   @@index([bounced])

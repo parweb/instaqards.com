@@ -62,6 +62,29 @@ This project uses Prisma's multi-file schema feature to organize the database mo
 - **`models/system.prisma`** - System and infrastructure models:
   - Cron, History
 
+#### Creator Gamification System
+
+- **`models/quest.prisma`** - Quest and gamification models:
+
+  - Quest, QuestStep, UserQuest, UserQuestStep, RecurringQuest
+  - QuestType, QuestStatus, QuestDifficulty, QuestStepStatus enums
+
+- **`models/reward.prisma`** - Reward and level system models:
+
+  - Reward, UserReward, QuestReward, Badge, UserBadge
+  - CreatorLevel, UserLevel, PointsTransaction, Leaderboard
+  - RewardType, RewardRarity, RewardStatus, BadgeCategory enums
+
+- **`models/notification.prisma`** - Notification system models:
+
+  - Notification, NotificationTemplate, NotificationPreference
+  - NotificationType, NotificationPriority, NotificationStatus enums
+
+- **`models/analytics.prisma`** - Analytics and tracking models:
+  - CreatorMetric, EarningsHistory, ConversionTracking
+  - SocialShareTracking, PerformanceGoal, ReferralTracking
+  - MetricType, TimePeriod enums
+
 ## Benefits of This Structure
 
 1. **Better Organization** - Related models are grouped together logically

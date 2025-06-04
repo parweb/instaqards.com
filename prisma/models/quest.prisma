@@ -1,0 +1,154 @@
+enum QuestType {
+  SITE_CREATION
+  SITE_COMPLETION
+  SOCIAL_SHARING
+  TRAFFIC_GENERATION
+  CONVERSION
+  SEASONAL
+  MILESTONE
+}
+
+enum QuestStatus {
+  ACTIVE
+  COMPLETED
+  EXPIRED
+  DRAFT
+}
+
+enum QuestDifficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXPERT
+}
+
+enum QuestStepStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+model Quest {
+  id String @id @default(cuid())
+
+  title       String
+  description String
+  type        QuestType
+  difficulty  QuestDifficulty @default(EASY)
+  status      QuestStatus     @default(ACTIVE)
+
+  // Récompense simplifiée
+  pointsReward Int @default(0)
+
+  // Conditions essentielles
+  targetValue      Int? // Valeur cible (ex: 100 clics, 5 conversions)
+  timeLimit        Int? // Limite de temps en heures
+  requiresApproval Boolean @default(false)
+
+  // Métadonnées
+  imageUrl String?
+  theme    String? // Halloween, Christmas, etc.
+  priority Int     @default(0)
+
+  // Dates
+  startDate DateTime  @default(now())
+  endDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  steps        QuestStep[]
+  userQuests   UserQuest[]
+  questRewards QuestReward[]
+
+  @@index([type])
+  @@index([status])
+  @@index([difficulty])
+  @@index([startDate, endDate])
+  @@index([theme])
+  @@index([priority])
+}
+
+model QuestStep {
+  id String @id @default(cuid())
+
+  title       String
+  description String
+  order       Int
+  status      QuestStepStatus @default(PENDING)
+
+  // Conditions de validation
+  targetType    String? // "site_created", "clicks", "shares", etc.
+  targetValue   Int?
+  validationUrl String? // URL pour validation manuelle
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  quest     Quest           @relation(fields: [questId], references: [id], onDelete: Cascade)
+  questId   String
+  userSteps UserQuestStep[]
+
+  @@index([questId, order])
+  @@index([targetType])
+}
+
+model UserQuest {
+  id String @id @default(cuid())
+
+  status QuestStatus @default(ACTIVE)
+
+  // Dates (événements atomiques uniquement)
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  claimedAt   DateTime? // Date de réclamation de la récompense
+
+  // Validation admin
+  needsApproval   Boolean   @default(false)
+  approvedAt      DateTime?
+  approvedBy      String? // ID de l'admin qui a approuvé
+  rejectedAt      DateTime?
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  quest   Quest           @relation(fields: [questId], references: [id], onDelete: Cascade)
+  questId String
+  steps   UserQuestStep[]
+
+  @@unique([userId, questId])
+  @@index([userId])
+  @@index([questId])
+  @@index([status])
+  @@index([completedAt])
+  @@index([needsApproval])
+}
+
+model UserQuestStep {
+  id String @id @default(cuid())
+
+  status         QuestStepStatus @default(PENDING)
+  completedAt    DateTime?
+  validationData Json? // Données de validation (URLs, screenshots, etc.)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userQuest   UserQuest @relation(fields: [userQuestId], references: [id], onDelete: Cascade)
+  userQuestId String
+  step        QuestStep @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  stepId      String
+
+  @@unique([userQuestId, stepId])
+  @@index([userQuestId])
+  @@index([stepId])
+  @@index([status])
+}

@@ -18,6 +18,9 @@ model Click {
   referer   User?   @relation("ClickReferer", fields: [refererId], references: [id])
   refererId String?
 
+  // Relations pour les analytics
+  conversions ConversionTracking[]
+
   @@index([createdAt])
   @@index([siteId])
   @@index([linkId])
@@ -119,6 +122,10 @@ model Site {
   subscribers Subscriber[]
   likes       Like[]
   feed        Feed[]
+
+  // Relations pour les analytics
+  conversions  ConversionTracking[]
+  socialShares SocialShareTracking[]
 
   @@index([userId])
   @@index([userId, createdAt])
