@@ -4,7 +4,6 @@ import Image from 'next/image';
 
 import { BackButton } from 'components/auth/back-button';
 import { Header } from 'components/auth/header';
-import { Social } from 'components/auth/social';
 import { Card, CardContent, CardFooter, CardHeader } from 'components/ui/card';
 import { uri } from 'settings';
 
@@ -13,15 +12,13 @@ interface CardWrapperProps {
   headerLabel: string;
   backButtonLabel: string;
   backButtonHref: string;
-  showSocial?: boolean;
 }
 
 export const CardWrapper = ({
   children,
   headerLabel,
   backButtonLabel,
-  backButtonHref,
-  showSocial
+  backButtonHref
 }: CardWrapperProps) => {
   const ratio = 0.3333;
 
@@ -41,12 +38,6 @@ export const CardWrapper = ({
       </CardHeader>
 
       <CardContent>{children}</CardContent>
-
-      {showSocial && (
-        <CardFooter>
-          <Social />
-        </CardFooter>
-      )}
 
       <CardFooter className="flex flex-col gap-4">
         <BackButton label={backButtonLabel} href={backButtonHref} />

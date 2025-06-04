@@ -1,12 +1,13 @@
 import { UserRole } from '@prisma/client';
-import type { Session } from 'next-auth';
+
+import { Session } from 'lib/types';
 
 import { db } from 'helpers/db';
 import { getSession } from 'lib/auth';
 import { select, UserKanban } from 'services/lead/type';
 
 type Context = {
-  referer: Pick<Session['user'], 'id'>;
+  referer: { id: Session['user']['id'] };
   db: typeof db;
 };
 

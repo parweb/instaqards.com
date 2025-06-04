@@ -1,9 +1,9 @@
 import type { PricingPlanInterval } from '@prisma/client';
-import type { User } from 'next-auth';
 import type Stripe from 'stripe';
 
 import { db } from 'helpers/db';
 import { stripe } from 'helpers/stripe';
+import { Session } from 'lib/types';
 
 export const toDateTime = (secs: number) => {
   const date = new Date(+0);
@@ -15,7 +15,7 @@ export const createOrRetrieveCustomer = async ({
   id: uuid,
   email,
   name
-}: User) => {
+}: Session['user']) => {
   const customer = await db.customer.findUnique({
     select: {
       stripe_customer_id: true

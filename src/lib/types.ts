@@ -1,3 +1,7 @@
+import { getSession } from 'lib/auth';
+
+export type Session = NonNullable<Awaited<ReturnType<typeof getSession>>>;
+
 export type DomainVerificationStatusProps =
   | 'Valid Configuration'
   | 'Invalid Configuration'
