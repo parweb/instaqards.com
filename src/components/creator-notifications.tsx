@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Bell, 
-  X, 
-  Target, 
-  Trophy, 
+import {
+  Bell,
+  X,
+  Target,
+  Trophy,
   Star,
   Gift,
   TrendingUp,
@@ -16,7 +16,13 @@ import {
 } from 'lucide-react';
 
 import { Button } from 'components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
 import { ScrollArea } from 'components/ui/scroll-area';
 
@@ -38,7 +44,8 @@ const mockNotifications: Notification[] = [
     id: '1',
     type: 'quest',
     title: 'Nouvelle quête disponible !',
-    message: 'Une nouvelle quête "Site Noël - Restaurant" vient d\'être ajoutée. Récompense: 25 points + boost commission.',
+    message:
+      'Une nouvelle quête "Site Noël - Restaurant" vient d\'être ajoutée. Récompense: 25 points + boost commission.',
     timestamp: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
     isRead: false,
     priority: 'high',
@@ -49,7 +56,8 @@ const mockNotifications: Notification[] = [
     id: '2',
     type: 'achievement',
     title: 'Nouveau niveau atteint !',
-    message: 'Félicitations ! Vous venez de passer au niveau "Confirmé". Votre commission passe à 5.5%.',
+    message:
+      'Félicitations ! Vous venez de passer au niveau "Confirmé". Votre commission passe à 5.5%.',
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
     isRead: false,
     priority: 'high',
@@ -60,7 +68,8 @@ const mockNotifications: Notification[] = [
     id: '3',
     type: 'reward',
     title: 'Récompense disponible',
-    message: 'Vous avez débloqué une nouvelle récompense : "Boost Commission 20%". Réclamez-la maintenant !',
+    message:
+      'Vous avez débloqué une nouvelle récompense : "Boost Commission 20%". Réclamez-la maintenant !',
     timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
     isRead: true,
     priority: 'medium',
@@ -71,7 +80,8 @@ const mockNotifications: Notification[] = [
     id: '4',
     type: 'reminder',
     title: 'Quête bientôt expirée',
-    message: 'La quête "Site Halloween 2024" expire dans 24h. Il vous reste 2 étapes à compléter.',
+    message:
+      'La quête "Site Halloween 2024" expire dans 24h. Il vous reste 2 étapes à compléter.',
     timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
     isRead: true,
     priority: 'medium',
@@ -82,7 +92,8 @@ const mockNotifications: Notification[] = [
     id: '5',
     type: 'system',
     title: 'Mise à jour des templates',
-    message: 'De nouveaux templates de partage pour Instagram et TikTok sont maintenant disponibles.',
+    message:
+      'De nouveaux templates de partage pour Instagram et TikTok sont maintenant disponibles.',
     timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
     isRead: true,
     priority: 'low',
@@ -113,7 +124,7 @@ const getNotificationColor = (type: string, priority: string) => {
   if (priority === 'high') {
     return 'text-red-600 bg-red-50 border-red-200';
   }
-  
+
   switch (type) {
     case 'quest':
       return 'text-blue-600 bg-blue-50 border-blue-200';
@@ -142,11 +153,11 @@ const getPriorityBadge = (priority: string) => {
 const formatTimestamp = (timestamp: Date) => {
   const now = new Date();
   const diff = now.getTime() - timestamp.getTime();
-  
+
   const minutes = Math.floor(diff / (1000 * 60));
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  
+
   if (minutes < 60) {
     return `Il y a ${minutes} min`;
   } else if (hours < 24) {
@@ -161,23 +172,24 @@ interface CreatorNotificationsProps {
   onClose: () => void;
 }
 
-export function CreatorNotifications({ isOpen, onClose }: CreatorNotificationsProps) {
+export function CreatorNotifications({
+  isOpen,
+  onClose
+}: CreatorNotificationsProps) {
   const [notifications, setNotifications] = useState(mockNotifications);
-  
+
   const unreadCount = notifications.filter(n => !n.isRead).length;
-  
+
   const markAsRead = (id: string) => {
-    setNotifications(prev => 
-      prev.map(n => n.id === id ? { ...n, isRead: true } : n)
+    setNotifications(prev =>
+      prev.map(n => (n.id === id ? { ...n, isRead: true } : n))
     );
   };
-  
+
   const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(n => ({ ...n, isRead: true }))
-    );
+    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
   };
-  
+
   const deleteNotification = (id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
@@ -185,15 +197,15 @@ export function CreatorNotifications({ isOpen, onClose }: CreatorNotificationsPr
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-end p-4">
-      <Card className="w-full max-w-md h-[80vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-start justify-end bg-black/50 p-4">
+      <Card className="flex h-[80vh] w-full max-w-md flex-col">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div>
             <CardTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5" />
               Notifications
               {unreadCount > 0 && (
-                <Badge className="bg-red-100 text-red-800 ml-2">
+                <Badge className="ml-2 bg-red-100 text-red-800">
                   {unreadCount}
                 </Badge>
               )}
@@ -210,38 +222,47 @@ export function CreatorNotifications({ isOpen, onClose }: CreatorNotificationsPr
             </Button>
           </div>
         </CardHeader>
-        
+
         <CardContent className="flex-1 p-0">
           <ScrollArea className="h-full px-6">
             <div className="space-y-3">
               {notifications.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <div className="py-8 text-center text-gray-500">
+                  <Bell className="mx-auto mb-2 h-8 w-8 opacity-50" />
                   <p>Aucune notification</p>
                 </div>
               ) : (
                 notifications.map(notification => (
                   <div
                     key={notification.id}
-                    className={`p-4 rounded-lg border transition-all cursor-pointer ${
-                      notification.isRead 
-                        ? 'bg-gray-50 border-gray-200' 
-                        : getNotificationColor(notification.type, notification.priority)
+                    className={`cursor-pointer rounded-lg border p-4 transition-all ${
+                      notification.isRead
+                        ? 'border-gray-200 bg-gray-50'
+                        : getNotificationColor(
+                            notification.type,
+                            notification.priority
+                          )
                     }`}
                     onClick={() => markAsRead(notification.id)}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={`p-2 rounded-full ${
-                        notification.isRead ? 'bg-gray-100' : 'bg-white'
-                      }`}>
+                      <div
+                        className={`rounded-full p-2 ${
+                          notification.isRead ? 'bg-gray-100' : 'bg-white'
+                        }`}
+                      >
                         {getNotificationIcon(notification.type)}
                       </div>
-                      
-                      <div className="flex-1 min-w-0">
+
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className={`font-medium text-sm ${
-                            notification.isRead ? 'text-gray-700' : 'text-gray-900'
-                          }`}>
+                          <h4
+                            className={`text-sm font-medium ${
+                              notification.isRead
+                                ? 'text-gray-700'
+                                : 'text-gray-900'
+                            }`}
+                          >
                             {notification.title}
                           </h4>
                           <div className="flex items-center gap-1">
@@ -249,7 +270,7 @@ export function CreatorNotifications({ isOpen, onClose }: CreatorNotificationsPr
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.stopPropagation();
                                 deleteNotification(notification.id);
                               }}
@@ -259,27 +280,34 @@ export function CreatorNotifications({ isOpen, onClose }: CreatorNotificationsPr
                             </Button>
                           </div>
                         </div>
-                        
-                        <p className={`text-sm mt-1 ${
-                          notification.isRead ? 'text-gray-500' : 'text-gray-700'
-                        }`}>
+
+                        <p
+                          className={`mt-1 text-sm ${
+                            notification.isRead
+                              ? 'text-gray-500'
+                              : 'text-gray-700'
+                          }`}
+                        >
                           {notification.message}
                         </p>
-                        
-                        <div className="flex items-center justify-between mt-3">
+
+                        <div className="mt-3 flex items-center justify-between">
                           <span className="text-xs text-gray-400">
                             {formatTimestamp(notification.timestamp)}
                           </span>
-                          
+
                           {notification.actionUrl && (
                             <Button
                               variant="outline"
                               size="sm"
-                              className="text-xs h-7"
-                              onClick={(e) => {
+                              className="h-7 text-xs"
+                              onClick={e => {
                                 e.stopPropagation();
                                 // Navigation logic here
-                                console.log('Navigate to:', notification.actionUrl);
+                                console.log(
+                                  'Navigate to:',
+                                  notification.actionUrl
+                                );
                               }}
                             >
                               {notification.actionLabel}
@@ -314,16 +342,13 @@ export function NotificationButton() {
       >
         <Bell className="h-4 w-4" />
         {unreadCount > 0 && (
-          <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-red-500 text-white">
+          <Badge className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 p-0 text-xs text-white">
             {unreadCount > 9 ? '9+' : unreadCount}
           </Badge>
         )}
       </Button>
-      
-      <CreatorNotifications 
-        isOpen={isOpen} 
-        onClose={() => setIsOpen(false)} 
-      />
+
+      <CreatorNotifications isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
-} 
+}

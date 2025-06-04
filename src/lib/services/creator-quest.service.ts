@@ -190,7 +190,7 @@ export class CreatorQuestService {
         type: true,
         difficulty: true,
         pointsReward: true,
-        endDate:true,
+        endDate: true,
         theme: true,
         steps: {
           select: {

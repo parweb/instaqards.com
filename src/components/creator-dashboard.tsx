@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { 
-  Target, 
-  Trophy, 
-  Clock, 
-  CheckCircle, 
+import {
+  Target,
+  Trophy,
+  Clock,
+  CheckCircle,
   Coins,
   Star,
   TrendingUp,
@@ -23,7 +23,13 @@ import {
 import { NotificationButton } from 'components/creator-notifications';
 
 import { Button } from 'components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
 import { Progress } from 'components/ui/progress';
 
@@ -76,7 +82,8 @@ const mockActiveQuests: Quest[] = [
   {
     id: '1',
     title: 'Site Halloween 2024',
-    description: 'Créez un site avec le thème Halloween selon les critères admin',
+    description:
+      'Créez un site avec le thème Halloween selon les critères admin',
     progress: 2,
     maxProgress: 5,
     reward: 15,
@@ -87,7 +94,8 @@ const mockActiveQuests: Quest[] = [
   {
     id: '2',
     title: 'Modification Site Lead - Coiffeur',
-    description: 'Modernisez le site d\'un coiffeur prospect avec galerie et RDV',
+    description:
+      "Modernisez le site d'un coiffeur prospect avec galerie et RDV",
     progress: 1,
     maxProgress: 6,
     reward: 18,
@@ -151,16 +159,17 @@ export function CreatorDashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
+    <div className="min-h-screen space-y-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
       {/* Welcome Header */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-3xl font-bold tracking-tight text-transparent">
               Bienvenue dans votre espace Creator
             </h1>
             <p className="text-muted-foreground">
-              Créez des sites selon les thèmes admin, partagez sur les réseaux sociaux et gagnez des points selon vos validations.
+              Créez des sites selon les thèmes admin, partagez sur les réseaux
+              sociaux et gagnez des points selon vos validations.
             </p>
           </div>
           <NotificationButton />
@@ -168,23 +177,27 @@ export function CreatorDashboard() {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="border-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium opacity-90">Sites créés</CardTitle>
+            <CardTitle className="text-sm font-medium opacity-90">
+              Sites créés
+            </CardTitle>
             <Target className="h-4 w-4 opacity-90" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockStats.completedQuests}</div>
-            <p className="text-xs opacity-75">
-              sites validés par admin
-            </p>
+            <div className="text-2xl font-bold">
+              {mockStats.completedQuests}
+            </div>
+            <p className="text-xs opacity-75">sites validés par admin</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
+        <Card className="border-0 bg-gradient-to-br from-green-500 to-green-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium opacity-90">Points gagnés</CardTitle>
+            <CardTitle className="text-sm font-medium opacity-90">
+              Points gagnés
+            </CardTitle>
             <Star className="h-4 w-4 opacity-90" />
           </CardHeader>
           <CardContent>
@@ -195,35 +208,39 @@ export function CreatorDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
+        <Card className="border-0 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium opacity-90">Taux validation</CardTitle>
+            <CardTitle className="text-sm font-medium opacity-90">
+              Taux validation
+            </CardTitle>
             <CheckCircle className="h-4 w-4 opacity-90" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockStats.engagementRate}%</div>
-            <p className="text-xs opacity-75">
-              sites approuvés par admin
-            </p>
+            <div className="text-2xl font-bold">
+              {mockStats.engagementRate}%
+            </div>
+            <p className="text-xs opacity-75">sites approuvés par admin</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
+        <Card className="border-0 bg-gradient-to-br from-orange-500 to-orange-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium opacity-90">Vues totales</CardTitle>
+            <CardTitle className="text-sm font-medium opacity-90">
+              Vues totales
+            </CardTitle>
             <Eye className="h-4 w-4 opacity-90" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockStats.monthlyViews.toLocaleString()}</div>
-            <p className="text-xs opacity-75">
-              sur tous vos sites
-            </p>
+            <div className="text-2xl font-bold">
+              {mockStats.monthlyViews.toLocaleString()}
+            </div>
+            <p className="text-xs opacity-75">sur tous vos sites</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Active Quests */}
         <div className="lg:col-span-2">
           <Card>
@@ -241,18 +258,23 @@ export function CreatorDashboard() {
                 <Link href="/app/affiliation">
                   <Button variant="outline" size="sm">
                     Voir toutes
-                    <ArrowRight className="h-4 w-4 ml-1" />
+                    <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
                 </Link>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               {mockActiveQuests.map(quest => (
-                <div key={quest.id} className="p-4 border rounded-lg bg-gradient-to-r from-gray-50 to-blue-50">
-                  <div className="flex items-start justify-between mb-2">
+                <div
+                  key={quest.id}
+                  className="rounded-lg border bg-gradient-to-r from-gray-50 to-blue-50 p-4"
+                >
+                  <div className="mb-2 flex items-start justify-between">
                     <div>
                       <h4 className="font-medium">{quest.title}</h4>
-                      <p className="text-sm text-muted-foreground">{quest.description}</p>
+                      <p className="text-muted-foreground text-sm">
+                        {quest.description}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <Badge className={difficultyColors[quest.difficulty]}>
@@ -260,25 +282,32 @@ export function CreatorDashboard() {
                       </Badge>
                       {quest.timeLeft && (
                         <Badge variant="outline" className="text-orange-600">
-                          <Clock className="h-3 w-3 mr-1" />
+                          <Clock className="mr-1 h-3 w-3" />
                           {quest.timeLeft}h
                         </Badge>
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Progression</span>
-                      <span>{quest.progress}/{quest.maxProgress}</span>
+                      <span>
+                        {quest.progress}/{quest.maxProgress}
+                      </span>
                     </div>
-                    <Progress value={(quest.progress / quest.maxProgress) * 100} className="h-2" />
+                    <Progress
+                      value={(quest.progress / quest.maxProgress) * 100}
+                      className="h-2"
+                    />
                   </div>
-                  
-                  <div className="flex items-center justify-between mt-3">
+
+                  <div className="mt-3 flex items-center justify-between">
                     <div className="flex items-center gap-1 text-sm text-green-600">
                       <Coins className="h-4 w-4" />
-                      <span>{quest.reward} {quest.currency}</span>
+                      <span>
+                        {quest.reward} {quest.currency}
+                      </span>
                     </div>
                     <Button size="sm" variant="outline">
                       Continuer
@@ -303,19 +332,19 @@ export function CreatorDashboard() {
             <CardContent className="space-y-3">
               <Link href="/app/affiliation">
                 <Button className="w-full justify-start" variant="outline">
-                  <Target className="h-4 w-4 mr-2" />
+                  <Target className="mr-2 h-4 w-4" />
                   Voir mes quêtes
                 </Button>
               </Link>
               <Link href="/app/affiliation">
                 <Button className="w-full justify-start" variant="outline">
-                  <Trophy className="h-4 w-4 mr-2" />
+                  <Trophy className="mr-2 h-4 w-4" />
                   Réclamer récompenses
                 </Button>
               </Link>
               <Link href="/app/affiliation">
                 <Button className="w-full justify-start" variant="outline">
-                  <DollarSign className="h-4 w-4 mr-2" />
+                  <DollarSign className="mr-2 h-4 w-4" />
                   Mon affiliation
                 </Button>
               </Link>
@@ -332,16 +361,23 @@ export function CreatorDashboard() {
             </CardHeader>
             <CardContent className="space-y-3">
               {mockRecentAchievements.map(achievement => (
-                <div key={achievement.id} className="flex items-center gap-3 p-2 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50">
+                <div
+                  key={achievement.id}
+                  className="flex items-center gap-3 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 p-2"
+                >
                   <div className="text-2xl">{achievement.icon}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-sm">{achievement.title}</h4>
+                      <h4 className="text-sm font-medium">
+                        {achievement.title}
+                      </h4>
                       <Badge className={rarityColors[achievement.rarity]}>
                         {achievement.rarity}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                    <p className="text-muted-foreground text-xs">
+                      {achievement.description}
+                    </p>
                     <p className="text-xs text-gray-500">
                       {achievement.unlockedAt.toLocaleDateString('fr-FR')}
                     </p>
@@ -366,19 +402,27 @@ export function CreatorDashboard() {
                   <span>Débutant (63%)</span>
                 </div>
                 <Progress value={63} className="h-2" />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   73 points pour le niveau Confirmé
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-green-600">{mockStats.completedQuests}</div>
-                  <div className="text-xs text-muted-foreground">Sites validés</div>
+                  <div className="text-lg font-bold text-green-600">
+                    {mockStats.completedQuests}
+                  </div>
+                  <div className="text-muted-foreground text-xs">
+                    Sites validés
+                  </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-blue-600">{mockStats.activeQuests}</div>
-                  <div className="text-xs text-muted-foreground">Quêtes actives</div>
+                  <div className="text-lg font-bold text-blue-600">
+                    {mockStats.activeQuests}
+                  </div>
+                  <div className="text-muted-foreground text-xs">
+                    Quêtes actives
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -387,4 +431,4 @@ export function CreatorDashboard() {
       </div>
     </div>
   );
-} 
+}
