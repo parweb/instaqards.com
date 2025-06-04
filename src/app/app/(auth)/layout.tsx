@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     <Suspense fallback={null}>
       <div className="flex min-h-screen">
         <div className="flex flex-1 items-center justify-center">
-          {children}
+          <Suspense fallback={null}>{children}</Suspense>
         </div>
 
         <div className="hidden flex-1 items-center justify-center lg:flex">

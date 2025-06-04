@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import { Header } from './home/section/header';
 
 export default function MarketingLayout({
@@ -9,7 +11,7 @@ export default function MarketingLayout({
     <div id="layout" className="flex flex-col">
       <Header />
 
-      {children}
+      <Suspense fallback={null}>{children}</Suspense>
     </div>
   );
 }
