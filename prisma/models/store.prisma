@@ -43,6 +43,7 @@ model Inventory {
   categoryId String?
   category   Category?          @relation(fields: [categoryId], references: [id])
   variants   InventoryVariant[]
+  orderItems OrderItem[]
 
   block   Block  @relation(fields: [blockId], references: [id])
   blockId String
@@ -64,4 +65,74 @@ model InventoryVariant {
   inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
 
   @@unique([inventoryId, type, value])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  orderNumber    String      @unique // Format: ORD-2024-001
+  
+  // Informations client
+  customerFirstName String
+  customerLastName  String
+  customerEmail     String
+  customerPhone     String?
+  customerAddress   Json      // Structure d'adresse Google Maps
+  
+  // Informations commande
+  subtotal      Decimal     @db.Decimal(10, 2)
+  tax           Decimal     @default(0) @db.Decimal(10, 2)
+  shipping      Decimal     @default(0) @db.Decimal(10, 2)
+  total         Decimal     @db.Decimal(10, 2)
+  status        OrderStatus @default(PENDING)
+  
+  // Métadonnées
+  notes         String?
+  trackingNumber String?
+  shippedAt     DateTime?
+  deliveredAt   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  // Relations
+  items         OrderItem[]
+  block         Block       @relation(fields: [blockId], references: [id])
+  blockId       String
+  
+  @@index([orderNumber])
+  @@index([customerEmail])
+  @@index([status])
+  @@index([createdAt])
+  @@index([blockId])
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  quantity    Int
+  unitPrice   Decimal @db.Decimal(10, 2)
+  totalPrice  Decimal @db.Decimal(10, 2)
+  
+  // Snapshot des données produit au moment de la commande
+  productName        String
+  productDescription String?
+  productSku         String?
+  
+  // Relations
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  inventoryId String
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([orderId])
+  @@index([inventoryId])
 }

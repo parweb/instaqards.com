@@ -70,6 +70,7 @@ model Block {
   siteId       String
   categories   Category[]
   inventories  Inventory[]
+  orders       Order[]
 
   @@index([siteId])
   @@index([type])

@@ -445,8 +445,23 @@ const Inventory = ({
 };
 
 // Formulaire de commande
-const OrderForm = ({ onClose }: { onClose: () => void }) => {
-  const { control, handleSubmit, reset } = useForm<FieldValues>({
+const OrderForm = ({
+  onClose,
+  blockId
+}: {
+  onClose: () => void;
+  blockId: string;
+}) => {
+  const cart = useAtomValue(getCartAtom(blockId));
+  const setCart = useSetAtom(getCartAtom(blockId));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm<FieldValues>({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -456,20 +471,74 @@ const OrderForm = ({ onClose }: { onClose: () => void }) => {
     }
   });
 
-  const onSubmit = (data: any) => {
-    // TODO: envoyer la commande
-    console.log('Commande envoyée:', data);
-    onClose();
-    reset();
+  const onSubmit = async (data: any) => {
+    if (cart.length === 0) {
+      alert('Votre panier est vide');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const orderData = {
+        blockId,
+        customer: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          address: data.address
+        },
+        items: cart.map(item => ({
+          inventoryId: item.id,
+          quantity: item.quantity,
+          unitPrice: Number(item.basePrice),
+          name: item.name,
+          description: '', // On pourrait ajouter cela plus tard
+          sku: '' // On pourrait ajouter cela plus tard
+        }))
+      };
+
+      const response = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Vider le panier
+        setCart([]);
+
+        // Afficher un message de succès
+        alert(
+          `Commande créée avec succès ! Numéro de commande: ${result.order.orderNumber}`
+        );
+
+        // Fermer le formulaire
+        onClose();
+        reset();
+      } else {
+        alert(`Erreur lors de la création de la commande: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la commande:', error);
+      alert('Erreur lors de la création de la commande. Veuillez réessayer.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <form
-      className="w-full max-w-lg bg-white rounded-lg shadow-xl p-8 flex flex-col gap-4"
+      className="flex w-full max-w-lg flex-col gap-4 rounded-lg bg-white p-8 shadow-xl"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <h2 className="text-2xl font-bold mb-4">Finaliser ma commande</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h2 className="mb-4 text-2xl font-bold">Finaliser ma commande</h2>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Controller
           name="firstName"
           control={control}
@@ -500,15 +569,55 @@ const OrderForm = ({ onClose }: { onClose: () => void }) => {
         control={control}
         rules={{ required: 'Email requis' }}
         render={({ field }) => (
-          <Input {...field} placeholder="Email" type="email" autoComplete="email" />
+          <Input
+            {...field}
+            placeholder="Email"
+            type="email"
+            autoComplete="email"
+          />
         )}
       />
       <div>
-        <Address control={control} name="address" />
+        <Address
+          control={control}
+          name="address"
+          shape={{
+            kind: 'address' as const,
+            label: 'Adresse de livraison',
+            placeholder: 'Entrez votre adresse',
+            defaultValue: {
+              components: {
+                street_number: '',
+                route: '',
+                locality: '',
+                political: '',
+                administrative_area_level_2: '',
+                administrative_area_level_1: '',
+                country: '',
+                postal_code: ''
+              },
+              formatted_address: ''
+            }
+          }}
+          data={{}}
+        />
       </div>
-      <div className="flex justify-end gap-2 mt-4">
-        <Button type="button" variant="ghost" onClick={onClose}>Annuler</Button>
-        <Button type="submit" className="bg-green-600 hover:bg-green-700">Valider la commande</Button>
+      <div className="mt-4 flex justify-end gap-2">
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onClose}
+          disabled={isSubmitting}
+        >
+          Annuler
+        </Button>
+        <Button
+          type="submit"
+          className="bg-green-600 hover:bg-green-700"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Validation en cours...' : 'Valider la commande'}
+        </Button>
       </div>
     </form>
   );
@@ -527,9 +636,7 @@ const Cart = ({ blockId }: { blockId: string }) => {
 
   // Affiche le formulaire de commande dans la modale
   const handleOrder = () => {
-    modal?.show(
-      <OrderForm onClose={() => modal?.hide()} />
-    );
+    modal?.show(<OrderForm onClose={() => modal?.hide()} blockId={blockId} />);
   };
 
   return (
@@ -653,7 +760,10 @@ const Cart = ({ blockId }: { blockId: string }) => {
         </div>
 
         <div className="flex justify-end">
-          <Button className="bg-green-600 hover:bg-green-700" onClick={handleOrder}>
+          <Button
+            className="bg-green-600 hover:bg-green-700"
+            onClick={handleOrder}
+          >
             Commander
           </Button>
         </div>
