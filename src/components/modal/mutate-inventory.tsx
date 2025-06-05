@@ -7,15 +7,13 @@ import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 
+import { Uploader } from 'components/editor/form/types/upload';
 import LoadingDots from 'components/icons/loading-dots';
 import { AutosizeTextarea } from 'components/ui/autosize-textarea';
 import { Button } from 'components/ui/button';
-
-import { Uploader } from 'components/editor/form/types/upload';
 import { Input } from 'components/ui/input';
 import { Label } from 'components/ui/label';
 import { Separator } from 'components/ui/separator';
-import { Switch } from 'components/ui/switch';
 import { mutateInventory } from 'lib/actions';
 import { useModal } from './provider';
 
@@ -27,19 +25,10 @@ import {
   CardTitle
 } from 'components/ui/card';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from 'components/ui/select';
-
 export default function InventoryMutateModal({
   block,
   inventory,
-  medias = [],
-  categories = []
+  medias = []
 }: {
   block: Prisma.SiteGetPayload<{
     select: {
@@ -107,8 +96,6 @@ export default function InventoryMutateModal({
             } else form.append(key, value);
           }
 
-          console.log({ form: Object.fromEntries(form.entries()) });
-
           return mutateInventory(form).then(res => {
             if ('error' in res) {
               toast.error(res.error);
@@ -137,8 +124,35 @@ export default function InventoryMutateModal({
         </CardHeader>
 
         <CardContent className="max-h-[70dvh] space-y-8 overflow-y-auto">
+          <Uploader
+            ref={null as any}
+            name="medias"
+            data={{
+              medias: data.medias
+                .filter(
+                  item =>
+                    item.entityId === inventory?.id &&
+                    item.entityType === EntityType.INVENTORY
+                )
+                .map(item => ({ id: item.id, url: item.url, kind: 'remote' }))
+            }}
+            shape={{
+              kind: 'upload',
+              multiple: true,
+              preview: true,
+              linkable: false,
+              accept: { image: ['image/*'] },
+              label: 'Images'
+            }}
+            setValue={(name, value) => {
+              setData({ ...data, [name]: value });
+            }}
+          />
+
+          <Separator />
+
           {/* Section Statut */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Statut
             </h3>
@@ -180,20 +194,21 @@ export default function InventoryMutateModal({
                 </div>
               </div>
             </div>
-          </div>
-
-          <Separator />
+          </div> */}
+          {/* <Separator /> */}
 
           {/* Section Informations générales */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {/* <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Informations générales
-            </h3>
+            </h3> */}
+
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-sm font-medium">
                   Nom du produit *
                 </Label>
+
                 <Input
                   id="name"
                   name="name"
@@ -204,10 +219,11 @@ export default function InventoryMutateModal({
                 />
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="sku" className="text-sm font-medium">
                   SKU (Référence) *
                 </Label>
+
                 <Input
                   required
                   id="sku"
@@ -216,13 +232,14 @@ export default function InventoryMutateModal({
                   value={data?.sku ?? ''}
                   onChange={e => setData({ ...data, sku: e.target.value })}
                 />
-              </div>
+              </div> */}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="description" className="text-sm font-medium">
                 Description
               </Label>
+
               <AutosizeTextarea
                 id="description"
                 className="min-h-[100px]"
@@ -240,9 +257,9 @@ export default function InventoryMutateModal({
 
           {/* Section Prix et Stock */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {/* <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Prix et inventaire
-            </h3>
+            </h3> */}
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="space-y-2">
@@ -267,7 +284,7 @@ export default function InventoryMutateModal({
                 />
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="stock" className="text-sm font-medium">
                   Stock disponible
                 </Label>
@@ -282,12 +299,13 @@ export default function InventoryMutateModal({
                     setData({ ...data, stock: parseInt(e.target.value) || 0 })
                   }
                 />
-              </div>
+              </div> */}
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="categoryId" className="text-sm font-medium">
                   Catégorie *
                 </Label>
+
                 <Select
                   required
                   name="categoryId"
@@ -306,36 +324,9 @@ export default function InventoryMutateModal({
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
             </div>
           </div>
-
-          <Separator />
-
-          <Uploader
-            ref={null as any}
-            name="medias"
-            data={{
-              medias: data.medias
-                .filter(
-                  item =>
-                    item.entityId === inventory?.id &&
-                    item.entityType === EntityType.INVENTORY
-                )
-                .map(item => ({ id: item.id, url: item.url, kind: 'remote' }))
-            }}
-            shape={{
-              kind: 'upload',
-              multiple: true,
-              preview: true,
-              linkable: false,
-              accept: { image: ['image/*'] },
-              label: 'Images'
-            }}
-            setValue={(name, value) => {
-              setData({ ...data, [name]: value });
-            }}
-          />
         </CardContent>
 
         <CardFooter className="flex justify-end space-x-3 pt-4">

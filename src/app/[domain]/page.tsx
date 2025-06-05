@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { BlockList } from 'app/[domain]/client';
 import { Background } from 'components/website/background';
 import { Content } from 'components/website/content';
 import { Footer } from 'components/website/footer';
@@ -12,7 +13,6 @@ import { translate } from 'helpers/translate';
 import { getSubscription } from 'lib/auth';
 import { getSiteData } from 'lib/fetchers';
 import { uri } from 'settings';
-import { BlockList } from 'app/[domain]/client';
 
 import 'array-grouping-polyfill';
 

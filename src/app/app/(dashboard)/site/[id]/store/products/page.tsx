@@ -1,25 +1,25 @@
 import { EntityType } from '@prisma/client';
 import { PlusIcon } from 'lucide-react';
 import Form from 'next/form';
+import { LuCopy, LuEllipsisVertical, LuTrash } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
 import InventoryMutateModal from 'components/modal/mutate-inventory';
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
-import { Input } from 'components/ui/input';
-import { Separator } from 'components/ui/separator';
+import { CarouselPictures } from 'components/ui/carousel';
+import { Switch } from 'components/ui/switch';
 import { db } from 'helpers/db';
-import { deleteInventory } from 'lib/actions';
-import ProductMedias from './product-medias';
+import { deleteInventory, toggleInventory } from 'lib/actions';
+import { cn } from 'lib/utils';
 
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from 'components/ui/select';
-import { CarouselPictures } from 'components/ui/carousel';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from 'components/ui/dropdown-menu';
 
 export default async function SiteStoreProducts(props: {
   params: Promise<{ id: string }>;
@@ -94,22 +94,22 @@ export default async function SiteStoreProducts(props: {
 
   const categories = block.categories || [];
 
-  // Calculer les statistiques dynamiques
-  const totalProducts = block.inventories.length;
-  const inStockProducts = block.inventories.filter(inv => inv.stock > 0).length;
-  const lowStockProducts = block.inventories.filter(
-    inv => inv.stock > 0 && inv.stock <= 5
-  ).length;
-  const outOfStockProducts = block.inventories.filter(
-    inv => inv.stock === 0
-  ).length;
+  // // Calculer les statistiques dynamiques
+  // const totalProducts = block.inventories.length;
+  // const inStockProducts = block.inventories.filter(inv => inv.stock > 0).length;
+  // const lowStockProducts = block.inventories.filter(
+  //   inv => inv.stock > 0 && inv.stock <= 5
+  // ).length;
+  // const outOfStockProducts = block.inventories.filter(
+  //   inv => inv.stock === 0
+  // ).length;
 
   return (
     <div className="flex min-h-screen flex-1 flex-col gap-6 bg-gray-50 p-6">
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="text-2xl font-bold">Gestion des produits</h1>
         <div className="flex gap-2">
-          <Select defaultValue="all">
+          {/* <Select defaultValue="all">
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Toutes les catégories" />
             </SelectTrigger>
@@ -120,12 +120,14 @@ export default async function SiteStoreProducts(props: {
               <SelectItem value="sweats">Sweats</SelectItem>
               <SelectItem value="accessories">Accessoires</SelectItem>
             </SelectContent>
-          </Select>
-          <Input
+          </Select> */}
+
+          {/* <Input
             type="text"
             placeholder="Rechercher un produit..."
             className="w-48"
-          />
+          /> */}
+
           <ModalButton
             label={
               <>
@@ -139,7 +141,7 @@ export default async function SiteStoreProducts(props: {
       </div>
 
       {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+      {/* <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -201,13 +203,14 @@ export default async function SiteStoreProducts(props: {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
 
       {/* Grille des produits */}
       <Card>
         <CardHeader>
           <CardTitle>Catalogue des produits</CardTitle>
         </CardHeader>
+
         <CardContent>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {block.inventories.map(inventory => {
@@ -220,7 +223,10 @@ export default async function SiteStoreProducts(props: {
               return (
                 <Card
                   key={inventory.id}
-                  className="group overflow-hidden transition-shadow hover:shadow-md"
+                  className={cn(
+                    'group overflow-hidden transition-all duration-300 hover:shadow-md',
+                    !inventory.active && 'opacity-50'
+                  )}
                 >
                   <div className="flex bg-gray-100">
                     <CarouselPictures
@@ -233,9 +239,9 @@ export default async function SiteStoreProducts(props: {
                       {inventory.name}
                     </CardTitle>
 
-                    <p className="mb-2 text-sm text-gray-500">
+                    {/* <p className="mb-2 text-sm text-gray-500">
                       Catégorie: {inventory.category?.name || 'Aucune'}
-                    </p>
+                    </p> */}
 
                     <div className="mb-3 flex items-center justify-between">
                       <span className="text-lg font-bold text-green-600">
@@ -246,11 +252,11 @@ export default async function SiteStoreProducts(props: {
                       </span>
 
                       <div className="flex items-center gap-2">
-                        <span
+                        {/* <span
                           className={`text-sm ${inventory.stock === 0 ? 'text-red-500' : inventory.stock <= 5 ? 'text-orange-500' : 'text-gray-500'}`}
                         >
                           Stock: {inventory.stock}
-                        </span>
+                        </span> */}
 
                         {!inventory.active && (
                           <span className="rounded-full bg-red-100 px-2 py-1 text-xs text-red-800">
@@ -276,24 +282,70 @@ export default async function SiteStoreProducts(props: {
                         />
                       </ModalButton>
 
-                      <Button variant="outline" size="sm" className="flex-1">
-                        Dupliquer
-                      </Button>
-
                       <Form
-                        action={async () => {
+                        action={async (form: FormData) => {
                           'use server';
-                          await deleteInventory(inventory.id);
+
+                          await toggleInventory(form);
                         }}
                       >
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          className="flex-1"
-                        >
-                          Supprimer
+                        <Button variant="ghost" size="icon" type="submit">
+                          <input type="hidden" name="id" value={inventory.id} />
+                          <Switch
+                            defaultChecked={inventory.active}
+                            name="active"
+                          />
                         </Button>
                       </Form>
+
+                      {/* <Switch id="active" name="active" checked={inventory.active} onCheckedChange={active => setData({ ...data, active })} /> */}
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+                            size="icon"
+                          >
+                            <LuEllipsisVertical />
+                          </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent>
+                          <DropdownMenuItem disabled asChild>
+                            <button type="submit" className="w-full">
+                              <LuCopy />
+                              Duplicate
+                            </button>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuSeparator />
+
+                          <Form
+                            action={async (form: FormData) => {
+                              'use server';
+
+                              const id = String(form.get('id'));
+                              if (!id) return;
+
+                              await deleteInventory(id);
+                            }}
+                          >
+                            <input
+                              type="hidden"
+                              name="id"
+                              value={inventory.id}
+                            />
+
+                            <DropdownMenuItem variant="destructive" asChild>
+                              <button type="submit" className="w-full">
+                                <LuTrash />
+                                Delete
+                              </button>
+                            </DropdownMenuItem>
+                          </Form>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </CardContent>
                 </Card>
@@ -325,10 +377,10 @@ export default async function SiteStoreProducts(props: {
             )}
           </div>
 
-          <Separator className="my-6" />
+          {/* <Separator className="my-6" /> */}
 
           {/* Pagination */}
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <div className="text-sm text-gray-500">
               Affichage de 1 à {block.inventories.length} sur{' '}
               {block.inventories.length} produits
@@ -348,7 +400,7 @@ export default async function SiteStoreProducts(props: {
                 Suivant
               </Button>
             </div>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>

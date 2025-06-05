@@ -1,6 +1,7 @@
 'use server';
 
 import { customAlphabet } from 'nanoid';
+import { revalidatePath } from 'next/cache';
 import { after } from 'next/server';
 import slugify from 'slugify';
 import { ulid } from 'ulid';
@@ -39,7 +40,6 @@ import {
   removeDomainFromVercelProject,
   validDomainRegex
 } from 'lib/domains';
-import { revalidatePath } from 'next/cache';
 
 const nanoid = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -1658,17 +1658,17 @@ export const mutateInventory = async (form: FormData) => {
   const blockId = String(form.get('blockId'));
 
   const id = form.has('id') ? String(form.get('id')) : ulid();
-  const active = form.get('active') === 'on';
-  const isFeatured = form.get('isFeatured') === 'on';
+  const active = true || form.get('active') === 'on';
+  // const isFeatured = form.get('isFeatured') === 'on';
   const name = String(form.get('name'));
   const slug = slugify(name, { lower: true, strict: true });
   const description = String(form.get('description'));
-  const sku = String(form.get('sku'));
-  const stock = Number(form.get('stock'));
+  // const sku = String(form.get('sku'));
+  // const stock = Number(form.get('stock'));
   const basePrice = Number(form.get('basePrice'));
-  const categoryId = form.get('categoryId')
-    ? String(form.get('categoryId'))
-    : null;
+  // const categoryId = form.get('categoryId')
+  //   ? String(form.get('categoryId'))
+  //   : null;
 
   const entries = transformArrayToObject(
     [...form.entries()]
@@ -1719,11 +1719,11 @@ export const mutateInventory = async (form: FormData) => {
       name,
       slug,
       description,
-      sku,
-      stock,
+      // sku,
+      // stock,
       basePrice,
-      isFeatured,
-      ...(categoryId && { category: { connect: { id: categoryId } } }),
+      // isFeatured,
+      // ...(categoryId && { category: { connect: { id: categoryId } } }),
       block: { connect: { id: blockId } }
     },
     update: {
@@ -1731,11 +1731,11 @@ export const mutateInventory = async (form: FormData) => {
       name,
       slug,
       description,
-      sku,
-      stock,
-      basePrice,
-      isFeatured,
-      ...(categoryId && { category: { connect: { id: categoryId } } })
+      // sku,
+      // stock,
+      basePrice
+      // isFeatured,
+      // ...(categoryId && { category: { connect: { id: categoryId } } })
     }
   });
 
@@ -1755,6 +1755,33 @@ export const mutateInventory = async (form: FormData) => {
       type: MediaType.IMAGE
     }))
   });
+
+  return response;
+};
+
+export const toggleInventory = async (form: FormData) => {
+  const session = await getSession();
+
+  if (!session?.user?.id) {
+    return { error: await translate('auth.error') };
+  }
+
+  const id = String(form.get('id'));
+
+  const inventory = await db.inventory.findUniqueOrThrow({
+    where: { id },
+    select: { active: true }
+  });
+
+  const response = await db.inventory.update({
+    select: { block: { select: { siteId: true } } },
+    where: { id },
+    data: {
+      active: !inventory.active
+    }
+  });
+
+  revalidatePath(`/site/${response.block.siteId}/store/products`);
 
   return response;
 };

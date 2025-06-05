@@ -14,11 +14,11 @@ export default function StoreNav(props: {
   const segment = useSelectedLayoutSegment();
 
   const navItems = [
-    {
-      name: 'Dashboard',
-      href: `/site/${props.site.id}/store`,
-      segment: null
-    },
+    // {
+    //   name: 'Dashboard',
+    //   href: `/site/${props.site.id}/store`,
+    //   segment: null
+    // },
     {
       name: 'Orders',
       href: `/site/${props.site.id}/store/orders`,
@@ -28,17 +28,17 @@ export default function StoreNav(props: {
       name: 'Products',
       href: `/site/${props.site.id}/store/products`,
       segment: 'products'
-    },
-    {
-      name: 'Categories',
-      href: `/site/${props.site.id}/store/categories`,
-      segment: 'categories'
-    },
-    {
-      name: 'Settings',
-      href: `/site/${props.site.id}/store/settings`,
-      segment: 'settings'
     }
+    // {
+    //   name: 'Categories',
+    //   href: `/site/${props.site.id}/store/categories`,
+    //   segment: 'categories'
+    // },
+    // {
+    //   name: 'Settings',
+    //   href: `/site/${props.site.id}/store/settings`,
+    //   segment: 'settings'
+    // }
   ];
 
   return (
