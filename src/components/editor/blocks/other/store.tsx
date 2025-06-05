@@ -11,6 +11,7 @@ import { atomFamily, atomWithStorage } from 'jotai/utils';
 import { isEqual } from 'lodash-es';
 import { Suspense } from 'react';
 import { z } from 'zod';
+import { useForm, Controller, FieldValues } from 'react-hook-form';
 
 import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
@@ -25,6 +26,8 @@ import {
   MediaSchema
 } from '../../../../../prisma/generated/zod';
 import { $ } from 'helpers/$';
+import { Input } from 'components/ui/input';
+import { Address } from 'components/editor/form/types/address';
 
 export const input = z.object({});
 
@@ -441,16 +444,93 @@ const Inventory = ({
   );
 };
 
+// Formulaire de commande
+const OrderForm = ({ onClose }: { onClose: () => void }) => {
+  const { control, handleSubmit, reset } = useForm<FieldValues>({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      phone: '',
+      email: '',
+      address: null
+    }
+  });
+
+  const onSubmit = (data: any) => {
+    // TODO: envoyer la commande
+    console.log('Commande envoyée:', data);
+    onClose();
+    reset();
+  };
+
+  return (
+    <form
+      className="w-full max-w-lg bg-white rounded-lg shadow-xl p-8 flex flex-col gap-4"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <h2 className="text-2xl font-bold mb-4">Finaliser ma commande</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Controller
+          name="firstName"
+          control={control}
+          rules={{ required: 'Prénom requis' }}
+          render={({ field }) => (
+            <Input {...field} placeholder="Prénom" autoComplete="given-name" />
+          )}
+        />
+        <Controller
+          name="lastName"
+          control={control}
+          rules={{ required: 'Nom requis' }}
+          render={({ field }) => (
+            <Input {...field} placeholder="Nom" autoComplete="family-name" />
+          )}
+        />
+      </div>
+      <Controller
+        name="phone"
+        control={control}
+        rules={{ required: 'Téléphone requis' }}
+        render={({ field }) => (
+          <Input {...field} placeholder="Téléphone" autoComplete="tel" />
+        )}
+      />
+      <Controller
+        name="email"
+        control={control}
+        rules={{ required: 'Email requis' }}
+        render={({ field }) => (
+          <Input {...field} placeholder="Email" type="email" autoComplete="email" />
+        )}
+      />
+      <div>
+        <Address control={control} name="address" />
+      </div>
+      <div className="flex justify-end gap-2 mt-4">
+        <Button type="button" variant="ghost" onClick={onClose}>Annuler</Button>
+        <Button type="submit" className="bg-green-600 hover:bg-green-700">Valider la commande</Button>
+      </div>
+    </form>
+  );
+};
+
 const Cart = ({ blockId }: { blockId: string }) => {
   const [cart, setCart] = useAtom(getCartAtom(blockId));
   const setCartAnimation = useSetAtom(getCartAnimationAtom(blockId));
+  const modal = useModal();
+  const [showOrderForm, setShowOrderForm] = useState(false);
 
   const total = cart.reduce(
     (sum, item) => sum + Number(item.basePrice) * item.quantity,
     0
   );
 
-  const modal = useModal();
+  // Affiche le formulaire de commande dans la modale
+  const handleOrder = () => {
+    modal?.show(
+      <OrderForm onClose={() => modal?.hide()} />
+    );
+  };
 
   return (
     <div className="max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-lg bg-white shadow-xl">
@@ -573,7 +653,9 @@ const Cart = ({ blockId }: { blockId: string }) => {
         </div>
 
         <div className="flex justify-end">
-          <Button className="bg-green-600 hover:bg-green-700">Commander</Button>
+          <Button className="bg-green-600 hover:bg-green-700" onClick={handleOrder}>
+            Commander
+          </Button>
         </div>
       </div>
     </div>
