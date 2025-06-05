@@ -1,4 +1,4 @@
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { z } from 'zod';
 
@@ -83,7 +83,9 @@ export default function SlideFromLeft001({
   label = 'Hello',
   href,
   block
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   if (href) {
     return (
       <Link

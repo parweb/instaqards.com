@@ -50,7 +50,16 @@ export function AppSidebar(
         name: true;
         subdomain: true;
         _count: { select: { clicks: true; subscribers: true } };
-        blocks: { select: { _count: { select: { reservations: true } } } };
+        blocks: {
+          select: {
+            _count: {
+              select: {
+                reservations: true;
+                orders: { where: { status: 'PENDING' } };
+              };
+            };
+          };
+        };
       };
     }>[];
   }
@@ -189,7 +198,10 @@ export function AppSidebar(
             url: `/site/${openProject.id}/store`,
             isActive: segments.includes('store'),
             icon: ShoppingBag,
-            count: openProject._count.subscribers
+            count: openProject.blocks.reduce(
+              (carry, block) => carry + (block?._count.orders ?? 0),
+              0
+            )
           },
           {
             title: translate('menu.reservations'),

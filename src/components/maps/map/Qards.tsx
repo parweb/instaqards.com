@@ -1,6 +1,6 @@
 'use client';
 
-import { Block, Site } from '@prisma/client';
+import { Block, Prisma, Site } from '@prisma/client';
 import { useAtomValue } from 'jotai';
 import { Suspense } from 'react';
 
@@ -10,21 +10,47 @@ import { Content } from 'components/website/content';
 import { Footer } from 'components/website/footer';
 import { Main } from 'components/website/main';
 import { Wrapper } from 'components/website/wrapper';
-import { $site } from './$site';
+import { $ } from 'helpers/$';
 
 export const Qards = ({ siteId }: { siteId: Site['id'] }) => {
   const site = useAtomValue(
-    $site({
+    $.site.findUniqueOrThrow({
       where: { id: siteId },
-      include: { blocks: true }
+      select: {
+        background: true,
+        blocks: {
+          select: {
+            id: true,
+            type: true,
+            label: true,
+            href: true,
+            logo: true,
+            style: true,
+            widget: true
+          }
+        }
+      }
     })
   );
 
-  const data: Record<Block['type'], Block[]> = {
+  const data: Record<
+    Block['type'],
+    Prisma.BlockGetPayload<{
+      select: {
+        id: true;
+        type: true;
+        label: true;
+        href: true;
+        logo: true;
+        style: true;
+        widget: true;
+      };
+    }>[]
+  > = {
     main: [],
     social: [],
 
-    ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
+    ...site.blocks.groupBy(({ type }) => type)
   };
 
   return (

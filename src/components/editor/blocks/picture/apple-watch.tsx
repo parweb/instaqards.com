@@ -1,4 +1,4 @@
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FC } from 'react';
 import BubbleUI from 'react-bubble-ui';
@@ -170,7 +170,7 @@ const BubbleItem: FC<{
 
 type AppleWatchProps = {
   medias?: z.infer<typeof input>['medias'];
-  block?: Block;
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
 };
 
 const AppleWatch: FC<AppleWatchProps> = ({

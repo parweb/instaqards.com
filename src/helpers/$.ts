@@ -76,28 +76,35 @@ const atomCreator = <
     <TArgs extends GetArgsType<TModel, TOperation> & { paginated?: boolean }>(
       params: TArgs
     ) => {
-      const baseResult = {} as GetResultType<TModel, TOperation, Omit<TArgs, 'paginated'>>;
-      
-      return atom<Promise<ConditionalResult<typeof baseResult, TArgs['paginated']>>>(
-        async () => {
-          const { paginated, ...queryParams } = params;
-          const isPaginated = paginated ?? false;
+      const baseResult = {} as GetResultType<
+        TModel,
+        TOperation,
+        Omit<TArgs, 'paginated'>
+      >;
 
-          const response = await fetch(`/api/lake/${model}/${method}${isPaginated ? '?paginated' : ''}`, {
+      return atom<
+        Promise<ConditionalResult<typeof baseResult, TArgs['paginated']>>
+      >(async () => {
+        const { paginated, ...queryParams } = params;
+        const isPaginated = paginated ?? false;
+
+        const response = await fetch(
+          `/api/lake/${model}/${method}${isPaginated ? '?paginated' : ''}`,
+          {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(queryParams)
-          });
-
-          if (!response.ok) {
-            throw new Error(`API call failed: ${response.statusText}`);
           }
+        );
 
-          const data = await response.json();
-          
-          return data as ConditionalResult<typeof baseResult, TArgs['paginated']>;
+        if (!response.ok) {
+          throw new Error(`API call failed: ${response.statusText}`);
         }
-      );
+
+        const data = await response.json();
+
+        return data as ConditionalResult<typeof baseResult, TArgs['paginated']>;
+      });
     },
     isEqual
   );
@@ -107,10 +114,19 @@ const mapper = new Map<string, any>();
 // Type for a single model's operations - with conditional return types based on arguments
 type DynamicModelOperations<TModel extends PrismaModelName> = {
   [K in keyof Prisma.TypeMap['model'][TModel]['operations']]: <
-    TArgs extends GetArgsType<TModel, K & ModelOperations> & { paginated?: boolean }
+    TArgs extends GetArgsType<TModel, K & ModelOperations> & {
+      paginated?: boolean;
+    }
   >(
     params?: TArgs
-  ) => Atom<Promise<ConditionalResult<GetResultType<TModel, K & ModelOperations, Omit<TArgs, 'paginated'>>, TArgs['paginated']>>>;
+  ) => Atom<
+    Promise<
+      ConditionalResult<
+        GetResultType<TModel, K & ModelOperations, Omit<TArgs, 'paginated'>>,
+        TArgs['paginated']
+      >
+    >
+  >;
 };
 
 // Main type for the $ object - uses lowercase model names but maps to PascalCase internally

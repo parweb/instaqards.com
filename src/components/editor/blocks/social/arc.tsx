@@ -1,6 +1,6 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { LuLink } from 'react-icons/lu';
@@ -63,7 +63,9 @@ export default function Arc({
     { id: '3', href: 'https://www.youtube.com', logo: 'youtube' },
     { id: '4', href: 'https://www.facebook.com', logo: 'facebook' }
   ]
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   const centerPointDegrees = 270;
 
   const calculatedStartAngle = useMemo(() => {

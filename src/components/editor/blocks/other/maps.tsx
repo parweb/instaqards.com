@@ -1,11 +1,11 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import MapContainer from 'components/maps/MapContainer';
-import { json } from 'lib/utils';
 import { SchemaAddress } from 'components/maps/services/google-maps';
+import { json } from 'lib/utils';
 
 const placeholder = {
   place_id: 'default',
@@ -52,7 +52,9 @@ export const input = z.object({
 export default function Maps({
   position = placeholder,
   label = 'Champs-Élysées'
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   const display_name = [
     position.components.street_number,
     position.components.route,

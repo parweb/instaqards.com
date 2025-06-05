@@ -1,4 +1,4 @@
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -45,7 +45,9 @@ const placeholder = 'https://placehold.co/480x270.png?text=16:9';
 export default function Picture169({
   medias: [media] = [{ id: '1', kind: 'remote', url: placeholder }],
   block
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   media ??= { id: '1', kind: 'remote', url: placeholder };
   const [src, setSrc] = useState<string>(
     media.kind === 'remote' ? media.url : ''

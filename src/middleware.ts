@@ -85,7 +85,7 @@ function trackSite(domain: string, req: NextRequest, _name: string) {
 
 function trackReferer(path: string, referer: string, req: NextRequest) {
   waitUntil(
-    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/track/referer`, {
+    fetch(uri.base('/api/track/referer'), {
       method: 'POST',
       body: JSON.stringify({
         path,

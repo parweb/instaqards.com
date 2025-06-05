@@ -1,6 +1,6 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { AnimatePresence, motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -15,7 +15,19 @@ const BlockWidget = dynamic(() => import('components/BlockWidget'), {
   ssr: false
 });
 
-export const BlockItemComponent = (block: Block) => {
+export const BlockItemComponent = (
+  block: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      label: true;
+      href: true;
+      logo: true;
+      style: true;
+      widget: true;
+    };
+  }>
+) => {
   const css = block.style as unknown as BlockStyle;
 
   if (block.type === 'main') {
@@ -121,7 +133,21 @@ export const BlockItemComponent = (block: Block) => {
 
 export const BlockItem = memo(BlockItemComponent);
 
-const BlockListComponent = ({ blocks }: { blocks: Block[] }) => {
+const BlockListComponent = ({
+  blocks
+}: {
+  blocks: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      label: true;
+      href: true;
+      logo: true;
+      style: true;
+      widget: true;
+    };
+  }>[];
+}) => {
   const fontsNeeded = blocks
     .flatMap(({ style }) =>
       Object.values(style as Record<string, { fontFamily: string }>).flatMap(

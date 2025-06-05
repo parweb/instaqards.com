@@ -1,11 +1,15 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import { memo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-export const BlockWidgetComponent = ({ block }: { block: Block }) => {
+export const BlockWidgetComponent = ({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{ select: { widget: true } }>;
+}) => {
   const widget = block.widget as unknown as {
     type: string;
     id: string;

@@ -1,62 +1,31 @@
 'use client';
 
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
+import { Suspense } from 'react';
+import { Controller, FieldValues, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import {
   EntityType,
   Inventory as InventoryType,
-  type Block,
   type Prisma
 } from '@prisma/client';
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { atomFamily, atomWithStorage } from 'jotai/utils';
-import { isEqual } from 'lodash-es';
-import { Suspense } from 'react';
-import { z } from 'zod';
-import { useForm, Controller, FieldValues } from 'react-hook-form';
 
+import { Address } from 'components/editor/form/types/address';
 import { useModal } from 'components/modal/provider';
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardTitle } from 'components/ui/card';
 import { CarouselPictures } from 'components/ui/carousel';
+import { Input } from 'components/ui/input';
+import { $ } from 'helpers/$';
 import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import {
-  CategorySchema,
-  InventorySchema,
-  MediaSchema
-} from '../../../../../prisma/generated/zod';
-import { $ } from 'helpers/$';
-import { Input } from 'components/ui/input';
-import { Address } from 'components/editor/form/types/address';
+import { LuLoader } from 'react-icons/lu';
+import { InventorySchema } from '../../../../../prisma/generated/zod';
 
 export const input = z.object({});
-
-const InventoriesSchema = z.array(
-  InventorySchema.pick({
-    id: true,
-    name: true,
-    description: true,
-    basePrice: true,
-    stock: true
-  }).merge(
-    z.object({
-      category: CategorySchema.pick({
-        name: true
-      })
-        .optional()
-        .nullable()
-    })
-  )
-);
-
-const MediasSchema = z.array(
-  MediaSchema.pick({
-    id: true,
-    url: true,
-    entityId: true,
-    entityType: true
-  })
-);
 
 const CartSchema = InventorySchema.pick({
   id: true,
@@ -250,104 +219,152 @@ const createFlyingAnimation = (
   }, 50); // 50ms d'attente pour laisser React mettre à jour le DOM
 };
 
+const ProductModalInner = ({
+  inventoryId
+}: {
+  inventoryId: InventoryType['id'];
+}) => {
+  const modal = useModal();
+
+  const inventory = useAtomValue(
+    $.inventory.findUnique({
+      select: {
+        id: true,
+        name: true,
+        basePrice: true,
+        description: true,
+        blockId: true
+      },
+      where: {
+        id: inventoryId
+      }
+    })
+  );
+
+  if (!inventory) return null;
+
+  const medias = useAtomValue(
+    $.media.findMany({
+      select: {
+        id: true,
+        url: true
+      },
+      where: {
+        entityId: inventoryId,
+        entityType: EntityType.INVENTORY
+      }
+    })
+  );
+
+  const blockId = inventory.blockId;
+
+  const setCart = useSetAtom(getCartAtom(blockId));
+  const setCartAnimation = useSetAtom(getCartAnimationAtom(blockId));
+  const setFlyingItems = useSetAtom($flyingItems);
+  const setParticles = useSetAtom($particles);
+  const setCartBurst = useSetAtom($cartBurst);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const onClose = () => {
+    modal?.hide();
+  };
+
+  return (
+    <>
+      {/* Header */}
+      <div className="flex items-center justify-between border-b p-6">
+        <h2 className="text-2xl font-bold">Détail du produit</h2>
+
+        <Button variant="ghost" size="sm" onClick={onClose}>
+          <X />
+        </Button>
+      </div>
+
+      {/* Content */}
+      <div className="max-h-[70vh] overflow-y-auto p-6">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* Images */}
+          <div className="group relative bg-gray-100">
+            <CarouselPictures pictures={medias.map(picture => picture.url)} />
+          </div>
+
+          {/* Info produit */}
+          <div className="space-y-6">
+            {inventory.basePrice && (
+              <div className="text-4xl font-bold text-green-600">
+                {Intl.NumberFormat('fr-FR', {
+                  style: 'currency',
+                  currency: 'EUR'
+                }).format(Number(inventory.basePrice))}
+              </div>
+            )}
+
+            {/* Description (placeholder) */}
+            <div>
+              <h3 className="mb-3 text-lg font-semibold">Description</h3>
+              <p className="leading-relaxed text-gray-700">
+                {inventory.description}
+              </p>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex gap-4 pt-4">
+              <Button
+                ref={buttonRef}
+                size="lg"
+                className="flex-1 bg-green-600 hover:bg-green-700"
+                onClick={() => {
+                  setCart(
+                    addToCart({
+                      id: inventory.id,
+                      name: inventory.name,
+                      basePrice: inventory.basePrice
+                    })
+                  );
+
+                  if (buttonRef.current) {
+                    createFlyingAnimation(
+                      buttonRef.current,
+                      inventory.name,
+                      setFlyingItems,
+                      setParticles,
+                      setCartAnimation,
+                      setCartBurst
+                    );
+                  }
+                  // Fermer la modal après ajout
+                  setTimeout(() => onClose(), 300);
+                }}
+              >
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                Ajouter au panier
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 const ProductModal = ({
   inventoryId
 }: {
   inventoryId: InventoryType['id'];
 }) => {
-  return <div>ProductModal</div>;
-  // const setCart = useSetAtom(getCartAtom(blockId));
-  // const setCartAnimation = useSetAtom(getCartAnimationAtom(blockId));
-  // const setFlyingItems = useSetAtom($flyingItems);
-  // const setParticles = useSetAtom($particles);
-  // const setCartBurst = useSetAtom($cartBurst);
-  // const buttonRef = useRef<HTMLButtonElement>(null);
-
-  // if (!isOpen) return null;
-
-  // return (
-  //   <div
-  //     className="fixed inset-0 flex items-center justify-center bg-black/50 p-4"
-  //     onClick={e => {
-  //       if (e.target === e.currentTarget) {
-  //         onClose();
-  //       }
-  //     }}
-  //   >
-  //     <div className="max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow-xl">
-  //       {/* Header */}
-  //       <div className="flex items-center justify-between border-b p-6">
-  //         <h2 className="text-2xl font-bold">Détail du produit</h2>
-  //         <Button variant="ghost" size="sm" onClick={onClose}>
-  //           <X className="h-5 w-5" />
-  //         </Button>
-  //       </div>
-
-  //       {/* Content */}
-  //       <div className="max-h-[70vh] overflow-y-auto p-6">
-  //         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-  //           {/* Images */}
-  //           <div className="group relative bg-gray-100">
-  //             <CarouselPictures pictures={medias.map(picture => picture.url)} />
-  //           </div>
-
-  //           {/* Info produit */}
-  //           <div className="space-y-6">
-  //             {inventory.basePrice && (
-  //               <div className="text-4xl font-bold text-green-600">
-  //                 {Intl.NumberFormat('fr-FR', {
-  //                   style: 'currency',
-  //                   currency: 'EUR'
-  //                 }).format(Number(inventory.basePrice))}
-  //               </div>
-  //             )}
-
-  //             {/* Description (placeholder) */}
-  //             <div>
-  //               <h3 className="mb-3 text-lg font-semibold">Description</h3>
-  //               <p className="leading-relaxed text-gray-700">
-  //                 {inventory.description}
-  //               </p>
-  //             </div>
-
-  //             {/* Action buttons */}
-  //             <div className="flex gap-4 pt-4">
-  //               <Button
-  //                 ref={buttonRef}
-  //                 size="lg"
-  //                 className="flex-1 bg-green-600 hover:bg-green-700"
-  //                 onClick={() => {
-  //                   setCart(
-  //                     addToCart({
-  //                       id: inventory.id,
-  //                       name: inventory.name,
-  //                       basePrice: inventory.basePrice
-  //                     })
-  //                   );
-  //                   if (buttonRef.current) {
-  //                     createFlyingAnimation(
-  //                       buttonRef.current,
-  //                       inventory.name,
-  //                       setFlyingItems,
-  //                       setParticles,
-  //                       setCartAnimation,
-  //                       setCartBurst
-  //                     );
-  //                   }
-  //                   // Fermer la modal après ajout
-  //                   setTimeout(() => onClose(), 300);
-  //                 }}
-  //               >
-  //                 <ShoppingCart className="mr-2 h-5 w-5" />
-  //                 Ajouter au panier
-  //               </Button>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
+  return (
+    <div className="max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow-xl">
+      <Suspense
+        fallback={
+          <div className="my-10 flex min-w-sm items-center justify-center bg-white p-4">
+            <LuLoader className="animate-spin" />
+          </div>
+        }
+      >
+        <ProductModalInner inventoryId={inventoryId} />
+      </Suspense>
+    </div>
+  );
 };
 
 const Inventory = ({
@@ -377,7 +394,6 @@ const Inventory = ({
   const setFlyingItems = useSetAtom($flyingItems);
   const setParticles = useSetAtom($particles);
   const setCartBurst = useSetAtom($cartBurst);
-  const setProductModal = useSetAtom(getProductModalAtom(blockId));
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const modal = useModal();
@@ -386,7 +402,6 @@ const Inventory = ({
     <Card
       key={inventory.id}
       className="group cursor-pointer overflow-hidden transition-shadow hover:shadow-md"
-      // onClick={() => setProductModal(inventory.id)}
       onClick={() => {
         modal?.show(<ProductModal inventoryId={inventory.id} />);
       }}
@@ -456,12 +471,7 @@ const OrderForm = ({
   const setCart = useSetAtom(getCartAtom(blockId));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm<FieldValues>({
+  const { control, handleSubmit, reset } = useForm<FieldValues>({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -627,7 +637,6 @@ const Cart = ({ blockId }: { blockId: string }) => {
   const [cart, setCart] = useAtom(getCartAtom(blockId));
   const setCartAnimation = useSetAtom(getCartAnimationAtom(blockId));
   const modal = useModal();
-  const [showOrderForm, setShowOrderForm] = useState(false);
 
   const total = cart.reduce(
     (sum, item) => sum + Number(item.basePrice) * item.quantity,
@@ -819,14 +828,6 @@ const Inventories = ({ blockId }: { blockId: string }) => {
   const selectedProduct = selectedProductId
     ? inventories.find(inv => inv.id === selectedProductId)
     : null;
-
-  const selectedProductMedias = selectedProduct
-    ? medias.filter(
-        media =>
-          media.entityId === selectedProduct.id &&
-          media.entityType === EntityType.INVENTORY
-      )
-    : [];
 
   return (
     <>
@@ -1209,7 +1210,9 @@ const CartIndicator = ({ blockId }: { blockId: string }) => {
 
 export default function Store({
   block
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   return (
     <div className="relative">
       <Suspense fallback={null}>

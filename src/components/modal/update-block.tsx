@@ -1,10 +1,24 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Block, Prisma } from '@prisma/client';
 
 import { BlockForm } from 'components/editor/form/BlockForm';
 
-export default function UpdateBlockModal({ block }: { block: Block }) {
+export default function UpdateBlockModal({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      label: true;
+      href: true;
+      logo: true;
+      widget: true;
+      siteId: true;
+    };
+  }>;
+}) {
   const mode: {
     id: Block['id'];
     mode: 'update';

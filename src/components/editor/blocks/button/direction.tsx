@@ -1,4 +1,4 @@
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { FaDirections } from 'react-icons/fa';
 import { z } from 'zod';
@@ -89,7 +89,9 @@ export default function Direction({
   block,
   label = 'Champs-Élysées',
   address = placeholder
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   const display_name = [
     address.components.street_number,
     address.components.route,

@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Block, Site } from '@prisma/client';
+import type { Prisma, Site } from '@prisma/client';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { memo, Suspense, useEffect, useState } from 'react';
@@ -40,7 +40,21 @@ import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
 
-const BlockUpdate = ({ block }: { block: Block }) => {
+const BlockUpdate = ({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      label: true;
+      href: true;
+      logo: true;
+      widget: true;
+      siteId: true;
+    };
+  }>;
+}) => {
   return (
     <UpdateBlockButton>
       <UpdateBlockModal block={block} />
@@ -48,41 +62,70 @@ const BlockUpdate = ({ block }: { block: Block }) => {
   );
 };
 
-const BlockDelete = ({ block }: { block: Block }) => {
+const BlockDelete = ({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) => {
   return <DeleteBlockButton {...block} />;
 };
 
-const BlockDuplicate = ({ block }: { block: Block }) => {
+const BlockDuplicate = ({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) => {
   return <DuplicateBlockButton {...block} />;
 };
 
-const BlockWidget = memo(({ block }: { block: Block }) => {
-  const widget = block.widget as unknown as {
-    type: string;
-    id: string;
-    data: unknown;
-  };
+const BlockWidget = memo(
+  ({
+    block
+  }: {
+    block: Prisma.BlockGetPayload<{ select: { widget: true } }>;
+  }) => {
+    const widget = block.widget as unknown as {
+      type: string;
+      id: string;
+      data: unknown;
+    };
 
-  const Component = dynamic(
-    () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`),
-    { ssr: false }
-  );
+    const Component = dynamic(
+      () => import(`components/editor/blocks/${widget.type}/${widget.id}.tsx`),
+      { ssr: false }
+    );
 
-  return (
-    <ErrorBoundary
-      fallbackRender={({ error }) => (
-        console.error(error), (<div>Something went wrong, sorry!</div>)
-      )}
-    >
-      {/* @ts-ignore */}
-      <Component {...(widget?.data ?? {})} block={block} />
-    </ErrorBoundary>
-  );
-});
+    return (
+      <ErrorBoundary
+        fallbackRender={({ error }) => (
+          console.error(error), (<div>Something went wrong, sorry!</div>)
+        )}
+      >
+        {/* @ts-ignore */}
+        <Component {...(widget?.data ?? {})} block={block} />
+      </ErrorBoundary>
+    );
+  }
+);
 
 BlockWidget.displayName = 'BlockWidget';
 
-const BlockItem = ({ block }: { block: Block }) => {
+const BlockItem = ({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      style: true;
+      label: true;
+      href: true;
+      logo: true;
+      widget: true;
+      siteId: true;
+    };
+  }>;
+}) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: block.id });
 
@@ -245,7 +288,18 @@ export const BlockList = ({
   site,
   type
 }: {
-  blocks: Block[];
+  blocks: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      style: true;
+      label: true;
+      href: true;
+      logo: true;
+      widget: true;
+      siteId: true;
+    };
+  }>[];
   site: Site;
   type: 'main' | 'social';
 }) => {

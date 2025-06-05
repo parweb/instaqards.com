@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     // Générer le numéro de commande
     const orderNumber = await generateOrderNumber();
 
-    // Créer la commande avec les articles
+    // Créer la commande avec les articles et l'historique initial
     const order = await prisma.order.create({
       data: {
         orderNumber,
@@ -101,6 +101,15 @@ export async function POST(request: NextRequest) {
             productDescription: item.description,
             productSku: item.sku
           }))
+        },
+        // Créer l'entrée d'historique initiale
+        statusHistory: {
+          create: {
+            previousStatus: null, // null car c'est la création
+            newStatus: 'PENDING',
+            changeReason: 'Commande créée par le client',
+            automaticChange: true
+          }
         }
       },
       include: {
@@ -108,7 +117,8 @@ export async function POST(request: NextRequest) {
           include: {
             inventory: true
           }
-        }
+        },
+        statusHistory: true
       }
     });
 

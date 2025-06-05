@@ -1,4 +1,4 @@
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
@@ -133,7 +133,9 @@ export default function Bento({
     }
   ],
   block
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   if (medias.length === 0) {
     return (
       <div className="flex flex-1 items-center justify-center overflow-hidden rounded-md bg-white p-4">

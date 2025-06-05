@@ -70,7 +70,7 @@ const Prospects = () => {
   const take = useAtomValue($take);
   const page = useAtomValue($page);
 
-  const x= $.user.findMany({
+  const x = $.user.findMany({
     paginated: true,
     select: {
       id: true,
@@ -101,7 +101,7 @@ const Prospects = () => {
     },
     take,
     skip: (page - 1) * take
-  })
+  });
 
   return (
     <ProspectsTable

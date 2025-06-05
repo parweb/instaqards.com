@@ -42,12 +42,25 @@ const Inner = ({
 }: {
   preview: boolean;
   setPreview: Dispatch<SetStateAction<boolean>>;
-  data: Record<Block['type'], Block[]>;
+  data: Record<
+    Block['type'],
+    Prisma.BlockGetPayload<{
+      select: {
+        id: true;
+        type: true;
+        label: true;
+        href: true;
+        logo: true;
+        style: true;
+        widget: true;
+        siteId: true;
+      };
+    }>[]
+  >;
   site: Prisma.SiteGetPayload<{
     select: {
       background: true;
       id: true;
-      blocks: true;
       customDomain: true;
       subdomain: true;
     };
@@ -118,11 +131,28 @@ export const WebSite = ({
 }) => {
   const [preview, setPreview] = useState(false);
 
-  const data: Record<Block['type'], Block[]> = {
+  const data: Record<
+    Block['type'],
+    Prisma.BlockGetPayload<{
+      select: {
+        id: true;
+        type: true;
+        label: true;
+        href: true;
+        logo: true;
+        style: true;
+        widget: true;
+        siteId: true;
+        position: true;
+        createdAt: true;
+        updatedAt: true;
+      };
+    }>[]
+  > = {
     main: [],
     social: [],
 
-    ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
+    ...site.blocks.groupBy(({ type }) => type)
   };
 
   if (preview === true) {

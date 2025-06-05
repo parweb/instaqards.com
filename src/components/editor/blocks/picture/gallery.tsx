@@ -1,4 +1,4 @@
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -149,7 +149,9 @@ export default function Gallery({
     // { id: '8', kind:'remote', url: 'https://placehold.co/480x270.png?text=16:9' }
   ],
   block
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   if (medias.length === 0) {
     return (
       <div className="flex flex-1 items-center justify-center overflow-hidden rounded-md bg-white p-4">

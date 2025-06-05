@@ -1,6 +1,6 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { LuLink } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
@@ -47,7 +47,9 @@ export default function Simple({
     { id: '5', href: 'https://www.twitter.com', logo: 'twitter' },
     { id: '6', href: 'https://www.linkedin.com', logo: 'linkedin' }
   ]
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   return (
     <div className="flex flex-1 items-center justify-center gap-3">
       {socials.map(social => (

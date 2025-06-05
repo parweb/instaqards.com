@@ -63,7 +63,16 @@ export default async function DashboardLayout({
           name: true,
           subdomain: true,
           _count: { select: { clicks: true, subscribers: true } },
-          blocks: { select: { _count: { select: { reservations: true } } } }
+          blocks: {
+            select: {
+              _count: {
+                select: {
+                  reservations: true,
+                  orders: { where: { status: 'PENDING' } }
+                }
+              }
+            }
+          }
         },
         orderBy: { updatedAt: 'desc' },
         where: {

@@ -1,5 +1,6 @@
 'use client';
 
+import type { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -7,12 +8,11 @@ import { LuCheck, LuSend } from 'react-icons/lu';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import type { Block } from '@prisma/client';
+import { subscribe } from 'components/editor/blocks/other/actions';
 import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { json } from 'lib/utils';
-import { subscribe } from 'components/editor/blocks/other/actions';
 
 export const input = z.object({
   placeholder: z
@@ -23,7 +23,9 @@ export const input = z.object({
 export default function Email({
   placeholder = 'Email',
   block
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   const [mode, setMode] = useState<'error' | 'success' | 'loading' | 'idle'>(
     'idle'
   );

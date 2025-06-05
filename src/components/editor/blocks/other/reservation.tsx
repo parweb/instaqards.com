@@ -1,6 +1,6 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import { motion } from 'motion/react';
@@ -187,7 +187,9 @@ const AvalaibleTimeSlot = ({
 export default function Reservation({
   timeSlotInterval = 30,
   block
-}: Partial<z.infer<typeof input>> & { block?: Block }) {
+}: Partial<z.infer<typeof input>> & {
+  block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) {
   const [mode, setMode] = useState<'error' | 'success' | 'loading' | 'idle'>(
     'idle'
   );

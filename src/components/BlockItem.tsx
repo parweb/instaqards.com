@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Block, Prisma, Site } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { Suspense, useEffect, useState } from 'react';
@@ -33,12 +33,12 @@ import {
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
 
+import { input } from 'app/api/block/update/positions/input';
 import DeleteBlockButton from 'components/delete-block-button';
 import DuplicateBlockButton from 'components/duplicate-block-button';
 import UpdateBlockModal from 'components/modal/update-block';
 import UpdateBlockButton from 'components/update-block-button';
 import { cn, generateCssProperties, type BlockStyle } from 'lib/utils';
-import { input } from 'app/api/block/update/positions/input';
 
 const BlockWidget = dynamic(() => import('./BlockWidget'), {
   loading: () => (
@@ -47,7 +47,22 @@ const BlockWidget = dynamic(() => import('./BlockWidget'), {
   ssr: false
 });
 
-const BlockUpdate = ({ block }: { block: Block }) => {
+const BlockUpdate = ({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      style: true;
+      type: true;
+      label: true;
+      href: true;
+      logo: true;
+      widget: true;
+      siteId: true;
+    };
+  }>;
+}) => {
   return (
     <UpdateBlockButton>
       <UpdateBlockModal block={block} />
@@ -55,11 +70,19 @@ const BlockUpdate = ({ block }: { block: Block }) => {
   );
 };
 
-const BlockDelete = ({ block }: { block: Block }) => {
+const BlockDelete = ({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) => {
   return <DeleteBlockButton {...block} />;
 };
 
-const BlockDuplicate = ({ block }: { block: Block }) => {
+const BlockDuplicate = ({
+  block
+}: {
+  block: Prisma.BlockGetPayload<{ select: { id: true } }>;
+}) => {
   return <DuplicateBlockButton {...block} />;
 };
 
@@ -67,7 +90,18 @@ const BlockItem = ({
   block,
   editor = false
 }: {
-  block: Block;
+  block: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      style: true;
+      type: true;
+      label: true;
+      href: true;
+      logo: true;
+      widget: true;
+      siteId: true;
+    };
+  }>;
   editor?: boolean;
 }) => {
   const {
@@ -303,7 +337,18 @@ export const BlockList = ({
   type,
   editor = false
 }: {
-  blocks: Block[];
+  blocks: Prisma.BlockGetPayload<{
+    select: {
+      id: true;
+      type: true;
+      label: true;
+      href: true;
+      logo: true;
+      style: true;
+      widget: true;
+      siteId: true;
+    };
+  }>[];
   site: Prisma.SiteGetPayload<{
     select: { id: true; customDomain: true; subdomain: true };
   }>;

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
@@ -10,7 +10,9 @@ import { toast } from 'sonner';
 import LoadingDots from 'components/icons/loading-dots';
 import { duplicateBlock } from 'lib/actions';
 
-export default function DuplicateBlockButton(block: Block) {
+export default function DuplicateBlockButton(
+  block: Prisma.BlockGetPayload<{ select: { id: true } }>
+) {
   const router = useRouter();
 
   return (

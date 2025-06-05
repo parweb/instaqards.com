@@ -40,7 +40,18 @@ const SiteCardComponent = ({
       background: true;
       subdomain: true;
       likes: { select: { ip: true } };
-      blocks: { orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] };
+      blocks: {
+        select: {
+          id: true;
+          type: true;
+          label: true;
+          href: true;
+          logo: true;
+          style: true;
+          widget: true;
+        };
+        orderBy: [{ position: 'asc' }, { createdAt: 'asc' }];
+      };
     };
   }>;
 }) => {
@@ -121,10 +132,23 @@ const SiteCardComponent = ({
     }
   }, [isVisible, isMobile, state]);
 
-  const data: Record<Block['type'], Block[]> = {
+  const data: Record<
+    Block['type'],
+    Prisma.BlockGetPayload<{
+      select: {
+        id: true;
+        type: true;
+        label: true;
+        href: true;
+        logo: true;
+        style: true;
+        widget: true;
+      };
+    }>[]
+  > = {
     main: [],
     social: [],
-    ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
+    ...site.blocks.groupBy(({ type }) => type)
   };
 
   return (

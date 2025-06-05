@@ -28,11 +28,24 @@ export const List = ({
   return (
     <div className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 self-stretch p-4">
       {sites.map(site => {
-        const data: Record<Block['type'], Block[]> = {
+        const data: Record<
+          Block['type'],
+          Prisma.BlockGetPayload<{
+            select: {
+              id: true;
+              type: true;
+              label: true;
+              href: true;
+              logo: true;
+              style: true;
+              widget: true;
+            };
+          }>[]
+        > = {
           main: [],
           social: [],
 
-          ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
+          ...site.blocks.groupBy(({ type }) => type)
         };
 
         return (

@@ -82,6 +82,7 @@ model User {
   referralsMade      ReferralTracking[]    @relation("ReferralsMade")
   referralsReceived  ReferralTracking[]    @relation("ReferralsReceived")
   withdrawals        Withdrawal[]
+  orderStatusHistory OrderStatusHistory[]
 
   @@index([email])
   @@index([role])

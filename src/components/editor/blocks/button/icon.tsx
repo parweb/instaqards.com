@@ -1,4 +1,4 @@
-import type { Block } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
@@ -145,7 +145,9 @@ const BaseButton: React.FC<
 };
 
 export default function Icon(
-  props: Partial<z.infer<typeof input>> & { block?: Block }
+  props: Partial<z.infer<typeof input>> & {
+    block?: Prisma.BlockGetPayload<{ select: { id: true } }>;
+  }
 ) {
   if (props.href) {
     return (

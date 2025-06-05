@@ -1,4 +1,4 @@
-import type { Block } from '@prisma/client';
+import type { Block, Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -55,11 +55,24 @@ export default async function SiteHomePage(props: {
     );
   }
 
-  const data: Record<Block['type'], Block[]> = {
+  const data: Record<
+    Block['type'],
+    Prisma.BlockGetPayload<{
+      select: {
+        id: true;
+        type: true;
+        label: true;
+        href: true;
+        logo: true;
+        style: true;
+        widget: true;
+      };
+    }>[]
+  > = {
     main: [],
     social: [],
 
-    ...site.blocks.groupBy(({ type }: { type: Block['type'] }) => type)
+    ...site.blocks.groupBy(({ type }) => type)
   };
 
   return (
