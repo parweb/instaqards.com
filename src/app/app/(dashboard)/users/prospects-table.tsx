@@ -20,6 +20,7 @@ import {
   PaginationPrevious
 } from 'components/ui/pagination';
 
+import { Prisma } from '@prisma/client';
 import {
   Select,
   SelectContent,
@@ -35,7 +36,13 @@ const Pages = ({
 }: {
   $page: PrimitiveAtom<number>;
   $take: PrimitiveAtom<number>;
-  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+  $prospects: Atom<Promise<Paginated<Prisma.UserGetPayload<{
+    select: {
+      id: true;
+      name: true;
+      email: true;
+    };
+  }>[]>>>;
 }) => {
   const [pageAtomValue, setPage] = useAtom($page);
   const [take, setTake] = useAtom($take);
@@ -130,11 +137,30 @@ const Pages = ({
   );
 };
 
+type Paginated<T> = {
+  data: T;
+  total: number;
+  take: number;
+  skip: number;
+};
+
 const Tbody = ({
   $prospects,
   $selection
 }: {
-  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+  $prospects: Atom<Promise<Paginated<Prisma.UserGetPayload<{
+    select: {
+      id: true;
+      name: true;
+      email: true;
+      company: true;
+      address: true;
+      postcode: true;
+      city: true;
+      phone: true;
+      activity: true;
+    };
+  }>[]>>>;
   $selection: PrimitiveAtom<
     z.infer<typeof ProspectsSchema>['data'][number]['id'][]
   >;
@@ -198,7 +224,13 @@ const SelectAll = ({
   $selection: PrimitiveAtom<
     z.infer<typeof ProspectsSchema>['data'][number]['id'][]
   >;
-  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+  $prospects: Atom<Promise<Paginated<Prisma.UserGetPayload<{
+    select: {
+      id: true;
+      name: true;
+      email: true;
+    };
+  }>[]>>>;
 }) => {
   const prospects = useAtomValue($prospects);
   const [selection, setSelection] = useAtom($selection);
@@ -234,7 +266,13 @@ const Thead = ({
   $selection: PrimitiveAtom<
     z.infer<typeof ProspectsSchema>['data'][number]['id'][]
   >;
-  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+  $prospects: Atom<Promise<Paginated<Prisma.UserGetPayload<{
+    select: {
+      id: true;
+      name: true;
+      email: true;
+    };
+  }>[]>>>;
 }) => {
   const prospects = useAtomValue($prospects);
   const selection = useAtomValue($selection);
@@ -296,7 +334,19 @@ interface ProspectsTableProps {
   $selection: PrimitiveAtom<
     z.infer<typeof ProspectsSchema>['data'][number]['id'][]
   >;
-  $prospects: Atom<Promise<z.infer<typeof ProspectsSchema>>>;
+  $prospects: Atom<Promise<Paginated<Prisma.UserGetPayload<{
+    select: {
+      id: true;
+      name: true;
+      email: true;
+      company: true;
+      address: true;
+      postcode: true;
+      city: true;
+      phone: true;
+      activity: true;
+    };
+  }>[]>>>;
   total?: number;
   $page: PrimitiveAtom<number>;
   $take: PrimitiveAtom<number>;

@@ -19,6 +19,7 @@ import useTranslation from 'hooks/use-translation';
 import { assignProspect } from 'lib/actions';
 import { UserSchema } from '../../../prisma/generated/zod';
 import { useModal } from './provider';
+import { $ } from 'helpers/$';
 
 export const ProspectsSchema = z.object({
   data: z.array(
@@ -33,19 +34,21 @@ export const ProspectsSchema = z.object({
   skip: z.number().nullable()
 });
 
-const $prospects = atomFamily(
-  (params: Prisma.UserFindManyArgs) =>
-    atom(() =>
-      fetch('/api/lake/user/findMany?paginated', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(params)
-      })
-        .then(res => res.json())
-        .then(data => ProspectsSchema.parse(data))
-    ),
-  isEqual
-);
+// const $prospects = atomFamily(
+//   (params: Prisma.UserFindManyArgs) =>
+//     atom(() =>
+//       fetch('/api/lake/user/findMany?paginated', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'text/plain' },
+//         body: JSON.stringify(params)
+//       })
+//         .then(res => res.json())
+//         .then(data => ProspectsSchema.parse(data))
+//     ),
+//   isEqual
+// );
+
+// const $prospects = $.user.findMany
 
 const $page = atom(1);
 const $take = atom(5);
@@ -67,10 +70,55 @@ const Prospects = () => {
   const take = useAtomValue($take);
   const page = useAtomValue($page);
 
+  const x= $.user.findMany({
+    paginated: true,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      company: true,
+      address: true,
+      postcode: true,
+      city: true,
+      phone: true,
+      activity: true
+    },
+    where: {
+      bounced: { lte: 0 },
+      refererId: { equals: null },
+      role: UserRole.LEAD,
+      ...(search !== '' && {
+        OR: [
+          { address: { contains: search } },
+          { postcode: { contains: search } },
+          { city: { contains: search } },
+          { company: { contains: search } },
+          { email: { contains: search } },
+          { phone: { contains: search } },
+          { activity: { contains: search } }
+        ]
+      })
+    },
+    take,
+    skip: (page - 1) * take
+  })
+
   return (
     <ProspectsTable
       $selection={$selection}
-      $prospects={$prospects({
+      $prospects={$.user.findMany({
+        paginated: true,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          company: true,
+          address: true,
+          postcode: true,
+          city: true,
+          phone: true,
+          activity: true
+        },
         where: {
           bounced: { lte: 0 },
           refererId: { equals: null },

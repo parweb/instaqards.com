@@ -1,6 +1,11 @@
 'use client';
 
-import { EntityType, type Block, type Prisma } from '@prisma/client';
+import {
+  EntityType,
+  Inventory as InventoryType,
+  type Block,
+  type Prisma
+} from '@prisma/client';
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { atomFamily, atomWithStorage } from 'jotai/utils';
 import { isEqual } from 'lodash-es';
@@ -19,6 +24,7 @@ import {
   InventorySchema,
   MediaSchema
 } from '../../../../../prisma/generated/zod';
+import { $ } from 'helpers/$';
 
 export const input = z.object({});
 
@@ -26,6 +32,7 @@ const InventoriesSchema = z.array(
   InventorySchema.pick({
     id: true,
     name: true,
+    description: true,
     basePrice: true,
     stock: true
   }).merge(
@@ -46,34 +53,6 @@ const MediasSchema = z.array(
     entityId: true,
     entityType: true
   })
-);
-
-const $inventories = atomFamily(
-  (params: Prisma.InventoryFindManyArgs) =>
-    atom(() =>
-      fetch('/api/lake/inventory/findMany', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(params)
-      })
-        .then(res => res.json())
-        .then(data => InventoriesSchema.parse(data))
-    ),
-  isEqual
-);
-
-const $medias = atomFamily(
-  (params: Prisma.MediaFindManyArgs) =>
-    atom(() =>
-      fetch('/api/lake/media/findMany', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(params)
-      })
-        .then(res => res.json())
-        .then(data => MediasSchema.parse(data))
-    ),
-  isEqual
 );
 
 const CartSchema = InventorySchema.pick({
@@ -269,131 +248,103 @@ const createFlyingAnimation = (
 };
 
 const ProductModal = ({
-  inventory,
-  medias,
-  blockId,
-  isOpen,
-  onClose
+  inventoryId
 }: {
-  inventory: z.infer<typeof InventoriesSchema>[number];
-  medias: z.infer<typeof MediasSchema>;
-  blockId: string;
-  isOpen: boolean;
-  onClose: () => void;
+  inventoryId: InventoryType['id'];
 }) => {
-  const setCart = useSetAtom(getCartAtom(blockId));
-  const setCartAnimation = useSetAtom(getCartAnimationAtom(blockId));
-  const setFlyingItems = useSetAtom($flyingItems);
-  const setParticles = useSetAtom($particles);
-  const setCartBurst = useSetAtom($cartBurst);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  return <div>ProductModal</div>;
+  // const setCart = useSetAtom(getCartAtom(blockId));
+  // const setCartAnimation = useSetAtom(getCartAnimationAtom(blockId));
+  // const setFlyingItems = useSetAtom($flyingItems);
+  // const setParticles = useSetAtom($particles);
+  // const setCartBurst = useSetAtom($cartBurst);
+  // const buttonRef = useRef<HTMLButtonElement>(null);
 
-  if (!isOpen) return null;
+  // if (!isOpen) return null;
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={e => {
-        if (e.target === e.currentTarget) {
-          onClose();
-        }
-      }}
-    >
-      <div className="max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow-xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b p-6">
-          <h2 className="text-2xl font-bold">Détail du produit</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
+  // return (
+  //   <div
+  //     className="fixed inset-0 flex items-center justify-center bg-black/50 p-4"
+  //     onClick={e => {
+  //       if (e.target === e.currentTarget) {
+  //         onClose();
+  //       }
+  //     }}
+  //   >
+  //     <div className="max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow-xl">
+  //       {/* Header */}
+  //       <div className="flex items-center justify-between border-b p-6">
+  //         <h2 className="text-2xl font-bold">Détail du produit</h2>
+  //         <Button variant="ghost" size="sm" onClick={onClose}>
+  //           <X className="h-5 w-5" />
+  //         </Button>
+  //       </div>
 
-        {/* Content */}
-        <div className="max-h-[70vh] overflow-y-auto p-6">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-            {/* Images */}
-            <div className="bg-gray-100">
-              <CarouselPictures pictures={medias.map(picture => picture.url)} />
-            </div>
+  //       {/* Content */}
+  //       <div className="max-h-[70vh] overflow-y-auto p-6">
+  //         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+  //           {/* Images */}
+  //           <div className="group relative bg-gray-100">
+  //             <CarouselPictures pictures={medias.map(picture => picture.url)} />
+  //           </div>
 
-            {/* Info produit */}
-            <div className="space-y-6">
-              <div>
-                <h1 className="text-3xl font-bold">{inventory.name}</h1>
-                {inventory.category?.name && (
-                  <p className="mt-2 text-sm text-gray-500">
-                    Catégorie: {inventory.category.name}
-                  </p>
-                )}
-              </div>
+  //           {/* Info produit */}
+  //           <div className="space-y-6">
+  //             {inventory.basePrice && (
+  //               <div className="text-4xl font-bold text-green-600">
+  //                 {Intl.NumberFormat('fr-FR', {
+  //                   style: 'currency',
+  //                   currency: 'EUR'
+  //                 }).format(Number(inventory.basePrice))}
+  //               </div>
+  //             )}
 
-              {inventory.basePrice && (
-                <div className="text-4xl font-bold text-green-600">
-                  {Intl.NumberFormat('fr-FR', {
-                    style: 'currency',
-                    currency: 'EUR'
-                  }).format(Number(inventory.basePrice))}
-                </div>
-              )}
+  //             {/* Description (placeholder) */}
+  //             <div>
+  //               <h3 className="mb-3 text-lg font-semibold">Description</h3>
+  //               <p className="leading-relaxed text-gray-700">
+  //                 {inventory.description}
+  //               </p>
+  //             </div>
 
-              {/* Description (placeholder) */}
-              <div>
-                <h3 className="mb-3 text-lg font-semibold">Description</h3>
-                <p className="leading-relaxed text-gray-700">
-                  Découvrez ce produit exceptionnel qui allie qualité et design.
-                  Fabriqué avec soin, il saura répondre à vos attentes et
-                  s'intégrer parfaitement dans votre quotidien. Un choix idéal
-                  pour ceux qui recherchent l'excellence.
-                </p>
-              </div>
-
-              {/* Stock info */}
-              {inventory.stock && (
-                <div className="text-sm text-gray-600">
-                  <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-green-800">
-                    ✓ En stock ({inventory.stock} disponibles)
-                  </span>
-                </div>
-              )}
-
-              {/* Action buttons */}
-              <div className="flex gap-4 pt-4">
-                <Button
-                  ref={buttonRef}
-                  size="lg"
-                  className="flex-1 bg-green-600 hover:bg-green-700"
-                  onClick={() => {
-                    setCart(
-                      addToCart({
-                        id: inventory.id,
-                        name: inventory.name,
-                        basePrice: inventory.basePrice
-                      })
-                    );
-                    if (buttonRef.current) {
-                      createFlyingAnimation(
-                        buttonRef.current,
-                        inventory.name,
-                        setFlyingItems,
-                        setParticles,
-                        setCartAnimation,
-                        setCartBurst
-                      );
-                    }
-                    // Fermer la modal après ajout
-                    setTimeout(() => onClose(), 300);
-                  }}
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  Ajouter au panier
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  //             {/* Action buttons */}
+  //             <div className="flex gap-4 pt-4">
+  //               <Button
+  //                 ref={buttonRef}
+  //                 size="lg"
+  //                 className="flex-1 bg-green-600 hover:bg-green-700"
+  //                 onClick={() => {
+  //                   setCart(
+  //                     addToCart({
+  //                       id: inventory.id,
+  //                       name: inventory.name,
+  //                       basePrice: inventory.basePrice
+  //                     })
+  //                   );
+  //                   if (buttonRef.current) {
+  //                     createFlyingAnimation(
+  //                       buttonRef.current,
+  //                       inventory.name,
+  //                       setFlyingItems,
+  //                       setParticles,
+  //                       setCartAnimation,
+  //                       setCartBurst
+  //                     );
+  //                   }
+  //                   // Fermer la modal après ajout
+  //                   setTimeout(() => onClose(), 300);
+  //                 }}
+  //               >
+  //                 <ShoppingCart className="mr-2 h-5 w-5" />
+  //                 Ajouter au panier
+  //               </Button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 };
 
 const Inventory = ({
@@ -401,8 +352,21 @@ const Inventory = ({
   medias,
   blockId
 }: {
-  inventory: z.infer<typeof InventoriesSchema>[number];
-  medias: z.infer<typeof MediasSchema>;
+  inventory: Prisma.InventoryGetPayload<{
+    select: {
+      id: true;
+      name: true;
+      basePrice: true;
+    };
+  }>;
+  medias: Prisma.MediaGetPayload<{
+    select: {
+      id: true;
+      url: true;
+      entityId: true;
+      entityType: true;
+    };
+  }>[];
   blockId: string;
 }) => {
   const setCart = useSetAtom(getCartAtom(blockId));
@@ -413,11 +377,16 @@ const Inventory = ({
   const setProductModal = useSetAtom(getProductModalAtom(blockId));
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  const modal = useModal();
+
   return (
     <Card
       key={inventory.id}
       className="group cursor-pointer overflow-hidden transition-shadow hover:shadow-md"
-      onClick={() => setProductModal(inventory.id)}
+      // onClick={() => setProductModal(inventory.id)}
+      onClick={() => {
+        modal?.show(<ProductModal inventoryId={inventory.id} />);
+      }}
     >
       <div className="flex bg-gray-100">
         <CarouselPictures pictures={medias.map(picture => picture.url)} />
@@ -613,11 +582,12 @@ const Cart = ({ blockId }: { blockId: string }) => {
 
 const Inventories = ({ blockId }: { blockId: string }) => {
   const inventories = useAtomValue(
-    $inventories({
+    $.inventory.findMany({
       where: { blockId },
       select: {
         id: true,
         name: true,
+        description: true,
         basePrice: true,
         stock: true,
         category: { select: { name: true } }
@@ -626,7 +596,7 @@ const Inventories = ({ blockId }: { blockId: string }) => {
   );
 
   const medias = useAtomValue(
-    $medias({
+    $.media.findMany({
       where: {
         entityType: EntityType.INVENTORY,
         entityId: { in: inventories.map(inventory => inventory.id) }
@@ -686,11 +656,12 @@ const Inventories = ({ blockId }: { blockId: string }) => {
       {/* Modal produit */}
       {selectedProduct && (
         <ProductModal
-          inventory={selectedProduct}
-          medias={selectedProductMedias}
-          blockId={blockId}
-          isOpen={!!selectedProductId}
-          onClose={() => setSelectedProductId(null)}
+          inventoryId={selectedProduct.id}
+          // inventory={selectedProduct}
+          // medias={selectedProductMedias}
+          // blockId={blockId}
+          // isOpen={!!selectedProductId}
+          // onClose={() => setSelectedProductId(null)}
         />
       )}
     </>
