@@ -499,12 +499,11 @@ const SingleDatePicker = ({
   const [month, setMonth] = React.useState<Date | undefined>(date);
 
   const [time, setTime] = React.useState<TimeValue | null>(
-    // @ts-ignore
     value
-      ? new Time(value.getHours(), value.getMinutes())
+      ? (new Time(value.getHours(), value.getMinutes()) as unknown as TimeValue)
       : defaultValue
-        ? new Time(defaultValue.getHours(), defaultValue.getMinutes())
-        : new Time(0, 0)
+        ? (new Time(defaultValue.getHours(), defaultValue.getMinutes()) as unknown as TimeValue)
+        : (new Time(0, 0) as unknown as TimeValue)
   );
 
   const initialDate = React.useMemo(() => {
@@ -533,8 +532,8 @@ const SingleDatePicker = ({
     setDate(initialDate);
     setTime(
       initialDate
-        ? new Time(initialDate.getHours(), initialDate.getMinutes())
-        : new Time(0, 0)
+        ? (new Time(initialDate.getHours(), initialDate.getMinutes()) as unknown as TimeValue)
+        : (new Time(0, 0) as unknown as TimeValue)
     );
     setOpen(false);
   };
@@ -551,7 +550,7 @@ const SingleDatePicker = ({
     const newDate = date;
     if (showTimePicker) {
       if (newDate && !time) {
-        setTime(new Time(0, 0));
+        setTime(new Time(0, 0) as unknown as TimeValue);
       }
       if (newDate && time) {
         newDate.setHours(time.hour);
@@ -598,10 +597,10 @@ const SingleDatePicker = ({
     setDate(value ?? defaultValue ?? undefined);
     setTime(
       value
-        ? new Time(value.getHours(), value.getMinutes())
+        ? (new Time(value.getHours(), value.getMinutes()) as unknown as TimeValue)
         : defaultValue
-          ? new Time(defaultValue.getHours(), defaultValue.getMinutes())
-          : new Time(0, 0)
+          ? (new Time(defaultValue.getHours(), defaultValue.getMinutes()) as unknown as TimeValue)
+          : (new Time(0, 0) as unknown as TimeValue)
     );
   }, [value, defaultValue]);
 
@@ -725,17 +724,17 @@ const RangeDatePicker = ({
 
   const [startTime, setStartTime] = React.useState<TimeValue | null>(
     value?.from
-      ? new Time(value.from.getHours(), value.from.getMinutes())
+      ? (new Time(value.from.getHours(), value.from.getMinutes()) as unknown as TimeValue)
       : defaultValue?.from
-        ? new Time(defaultValue.from.getHours(), defaultValue.from.getMinutes())
-        : new Time(0, 0)
+        ? (new Time(defaultValue.from.getHours(), defaultValue.from.getMinutes()) as unknown as TimeValue)
+        : (new Time(0, 0) as unknown as TimeValue)
   );
   const [endTime, setEndTime] = React.useState<TimeValue | null>(
     value?.to
-      ? new Time(value.to.getHours(), value.to.getMinutes())
+      ? (new Time(value.to.getHours(), value.to.getMinutes()) as unknown as TimeValue)
       : defaultValue?.to
-        ? new Time(defaultValue.to.getHours(), defaultValue.to.getMinutes())
-        : new Time(0, 0)
+        ? (new Time(defaultValue.to.getHours(), defaultValue.to.getMinutes()) as unknown as TimeValue)
+        : (new Time(0, 0) as unknown as TimeValue)
   );
 
   const initialRange = React.useMemo(() => {
@@ -764,11 +763,11 @@ const RangeDatePicker = ({
     const newRange = range;
     if (showTimePicker) {
       if (newRange?.from && !startTime) {
-        setStartTime(new Time(0, 0));
+        setStartTime(new Time(0, 0) as unknown as TimeValue);
       }
 
       if (newRange?.to && !endTime) {
-        setEndTime(new Time(0, 0));
+        setEndTime(new Time(0, 0) as unknown as TimeValue);
       }
 
       if (newRange?.from && startTime) {
@@ -789,13 +788,13 @@ const RangeDatePicker = ({
     setRange(initialRange);
     setStartTime(
       initialRange?.from
-        ? new Time(initialRange.from.getHours(), initialRange.from.getMinutes())
-        : new Time(0, 0)
+        ? (new Time(initialRange.from.getHours(), initialRange.from.getMinutes()) as unknown as TimeValue)
+        : (new Time(0, 0) as unknown as TimeValue)
     );
     setEndTime(
       initialRange?.to
-        ? new Time(initialRange.to.getHours(), initialRange.to.getMinutes())
-        : new Time(0, 0)
+        ? (new Time(initialRange.to.getHours(), initialRange.to.getMinutes()) as unknown as TimeValue)
+        : (new Time(0, 0) as unknown as TimeValue)
     );
     setOpen(false);
   };
@@ -870,20 +869,20 @@ const RangeDatePicker = ({
 
     setStartTime(
       value?.from
-        ? new Time(value.from.getHours(), value.from.getMinutes())
+        ? (new Time(value.from.getHours(), value.from.getMinutes()) as unknown as TimeValue)
         : defaultValue?.from
-          ? new Time(
+          ? (new Time(
               defaultValue.from.getHours(),
               defaultValue.from.getMinutes()
-            )
-          : new Time(0, 0)
+            ) as unknown as TimeValue)
+          : (new Time(0, 0) as unknown as TimeValue)
     );
     setEndTime(
       value?.to
-        ? new Time(value.to.getHours(), value.to.getMinutes())
+        ? (new Time(value.to.getHours(), value.to.getMinutes()) as unknown as TimeValue)
         : defaultValue?.to
-          ? new Time(defaultValue.to.getHours(), defaultValue.to.getMinutes())
-          : new Time(0, 0)
+          ? (new Time(defaultValue.to.getHours(), defaultValue.to.getMinutes()) as unknown as TimeValue)
+          : (new Time(0, 0) as unknown as TimeValue)
     );
   }, [value, defaultValue]);
 
