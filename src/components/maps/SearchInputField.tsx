@@ -1,8 +1,9 @@
-import { Button } from 'components/ui/button';
-import { MapPin, X } from 'lucide-react';
 import { memo, useCallback } from 'react';
-import type { SearchInputFieldProps } from './types';
+import { LuMapPin, LuX } from 'react-icons/lu';
+
+import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
+import type { SearchInputFieldProps } from './types';
 
 const SearchInputField = ({
   query,
@@ -47,7 +48,7 @@ const SearchInputField = ({
         {isSearching ? (
           <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
         ) : (
-          <MapPin className="h-4 w-4 opacity-50" />
+          <LuMapPin className="h-4 w-4 opacity-50" />
         )}
       </div>
 
@@ -60,7 +61,7 @@ const SearchInputField = ({
             onClick={handleClearSearch}
             tabIndex={-1}
           >
-            <X className="text-muted-foreground h-4 w-4 transition-colors duration-200 hover:text-red-700" />
+            <LuX className="text-muted-foreground h-4 w-4 transition-colors duration-200 hover:text-red-700" />
             <span className="sr-only">Clear search</span>
           </Button>
         </div>

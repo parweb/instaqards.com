@@ -14,7 +14,7 @@ import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import useTranslation from 'hooks/use-translation';
 import { mutateEmails } from 'lib/actions';
-import { LucideLoader2 } from 'lucide-react';
+import { LuLoader } from 'react-icons/lu';
 import { useModal } from './provider';
 
 export default function EmailsMutateModal({
@@ -138,7 +138,7 @@ export default function EmailsMutateModal({
         <Suspense
           fallback={
             <div className="flex items-center justify-center p-4">
-              <LucideLoader2 className="animate-spin" />
+              <LuLoader className="animate-spin" />
             </div>
           }
         >

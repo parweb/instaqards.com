@@ -1,8 +1,8 @@
 'use client';
 
-import { ChevronRight, type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
-import { LuExternalLink } from 'react-icons/lu';
+import type { IconType } from 'react-icons';
+import { LuChevronRight, LuExternalLink } from 'react-icons/lu';
 
 import { Badge } from 'components/ui/badge';
 import { cn } from 'lib/utils';
@@ -35,13 +35,13 @@ export function NavMain({
     title: string;
     url: string;
     secondaryUrl?: string;
-    icon: LucideIcon;
+    icon: IconType;
     isActive: boolean;
     items?: {
       title: string;
       url: string;
       isActive: boolean;
-      icon: LucideIcon;
+      icon: IconType;
       count?: number;
     }[];
   }[];
@@ -92,7 +92,7 @@ export function NavMain({
                   <>
                     <CollapsibleTrigger asChild>
                       <SidebarMenuAction className="data-[state=open]:rotate-90">
-                        <ChevronRight />
+                        <LuChevronRight />
                         <span className="sr-only">Toggle</span>
                       </SidebarMenuAction>
                     </CollapsibleTrigger>

@@ -3,15 +3,15 @@
 import { useState } from 'react';
 
 import {
-  Activity,
-  BarChart3,
-  DollarSign,
-  MousePointer,
-  Star,
-  Target,
-  TrendingDown,
-  TrendingUp
-} from 'lucide-react';
+  LuActivity,
+  LuChartColumn,
+  LuDollarSign,
+  LuMousePointer,
+  LuStar,
+  LuTarget,
+  LuTrendingDown,
+  LuTrendingUp
+} from 'react-icons/lu';
 
 import { Badge } from 'components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
@@ -134,13 +134,13 @@ const mockPerformanceData: PerformanceMetric[] = [
 const getEarningTypeIcon = (type: string) => {
   switch (type) {
     case 'commission':
-      return <DollarSign className="h-4 w-4 text-green-600" />;
+      return <LuDollarSign className="h-4 w-4 text-green-600" />;
     case 'quest_reward':
-      return <Target className="h-4 w-4 text-blue-600" />;
+      return <LuTarget className="h-4 w-4 text-blue-600" />;
     case 'bonus':
-      return <Star className="h-4 w-4 text-yellow-600" />;
+      return <LuStar className="h-4 w-4 text-yellow-600" />;
     default:
-      return <DollarSign className="h-4 w-4" />;
+      return <LuDollarSign className="h-4 w-4" />;
   }
 };
 
@@ -192,7 +192,7 @@ export function CreatorAnalytics() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-blue-600" />
+            <LuChartColumn className="h-5 w-5 text-blue-600" />
             Analytics & Historique
           </CardTitle>
           <CardDescription>
@@ -206,7 +206,7 @@ export function CreatorAnalytics() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Gains totaux</CardTitle>
-            <DollarSign className="text-muted-foreground h-4 w-4" />
+            <LuDollarSign className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -214,9 +214,9 @@ export function CreatorAnalytics() {
             </div>
             <div className="flex items-center gap-1 text-xs">
               {earningsGrowth >= 0 ? (
-                <TrendingUp className="h-3 w-3 text-green-600" />
+                <LuTrendingUp className="h-3 w-3 text-green-600" />
               ) : (
-                <TrendingDown className="h-3 w-3 text-red-600" />
+                <LuTrendingDown className="h-3 w-3 text-red-600" />
               )}
               <span
                 className={
@@ -234,7 +234,7 @@ export function CreatorAnalytics() {
             <CardTitle className="text-sm font-medium">
               Taux conversion
             </CardTitle>
-            <Target className="text-muted-foreground h-4 w-4" />
+            <LuTarget className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -253,7 +253,7 @@ export function CreatorAnalytics() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Sites créés</CardTitle>
-            <Activity className="text-muted-foreground h-4 w-4" />
+            <LuActivity className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -267,7 +267,7 @@ export function CreatorAnalytics() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Clics générés</CardTitle>
-            <MousePointer className="text-muted-foreground h-4 w-4" />
+            <LuMousePointer className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">

@@ -1,18 +1,18 @@
 import {
-  Calendar,
-  Camera,
-  CreditCard,
-  Mail,
-  Users,
-  Clock,
-  Menu,
-  Music
-} from 'lucide-react';
+  LuCalendar,
+  LuCamera,
+  LuClock,
+  LuCreditCard,
+  LuMail,
+  LuMenu,
+  LuMusic,
+  LuUsers
+} from 'react-icons/lu';
 
 export const all = [
   {
     id: 'reservation',
-    icon: Calendar,
+    icon: LuCalendar,
     title: {
       fr: 'Réservation',
       en: 'Reservation',
@@ -28,7 +28,7 @@ export const all = [
   },
   {
     id: 'reminder',
-    icon: Users,
+    icon: LuUsers,
     title: {
       fr: 'Relance',
       en: 'Reminder',
@@ -44,7 +44,7 @@ export const all = [
   },
   {
     id: 'gallery',
-    icon: Camera,
+    icon: LuCamera,
     title: {
       fr: 'Galerie',
       en: 'Gallery',
@@ -60,7 +60,7 @@ export const all = [
   },
   {
     id: 'opening-hours',
-    icon: Clock,
+    icon: LuClock,
     title: {
       fr: 'Horaires',
       en: 'Opening hours',
@@ -76,7 +76,7 @@ export const all = [
   },
   {
     id: 'pricing',
-    icon: CreditCard,
+    icon: LuCreditCard,
     title: {
       fr: 'Tarifs',
       en: 'Pricing',
@@ -92,7 +92,7 @@ export const all = [
   },
   {
     id: 'contact',
-    icon: Mail,
+    icon: LuMail,
     title: {
       fr: 'Contact',
       en: 'Contact',
@@ -108,7 +108,7 @@ export const all = [
   },
   {
     id: 'menu',
-    icon: Menu,
+    icon: LuMenu,
     title: {
       fr: 'Menu',
       en: 'Menu',
@@ -124,7 +124,7 @@ export const all = [
   },
   {
     id: 'music',
-    icon: Music,
+    icon: LuMusic,
     title: {
       fr: 'Musique',
       en: 'Music',
@@ -140,7 +140,7 @@ export const all = [
   },
   {
     id: 'event',
-    icon: Calendar,
+    icon: LuCalendar,
     title: {
       fr: 'Événement',
       en: 'Event',

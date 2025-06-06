@@ -1,6 +1,6 @@
-import { type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import * as React from 'react';
+import { type IconType } from 'react-icons';
 
 import {
   SidebarGroup,
@@ -17,7 +17,7 @@ export function NavSecondary({
   items: {
     title: string;
     url: string;
-    icon: LucideIcon;
+    icon: IconType;
     isActive: boolean;
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {

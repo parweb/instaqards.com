@@ -1,4 +1,4 @@
-import { LuCheck } from 'react-icons/lu';
+import { LuCircleCheck } from 'react-icons/lu';
 
 import { translate } from 'helpers/translate';
 import { cn } from 'lib/utils';
@@ -39,19 +39,19 @@ export const Hero = async ({ bg = '06' }) => {
 
               <ul className="">
                 <li className="flex gap-2">
-                  <LuCheck />
+                  <LuCircleCheck />
 
                   <span>{await translate('page.home.hero.bullet.one')}</span>
                 </li>
 
                 <li className="flex gap-2">
-                  <LuCheck />
+                  <LuCircleCheck />
 
                   <span>{await translate('page.home.hero.bullet.two')}</span>
                 </li>
 
                 <li className="flex gap-2">
-                  <LuCheck />
+                  <LuCircleCheck />
 
                   <span>{await translate('page.home.hero.bullet.three')}</span>
                 </li>

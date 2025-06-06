@@ -1,6 +1,6 @@
-import { Pencil } from 'lucide-react';
 import Form from 'next/form';
 import { redirect } from 'next/navigation';
+import { LuPencil } from 'react-icons/lu';
 
 import { Button } from 'components/ui/button';
 import { Switch } from 'components/ui/switch';
@@ -76,7 +76,7 @@ export default async function WorkflowsActions() {
               </TableCell>
               <TableCell>
                 <Button variant="ghost" size="icon">
-                  <Pencil />
+                  <LuPencil />
                 </Button>
               </TableCell>
             </TableRow>

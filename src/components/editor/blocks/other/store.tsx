@@ -2,10 +2,8 @@
 
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Controller, FieldValues, useForm } from 'react-hook-form';
-import { LuLoader } from 'react-icons/lu';
 import { z } from 'zod';
 
 import {
@@ -13,6 +11,8 @@ import {
   Inventory as InventoryType,
   type Prisma
 } from '@prisma/client';
+
+import { LuLoader, LuMinus, LuPlus, LuShoppingCart, LuX } from 'react-icons/lu';
 
 import { Address } from 'components/editor/form/types/address';
 import { useModal } from 'components/modal/provider';
@@ -272,7 +272,7 @@ const ProductModalInner = ({
         <h2 className="text-2xl font-bold">Détail du produit</h2>
 
         <Button variant="ghost" size="sm" onClick={onClose}>
-          <X />
+          <LuX />
         </Button>
       </div>
 
@@ -332,7 +332,7 @@ const ProductModalInner = ({
                   setTimeout(() => onClose(), 300);
                 }}
               >
-                <ShoppingCart className="mr-2 h-5 w-5" />
+                <LuShoppingCart className="mr-2 h-5 w-5" />
                 Ajouter au panier
               </Button>
             </div>
@@ -446,7 +446,7 @@ const Inventory = ({
               }
             }}
           >
-            <ShoppingCart className="mr-2 h-4 w-4" />
+            <LuShoppingCart className="mr-2 h-4 w-4" />
             Ajouter
           </Button>
         </div>
@@ -648,7 +648,7 @@ const Cart = ({ blockId }: { blockId: string }) => {
     <div className="max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-lg bg-white shadow-xl">
       <div className="flex items-center justify-between p-6">
         <h2 className="flex items-center gap-2 text-2xl font-bold">
-          <ShoppingCart />
+          <LuShoppingCart />
           Mon Panier ({cart.length})
         </h2>
 
@@ -658,7 +658,7 @@ const Cart = ({ blockId }: { blockId: string }) => {
           onClick={() => modal?.hide()}
           className="text-gray-500 hover:text-gray-900"
         >
-          <X />
+          <LuX />
         </Button>
       </div>
 
@@ -667,7 +667,7 @@ const Cart = ({ blockId }: { blockId: string }) => {
           <div className="flex flex-col items-center justify-center gap-2 px-8 text-center">
             <div className="relative">
               <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 shadow-inner">
-                <ShoppingCart className="h-12 w-12 text-gray-400" />
+                <LuShoppingCart className="h-12 w-12 text-gray-400" />
               </div>
               <div className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-red-100">
                 <span className="text-xl font-bold text-red-500">×</span>
@@ -718,7 +718,7 @@ const Cart = ({ blockId }: { blockId: string }) => {
                       }
                       className="h-8 w-8 p-0"
                     >
-                      <Minus className="h-3 w-3" />
+                      <LuMinus className="h-3 w-3" />
                     </Button>
 
                     <span className="w-8 text-center font-semibold">
@@ -734,7 +734,7 @@ const Cart = ({ blockId }: { blockId: string }) => {
                       }}
                       className="h-8 w-8 p-0"
                     >
-                      <Plus className="h-3 w-3" />
+                      <LuPlus className="h-3 w-3" />
                     </Button>
                   </div>
 
@@ -744,7 +744,7 @@ const Cart = ({ blockId }: { blockId: string }) => {
                     onClick={() => setCart(removeFromCart(item.id))}
                     className="text-red-500 hover:bg-red-50 hover:text-red-700"
                   >
-                    <X className="h-4 w-4" />
+                    <LuX className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -945,7 +945,7 @@ const FlyingItems = () => {
                 zIndex: 10
               }}
             >
-              <ShoppingCart className="h-6 w-6" />
+              <LuShoppingCart className="h-6 w-6" />
 
               {/* Ring d'expansion */}
               <div
@@ -1168,7 +1168,7 @@ const CartIndicator = ({ blockId }: { blockId: string }) => {
         />
 
         {/* Icon avec micro-rotation */}
-        <ShoppingCart
+        <LuShoppingCart
           className={`relative z-10 h-6 w-6 transition-transform duration-300 ${
             cartAnimation ? 'rotate-12 animate-bounce' : 'rotate-0'
           }`}

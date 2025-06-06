@@ -5,13 +5,13 @@ import { useParams, useSelectedLayoutSegments } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
-  BarChart3,
-  Globe,
-  LayoutDashboard,
-  Link as LinkIcon,
-  MoreHorizontal,
-  Users
-} from 'lucide-react';
+  LuChartColumn,
+  LuGlobe,
+  LuLayoutDashboard,
+  LuLink,
+  LuSeparatorHorizontal,
+  LuUsers
+} from 'react-icons/lu';
 
 import { useModal } from 'components/modal/provider';
 import { useCurrentRole } from 'hooks/use-current-role';
@@ -46,28 +46,28 @@ export const MobileBottomNavColorful = () => {
         {
           name: translate('menu.design'),
           href: `/site/${id}`,
-          icon: <LayoutDashboard className="h-5 w-5" />,
+          icon: <LuLayoutDashboard className="h-5 w-5" />,
           isActive: segments.length === 2,
           color: 'from-blue-400 to-cyan-400'
         },
         {
           name: translate('menu.subscribers'),
           href: `/site/${id}/subscribers`,
-          icon: <Users className="h-5 w-5" />,
+          icon: <LuUsers className="h-5 w-5" />,
           isActive: segments.includes('subscribers'),
           color: 'from-purple-400 to-pink-400'
         },
         {
           name: translate('menu.analytics'),
           href: `/site/${id}/analytics`,
-          icon: <BarChart3 className="h-5 w-5" />,
+          icon: <LuChartColumn className="h-5 w-5" />,
           isActive: segments.includes('analytics'),
           color: 'from-red-400 to-orange-400'
         },
         {
           name: 'Plus',
           href: '#',
-          icon: <MoreHorizontal className="h-5 w-5" />,
+          icon: <LuSeparatorHorizontal className="h-5 w-5" />,
           isActive: false,
           color: 'from-green-400 to-teal-400'
         }
@@ -79,28 +79,28 @@ export const MobileBottomNavColorful = () => {
       {
         name: translate('menu.overview'),
         href: '/',
-        icon: <LayoutDashboard className="h-5 w-5" />,
+        icon: <LuLayoutDashboard className="h-5 w-5" />,
         isActive: segments.length === 0,
         color: 'from-blue-400 to-cyan-400'
       },
       {
         name: translate('menu.sites'),
         href: '/sites',
-        icon: <Globe className="h-5 w-5" />,
+        icon: <LuGlobe className="h-5 w-5" />,
         isActive: segments[0] === 'sites',
         color: 'from-purple-400 to-pink-400'
       },
       {
         name: translate('menu.links'),
         href: '/links',
-        icon: <LinkIcon className="h-5 w-5" />,
+        icon: <LuLink className="h-5 w-5" />,
         isActive: segments[0] === 'links',
         color: 'from-red-400 to-orange-400'
       },
       {
         name: 'Plus',
         href: '#',
-        icon: <MoreHorizontal className="h-5 w-5" />,
+        icon: <LuSeparatorHorizontal className="h-5 w-5" />,
         isActive: false,
         color: 'from-green-400 to-teal-400'
       }

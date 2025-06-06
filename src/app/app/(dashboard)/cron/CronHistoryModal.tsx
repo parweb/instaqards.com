@@ -4,15 +4,15 @@ import type { Prisma } from '@prisma/client';
 import { useState } from 'react';
 
 import {
-  CalendarIcon,
-  CheckCircle2Icon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  ClockIcon,
-  HashIcon,
-  InfoIcon,
-  XCircleIcon
-} from 'lucide-react';
+  LuCalendar,
+  LuChevronDown,
+  LuChevronUp,
+  LuCircleCheck,
+  LuCircleX,
+  LuClock,
+  LuHash,
+  LuInfo
+} from 'react-icons/lu';
 
 import { Button } from 'components/ui/button';
 import useOnScreen from 'hooks/use-on-screen';
@@ -22,17 +22,17 @@ const statusMap = {
   ok: {
     label: 'Succès',
     color: 'bg-green-100 text-green-700 border-green-300',
-    icon: <CheckCircle2Icon className="h-4 w-4 text-green-500" />
+    icon: <LuCircleCheck className="h-4 w-4 text-green-500" />
   },
   error: {
     label: 'Erreur',
     color: 'bg-red-100 text-red-700 border-red-300',
-    icon: <XCircleIcon className="h-4 w-4 text-red-500" />
+    icon: <LuCircleX className="h-4 w-4 text-red-500" />
   },
   running: {
     label: 'En cours',
     color: 'bg-blue-100 text-blue-700 border-blue-300',
-    icon: <ClockIcon className="h-4 w-4 text-blue-500" />
+    icon: <LuClock className="h-4 w-4 text-blue-500" />
   }
 };
 
@@ -77,15 +77,15 @@ const HistoryItem = ({ item }: { item: History }) => {
           {status.label}
         </div>
         <div className="flex items-center gap-1 text-xs text-zinc-700 dark:text-zinc-200">
-          <CalendarIcon className="h-4 w-4 opacity-60" />
+          <LuCalendar className="h-4 w-4 opacity-60" />
           {new Date(item.startedAt).toLocaleString()}
         </div>
         <div className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
-          <ClockIcon className="h-4 w-4 opacity-60" />
+          <LuClock className="h-4 w-4 opacity-60" />
           {item.durationMs} ms
         </div>
         <div className="ml-auto flex items-center gap-1 text-xs text-zinc-400">
-          <HashIcon className="h-4 w-4 opacity-60" />
+          <LuHash className="h-4 w-4 opacity-60" />
           {item.id}
         </div>
         <Button
@@ -95,9 +95,9 @@ const HistoryItem = ({ item }: { item: History }) => {
           aria-label={open ? 'Réduire' : 'Voir le détail'}
         >
           {open ? (
-            <ChevronUpIcon className="h-5 w-5" />
+            <LuChevronUp className="h-5 w-5" />
           ) : (
-            <ChevronDownIcon className="h-5 w-5" />
+            <LuChevronDown className="h-5 w-5" />
           )}
         </Button>
       </div>
@@ -119,7 +119,7 @@ const HistoryItem = ({ item }: { item: History }) => {
         >
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-              <InfoIcon className="h-4 w-4 opacity-60" />
+              <LuInfo className="h-4 w-4 opacity-60" />
               <span>Message :</span>
             </div>
 
@@ -139,7 +139,7 @@ const HistoryItem = ({ item }: { item: History }) => {
 
             {item.endedAt && (
               <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-                <ClockIcon className="h-4 w-4 opacity-60" />
+                <LuClock className="h-4 w-4 opacity-60" />
                 <span>
                   Terminé à : {new Date(item.endedAt).toLocaleString()}
                 </span>
@@ -157,7 +157,7 @@ export default function CronHistoryModal({ history }: { history: History[] }) {
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-700 dark:bg-zinc-900">
       <div className="sticky top-0 z-10 rounded-t-2xl bg-white pb-2 dark:bg-zinc-900">
         <h2 className="flex items-center gap-2 text-2xl font-extrabold text-zinc-900 dark:text-zinc-100">
-          <ClockIcon className="h-6 w-6 text-blue-500" />
+          <LuClock className="h-6 w-6 text-blue-500" />
           {"Historique d'exécution"}
         </h2>
 

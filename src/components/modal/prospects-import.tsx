@@ -1,25 +1,23 @@
 'use client';
 
-import { UserRole, type Prisma } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 import va from '@vercel/analytics';
 import { atom, useAtomValue } from 'jotai';
-import { atomFamily } from 'jotai/utils';
-import { isEqual } from 'lodash-es';
-import { LucideLoader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { useFormStatus } from 'react-dom';
+import { LuLoader } from 'react-icons/lu';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { ProspectsTable } from 'app/app/(dashboard)/users/prospects-table';
 import LoadingDots from 'components/icons/loading-dots';
 import { Button } from 'components/ui/button';
+import { $ } from 'helpers/$';
 import useTranslation from 'hooks/use-translation';
 import { assignProspect } from 'lib/actions';
 import { UserSchema } from '../../../prisma/generated/zod';
 import { useModal } from './provider';
-import { $ } from 'helpers/$';
 
 export const ProspectsSchema = z.object({
   data: z.array(
@@ -33,22 +31,6 @@ export const ProspectsSchema = z.object({
   take: z.number().nullable(),
   skip: z.number().nullable()
 });
-
-// const $prospects = atomFamily(
-//   (params: Prisma.UserFindManyArgs) =>
-//     atom(() =>
-//       fetch('/api/lake/user/findMany?paginated', {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'text/plain' },
-//         body: JSON.stringify(params)
-//       })
-//         .then(res => res.json())
-//         .then(data => ProspectsSchema.parse(data))
-//     ),
-//   isEqual
-// );
-
-// const $prospects = $.user.findMany
 
 const $page = atom(1);
 const $take = atom(5);
@@ -173,7 +155,7 @@ export default function ProspectsImportModal() {
       <Suspense
         fallback={
           <div className="flex items-center justify-center p-4">
-            <LucideLoader2 className="animate-spin" />
+            <LuLoader className="animate-spin" />
           </div>
         }
       >

@@ -1,20 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Share2,
-  Copy,
-  ExternalLink,
-  Facebook,
-  Twitter,
-  Linkedin,
-  Instagram,
-  MessageCircle,
-  Mail,
-  Smartphone
-} from 'lucide-react';
 
+import {
+  LuCopy,
+  LuExternalLink,
+  LuFacebook,
+  LuInstagram,
+  LuLinkedin,
+  LuShare2,
+  LuTwitter
+} from 'react-icons/lu';
+
+import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
+import { Textarea } from 'components/ui/textarea';
+
 import {
   Card,
   CardContent,
@@ -22,9 +24,6 @@ import {
   CardHeader,
   CardTitle
 } from 'components/ui/card';
-import { Badge } from 'components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
-import { Textarea } from 'components/ui/textarea';
 
 interface ShareTemplate {
   id: string;
@@ -44,7 +43,7 @@ const shareTemplates: ShareTemplate[] = [
   {
     id: 'facebook',
     platform: 'Facebook',
-    icon: Facebook,
+    icon: LuFacebook,
     color: 'text-blue-600',
     templates: [
       {
@@ -68,7 +67,7 @@ const shareTemplates: ShareTemplate[] = [
   {
     id: 'linkedin',
     platform: 'LinkedIn',
-    icon: Linkedin,
+    icon: LuLinkedin,
     color: 'text-blue-700',
     templates: [
       {
@@ -92,7 +91,7 @@ const shareTemplates: ShareTemplate[] = [
   {
     id: 'instagram',
     platform: 'Instagram',
-    icon: Instagram,
+    icon: LuInstagram,
     color: 'text-pink-600',
     templates: [
       {
@@ -116,7 +115,7 @@ const shareTemplates: ShareTemplate[] = [
   {
     id: 'twitter',
     platform: 'Twitter/X',
-    icon: Twitter,
+    icon: LuTwitter,
     color: 'text-gray-900',
     templates: [
       {
@@ -189,7 +188,7 @@ export function SocialShareTemplates() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Share2 className="h-5 w-5 text-blue-600" />
+            <LuShare2 className="h-5 w-5 text-blue-600" />
             Templates de partage
           </CardTitle>
           <CardDescription>
@@ -269,7 +268,7 @@ export function SocialShareTemplates() {
                         }
                         className="flex-1"
                       >
-                        <Copy className="mr-1 h-4 w-4" />
+                        <LuCopy className="mr-1 h-4 w-4" />
                         {copiedTemplate === template.id ? 'Copié !' : 'Copier'}
                       </Button>
 
@@ -280,7 +279,7 @@ export function SocialShareTemplates() {
                           openSocialShare(platform.id, template.content)
                         }
                       >
-                        <ExternalLink className="h-4 w-4" />
+                        <LuExternalLink className="h-4 w-4" />
                       </Button>
                     </div>
                   </CardContent>
@@ -313,13 +312,13 @@ export function SocialShareTemplates() {
               onClick={() => copyToClipboard(customContent, 'custom')}
               disabled={!customContent}
             >
-              <Copy className="mr-1 h-4 w-4" />
+              <LuCopy className="mr-1 h-4 w-4" />
               Copier
             </Button>
 
             {['facebook', 'twitter', 'linkedin'].map(platform => {
               const platformData = shareTemplates.find(p => p.id === platform);
-              const Icon = platformData?.icon || Share2;
+              const Icon = platformData?.icon || LuShare2;
 
               return (
                 <Button

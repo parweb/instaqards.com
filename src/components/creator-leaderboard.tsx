@@ -1,18 +1,18 @@
 'use client';
 
 import {
-  Award,
-  Crown,
-  Medal,
-  Rocket,
-  Shield,
-  Sparkles,
-  Star,
-  Target,
-  TrendingUp,
-  Trophy,
-  Zap
-} from 'lucide-react';
+  LuAward,
+  LuCrown,
+  LuMedal,
+  LuRocket,
+  LuShield,
+  LuSparkles,
+  LuStar,
+  LuTarget,
+  LuTrendingUp,
+  LuTrophy,
+  LuZap
+} from 'react-icons/lu';
 
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
 import { Badge } from 'components/ui/badge';
@@ -121,24 +121,24 @@ const getRankIcon = (rank: number) => {
     case 1:
       return (
         <div className="relative transform transition-all duration-300 hover:scale-110">
-          <Crown className="h-10 w-10 animate-bounce text-yellow-500 drop-shadow-2xl" />
-          <Sparkles className="absolute -top-2 -right-2 h-6 w-6 animate-spin text-yellow-400" />
+          <LuCrown className="h-10 w-10 animate-bounce text-yellow-500 drop-shadow-2xl" />
+          <LuSparkles className="absolute -top-2 -right-2 h-6 w-6 animate-spin text-yellow-400" />
           <div className="absolute inset-0 animate-ping rounded-full bg-yellow-400/20"></div>
         </div>
       );
     case 2:
       return (
         <div className="relative transform transition-all duration-300 hover:scale-110">
-          <Medal className="h-9 w-9 animate-pulse text-gray-400 drop-shadow-xl" />
-          <Star className="absolute -top-1 -right-1 h-4 w-4 animate-ping text-gray-300" />
+          <LuMedal className="h-9 w-9 animate-pulse text-gray-400 drop-shadow-xl" />
+          <LuStar className="absolute -top-1 -right-1 h-4 w-4 animate-ping text-gray-300" />
           <div className="absolute inset-0 animate-pulse rounded-full bg-gray-400/20"></div>
         </div>
       );
     case 3:
       return (
         <div className="relative transform transition-all duration-300 hover:scale-110">
-          <Award className="h-8 w-8 animate-pulse text-amber-600 drop-shadow-lg" />
-          <Zap className="absolute -top-1 -right-1 h-4 w-4 animate-bounce text-amber-400" />
+          <LuAward className="h-8 w-8 animate-pulse text-amber-600 drop-shadow-lg" />
+          <LuZap className="absolute -top-1 -right-1 h-4 w-4 animate-bounce text-amber-400" />
           <div className="absolute inset-0 animate-pulse rounded-full bg-amber-600/20"></div>
         </div>
       );
@@ -201,7 +201,7 @@ export function CreatorLeaderboard({
               <div>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <div className="rounded-full bg-gradient-to-r from-yellow-500 to-orange-600 p-2 shadow-lg">
-                    <Trophy className="h-6 w-6 animate-bounce text-white" />
+                    <LuTrophy className="h-6 w-6 animate-bounce text-white" />
                   </div>
                   <span className="bg-gradient-to-r from-yellow-600 to-red-600 bg-clip-text text-transparent">
                     🎮 Classement des Legends
@@ -352,7 +352,7 @@ export function CreatorLeaderboard({
       <Card className="overflow-hidden border-0 bg-gradient-to-br from-white via-blue-50 to-purple-50 shadow-2xl">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
           <CardTitle className="flex items-center gap-2 text-xl">
-            <Shield className="h-6 w-6 animate-pulse" />
+            <LuShield className="h-6 w-6 animate-pulse" />
             <span>🎯 Classement Gaming Complet</span>
           </CardTitle>
         </CardHeader>
@@ -442,16 +442,16 @@ export function CreatorLeaderboard({
 
           {/* Special effects */}
           <div className="absolute top-2 right-2">
-            <Rocket className="h-6 w-6 animate-bounce text-blue-500" />
+            <LuRocket className="h-6 w-6 animate-bounce text-blue-500" />
           </div>
           <div className="absolute bottom-2 left-2">
-            <Zap className="h-5 w-5 animate-pulse text-purple-500" />
+            <LuZap className="h-5 w-5 animate-pulse text-purple-500" />
           </div>
 
           <CardHeader className="relative z-10">
             <CardTitle className="flex items-center gap-2 text-xl">
               <div className="rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-2 shadow-lg">
-                <Target className="h-6 w-6 text-white" />
+                <LuTarget className="h-6 w-6 text-white" />
               </div>
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 🎮 Votre Position Gaming
@@ -505,7 +505,7 @@ export function CreatorLeaderboard({
 
             <div className="mt-4 rounded-xl border-2 border-blue-300 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 p-4 shadow-lg">
               <div className="flex items-center gap-3 text-sm font-bold">
-                <TrendingUp className="h-5 w-5 animate-bounce text-blue-600" />
+                <LuTrendingUp className="h-5 w-5 animate-bounce text-blue-600" />
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   🚀 Vous êtes à {mockCreators[5].points - currentUser.points}{' '}
                   points du top 6 ! Continuez le combat épique ! ⚔️

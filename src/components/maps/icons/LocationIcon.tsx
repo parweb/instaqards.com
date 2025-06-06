@@ -1,4 +1,4 @@
-import { MapPin } from 'lucide-react';
+import { LuMapPin } from 'react-icons/lu';
 
 import { cn } from 'lib/utils';
 
@@ -7,5 +7,5 @@ interface LocationIconProps {
 }
 
 export const LocationIcon = ({ className }: LocationIconProps) => (
-  <MapPin className={cn('', className)} />
+  <LuMapPin className={cn('', className)} />
 );

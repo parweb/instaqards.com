@@ -1,9 +1,10 @@
 'use client';
 
 import type { Prisma } from '@prisma/client';
-import { AlertCircle, Check, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState } from 'react';
+
+import { LuCircleCheck, LuCircleAlert, LuLoader } from 'react-icons/lu';
 
 import { Alert, AlertTitle } from 'components/ui/alert';
 import { Badge } from 'components/ui/badge';
@@ -276,7 +277,7 @@ export const Price: React.FC<{
 
             {state === 'error' && (
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
+                <LuCircleAlert className="h-4 w-4" />
                 <AlertTitle>{message}</AlertTitle>
               </Alert>
             )}
@@ -318,7 +319,7 @@ export const Price: React.FC<{
                   }}
                 >
                   {state === 'loading' ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <LuLoader className="h-4 w-4 animate-spin" />
                   ) : (
                     translate('page.home.pricing.cta')
                   )}
@@ -343,7 +344,7 @@ export const Price: React.FC<{
                 transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
               >
                 <div className="mt-0.5 mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-linear-to-br from-green-300/20 to-green-500/20">
-                  <Check size={12} className="text-green-600" />
+                  <LuCircleCheck size={12} className="text-green-600" />
                 </div>
 
                 <span className="text-sm text-gray-700">

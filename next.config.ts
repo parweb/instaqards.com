@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     dynamicIO: true,
     ppr: true,
     viewTransition: true,
-    optimizePackageImports: ['framer-motion', 'lucide-react', 'react-icons'],
+    optimizePackageImports: ['framer-motion', 'react-icons'],
     serverActions: {
       bodySizeLimit: '200mb',
       allowedOrigins: [

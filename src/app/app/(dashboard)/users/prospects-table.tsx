@@ -1,8 +1,9 @@
 'use client';
 
+import { Prisma } from '@prisma/client';
 import { Atom, PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { LucideLoader2 } from 'lucide-react';
 import { Suspense, useEffect, useState, useTransition } from 'react';
+import { LuLoader } from 'react-icons/lu';
 import type { z } from 'zod';
 
 import { ProspectsSchema } from 'components/modal/prospects-import';
@@ -20,7 +21,6 @@ import {
   PaginationPrevious
 } from 'components/ui/pagination';
 
-import { Prisma } from '@prisma/client';
 import {
   Select,
   SelectContent,
@@ -305,7 +305,7 @@ const Thead = ({
     <thead className="sticky top-0 bg-gray-50">
       <tr>
         <th className="p-2">
-          <Suspense fallback={<LucideLoader2 className="animate-spin" />}>
+          <Suspense fallback={<LuLoader className="animate-spin" />}>
             <SelectAll $selection={$selection} $prospects={$prospects} />
 
             <div className="whitespace-nowrap">
@@ -439,7 +439,7 @@ export const ProspectsTable = ({
                     <tr>
                       <td colSpan={5} className="p-4 text-left">
                         <div className="flex items-center justify-center p-4">
-                          <LucideLoader2 className="animate-spin" />
+                          <LuLoader className="animate-spin" />
                         </div>
                       </td>
                     </tr>

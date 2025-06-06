@@ -1,5 +1,5 @@
-import { AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { LuCircleAlert } from 'react-icons/lu';
 
 import { Alert, AlertDescription } from 'components/ui/alert';
 import { translate } from 'helpers/translate';
@@ -39,7 +39,7 @@ const EmailInPage = async () => {
 
       <div className="flex flex-col items-center gap-4">
         <Alert>
-          <AlertCircle className="h-4 w-4" />
+          <LuCircleAlert className="h-4 w-4" />
 
           <AlertDescription className="flex flex-col gap-4">
             <div>{await translate('page.auth.email-in.alert')}</div>

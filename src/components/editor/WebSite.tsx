@@ -2,9 +2,9 @@
 
 import type { Block, Prisma, Site } from '@prisma/client';
 import { AnimatePresence } from 'motion/react';
-import { Eye, Pencil } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { LuEye, LuPencil } from 'react-icons/lu';
 
 import { BlockList } from 'components/BlockItem';
 import CreateBlockButton from 'components/create-block-button';
@@ -89,7 +89,7 @@ const Inner = ({
             )}
 
             <Button onClick={() => setPreview(state => !state)}>
-              {preview === false ? <Eye /> : <Pencil />}
+              {preview === false ? <LuEye /> : <LuPencil />}
             </Button>
           </div>
         </Main>

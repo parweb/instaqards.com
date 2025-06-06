@@ -4,19 +4,19 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import {
-  ArrowRight,
-  Award,
-  CheckCircle,
-  Clock,
-  Coins,
-  DollarSign,
-  Eye,
-  Star,
-  Target,
-  TrendingUp,
-  Trophy,
-  Zap
-} from 'lucide-react';
+  LuArrowRight,
+  LuAward,
+  LuCircleCheck,
+  LuClock,
+  LuCoins,
+  LuDollarSign,
+  LuEye,
+  LuStar,
+  LuTarget,
+  LuTrendingUp,
+  LuTrophy,
+  LuZap
+} from 'react-icons/lu';
 
 import { NotificationButton } from 'components/creator-notifications';
 import { Badge } from 'components/ui/badge';
@@ -181,12 +181,15 @@ export function CreatorDashboard() {
             <CardTitle className="text-sm font-medium opacity-90">
               Sites créés
             </CardTitle>
-            <Target className="h-4 w-4 opacity-90" />
+
+            <LuTarget className="h-4 w-4 opacity-90" />
           </CardHeader>
+
           <CardContent>
             <div className="text-2xl font-bold">
               {mockStats.completedQuests}
             </div>
+
             <p className="text-xs opacity-75">sites validés par admin</p>
           </CardContent>
         </Card>
@@ -196,10 +199,13 @@ export function CreatorDashboard() {
             <CardTitle className="text-sm font-medium opacity-90">
               Points gagnés
             </CardTitle>
-            <Star className="h-4 w-4 opacity-90" />
+
+            <LuStar className="h-4 w-4 opacity-90" />
           </CardHeader>
+
           <CardContent>
             <div className="text-2xl font-bold">{mockStats.totalPoints}</div>
+
             <p className="text-xs opacity-75">
               +{mockStats.completedQuests} quêtes terminées
             </p>
@@ -211,12 +217,15 @@ export function CreatorDashboard() {
             <CardTitle className="text-sm font-medium opacity-90">
               Taux validation
             </CardTitle>
-            <CheckCircle className="h-4 w-4 opacity-90" />
+
+            <LuCircleCheck className="h-4 w-4 opacity-90" />
           </CardHeader>
+
           <CardContent>
             <div className="text-2xl font-bold">
               {mockStats.engagementRate}%
             </div>
+
             <p className="text-xs opacity-75">sites approuvés par admin</p>
           </CardContent>
         </Card>
@@ -226,12 +235,15 @@ export function CreatorDashboard() {
             <CardTitle className="text-sm font-medium opacity-90">
               Vues totales
             </CardTitle>
-            <Eye className="h-4 w-4 opacity-90" />
+
+            <LuEye className="h-4 w-4 opacity-90" />
           </CardHeader>
+
           <CardContent>
             <div className="text-2xl font-bold">
               {mockStats.monthlyViews.toLocaleString()}
             </div>
+
             <p className="text-xs opacity-75">sur tous vos sites</p>
           </CardContent>
         </Card>
@@ -246,21 +258,24 @@ export function CreatorDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
-                    <Target className="h-5 w-5 text-blue-600" />
+                    <LuTarget className="h-5 w-5 text-blue-600" />
                     Quêtes en cours
                   </CardTitle>
+
                   <CardDescription>
                     Terminez vos quêtes pour gagner des récompenses
                   </CardDescription>
                 </div>
+
                 <Link href="/affiliation">
                   <Button variant="outline" size="sm">
                     Voir toutes
-                    <ArrowRight className="ml-1 h-4 w-4" />
+                    <LuArrowRight className="ml-1 h-4 w-4" />
                   </Button>
                 </Link>
               </div>
             </CardHeader>
+
             <CardContent className="space-y-4">
               {mockActiveQuests.map(quest => (
                 <div
@@ -270,17 +285,20 @@ export function CreatorDashboard() {
                   <div className="mb-2 flex items-start justify-between">
                     <div>
                       <h4 className="font-medium">{quest.title}</h4>
+
                       <p className="text-muted-foreground text-sm">
                         {quest.description}
                       </p>
                     </div>
+
                     <div className="flex gap-2">
                       <Badge className={difficultyColors[quest.difficulty]}>
                         {quest.difficulty}
                       </Badge>
+
                       {quest.timeLeft && (
                         <Badge variant="outline" className="text-orange-600">
-                          <Clock className="mr-1 h-3 w-3" />
+                          <LuClock className="mr-1 h-3 w-3" />
                           {quest.timeLeft}h
                         </Badge>
                       )}
@@ -290,10 +308,12 @@ export function CreatorDashboard() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Progression</span>
+
                       <span>
                         {quest.progress}/{quest.maxProgress}
                       </span>
                     </div>
+
                     <Progress
                       value={(quest.progress / quest.maxProgress) * 100}
                       className="h-2"
@@ -302,11 +322,13 @@ export function CreatorDashboard() {
 
                   <div className="mt-3 flex items-center justify-between">
                     <div className="flex items-center gap-1 text-sm text-green-600">
-                      <Coins className="h-4 w-4" />
+                      <LuCoins className="h-4 w-4" />
+
                       <span>
                         {quest.reward} {quest.currency}
                       </span>
                     </div>
+
                     <Button size="sm" variant="outline">
                       Continuer
                     </Button>
@@ -323,26 +345,29 @@ export function CreatorDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-yellow-600" />
+                <LuZap className="h-5 w-5 text-yellow-600" />
                 Actions rapides
               </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-3">
               <Link href="/affiliation">
                 <Button className="w-full justify-start" variant="outline">
-                  <Target className="mr-2 h-4 w-4" />
+                  <LuTarget className="mr-2 h-4 w-4" />
                   Voir mes quêtes
                 </Button>
               </Link>
+
               <Link href="/affiliation">
                 <Button className="w-full justify-start" variant="outline">
-                  <Trophy className="mr-2 h-4 w-4" />
+                  <LuTrophy className="mr-2 h-4 w-4" />
                   Réclamer récompenses
                 </Button>
               </Link>
+
               <Link href="/affiliation">
                 <Button className="w-full justify-start" variant="outline">
-                  <DollarSign className="mr-2 h-4 w-4" />
+                  <LuDollarSign className="mr-2 h-4 w-4" />
                   Mon affiliation
                 </Button>
               </Link>
@@ -353,7 +378,7 @@ export function CreatorDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5 text-purple-600" />
+                <LuAward className="h-5 w-5 text-purple-600" />
                 Succès récents
               </CardTitle>
             </CardHeader>
@@ -389,7 +414,7 @@ export function CreatorDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+                <LuTrendingUp className="h-5 w-5 text-green-600" />
                 Progression
               </CardTitle>
             </CardHeader>

@@ -4,7 +4,7 @@ import { useQueryState } from 'nuqs';
 import { useTransition } from 'react';
 
 import { Input } from 'components/ui/input';
-import { LucideLoader2 } from 'lucide-react';
+import { LuLoader } from 'react-icons/lu';
 import { pagination } from './QuerySchema';
 
 export const InputSearch = () => {
@@ -26,7 +26,7 @@ export const InputSearch = () => {
     <div className="flex items-center gap-2">
       {isMutating && (
         <div>
-          <LucideLoader2 className="animate-spin" />
+          <LuLoader className="animate-spin" />
         </div>
       )}
       <Input

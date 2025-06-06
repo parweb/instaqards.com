@@ -1,10 +1,9 @@
 'use client';
 
-import { AlertCircle, XCircle } from 'lucide-react';
 import { useState } from 'react';
+import { LuCircleAlert, LuCircleX } from 'react-icons/lu';
 
-import { getSubdomain } from 'lib/utils';
-import { cn } from 'lib/utils';
+import { cn, getSubdomain } from 'lib/utils';
 import { useDomainStatus } from './use-domain-status';
 
 export const InlineSnippet = ({
@@ -45,13 +44,13 @@ export default function DomainConfiguration({ domain }: { domain: string }) {
     <div className="border-t border-stone-200 px-10 pt-7 pb-5 dark:border-stone-700">
       <div className="mb-4 flex items-center space-x-2">
         {status === 'Pending Verification' ? (
-          <AlertCircle
+          <LuCircleAlert
             fill="#FBBF24"
             stroke="currentColor"
             className="text-white dark:text-black"
           />
         ) : (
-          <XCircle
+          <LuCircleX
             fill="#DC2626"
             stroke="currentColor"
             className="text-white dark:text-black"

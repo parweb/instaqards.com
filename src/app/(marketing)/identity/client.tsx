@@ -1,6 +1,6 @@
 'use client';
 
-import { DownloadIcon } from 'lucide-react';
+import { LuDownload } from 'react-icons/lu';
 
 import { Button } from 'components/ui/button';
 
@@ -22,7 +22,7 @@ export const DownloadButton = ({ src }: { src: string }) => {
       }}
       size="icon"
     >
-      <DownloadIcon />
+      <LuDownload />
     </Button>
   );
 };

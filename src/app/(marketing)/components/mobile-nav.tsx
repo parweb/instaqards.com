@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu } from 'lucide-react';
+import { LuMenu } from 'react-icons/lu';
 import Link from 'next/link';
 import * as React from 'react';
 
@@ -33,7 +33,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
           className="p-1 md:hidden"
           aria-label={translate('menu.landing.label')}
         >
-          <Menu className="h-6 w-6" />
+          <LuMenu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
 

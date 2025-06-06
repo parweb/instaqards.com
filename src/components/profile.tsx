@@ -1,12 +1,12 @@
 import Link from 'next/link';
 
 import {
-  BadgeCheck,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles
-} from 'lucide-react';
+  LuBadgeCheck,
+  LuChevronsUpDown,
+  LuCreditCard,
+  LuLogOut,
+  LuSparkles
+} from 'react-icons/lu';
 
 import LogoutButton from 'components/logout-button';
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
@@ -60,7 +60,7 @@ export default async function Profile() {
                 <span className="truncate text-xs">{user.email}</span>
               </div>
 
-              <ChevronsUpDown className="ml-auto size-4" />
+              <LuChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
 
@@ -88,7 +88,7 @@ export default async function Profile() {
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link prefetch href="/settings">
-                  <Sparkles />
+                  <LuSparkles />
                   Upgrade to Pro
                 </Link>
               </DropdownMenuItem>
@@ -99,14 +99,14 @@ export default async function Profile() {
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link prefetch href="/settings">
-                  <BadgeCheck />
+                  <LuBadgeCheck />
                   Account
                 </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild>
                 <Link prefetch href="/settings">
-                  <CreditCard />
+                  <LuCreditCard />
                   Billing
                 </Link>
               </DropdownMenuItem>
@@ -120,7 +120,7 @@ export default async function Profile() {
             <DropdownMenuSeparator />
 
             <LogoutButton>
-              <LogOut />
+              <LuLogOut />
               Log out
             </LogoutButton>
           </DropdownMenuContent>

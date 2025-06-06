@@ -2,7 +2,14 @@
 
 import { useState } from 'react';
 
-import { Bell, Clock, Gift, Target, Trophy, X } from 'lucide-react';
+import {
+  LuBell,
+  LuClock,
+  LuGift,
+  LuTarget,
+  LuTrophy,
+  LuX
+} from 'react-icons/lu';
 
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
@@ -89,18 +96,18 @@ const mockNotifications: Notification[] = [
 const getNotificationIcon = (type: string) => {
   switch (type) {
     case 'quest':
-      return <Target className="h-4 w-4" />;
+      return <LuTarget className="h-4 w-4" />;
     case 'reward':
-      return <Gift className="h-4 w-4" />;
+      return <LuGift className="h-4 w-4" />;
     case 'level':
     case 'achievement':
-      return <Trophy className="h-4 w-4" />;
+      return <LuTrophy className="h-4 w-4" />;
     case 'reminder':
-      return <Clock className="h-4 w-4" />;
+      return <LuClock className="h-4 w-4" />;
     case 'system':
-      return <Bell className="h-4 w-4" />;
+      return <LuBell className="h-4 w-4" />;
     default:
-      return <Bell className="h-4 w-4" />;
+      return <LuBell className="h-4 w-4" />;
   }
 };
 
@@ -186,7 +193,7 @@ export function CreatorNotifications({
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5" />
+              <LuBell className="h-5 w-5" />
               Notifications
               {unreadCount > 0 && (
                 <Badge className="ml-2 bg-red-100 text-red-800">
@@ -202,7 +209,7 @@ export function CreatorNotifications({
               </Button>
             )}
             <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
+              <LuX className="h-4 w-4" />
             </Button>
           </div>
         </CardHeader>
@@ -212,7 +219,7 @@ export function CreatorNotifications({
             <div className="space-y-3">
               {notifications.length === 0 ? (
                 <div className="py-8 text-center text-gray-500">
-                  <Bell className="mx-auto mb-2 h-8 w-8 opacity-50" />
+                  <LuBell className="mx-auto mb-2 h-8 w-8 opacity-50" />
                   <p>Aucune notification</p>
                 </div>
               ) : (
@@ -260,7 +267,7 @@ export function CreatorNotifications({
                               }}
                               className="h-6 w-6 p-0 opacity-50 hover:opacity-100"
                             >
-                              <X className="h-3 w-3" />
+                              <LuX className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
@@ -324,7 +331,7 @@ export function NotificationButton() {
         onClick={() => setIsOpen(true)}
         className="relative"
       >
-        <Bell className="h-4 w-4" />
+        <LuBell className="h-4 w-4" />
         {unreadCount > 0 && (
           <Badge className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 p-0 text-xs text-white">
             {unreadCount > 9 ? '9+' : unreadCount}

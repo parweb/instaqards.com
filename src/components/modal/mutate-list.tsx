@@ -18,7 +18,7 @@ import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import useTranslation from 'hooks/use-translation';
 import { mutateLists } from 'lib/actions';
-import { LucideLoader2 } from 'lucide-react';
+import { LuLoader } from 'react-icons/lu';
 import { UserSchema } from '../../../prisma/generated/zod';
 import { useModal } from './provider';
 
@@ -194,7 +194,7 @@ export default function ListsMutateModal({
         <Suspense
           fallback={
             <div className="flex items-center justify-center p-4">
-              <LucideLoader2 className="animate-spin" />
+              <LuLoader className="animate-spin" />
             </div>
           }
         >

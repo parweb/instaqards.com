@@ -3,7 +3,7 @@
 import type { User } from '@prisma/client';
 import va from '@vercel/analytics';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LuCheck, LuClipboard, LuLoader } from 'react-icons/lu';
+import { LuCircleCheck, LuClipboard, LuLoader } from 'react-icons/lu';
 import { toast } from 'sonner';
 
 import LoadingDots from 'components/icons/loading-dots';
@@ -98,7 +98,7 @@ export default function UserMagicLinkModal({
               size="icon"
               onClick={copyLink}
             >
-              {isCopied ? <LuCheck /> : <LuClipboard />}
+              {isCopied ? <LuCircleCheck /> : <LuClipboard />}
             </Button>
           )}
 

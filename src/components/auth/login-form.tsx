@@ -1,12 +1,11 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
-import { LuLoader } from 'react-icons/lu';
+import { LuEye, LuEyeOff, LuLoader } from 'react-icons/lu';
 import type * as z from 'zod';
 
 import { login } from 'actions/login';
@@ -158,9 +157,9 @@ export const LoginForm = () => {
                             onClick={() => setShowPassword(prev => !prev)}
                           >
                             {showPassword ? (
-                              <EyeOffIcon className="h-4 w-4" />
+                              <LuEyeOff className="h-4 w-4" />
                             ) : (
-                              <EyeIcon className="h-4 w-4" />
+                              <LuEye className="h-4 w-4" />
                             )}
                           </Button>
                         </div>

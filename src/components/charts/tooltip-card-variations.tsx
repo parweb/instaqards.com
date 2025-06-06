@@ -1,7 +1,7 @@
 'use client';
 
-import { Bell, ImageIcon, TrendingUp } from 'lucide-react';
 import type React from 'react';
+import { LuBell, LuImage, LuTrendingUp } from 'react-icons/lu';
 
 interface TooltipCardProps {
   title: string;
@@ -23,7 +23,7 @@ export function TooltipCard({ title, children }: TooltipCardProps) {
 export default function TooltipCardVariations() {
   const stageData = {
     name: 'Délivré',
-    icon: <ImageIcon className="h-5 w-5" />,
+    icon: <LuImage className="h-5 w-5" />,
     value: 28,
     total: 39,
     color: '#3b82f6',
@@ -160,7 +160,7 @@ export default function TooltipCardVariations() {
           </div>
           <div className="mb-1 text-3xl font-bold">{stageData.value}</div>
           <div className="flex items-center space-x-1 text-sm">
-            <TrendingUp className="h-4 w-4 text-green-500" />
+            <LuTrendingUp className="h-4 w-4 text-green-500" />
             <span className="text-green-500">
               {stageData.conversionRate}% de conversion
             </span>
@@ -310,7 +310,7 @@ export default function TooltipCardVariations() {
           style={{ borderColor: stageData.color }}
         >
           <div className="mb-2 flex items-center space-x-2">
-            <Bell className="h-5 w-5" style={{ color: stageData.color }} />
+            <LuBell className="h-5 w-5" style={{ color: stageData.color }} />
             <div className="font-bold">Notification</div>
           </div>
           <div className="mb-2">

@@ -1,24 +1,26 @@
 import { OrderStatus } from '@prisma/client';
-import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+
+import {
+  LuArrowLeft,
+  LuCalendar,
+  LuCircleAlert,
+  LuCircleCheck,
+  LuCircleX,
+  LuClock,
+  LuCreditCard,
+  LuMapPin,
+  LuPackage,
+  LuTruck,
+  LuUser
+} from 'react-icons/lu';
+
+import { OrderStatusUpdater } from 'components/orders/OrderStatusUpdater';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
 import { db } from 'helpers/db';
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { OrderStatusUpdater } from 'components/orders/OrderStatusUpdater';
-import {
-  ArrowLeft,
-  Package,
-  User,
-  MapPin,
-  CreditCard,
-  Truck,
-  Calendar,
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  XCircle
-} from 'lucide-react';
 
 export default async function OrderDetailsPage(props: {
   params: Promise<{ id: string; orderId: string }>;
@@ -147,35 +149,35 @@ export default async function OrderDetailsPage(props: {
       case 'PENDING':
         return (
           <Badge className="border-orange-200 bg-orange-100 text-orange-800">
-            <Clock className="mr-1 h-3 w-3" />
+            <LuClock className="mr-1 h-3 w-3" />
             En attente
           </Badge>
         );
       case 'CONFIRMED':
         return (
           <Badge className="border-blue-200 bg-blue-100 text-blue-800">
-            <CheckCircle className="mr-1 h-3 w-3" />
+            <LuCircleCheck className="mr-1 h-3 w-3" />
             Confirmée
           </Badge>
         );
       case 'SHIPPED':
         return (
           <Badge className="border-purple-200 bg-purple-100 text-purple-800">
-            <Truck className="mr-1 h-3 w-3" />
+            <LuTruck className="mr-1 h-3 w-3" />
             Expédiée
           </Badge>
         );
       case 'DELIVERED':
         return (
           <Badge className="border-green-200 bg-green-100 text-green-800">
-            <CheckCircle className="mr-1 h-3 w-3" />
+            <LuCircleCheck className="mr-1 h-3 w-3" />
             Livrée
           </Badge>
         );
       case 'CANCELLED':
         return (
           <Badge className="border-red-200 bg-red-100 text-red-800">
-            <XCircle className="mr-1 h-3 w-3" />
+            <LuCircleX className="mr-1 h-3 w-3" />
             Annulée
           </Badge>
         );
@@ -225,13 +227,13 @@ export default async function OrderDetailsPage(props: {
         <div className="flex items-center gap-4">
           <Link href={`/site/${siteId}/store/orders`}>
             <Button variant="outline" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <LuArrowLeft className="mr-2 h-4 w-4" />
               Retour aux commandes
             </Button>
           </Link>
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-              <Package className="h-6 w-6 text-blue-600" />
+              <LuPackage className="h-6 w-6 text-blue-600" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
@@ -250,7 +252,7 @@ export default async function OrderDetailsPage(props: {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
+            <LuCalendar className="h-5 w-5" />
             Statut et chronologie
           </CardTitle>
         </CardHeader>
@@ -351,7 +353,7 @@ export default async function OrderDetailsPage(props: {
             {order.statusHistory && order.statusHistory.length > 0 && (
               <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                 <div className="mb-4 flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-gray-600" />
+                  <LuCalendar className="h-4 w-4 text-gray-600" />
                   <p className="text-sm font-medium text-gray-700">
                     Historique des changements
                   </p>
@@ -411,7 +413,7 @@ export default async function OrderDetailsPage(props: {
             {order.trackingNumber && (
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
                 <div className="flex items-center gap-2">
-                  <Truck className="h-4 w-4 text-blue-600" />
+                  <LuTruck className="h-4 w-4 text-blue-600" />
                   <p className="text-sm font-medium text-blue-700">
                     Numéro de suivi
                   </p>
@@ -426,7 +428,7 @@ export default async function OrderDetailsPage(props: {
             {order.notes && (
               <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                 <div className="flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-yellow-600" />
+                  <LuCircleAlert className="h-4 w-4 text-yellow-600" />
                   <p className="text-sm font-medium text-yellow-700">Notes</p>
                 </div>
                 <p className="mt-1 text-sm text-yellow-900">{order.notes}</p>
@@ -441,7 +443,7 @@ export default async function OrderDetailsPage(props: {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
+              <LuUser className="h-5 w-5" />
               Informations client
             </CardTitle>
           </CardHeader>
@@ -479,7 +481,7 @@ export default async function OrderDetailsPage(props: {
 
             <div>
               <label className="flex items-center gap-1 text-sm font-medium text-gray-600">
-                <MapPin className="h-4 w-4" />
+                <LuMapPin className="h-4 w-4" />
                 Adresse de livraison
               </label>
               <div className="mt-2 rounded-lg border bg-gray-50 p-3">
@@ -495,7 +497,7 @@ export default async function OrderDetailsPage(props: {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CreditCard className="h-5 w-5" />
+              <LuCreditCard className="h-5 w-5" />
               Résumé financier
             </CardTitle>
           </CardHeader>
@@ -557,7 +559,7 @@ export default async function OrderDetailsPage(props: {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5" />
+            <LuPackage className="h-5 w-5" />
             Articles commandés ({order.items.length})
           </CardTitle>
         </CardHeader>

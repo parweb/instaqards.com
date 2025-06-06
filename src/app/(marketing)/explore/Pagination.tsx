@@ -1,6 +1,8 @@
 'use client';
 
 import { useQueryState } from 'nuqs';
+import { useTransition } from 'react';
+import { LuLoader } from 'react-icons/lu';
 
 import { Input } from 'components/ui/input';
 import { clamp } from 'helpers/clamp';
@@ -21,8 +23,6 @@ import {
   SelectTrigger,
   SelectValue
 } from 'components/ui/select';
-import { useTransition } from 'react';
-import { LucideLoader2 } from 'lucide-react';
 
 export const Pagination = ({ total }: { total: number }) => {
   const [isMutating, startTransition] = useTransition();
@@ -47,7 +47,7 @@ export const Pagination = ({ total }: { total: number }) => {
     <div className="flex items-center justify-between gap-4">
       {isMutating && (
         <div>
-          <LucideLoader2 className="animate-spin" />
+          <LuLoader className="animate-spin" />
         </div>
       )}
 

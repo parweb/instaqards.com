@@ -1,8 +1,24 @@
 'use client';
 
-import { useState } from 'react';
 import { OrderStatus } from '@prisma/client';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+import {
+  LuCircleAlert,
+  LuCircleCheck,
+  LuCircleX,
+  LuClock,
+  LuSettings,
+  LuTruck
+} from 'react-icons/lu';
+
+import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import { Input } from 'components/ui/input';
+import { Textarea } from 'components/ui/textarea';
+
 import {
   Select,
   SelectContent,
@@ -10,19 +26,6 @@ import {
   SelectTrigger,
   SelectValue
 } from 'components/ui/select';
-import { Input } from 'components/ui/input';
-import { Textarea } from 'components/ui/textarea';
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
-import { Badge } from 'components/ui/badge';
-import {
-  Settings,
-  CheckCircle,
-  Clock,
-  Truck,
-  XCircle,
-  AlertCircle
-} from 'lucide-react';
 
 interface OrderStatusUpdaterProps {
   orderId: string;
@@ -96,17 +99,17 @@ export function OrderStatusUpdater({
   const getStatusIcon = (status: OrderStatus) => {
     switch (status) {
       case 'PENDING':
-        return <Clock className="h-4 w-4 text-orange-600" />;
+        return <LuClock className="h-4 w-4 text-orange-600" />;
       case 'CONFIRMED':
-        return <CheckCircle className="h-4 w-4 text-blue-600" />;
+        return <LuCircleCheck className="h-4 w-4 text-blue-600" />;
       case 'SHIPPED':
-        return <Truck className="h-4 w-4 text-purple-600" />;
+        return <LuTruck className="h-4 w-4 text-purple-600" />;
       case 'DELIVERED':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <LuCircleCheck className="h-4 w-4 text-green-600" />;
       case 'CANCELLED':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <LuCircleX className="h-4 w-4 text-red-600" />;
       default:
-        return <AlertCircle className="h-4 w-4 text-gray-600" />;
+        return <LuCircleAlert className="h-4 w-4 text-gray-600" />;
     }
   };
 
@@ -157,7 +160,7 @@ export function OrderStatusUpdater({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
+          <LuSettings className="h-5 w-5" />
           Actions sur la commande
         </CardTitle>
       </CardHeader>

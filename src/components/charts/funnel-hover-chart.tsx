@@ -1,15 +1,17 @@
 'use client';
 
 import type React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
 import {
-  TrendingUp,
-  TrendingDown,
-  Target,
-  Users,
-  Eye,
-  MousePointer
-} from 'lucide-react';
+  LuEye,
+  LuMousePointer,
+  LuTarget,
+  LuTrendingDown,
+  LuTrendingUp,
+  LuUsers
+} from 'react-icons/lu';
+
 import { TooltipCard } from 'components/charts/tooltip-card-variations';
 
 export interface FunnelStage {
@@ -433,9 +435,9 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
             </div>
             <div className="mt-3 flex items-center justify-center space-x-2">
               {conversionRate >= 70 ? (
-                <TrendingUp className="h-4 w-4 text-green-500" />
+                <LuTrendingUp className="h-4 w-4 text-green-500" />
               ) : (
-                <TrendingDown className="h-4 w-4 text-red-500" />
+                <LuTrendingDown className="h-4 w-4 text-red-500" />
               )}
               <span className="text-sm font-medium">
                 {conversionRate}% de conversion
@@ -572,21 +574,21 @@ export function FunnelHoverChart({ data, variant }: FunnelHoverChartProps) {
               <div className="flex items-center space-x-1">
                 {conversionRate >= 70 ? (
                   <>
-                    <TrendingUp className="h-5 w-5 text-green-500" />
+                    <LuTrendingUp className="h-5 w-5 text-green-500" />
                     <span className="font-bold text-green-500">
                       +{conversionRate}%
                     </span>
                   </>
                 ) : conversionRate >= 40 ? (
                   <>
-                    <Target className="h-5 w-5 text-yellow-500" />
+                    <LuTarget className="h-5 w-5 text-yellow-500" />
                     <span className="font-bold text-yellow-500">
                       {conversionRate}%
                     </span>
                   </>
                 ) : (
                   <>
-                    <TrendingDown className="h-5 w-5 text-red-500" />
+                    <LuTrendingDown className="h-5 w-5 text-red-500" />
                     <span className="font-bold text-red-500">
                       {conversionRate}%
                     </span>
@@ -712,7 +714,7 @@ export default function FunnelHoverCharts() {
     {
       id: 'sent',
       name: 'Envoyé',
-      icon: <Users className="h-5 w-5" />,
+      icon: <LuUsers className="h-5 w-5" />,
       value: 39,
       total: 39,
       color: '#10b981'
@@ -720,7 +722,7 @@ export default function FunnelHoverCharts() {
     {
       id: 'delivered',
       name: 'Délivré',
-      icon: <Target className="h-5 w-5" />,
+      icon: <LuTarget className="h-5 w-5" />,
       value: 28,
       total: 39,
       color: '#3b82f6'
@@ -728,7 +730,7 @@ export default function FunnelHoverCharts() {
     {
       id: 'opened',
       name: 'Ouvert',
-      icon: <Eye className="h-5 w-5" />,
+      icon: <LuEye className="h-5 w-5" />,
       value: 3,
       total: 28,
       color: '#f59e0b'
@@ -736,7 +738,7 @@ export default function FunnelHoverCharts() {
     {
       id: 'clicked',
       name: 'Cliqué',
-      icon: <MousePointer className="h-5 w-5" />,
+      icon: <LuMousePointer className="h-5 w-5" />,
       value: 0,
       total: 3,
       color: '#8b5cf6'

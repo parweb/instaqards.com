@@ -1,6 +1,6 @@
-import { ArrowRight, MapPin } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { LuArrowRight, LuMapPin } from 'react-icons/lu';
 
 import { Persona } from 'components/marketing/Persona';
 import { Button } from 'components/ui/button';
@@ -9,8 +9,8 @@ import { Separator } from 'components/ui/separator';
 import * as job from 'data/job';
 import { getLang } from 'helpers/translate';
 import { cn } from 'lib/utils';
-import { boldonse } from 'styles/fonts';
 import { uri } from 'settings';
+import { boldonse } from 'styles/fonts';
 
 interface Props {
   params: Promise<{ profession: string }>;
@@ -99,7 +99,7 @@ export default async function ProPage({ params }: Props) {
 
               {(city || postal) && (
                 <div className="flex items-center gap-2 text-gray-600">
-                  <MapPin className="h-5 w-5" />
+                  <LuMapPin className="h-5 w-5" />
                   <p className="text-lg">
                     {city}, {postal}
                   </p>
@@ -175,7 +175,7 @@ export default async function ProPage({ params }: Props) {
                   >
                     <Link prefetch href={`/feature/${feature.id}`}>
                       En savoir plus
-                      <ArrowRight className="ml-1.5 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                      <LuArrowRight className="ml-1.5 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                     </Link>
                   </Button>
                 </div>

@@ -1,7 +1,6 @@
 import { EntityType } from '@prisma/client';
-import { PlusIcon } from 'lucide-react';
 import Form from 'next/form';
-import { LuCopy, LuEllipsisVertical, LuTrash } from 'react-icons/lu';
+import { LuCopy, LuEllipsisVertical, LuPlus, LuTrash } from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
 import InventoryMutateModal from 'components/modal/mutate-inventory';
@@ -131,7 +130,7 @@ export default async function SiteStoreProducts(props: {
           <ModalButton
             label={
               <>
-                <PlusIcon /> Ajouter un produit
+                <LuPlus /> Ajouter un produit
               </>
             }
           >
@@ -367,7 +366,7 @@ export default async function SiteStoreProducts(props: {
                 <ModalButton
                   label={
                     <>
-                      <PlusIcon className="h-4 w-4" /> Ajouter un produit
+                      <LuPlus className="h-4 w-4" /> Ajouter un produit
                     </>
                   }
                 >

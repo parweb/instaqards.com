@@ -1,15 +1,15 @@
 'use client';
 
 import {
-  Briefcase,
-  Building2,
-  CheckCircle2,
-  Filter,
-  MapPin,
-  Search,
-  UserCheck,
-  Users
-} from 'lucide-react';
+  LuBriefcase,
+  LuBuilding2,
+  LuCircleCheck,
+  LuFilter,
+  LuMapPin,
+  LuSearch,
+  LuUserCheck,
+  LuUsers
+} from 'react-icons/lu';
 
 import { Button } from 'components/ui/button';
 import { Checkbox } from 'components/ui/checkbox';
@@ -32,7 +32,7 @@ export const FilterModal = () => {
       <div className="relative flex min-w-[28rem] flex-col gap-6 p-8">
         <header className="mb-2 flex items-center gap-3">
           <span className="animate-bounce-in inline-flex items-center justify-center rounded-full bg-gradient-to-tr from-purple-400 via-pink-400 to-blue-400 p-2 shadow-lg">
-            <Filter className="drop-shadow-glow animate-spin-slow size-7 text-white" />
+            <LuFilter className="drop-shadow-glow animate-spin-slow size-7 text-white" />
           </span>
           <h2 className="animate-fade-in bg-gradient-to-r from-purple-700 via-pink-600 to-blue-600 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent drop-shadow-md">
             Filtres magiques
@@ -47,7 +47,7 @@ export const FilterModal = () => {
                 htmlFor="search"
                 className="flex items-center gap-2 text-base font-semibold"
               >
-                <Search className="size-4 text-purple-400" /> Recherche
+                <LuSearch className="size-4 text-purple-400" /> Recherche
               </Label>
               <Input
                 id="search"
@@ -63,7 +63,7 @@ export const FilterModal = () => {
                   htmlFor="city"
                   className="flex items-center gap-2 font-semibold"
                 >
-                  <MapPin className="size-4 text-blue-400" /> Ville
+                  <LuMapPin className="size-4 text-blue-400" /> Ville
                 </Label>
                 <Select>
                   <SelectTrigger
@@ -86,7 +86,7 @@ export const FilterModal = () => {
                   htmlFor="state"
                   className="flex items-center gap-2 font-semibold"
                 >
-                  <Building2 className="size-4 text-purple-400" /> Département
+                  <LuBuilding2 className="size-4 text-purple-400" /> Département
                 </Label>
                 <Select>
                   <SelectTrigger
@@ -109,7 +109,7 @@ export const FilterModal = () => {
                   htmlFor="activity"
                   className="flex items-center gap-2 font-semibold"
                 >
-                  <Briefcase className="size-4 text-pink-400" /> Activité
+                  <LuBriefcase className="size-4 text-pink-400" /> Activité
                 </Label>
                 <Select>
                   <SelectTrigger
@@ -129,7 +129,7 @@ export const FilterModal = () => {
               {/* Type de profil (RadioGroup) */}
               <div className="flex flex-col gap-2">
                 <Label className="flex items-center gap-2 font-semibold">
-                  <Users className="size-4 text-blue-400" /> Type de profil
+                  <LuUsers className="size-4 text-blue-400" /> Type de profil
                 </Label>
                 <RadioGroup
                   defaultValue="all"
@@ -159,7 +159,7 @@ export const FilterModal = () => {
               {/* Filtres multiples (checkbox) */}
               <div className="flex flex-1 flex-col gap-2">
                 <Label className="flex items-center gap-2 font-semibold">
-                  <Filter className="size-4 text-purple-400" /> Options
+                  <LuFilter className="size-4 text-purple-400" /> Options
                 </Label>
                 <div className="mt-1 flex flex-col gap-3 pl-2">
                   <div className="flex items-center gap-2">
@@ -176,12 +176,12 @@ export const FilterModal = () => {
               {/* Switch exemple */}
               <div className="flex flex-1 flex-col gap-2">
                 <Label className="flex items-center gap-2 font-semibold">
-                  <UserCheck className="size-4 text-green-400" /> Statut
+                  <LuUserCheck className="size-4 text-green-400" /> Statut
                 </Label>
                 <div className="mt-1 flex items-center gap-3 pl-2">
                   <Switch id="verified" />
                   <Label htmlFor="verified" className="flex items-center gap-1">
-                    <CheckCircle2 className="size-4 text-green-400" /> Comptes
+                    <LuCircleCheck className="size-4 text-green-400" /> Comptes
                     vérifiés uniquement
                   </Label>
                 </div>
@@ -193,7 +193,7 @@ export const FilterModal = () => {
         <footer className="flex flex-col gap-2 pt-6">
           <Button className="animate-pop-in w-full bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 py-3 text-lg font-bold shadow-lg transition-all duration-300 hover:from-purple-600 hover:to-blue-600">
             <span className="inline-flex items-center gap-2">
-              <Filter className="animate-sparkle drop-shadow-glow size-5 text-white" />
+              <LuFilter className="animate-sparkle drop-shadow-glow size-5 text-white" />
               Appliquer les filtres magiques
             </span>
           </Button>

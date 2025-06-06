@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
-import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { LuX } from 'react-icons/lu';
 
 type OrderStatus =
   | 'PENDING'
@@ -173,7 +173,7 @@ export function OrderDetailsModal({
             {order && <p className="text-gray-600">#{order.orderNumber}</p>}
           </div>
           <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-5 w-5" />
+            <LuX className="h-5 w-5" />
           </Button>
         </div>
 

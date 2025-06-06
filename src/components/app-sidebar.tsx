@@ -7,24 +7,24 @@ import { useParams, useSelectedLayoutSegments } from 'next/navigation';
 import * as React from 'react';
 
 import {
-  BarChart3,
-  Calendar,
-  Cog,
-  DollarSign,
-  Frame,
-  Globe,
-  LayoutDashboard,
-  LifeBuoy,
-  LinkIcon,
-  Newspaper,
-  Play,
-  Send,
-  Settings,
-  ShoppingBag,
-  Timer,
-  Users,
-  Workflow
-} from 'lucide-react';
+  LuCalendar,
+  LuChartColumn,
+  LuCog,
+  LuDollarSign,
+  LuFrame,
+  LuGlobe,
+  LuLayoutDashboard,
+  LuLifeBuoy,
+  LuLink,
+  LuNewspaper,
+  LuPlay,
+  LuSend,
+  LuSettings,
+  LuShoppingBag,
+  LuTimer,
+  LuUsers,
+  LuWorkflow
+} from 'react-icons/lu';
 
 import { NavMain } from 'components/nav-main';
 import { NavProjects } from 'components/nav-projects';
@@ -74,7 +74,7 @@ export function AppSidebar(
       {
         title: translate('menu.overview'),
         url: '/',
-        icon: LayoutDashboard,
+        icon: LuLayoutDashboard,
         isActive: segments.length === 0
       },
       ...(props.role === UserRole.CREATOR
@@ -82,7 +82,7 @@ export function AppSidebar(
             {
               title: translate('menu.affiliation'),
               url: '/affiliation',
-              icon: DollarSign,
+              icon: LuDollarSign,
               isActive: segments[0] === 'affiliation'
             }
           ]
@@ -90,19 +90,19 @@ export function AppSidebar(
             {
               title: translate('menu.sites'),
               url: '/sites',
-              icon: Globe,
+              icon: LuGlobe,
               isActive: segments[0] === 'sites'
             },
             {
               title: translate('menu.links'),
               url: '/links',
-              icon: LinkIcon,
+              icon: LuLink,
               isActive: segments[0] === 'links'
             },
             {
               title: translate('menu.affiliation'),
               url: '/affiliation',
-              icon: DollarSign,
+              icon: LuDollarSign,
               isActive: segments[0] === 'affiliation'
             }
           ]),
@@ -111,25 +111,25 @@ export function AppSidebar(
             {
               title: translate('menu.generator'),
               url: '/generator',
-              icon: Cog,
+              icon: LuCog,
               isActive: segments[0] === 'generator'
             },
             {
               title: translate('menu.users'),
               url: '/users',
-              icon: Users,
+              icon: LuUsers,
               isActive: segments[0] === 'users'
             },
             {
               title: translate('menu.referals'),
               url: '/referals',
-              icon: Workflow,
+              icon: LuWorkflow,
               isActive: segments[0] === 'referals'
             },
             {
               title: translate('menu.cron'),
               url: '/cron',
-              icon: Timer,
+              icon: LuTimer,
               isActive: segments[0] === 'cron'
             }
           ]
@@ -139,7 +139,7 @@ export function AppSidebar(
             {
               title: translate('menu.workflows'),
               url: '/workflows',
-              icon: Play,
+              icon: LuPlay,
               isActive: segments[0] === 'workflows'
             }
           ]
@@ -149,13 +149,13 @@ export function AppSidebar(
       {
         title: translate('menu.support'),
         url: '/help',
-        icon: LifeBuoy,
+        icon: LuLifeBuoy,
         isActive: segments[0] === 'help'
       },
       {
         title: translate('menu.feedback'),
         url: '/feedback',
-        icon: Send,
+        icon: LuSend,
         isActive: false
       }
     ],
@@ -163,7 +163,7 @@ export function AppSidebar(
       return {
         name: site.name ?? 'Untitled',
         url: `/site/${site.id}`,
-        icon: Frame,
+        icon: LuFrame,
         secondaryUrl: uri.site(site).link,
         clicks: site._count.clicks
       };
@@ -175,27 +175,27 @@ export function AppSidebar(
         title: openProject.name ?? 'Untitled',
         url: `/site/${openProject.id}`,
         secondaryUrl: uri.site(openProject).link,
-        icon: Frame,
+        icon: LuFrame,
         isActive: true,
         items: [
           {
             title: translate('menu.design'),
             url: `/site/${openProject.id}`,
             isActive: segments.length === 2,
-            icon: Newspaper
+            icon: LuNewspaper
           },
           {
             title: translate('menu.subscribers'),
             url: `/site/${openProject.id}/subscribers`,
             isActive: segments.includes('subscribers'),
-            icon: Users,
+            icon: LuUsers,
             count: openProject._count.subscribers
           },
           {
             title: translate('menu.store'),
             url: `/site/${openProject.id}/store`,
             isActive: segments.includes('store'),
-            icon: ShoppingBag,
+            icon: LuShoppingBag,
             count: openProject.blocks.reduce(
               (carry, block) => carry + (block?._count.orders ?? 0),
               0
@@ -205,7 +205,7 @@ export function AppSidebar(
             title: translate('menu.reservations'),
             url: `/site/${openProject.id}/reservations`,
             isActive: segments.includes('reservations'),
-            icon: Calendar,
+            icon: LuCalendar,
             count: openProject.blocks.reduce(
               (carry, block) => carry + (block?._count.reservations ?? 0),
               0
@@ -215,14 +215,14 @@ export function AppSidebar(
             title: translate('menu.analytics'),
             url: `/site/${openProject.id}/analytics`,
             isActive: segments.includes('analytics'),
-            icon: BarChart3,
+            icon: LuChartColumn,
             count: openProject._count.clicks
           },
           {
             title: translate('menu.settings'),
             url: `/site/${openProject.id}/settings`,
             isActive: segments.includes('settings'),
-            icon: Settings
+            icon: LuSettings
           }
         ]
       }

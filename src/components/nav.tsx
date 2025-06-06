@@ -8,21 +8,21 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
-  ArrowLeft,
-  BarChart3,
-  Calendar,
-  Cog,
-  DollarSign,
-  Globe,
-  HelpCircle,
-  LayoutDashboard,
-  Link as LinkIcon,
-  Menu,
-  Newspaper,
-  Settings,
-  Users,
-  X
-} from 'lucide-react';
+  LuArrowLeft,
+  LuCalendar,
+  LuChartColumn,
+  LuCircleHelp,
+  LuCog,
+  LuDollarSign,
+  LuGlobe,
+  LuLayoutDashboard,
+  LuLink,
+  LuMenu,
+  LuNewspaper,
+  LuSettings,
+  LuUsers,
+  LuX
+} from 'react-icons/lu';
 
 import { LanguageChooser } from 'components/LanguageChooser';
 import { useCurrentRole } from 'hooks/use-current-role';
@@ -39,7 +39,7 @@ export default function Nav({ children }: { children: ReactNode }) {
     const help = {
       name: translate('menu.help'),
       href: '/help',
-      icon: <HelpCircle width={18} />
+      icon: <LuCircleHelp width={18} />
     };
 
     if (segments[0] === 'site' && id) {
@@ -47,37 +47,37 @@ export default function Nav({ children }: { children: ReactNode }) {
         {
           name: translate('menu.back.site'),
           href: '/sites',
-          icon: <ArrowLeft width={18} />
+          icon: <LuArrowLeft width={18} />
         },
         {
           name: translate('menu.design'),
           href: `/site/${id}`,
           isActive: segments.length === 2,
-          icon: <Newspaper width={18} />
+          icon: <LuNewspaper width={18} />
         },
         {
           name: translate('menu.subscribers'),
           href: `/site/${id}/subscribers`,
           isActive: segments.includes('subscribers'),
-          icon: <Users width={18} />
+          icon: <LuUsers width={18} />
         },
         {
           name: translate('menu.reservations'),
           href: `/site/${id}/reservations`,
           isActive: segments.includes('reservations'),
-          icon: <Calendar width={18} />
+          icon: <LuCalendar width={18} />
         },
         {
           name: translate('menu.analytics'),
           href: `/site/${id}/analytics`,
           isActive: segments.includes('analytics'),
-          icon: <BarChart3 width={18} />
+          icon: <LuChartColumn width={18} />
         },
         {
           name: translate('menu.settings'),
           href: `/site/${id}/settings`,
           isActive: segments.includes('settings'),
-          icon: <Settings width={18} />
+          icon: <LuSettings width={18} />
         },
         help
       ];
@@ -88,19 +88,19 @@ export default function Nav({ children }: { children: ReactNode }) {
         name: translate('menu.overview'),
         href: '/',
         isActive: segments.length === 0,
-        icon: <LayoutDashboard width={18} />
+        icon: <LuLayoutDashboard width={18} />
       },
       {
         name: translate('menu.sites'),
         href: '/sites',
         isActive: segments[0] === 'sites',
-        icon: <Globe width={18} />
+        icon: <LuGlobe width={18} />
       },
       {
         name: translate('menu.links'),
         href: '/links',
         isActive: segments[0] === 'links',
-        icon: <LinkIcon width={18} />
+        icon: <LuLink width={18} />
       },
       ...(([UserRole.ADMIN, UserRole.SELLER] as UserRole[]).includes(
         role ?? UserRole.USER
@@ -110,7 +110,7 @@ export default function Nav({ children }: { children: ReactNode }) {
               name: translate('menu.generator'),
               href: '/generator',
               isActive: segments[0] === 'generator',
-              icon: <Cog width={18} />
+              icon: <LuCog width={18} />
             }
           ]
         : []),
@@ -118,13 +118,13 @@ export default function Nav({ children }: { children: ReactNode }) {
         name: translate('menu.affiliation'),
         href: '/affiliation',
         isActive: segments[0] === 'affiliation',
-        icon: <DollarSign width={18} />
+        icon: <LuDollarSign width={18} />
       },
       {
         name: translate('menu.settings'),
         href: '/settings',
         isActive: segments[0] === 'settings',
-        icon: <Settings width={18} />
+        icon: <LuSettings width={18} />
       },
       help
     ];
@@ -145,7 +145,7 @@ export default function Nav({ children }: { children: ReactNode }) {
         className="fixed top-5 right-5 sm:hidden"
         onClick={() => setShowSidebar(state => !state)}
       >
-        {showSidebar ? <X width={20} /> : <Menu width={20} />}
+        {showSidebar ? <LuX width={20} /> : <LuMenu width={20} />}
       </button>
 
       <nav

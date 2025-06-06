@@ -3,28 +3,28 @@
 import { useEffect, useState } from 'react';
 
 import {
-  Award,
-  CheckCircle,
-  Clock,
-  Copy,
-  Crown,
-  DollarSign,
-  ExternalLink,
-  Flame,
-  Gem,
-  Lock,
-  MousePointer,
-  Rocket,
-  Share2,
-  Shield,
-  Sparkles,
-  Star,
-  Target,
-  TrendingUp,
-  Trophy,
-  Users,
-  Zap
-} from 'lucide-react';
+  LuAward,
+  LuCircleCheck,
+  LuClock,
+  LuCopy,
+  LuCrown,
+  LuDollarSign,
+  LuExternalLink,
+  LuFlame,
+  LuGem,
+  LuLock,
+  LuMousePointer,
+  LuRocket,
+  LuShare2,
+  LuShield,
+  LuSparkles,
+  LuStar,
+  LuTarget,
+  LuTrendingUp,
+  LuTrophy,
+  LuUsers,
+  LuZap
+} from 'react-icons/lu';
 
 import { CreatorAnalytics } from 'components/creator-analytics';
 import { CreatorLeaderboard } from 'components/creator-leaderboard';
@@ -600,7 +600,7 @@ function StickyUserStats() {
               {/* Points */}
               <div className="flex items-center gap-3 rounded-2xl border border-yellow-300/30 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 px-5 py-3 backdrop-blur-sm">
                 <div className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 p-3 shadow-lg">
-                  <DollarSign className="h-6 w-6 text-white" />
+                  <LuDollarSign className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-white">
@@ -615,7 +615,7 @@ function StickyUserStats() {
               {/* Niveau */}
               <div className="flex items-center gap-3 rounded-2xl border border-purple-300/30 bg-gradient-to-r from-purple-500/20 to-pink-500/20 px-5 py-3 backdrop-blur-sm">
                 <div className="rounded-full bg-gradient-to-r from-purple-500 to-pink-600 p-3 shadow-lg">
-                  <Trophy className="h-6 w-6 text-white" />
+                  <LuTrophy className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <div className="flex items-center gap-3">
@@ -646,7 +646,7 @@ function StickyUserStats() {
                 {/* Header Moderne */}
                 <div className="mb-4 flex items-center gap-4">
                   <div className="rounded-full bg-gradient-to-r from-indigo-500 to-blue-600 p-3 shadow-lg">
-                    <Award className="h-6 w-6 text-white" />
+                    <LuAward className="h-6 w-6 text-white" />
                   </div>
 
                   <div className="flex-1">
@@ -712,7 +712,7 @@ function StickyUserStats() {
                             <DialogHeader>
                               <DialogTitle className="flex items-center gap-3 text-2xl font-bold text-gray-900">
                                 <div className="rounded-full bg-gradient-to-r from-indigo-500 to-blue-600 p-3 shadow-lg">
-                                  <Award className="h-6 w-6 text-white" />
+                                  <LuAward className="h-6 w-6 text-white" />
                                 </div>
                                 🏆 Collection Complète
                               </DialogTitle>
@@ -835,7 +835,7 @@ function QuestCard({ quest }: { quest: Quest }) {
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-2 shadow-lg">
-              <Target className="h-5 w-5 text-white" />
+              <LuTarget className="h-5 w-5 text-white" />
             </div>
             <CardTitle className="bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-lg text-transparent">
               {quest.title}
@@ -869,7 +869,7 @@ function QuestCard({ quest }: { quest: Quest }) {
         <div className="space-y-2">
           <div className="flex justify-between text-sm font-medium">
             <span className="flex items-center gap-1">
-              <Zap className="h-4 w-4 text-yellow-500" />
+              <LuZap className="h-4 w-4 text-yellow-500" />
               Progression
             </span>
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text font-bold text-transparent">
@@ -888,11 +888,11 @@ function QuestCard({ quest }: { quest: Quest }) {
         {/* Reward with sparkle effect */}
         <div className="border-gradient-to-r relative rounded-xl border-2 bg-gradient-to-r from-yellow-50 from-yellow-200 via-orange-50 to-orange-300 to-red-50 p-4 shadow-lg">
           <div className="absolute top-1 right-1">
-            <Sparkles className="animate-gentle-pulse h-4 w-4 text-yellow-500" />
+            <LuSparkles className="animate-gentle-pulse h-4 w-4 text-yellow-500" />
           </div>
           <div className="flex items-center gap-3">
             <div className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 p-2 shadow-lg">
-              <Trophy className="h-4 w-4 text-white" />
+              <LuTrophy className="h-4 w-4 text-white" />
             </div>
             <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-sm font-bold text-transparent">
               {quest.reward.description}
@@ -903,7 +903,7 @@ function QuestCard({ quest }: { quest: Quest }) {
         {/* Requirements with colorful steps */}
         <div className="space-y-3">
           <span className="flex items-center gap-2 text-sm font-bold text-gray-700">
-            <Shield className="h-4 w-4 text-blue-500" />
+            <LuShield className="h-4 w-4 text-blue-500" />
             Étapes de conversion:
           </span>
           <ul className="space-y-2">
@@ -932,9 +932,9 @@ function QuestCard({ quest }: { quest: Quest }) {
                     } `}
                   >
                     {isCompleted ? (
-                      <CheckCircle className="h-4 w-4 text-white" />
+                      <LuCircleCheck className="h-4 w-4 text-white" />
                     ) : isCurrentStep ? (
-                      <Clock className="animate-gentle-pulse h-4 w-4 text-white" />
+                      <LuClock className="animate-gentle-pulse h-4 w-4 text-white" />
                     ) : (
                       <div className="h-2 w-2 rounded-full bg-white" />
                     )}
@@ -961,22 +961,22 @@ function QuestCard({ quest }: { quest: Quest }) {
           <div className="flex items-center gap-2">
             {quest.status === 'completed' && (
               <>
-                <Trophy className="h-4 w-4" /> Terminé
+                <LuTrophy className="h-4 w-4" /> Terminé
               </>
             )}
             {quest.status === 'in_progress' && (
               <>
-                <Rocket className="h-4 w-4" /> Continuer
+                <LuRocket className="h-4 w-4" /> Continuer
               </>
             )}
             {quest.status === 'available' && (
               <>
-                <Flame className="h-4 w-4" /> Commencer
+                <LuFlame className="h-4 w-4" /> Commencer
               </>
             )}
             {quest.status === 'locked' && (
               <>
-                <Lock className="h-4 w-4" /> Verrouillé
+                <LuLock className="h-4 w-4" /> Verrouillé
               </>
             )}
           </div>
@@ -1021,16 +1021,16 @@ function RewardCard({ reward }: { reward: Reward }) {
               }`}
             >
               {reward.rarity === 'legendary' && (
-                <Crown className="h-5 w-5 text-white" />
+                <LuCrown className="h-5 w-5 text-white" />
               )}
               {reward.rarity === 'epic' && (
-                <Gem className="h-5 w-5 text-white" />
+                <LuGem className="h-5 w-5 text-white" />
               )}
               {reward.rarity === 'rare' && (
-                <Star className="h-5 w-5 text-white" />
+                <LuStar className="h-5 w-5 text-white" />
               )}
               {reward.rarity === 'common' && (
-                <Award className="h-5 w-5 text-white" />
+                <LuAward className="h-5 w-5 text-white" />
               )}
             </div>
             <CardTitle className="bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-lg text-transparent">
@@ -1055,7 +1055,7 @@ function RewardCard({ reward }: { reward: Reward }) {
       <CardContent className="relative z-10 space-y-4">
         {reward.claimedAt && (
           <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-gradient-to-r from-green-100 to-emerald-100 p-3 shadow-lg">
-            <CheckCircle className="h-5 w-5 text-green-600" />
+            <LuCircleCheck className="h-5 w-5 text-green-600" />
             <span className="text-sm font-bold text-green-800">
               🎉 Réclamé le {reward.claimedAt.toLocaleDateString('fr-FR')}
             </span>
@@ -1076,17 +1076,17 @@ function RewardCard({ reward }: { reward: Reward }) {
           <div className="flex items-center gap-2">
             {reward.status === 'claimed' && (
               <>
-                <Trophy className="h-4 w-4" /> Réclamé
+                <LuTrophy className="h-4 w-4" /> Réclamé
               </>
             )}
             {reward.status === 'available' && (
               <>
-                <Sparkles className="h-4 w-4" /> Réclamer
+                <LuSparkles className="h-4 w-4" /> Réclamer
               </>
             )}
             {reward.status === 'locked' && (
               <>
-                <Lock className="h-4 w-4" /> Verrouillé
+                <LuLock className="h-4 w-4" /> Verrouillé
               </>
             )}
           </div>
@@ -1117,7 +1117,7 @@ export function CreatorAffiliation() {
               🎮 Creator Gaming Hub 🎮
             </h1>
             <div className="absolute -top-2 -right-2">
-              <Sparkles className="animate-gentle-pulse h-8 w-8 text-yellow-500" />
+              <LuSparkles className="animate-gentle-pulse h-8 w-8 text-yellow-500" />
             </div>
           </div>
           <p className="rounded-lg bg-white/50 p-4 text-lg text-gray-600 shadow-lg backdrop-blur-sm">
@@ -1133,7 +1133,7 @@ export function CreatorAffiliation() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
                 <div className="rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-2 shadow-lg">
-                  <Share2 className="h-5 w-5 text-white" />
+                  <LuShare2 className="h-5 w-5 text-white" />
                 </div>
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {"🔗 Votre lien d'affiliation magique"}
@@ -1150,13 +1150,13 @@ export function CreatorAffiliation() {
                   className="transform bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-purple-700"
                   size="sm"
                 >
-                  <Copy className="h-4 w-4" />
+                  <LuCopy className="h-4 w-4" />
                 </Button>
                 <Button
                   className="transform bg-gradient-to-r from-purple-500 to-pink-600 shadow-lg transition-all duration-300 hover:scale-105 hover:from-purple-600 hover:to-pink-700"
                   size="sm"
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <LuExternalLink className="h-4 w-4" />
                 </Button>
               </div>
             </CardContent>
@@ -1170,7 +1170,7 @@ export function CreatorAffiliation() {
               <CardTitle className="text-sm font-medium">
                 🎯 Clics totaux
               </CardTitle>
-              <MousePointer className="animate-gentle-pulse h-6 w-6" />
+              <LuMousePointer className="animate-gentle-pulse h-6 w-6" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
@@ -1185,7 +1185,7 @@ export function CreatorAffiliation() {
               <CardTitle className="text-sm font-medium">
                 ⚡ Conversions
               </CardTitle>
-              <Users className="animate-gentle-pulse h-6 w-6" />
+              <LuUsers className="animate-gentle-pulse h-6 w-6" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
@@ -1202,7 +1202,7 @@ export function CreatorAffiliation() {
               <CardTitle className="text-sm font-medium">
                 💰 Gains totaux
               </CardTitle>
-              <DollarSign className="animate-gentle-pulse h-6 w-6" />
+              <LuDollarSign className="animate-gentle-pulse h-6 w-6" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
@@ -1217,7 +1217,7 @@ export function CreatorAffiliation() {
               <CardTitle className="text-sm font-medium">
                 ⭐ Points bonus
               </CardTitle>
-              <Star className="animate-gentle-pulse h-6 w-6" />
+              <LuStar className="animate-gentle-pulse h-6 w-6" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
@@ -1280,7 +1280,7 @@ export function CreatorAffiliation() {
               <Card className="border-0 bg-gradient-to-br from-white via-blue-50 to-purple-50 shadow-2xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-xl">
-                    <TrendingUp className="h-6 w-6 text-blue-600" />
+                    <LuTrendingUp className="h-6 w-6 text-blue-600" />
                     <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                       🎮 Performance Gaming
                     </span>
@@ -1317,7 +1317,7 @@ export function CreatorAffiliation() {
               <Card className="border-0 bg-gradient-to-br from-white via-green-50 to-blue-50 shadow-2xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-xl">
-                    <Rocket className="h-6 w-6 text-green-600" />
+                    <LuRocket className="h-6 w-6 text-green-600" />
                     <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                       🚀 Prochaines missions
                     </span>
@@ -1326,7 +1326,7 @@ export function CreatorAffiliation() {
                 <CardContent className="space-y-4">
                   <div className="flex transform items-center gap-4 rounded-xl bg-gradient-to-r from-blue-100 to-cyan-100 p-4 shadow-lg transition-all duration-300 hover:scale-105">
                     <div className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-600 p-2 shadow-lg">
-                      <Target className="h-5 w-5 text-white" />
+                      <LuTarget className="h-5 w-5 text-white" />
                     </div>
                     <div>
                       <div className="font-bold text-blue-800">
@@ -1339,7 +1339,7 @@ export function CreatorAffiliation() {
                   </div>
                   <div className="flex transform items-center gap-4 rounded-xl bg-gradient-to-r from-green-100 to-emerald-100 p-4 shadow-lg transition-all duration-300 hover:scale-105">
                     <div className="rounded-full bg-gradient-to-r from-green-500 to-emerald-600 p-2 shadow-lg">
-                      <Share2 className="h-5 w-5 text-white" />
+                      <LuShare2 className="h-5 w-5 text-white" />
                     </div>
                     <div>
                       <div className="font-bold text-green-800">

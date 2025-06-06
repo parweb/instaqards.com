@@ -1,17 +1,17 @@
 'use client';
 
 import {
-  Crown,
-  Flame,
-  Gem,
-  Rocket,
-  Shield,
-  Sparkles,
-  Star,
-  Target,
-  Trophy,
-  Zap
-} from 'lucide-react';
+  LuCrown,
+  LuFlame,
+  LuGem,
+  LuRocket,
+  LuShield,
+  LuSparkles,
+  LuStar,
+  LuTarget,
+  LuTrophy,
+  LuZap
+} from 'react-icons/lu';
 
 import { Badge } from 'components/ui/badge';
 import { Progress } from 'components/ui/progress';
@@ -43,7 +43,7 @@ const creatorLevels: CreatorLevel[] = [
     name: 'Débutant',
     minPoints: 0,
     maxPoints: 99,
-    icon: Target,
+    icon: LuTarget,
     color: 'text-gray-600',
     gradient: 'from-gray-400 to-slate-500',
     emoji: '🎯',
@@ -59,7 +59,7 @@ const creatorLevels: CreatorLevel[] = [
     name: 'Confirmé',
     minPoints: 100,
     maxPoints: 299,
-    icon: Star,
+    icon: LuStar,
     color: 'text-blue-600',
     gradient: 'from-blue-500 to-indigo-600',
     emoji: '⭐',
@@ -76,7 +76,7 @@ const creatorLevels: CreatorLevel[] = [
     name: 'Expert',
     minPoints: 300,
     maxPoints: 599,
-    icon: Trophy,
+    icon: LuTrophy,
     color: 'text-purple-600',
     gradient: 'from-purple-500 to-violet-600',
     emoji: '🏆',
@@ -94,7 +94,7 @@ const creatorLevels: CreatorLevel[] = [
     name: 'Master',
     minPoints: 600,
     maxPoints: 999,
-    icon: Crown,
+    icon: LuCrown,
     color: 'text-yellow-600',
     gradient: 'from-yellow-400 to-amber-500',
     emoji: '👑',
@@ -112,7 +112,7 @@ const creatorLevels: CreatorLevel[] = [
     name: 'Legend',
     minPoints: 1000,
     maxPoints: Infinity,
-    icon: Gem,
+    icon: LuGem,
     color: 'text-red-600',
     gradient: 'from-red-500 to-pink-600',
     emoji: '💎',
@@ -176,10 +176,10 @@ export function CreatorLevels({ currentPoints }: CreatorLevelsProps) {
 
         {/* Sparkle effects */}
         <div className="absolute top-2 right-2">
-          <Sparkles className="h-6 w-6 animate-spin text-yellow-500" />
+          <LuSparkles className="h-6 w-6 animate-spin text-yellow-500" />
         </div>
         <div className="absolute bottom-2 left-2">
-          <Flame className="h-5 w-5 animate-bounce text-orange-500" />
+          <LuFlame className="h-5 w-5 animate-bounce text-orange-500" />
         </div>
 
         <CardHeader className="relative z-10">
@@ -216,7 +216,7 @@ export function CreatorLevels({ currentPoints }: CreatorLevelsProps) {
             <div className="space-y-3">
               <div className="flex justify-between text-sm font-bold">
                 <span className="flex items-center gap-2">
-                  <Rocket className="h-4 w-4 text-blue-500" />
+                  <LuRocket className="h-4 w-4 text-blue-500" />
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     Progression vers {nextLevel.emoji} {nextLevel.name}
                   </span>
@@ -238,7 +238,7 @@ export function CreatorLevels({ currentPoints }: CreatorLevelsProps) {
           {/* Current benefits with gaming style */}
           <div className="rounded-xl border-2 border-green-200 bg-gradient-to-r from-green-50 via-blue-50 to-purple-50 p-4 shadow-lg">
             <h4 className="mb-3 flex items-center gap-2 text-lg font-bold">
-              <Shield className="h-5 w-5 text-green-600" />
+              <LuShield className="h-5 w-5 text-green-600" />
               <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                 🎮 Pouvoirs actuels débloqués :
               </span>
@@ -262,7 +262,7 @@ export function CreatorLevels({ currentPoints }: CreatorLevelsProps) {
       <Card className="border-0 bg-gradient-to-br from-white via-purple-50 to-pink-50 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl">
-            <Trophy className="h-6 w-6 text-yellow-500" />
+            <LuTrophy className="h-6 w-6 text-yellow-500" />
             <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               🏆 Arbre des Niveaux Gaming
             </span>
@@ -370,10 +370,10 @@ export function CreatorLevels({ currentPoints }: CreatorLevelsProps) {
                   {isCurrentLevel && (
                     <>
                       <div className="absolute top-2 right-2">
-                        <Sparkles className="h-5 w-5 animate-spin text-yellow-500" />
+                        <LuSparkles className="h-5 w-5 animate-spin text-yellow-500" />
                       </div>
                       <div className="absolute right-2 bottom-2">
-                        <Zap className="h-4 w-4 animate-bounce text-blue-500" />
+                        <LuZap className="h-4 w-4 animate-bounce text-blue-500" />
                       </div>
                     </>
                   )}

@@ -1,5 +1,5 @@
-import { X } from 'lucide-react';
 import { forwardRef, memo } from 'react';
+import { LuX } from 'react-icons/lu';
 
 import LoadingIcon from 'components/maps/icons/LoadingIcon';
 import SearchIcon from 'components/maps/icons/SearchIcon';
@@ -61,7 +61,7 @@ const SearchField = memo(
               className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={onClearSearch}
             >
-              <X className="text-muted-foreground h-4 w-4" />
+              <LuX className="text-muted-foreground h-4 w-4" />
               <span className="sr-only">Clear search</span>
             </Button>
           )}

@@ -6,9 +6,9 @@ import { atom, useAtom, useAtomValue } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
-import { FaMagic } from 'react-icons/fa';
 import { Suspense, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { FaMagic } from 'react-icons/fa';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -18,10 +18,10 @@ import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 import { Label } from 'components/ui/label';
 import { RadioGroup, RadioGroupItem } from 'components/ui/radio-group';
+import { Switch } from 'components/ui/switch';
 import useTranslation from 'hooks/use-translation';
 import { mutateCampaigns } from 'lib/actions';
-import { LucideLoader2 } from 'lucide-react';
-import { Switch } from 'components/ui/switch';
+import { LuLoader } from 'react-icons/lu';
 import { useModal } from './provider';
 
 import {
@@ -32,13 +32,13 @@ import {
   SelectValue
 } from 'components/ui/select';
 
+import { Badge } from 'components/ui/badge';
+import { cn } from 'lib/utils';
 import {
   EmailSchema,
   ListSchema,
   UserSchema
 } from '../../../prisma/generated/zod';
-import { Badge } from 'components/ui/badge';
-import { cn } from 'lib/utils';
 
 const ListsSchema = z.object({
   data: z.array(
@@ -321,7 +321,7 @@ export default function CampaignsMutateModal({
         <Suspense
           fallback={
             <div className="flex items-center justify-center p-4">
-              <LucideLoader2 className="animate-spin" />
+              <LuLoader className="animate-spin" />
             </div>
           }
         >

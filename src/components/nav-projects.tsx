@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { type IconType as LucideIcon } from 'react-icons';
 
 import {
-  Folder,
-  MoreHorizontal,
-  Share,
-  Trash2,
-  type LucideIcon
-} from 'lucide-react';
+  LuFolder,
+  LuSeparatorHorizontal,
+  LuShare,
+  LuTrash2
+} from 'react-icons/lu';
 
 import CreateSiteButtonSidebar from 'components/create-site-button-sidebar';
 import CreateSiteModal from 'components/modal/create-site';
@@ -67,7 +67,7 @@ export function NavProjects({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction showOnHover>
-                  <MoreHorizontal />
+                  <LuSeparatorHorizontal />
                   <span className="sr-only">More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
@@ -79,7 +79,7 @@ export function NavProjects({
               >
                 <DropdownMenuItem asChild>
                   <Link prefetch href={item.url}>
-                    <Folder className="text-muted-foreground" />
+                    <LuFolder className="text-muted-foreground" />
                     <span>View Project</span>
                   </Link>
                 </DropdownMenuItem>
@@ -87,7 +87,7 @@ export function NavProjects({
                 {item.secondaryUrl && (
                   <DropdownMenuItem asChild>
                     <Link href={item.secondaryUrl} target="_blank">
-                      <Share className="text-muted-foreground" />
+                      <LuShare className="text-muted-foreground" />
                       <span>Share Project</span>
                     </Link>
                   </DropdownMenuItem>
@@ -97,7 +97,7 @@ export function NavProjects({
 
                 <DropdownMenuItem asChild>
                   <Link prefetch href={`${item.url}/settings`}>
-                    <Trash2 className="text-muted-foreground" />
+                    <LuTrash2 className="text-muted-foreground" />
                     <span>Delete Project</span>
                   </Link>
                 </DropdownMenuItem>
