@@ -29,9 +29,34 @@ export default async function OrderDetailsPage(props: {
   // Fetch order details
   const order = await db.order.findUnique({
     where: { id: orderId },
-    include: {
+    select: {
+      id: true,
+      orderNumber: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+      shippedAt: true,
+      deliveredAt: true,
+      trackingNumber: true,
+      notes: true,
+      customerFirstName: true,
+      customerLastName: true,
+      customerEmail: true,
+      customerPhone: true,
+      customerAddress: true,
+      subtotal: true,
+      tax: true,
+      shipping: true,
+      total: true,
       items: {
-        include: {
+        select: {
+          id: true,
+          quantity: true,
+          unitPrice: true,
+          totalPrice: true,
+          productName: true,
+          productDescription: true,
+          productSku: true,
           inventory: {
             select: {
               id: true,
@@ -43,6 +68,14 @@ export default async function OrderDetailsPage(props: {
         }
       },
       statusHistory: {
+        select: {
+          id: true,
+          previousStatus: true,
+          newStatus: true,
+          changedAt: true,
+          changeReason: true,
+          automaticChange: true
+        },
         orderBy: {
           changedAt: 'asc'
         }
@@ -324,7 +357,7 @@ export default async function OrderDetailsPage(props: {
                   </p>
                 </div>
                 <div className="space-y-3">
-                  {order.statusHistory.map((history, index) => (
+                  {order.statusHistory.map((history) => (
                     <div
                       key={history.id}
                       className="flex items-start gap-3 border-b border-gray-200 pb-3 last:border-b-0 last:pb-0"

@@ -206,7 +206,7 @@ export function OrderDetailsModal({
                   {order.timeline.shippedAt && (
                     <div>
                       <label className="text-sm font-medium text-gray-500">
-                        Date d'expédition
+                        {"Date d'expédition"}
                       </label>
                       <p className="text-sm">
                         {formatDate(order.timeline.shippedAt)}

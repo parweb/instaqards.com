@@ -1,40 +1,40 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
 import {
-  Target,
-  Trophy,
-  Clock,
-  CheckCircle,
-  Lock,
-  Coins,
-  Star,
-  Users,
-  TrendingUp,
-  Share2,
-  Eye,
-  MousePointer,
-  DollarSign,
   Award,
-  Zap,
-  ArrowRight,
+  CheckCircle,
+  Clock,
   Copy,
+  Crown,
+  DollarSign,
   ExternalLink,
   Flame,
-  Crown,
   Gem,
-  Sparkles,
+  Lock,
+  MousePointer,
   Rocket,
-  Shield
+  Share2,
+  Shield,
+  Sparkles,
+  Star,
+  Target,
+  TrendingUp,
+  Trophy,
+  Users,
+  Zap
 } from 'lucide-react';
 
-import { CreatorLevels } from 'components/creator-levels';
-import { CreatorLeaderboard } from 'components/creator-leaderboard';
-import { SocialShareTemplates } from 'components/social-share-templates';
 import { CreatorAnalytics } from 'components/creator-analytics';
-
+import { CreatorLeaderboard } from 'components/creator-leaderboard';
+import { CreatorLevels } from 'components/creator-levels';
+import { SocialShareTemplates } from 'components/social-share-templates';
+import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
+import { Progress } from 'components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
+
 import {
   Card,
   CardContent,
@@ -42,14 +42,7 @@ import {
   CardHeader,
   CardTitle
 } from 'components/ui/card';
-import { Badge } from 'components/ui/badge';
-import { Progress } from 'components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger
-} from 'components/ui/hover-card';
+
 import {
   Dialog,
   DialogContent,
@@ -58,6 +51,12 @@ import {
   DialogTitle,
   DialogTrigger
 } from 'components/ui/dialog';
+
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger
+} from 'components/ui/hover-card';
 
 // Custom CSS animations - MODERNES ET SUBTILES
 const customStyles = `

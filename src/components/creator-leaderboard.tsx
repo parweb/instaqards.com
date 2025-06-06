@@ -1,21 +1,21 @@
 'use client';
 
 import {
-  Trophy,
-  Medal,
   Award,
   Crown,
-  Star,
-  TrendingUp,
-  Users,
-  Target,
-  Sparkles,
-  Flame,
-  Zap,
-  Gem,
+  Medal,
+  Rocket,
   Shield,
-  Rocket
+  Sparkles,
+  Star,
+  Target,
+  TrendingUp,
+  Trophy,
+  Zap
 } from 'lucide-react';
+
+import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
+import { Badge } from 'components/ui/badge';
 
 import {
   Card,
@@ -24,8 +24,6 @@ import {
   CardHeader,
   CardTitle
 } from 'components/ui/card';
-import { Badge } from 'components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
 
 interface Creator {
   id: string;

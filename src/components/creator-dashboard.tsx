@@ -1,28 +1,28 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
+import { useState } from 'react';
+
 import {
-  Target,
-  Trophy,
-  Clock,
-  CheckCircle,
-  Coins,
-  Star,
-  TrendingUp,
-  Users,
-  Heart,
-  Eye,
-  Calendar,
-  Award,
   ArrowRight,
-  Zap,
-  DollarSign
+  Award,
+  CheckCircle,
+  Clock,
+  Coins,
+  DollarSign,
+  Eye,
+  Star,
+  Target,
+  TrendingUp,
+  Trophy,
+  Zap
 } from 'lucide-react';
 
 import { NotificationButton } from 'components/creator-notifications';
-
+import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
+import { Progress } from 'components/ui/progress';
+
 import {
   Card,
   CardContent,
@@ -30,8 +30,6 @@ import {
   CardHeader,
   CardTitle
 } from 'components/ui/card';
-import { Badge } from 'components/ui/badge';
-import { Progress } from 'components/ui/progress';
 
 // Types
 interface CreatorStats {

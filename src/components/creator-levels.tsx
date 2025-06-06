@@ -1,19 +1,20 @@
 'use client';
 
 import {
-  Star,
   Crown,
-  Zap,
-  Trophy,
-  Target,
-  TrendingUp,
-  Award,
-  Gem,
-  Sparkles,
   Flame,
+  Gem,
+  Rocket,
   Shield,
-  Rocket
+  Sparkles,
+  Star,
+  Target,
+  Trophy,
+  Zap
 } from 'lucide-react';
+
+import { Badge } from 'components/ui/badge';
+import { Progress } from 'components/ui/progress';
 
 import {
   Card,
@@ -22,8 +23,6 @@ import {
   CardHeader,
   CardTitle
 } from 'components/ui/card';
-import { Badge } from 'components/ui/badge';
-import { Progress } from 'components/ui/progress';
 
 interface CreatorLevel {
   id: number;

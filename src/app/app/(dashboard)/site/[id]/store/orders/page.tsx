@@ -42,7 +42,7 @@ export default async function SiteStoreOrders(props: {
         <div className="py-12 text-center">
           <h1 className="mb-4 text-2xl font-bold">Aucun store configuré</h1>
           <p className="text-gray-500">
-            Vous devez d'abord ajouter un bloc store à votre site.
+            {"Vous devez d'abord ajouter un bloc store à votre site."}
           </p>
         </div>
       </div>
@@ -71,13 +71,29 @@ export default async function SiteStoreOrders(props: {
   const [orders, totalCount] = await Promise.all([
     db.order.findMany({
       where,
-      include: {
+      select: {
+        id: true,
+        orderNumber: true,
+        customerFirstName: true,
+        customerLastName: true,
+        customerEmail: true,
+        customerPhone: true,
+        status: true,
+        createdAt: true,
+        trackingNumber: true,
+        total: true,
         items: {
-          include: {
+          select: {
+            id: true,
+            quantity: true,
+            unitPrice: true,
+            totalPrice: true,
+            productName: true,
+            productDescription: true,
+            productSku: true,
             inventory: {
               select: {
-                name: true,
-                sku: true
+                name: true
               }
             }
           }

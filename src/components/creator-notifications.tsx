@@ -1,30 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Bell,
-  X,
-  Target,
-  Trophy,
-  Star,
-  Gift,
-  TrendingUp,
-  Calendar,
-  CheckCircle,
-  Clock,
-  AlertCircle
-} from 'lucide-react';
 
-import { Button } from 'components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from 'components/ui/card';
+import { Bell, Clock, Gift, Target, Trophy, X } from 'lucide-react';
+
 import { Badge } from 'components/ui/badge';
+import { Button } from 'components/ui/button';
 import { ScrollArea } from 'components/ui/scroll-area';
+
+import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
 
 interface Notification {
   id: string;

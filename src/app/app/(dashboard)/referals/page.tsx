@@ -1,4 +1,3 @@
-import { UserRole } from '@prisma/client';
 
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';

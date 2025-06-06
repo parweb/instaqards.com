@@ -3,7 +3,7 @@
 import type { Prisma } from '@prisma/client';
 import { AlertCircle, Check, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Alert, AlertTitle } from 'components/ui/alert';
 import { Badge } from 'components/ui/badge';
@@ -102,10 +102,6 @@ export const Price: React.FC<{
     'idle'
   );
 
-  useEffect(() => {
-    setState('idle');
-  }, [billingCycle]);
-
   const offer: Record<
     typeof billingCycle,
     Prisma.PriceGetPayload<{
@@ -163,7 +159,10 @@ export const Price: React.FC<{
               'relative z-10 w-40 flex-1 rounded-full px-4 py-2 font-medium transition-colors duration-300 ease-in-out',
               billingCycle === 'month' ? 'text-black' : 'text-gray-500'
             )}
-            onClick={() => setBillingCycle('month')}
+            onClick={() => {
+              setBillingCycle('month');
+              setState('idle');
+            }}
           >
             {translate('page.home.pricing.monthly')}
           </button>
@@ -175,7 +174,10 @@ export const Price: React.FC<{
               'relative z-10 w-40 flex-1 rounded-full px-4 py-2 font-medium transition-colors duration-300 ease-in-out',
               billingCycle === 'year' ? 'text-black' : 'text-gray-500'
             )}
-            onClick={() => setBillingCycle('year')}
+            onClick={() => {
+              setBillingCycle('year');
+              setState('idle');
+            }}
           >
             <span>{translate('page.home.pricing.annual')}</span>
 

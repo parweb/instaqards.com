@@ -5,7 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import type { Prisma } from '@prisma/client';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { LuLink, LuMove } from 'react-icons/lu';
 import { SocialIcon } from 'react-social-icons';
 
@@ -356,10 +356,6 @@ export const BlockList = ({
   editor?: boolean;
 }) => {
   const [items, setItems] = useState(blocks);
-
-  useEffect(() => {
-    setItems(blocks);
-  }, [blocks]);
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: undefined }),

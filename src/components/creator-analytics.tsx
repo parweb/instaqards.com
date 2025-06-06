@@ -1,20 +1,20 @@
 'use client';
 
 import { useState } from 'react';
+
 import {
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  Eye,
-  MousePointer,
-  Users,
-  Calendar,
-  BarChart3,
-  PieChart,
   Activity,
+  BarChart3,
+  DollarSign,
+  MousePointer,
+  Star,
   Target,
-  Star
+  TrendingDown,
+  TrendingUp
 } from 'lucide-react';
+
+import { Badge } from 'components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 
 import {
   Card,
@@ -23,9 +23,6 @@ import {
   CardHeader,
   CardTitle
 } from 'components/ui/card';
-import { Badge } from 'components/ui/badge';
-import { Button } from 'components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 
 interface EarningsHistory {
   id: string;

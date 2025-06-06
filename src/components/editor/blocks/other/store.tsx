@@ -2,8 +2,10 @@
 
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { Suspense } from 'react';
+import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Controller, FieldValues, useForm } from 'react-hook-form';
+import { LuLoader } from 'react-icons/lu';
 import { z } from 'zod';
 
 import {
@@ -19,10 +21,6 @@ import { Card, CardContent, CardTitle } from 'components/ui/card';
 import { CarouselPictures } from 'components/ui/carousel';
 import { Input } from 'components/ui/input';
 import { $ } from 'helpers/$';
-import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-
-import { LuLoader } from 'react-icons/lu';
 import { InventorySchema } from '../../../../../prisma/generated/zod';
 
 export const input = z.object({});
@@ -227,7 +225,7 @@ const ProductModalInner = ({
   const modal = useModal();
 
   const inventory = useAtomValue(
-    $.inventory.findUnique({
+    $.inventory.findUniqueOrThrow({
       select: {
         id: true,
         name: true,
@@ -240,8 +238,6 @@ const ProductModalInner = ({
       }
     })
   );
-
-  if (!inventory) return null;
 
   const medias = useAtomValue(
     $.media.findMany({
@@ -813,9 +809,7 @@ const Inventories = ({ blockId }: { blockId: string }) => {
 
   const cart = useAtomValue(getCartAtom(blockId));
   const [cartOpen, setCartOpen] = useAtom(getCartOpenAtom(blockId));
-  const [selectedProductId, setSelectedProductId] = useAtom(
-    getProductModalAtom(blockId)
-  );
+  const [selectedProductId] = useAtom(getProductModalAtom(blockId));
 
   // Fermer automatiquement la modal si le panier devient vide
   useEffect(() => {

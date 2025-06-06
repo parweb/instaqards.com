@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
+import React from 'react';
 import {
   Bar,
   CartesianGrid,
@@ -15,6 +15,8 @@ import {
 } from 'recharts';
 import type { AxisDomain } from 'recharts/types/util/types';
 
+import { cx } from 'class-variance-authority';
+import { useOnWindowResize } from 'hooks/use-on-window-resize';
 import {
   AvailableChartColors,
   constructCategoryColors,
@@ -22,9 +24,7 @@ import {
   getYAxisDomain,
   type AvailableChartColorsKeys
 } from 'lib/chartUtils';
-import { useOnWindowResize } from 'hooks/use-on-window-resize';
 import { cn } from 'lib/utils';
-import { cx } from 'class-variance-authority';
 
 //#region Shape
 

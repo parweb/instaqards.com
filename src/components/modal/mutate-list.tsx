@@ -31,8 +31,8 @@ export const ProspectsSchema = z.object({
     )
   ),
   total: z.number(),
-  take: z.number().nullable(),
-  skip: z.number().nullable()
+  take: z.number(),
+  skip: z.number()
 });
 
 const $prospects = atomFamily(
@@ -73,6 +73,17 @@ const Prospects = () => {
     <ProspectsTable
       $selection={$selection}
       $prospects={$prospects({
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          company: true,
+          address: true,
+          postcode: true,
+          city: true,
+          phone: true,
+          activity: true
+        },
         where: {
           bounced: { lte: 0 },
           ...(search !== '' && {

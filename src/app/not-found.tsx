@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { uri } from 'settings';
 
 export default function NotFound() {
   return (

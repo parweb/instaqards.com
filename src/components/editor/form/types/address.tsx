@@ -69,9 +69,7 @@ const AddressInput = (props: ControllerRenderProps<FieldValues, string>) => {
 
 export const Address = ({
   control,
-  name,
-  shape,
-  data
+  name
 }: {
   control: Control<FieldValues>;
   name: string;

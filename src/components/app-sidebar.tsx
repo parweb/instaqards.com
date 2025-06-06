@@ -21,9 +21,7 @@ import {
   Send,
   Settings,
   ShoppingBag,
-  Target,
   Timer,
-  Trophy,
   Users,
   Workflow
 } from 'lucide-react';

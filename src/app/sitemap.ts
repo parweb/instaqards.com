@@ -1,7 +1,6 @@
 import * as city from 'data/city';
 import * as feature from 'data/features';
 import * as job from 'data/job';
-import { db } from 'helpers/db';
 import { marketingRoutes, uri } from 'settings';
 
 export default async function Sitemap() {

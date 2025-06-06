@@ -1,7 +1,12 @@
 import { Button } from 'components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import { Card, CardContent, CardHeader } from 'components/ui/card';
 import { Input } from 'components/ui/input';
 import { Label } from 'components/ui/label';
+import { Separator } from 'components/ui/separator';
+import { Switch } from 'components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
+import { Textarea } from 'components/ui/textarea';
+
 import {
   Select,
   SelectContent,
@@ -9,10 +14,6 @@ import {
   SelectTrigger,
   SelectValue
 } from 'components/ui/select';
-import { Separator } from 'components/ui/separator';
-import { Switch } from 'components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
-import { Textarea } from 'components/ui/textarea';
 
 export default function SiteStoreSettings() {
   return (

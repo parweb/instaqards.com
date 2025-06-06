@@ -15,7 +15,7 @@ const UpdateStatusSchema = z.object({
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const auth = await getAuth();
@@ -27,7 +27,7 @@ export async function PATCH(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const validatedData = UpdateStatusSchema.parse(body);
 
@@ -35,6 +35,16 @@ export async function PATCH(
 
     // Vérifier que la commande existe et récupérer le statut actuel
     const existingOrder = await prisma.order.findUnique({
+      select: {
+        id: true,
+        orderNumber: true,
+        status: true,
+        trackingNumber: true,
+        notes: true,
+        shippedAt: true,
+        deliveredAt: true,
+        updatedAt: true
+      },
       where: { id }
     });
 

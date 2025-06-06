@@ -13,6 +13,16 @@ import { Input } from 'components/ui/input';
 import { uri } from 'settings';
 import { generateSite } from './action';
 
+type SiteData = {
+  name: string | null;
+  description: string | null;
+  blocks: {
+    widget: any;
+    label: string | null;
+    href: string | null;
+  }[];
+};
+
 export function Fields({
   site
 }: {
@@ -26,8 +36,6 @@ export function Fields({
     };
   }> | null;
 }) {
-  const [refreshInputs, setRefreshInputs] = useState(false);
-
   const submit = useRef<HTMLButtonElement>(null);
 
   const router = useRouter();
@@ -76,45 +84,46 @@ export function Fields({
     submit.current?.click();
   }, 1000);
 
-  useEffect(() => {
-    if (refreshInputs === false) return;
+  // Function to update all form fields from site data
+  const updateFormFromSite = (siteData: SiteData | null) => {
+    if (!siteData) return;
 
     setButton(
       // @ts-ignore
-      site
-        ? // @ts-ignore
-          site?.blocks?.at?.(0)?.widget
-        : undefined
+      siteData?.blocks?.at?.(0)?.widget
     );
 
     setLinks(
-      site
-        ? site.blocks
-            // @ts-ignore
-            .map(item => item?.widget?.data ?? item)
-            // @ts-ignore
-            .map(data =>
-              [
-                data?.label,
-                data?.href
-                  .replace('https://', '')
-                  .replace('www.', '')
-                  .replace(/\/$/, '')
-              ]
-                .filter(Boolean)
-                .join(' | ')
-            )
+      siteData.blocks
+        // @ts-ignore
+        .map(item => item?.widget?.data ?? item)
+        // @ts-ignore
+        .map(data =>
+          [
+            data?.label,
+            data?.href
+              ?.replace('https://', '')
+              ?.replace('www.', '')
+              ?.replace(/\/$/, '')
+          ]
             .filter(Boolean)
-            .join('\n')
-        : undefined
+            .join(' | ')
+        )
+        .filter(Boolean)
+        .join('\n')
     );
 
-    setName(site?.name || undefined);
+    setName(siteData.name || undefined);
+    setDescription(siteData.description || undefined);
+  };
 
-    setDescription(site?.description || undefined);
-
-    setRefreshInputs(false);
-  }, [refreshInputs, site]);
+  // Update form when site prop changes
+  useEffect(() => {
+    if (site) {
+      // @ts-ignore - We know the site prop has the required fields
+      updateFormFromSite(site);
+    }
+  }, [site]);
 
   return (
     <>
@@ -140,36 +149,7 @@ export function Fields({
           startTransition(() =>
             generateSite(form).then(site => {
               router.refresh();
-
-              setButton(
-                // @ts-ignore
-                site ? site?.blocks?.at?.(0)?.widget : undefined
-              );
-
-              setLinks(
-                site
-                  ? site.blocks
-                      // @ts-ignore
-                      .map(block => block?.widget?.data ?? block)
-                      .map(block =>
-                        [
-                          block?.label,
-                          block?.href
-                            ?.replace('https://', '')
-                            ?.replace('www.', '')
-                            ?.replace(/\/$/, '')
-                        ]
-                          .filter(Boolean)
-                          .join(' | ')
-                      )
-                      .filter(Boolean)
-                      .join('\n')
-                  : undefined
-              );
-
-              setName(site?.name || undefined);
-
-              setDescription(site?.description || undefined);
+              updateFormFromSite(site);
             })
           )
         }

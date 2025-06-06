@@ -49,11 +49,8 @@ function YoutubeVideo({
   title
 }: z.infer<typeof input> & { title?: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-
   const [titleFetched, setTitleFetched] = useState<string | null>(null);
-
   const videoId = new URL(url).searchParams.get('v');
-
   const [playing, setPlaying] = useState(false);
 
   const activatePlayer = () => {
@@ -68,9 +65,7 @@ function YoutubeVideo({
     (async () => {
       const response = await fetch(
         `https://www.youtube.com/oembed?format=json&url=${url}`,
-        {
-          signal: controller.signal
-        }
+        { signal: controller.signal }
       );
 
       const data = await response.json();
@@ -78,9 +73,7 @@ function YoutubeVideo({
       setTitleFetched(data.title);
     })();
 
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [title, url]);
 
   return (
@@ -165,9 +158,7 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
       try {
         const response = await fetch(
           `/api/youtube/channel?handle=${handle}&url=${url}`,
-          {
-            signal: controller.signal
-          }
+          { signal: controller.signal }
         );
 
         const data = await response.json();
@@ -194,9 +185,7 @@ function YoutubeChannel({ url }: z.infer<typeof input>) {
       }
     })();
 
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [handle, url]);
 
   if (videos.length === 0) {

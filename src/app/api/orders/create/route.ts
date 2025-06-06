@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
+import { getAuth } from 'lib/auth';
 
 const prisma = new PrismaClient();
 
@@ -60,6 +61,12 @@ async function generateOrderNumber(): Promise<string> {
 
 export async function POST(request: NextRequest) {
   try {
+    const auth = await getAuth();
+
+    if (!auth) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const validatedData = CreateOrderSchema.parse(body);
 
@@ -108,7 +115,8 @@ export async function POST(request: NextRequest) {
             previousStatus: null, // null car c'est la création
             newStatus: 'PENDING',
             changeReason: 'Commande créée par le client',
-            automaticChange: true
+            automaticChange: true,
+            changedBy: auth.id
           }
         }
       },

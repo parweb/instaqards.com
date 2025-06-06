@@ -5,16 +5,41 @@ const prisma = new PrismaClient();
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const order = await prisma.order.findUnique({
       where: { id },
-      include: {
+      select: {
+        id: true,
+        orderNumber: true,
+        status: true,
+        customerFirstName: true,
+        customerLastName: true,
+        customerEmail: true,
+        customerPhone: true,
+        customerAddress: true,
+        subtotal: true,
+        tax: true,
+        shipping: true,
+        total: true,
+        trackingNumber: true,
+        notes: true,
+        createdAt: true,
+        updatedAt: true,
+        shippedAt: true,
+        deliveredAt: true,
         items: {
-          include: {
+          select: {
+            id: true,
+            quantity: true,
+            unitPrice: true,
+            totalPrice: true,
+            productName: true,
+            productDescription: true,
+            productSku: true,
             inventory: {
               select: {
                 id: true,
@@ -28,7 +53,6 @@ export async function GET(
         block: {
           select: {
             id: true,
-            type: true,
             site: {
               select: {
                 id: true,
