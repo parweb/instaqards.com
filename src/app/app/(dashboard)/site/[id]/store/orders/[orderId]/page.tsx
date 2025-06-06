@@ -223,7 +223,7 @@ export default async function OrderDetailsPage(props: {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href={`/app/site/${siteId}/store/orders`}>
+          <Link href={`/site/${siteId}/store/orders`}>
             <Button variant="outline" size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Retour aux commandes
@@ -357,7 +357,7 @@ export default async function OrderDetailsPage(props: {
                   </p>
                 </div>
                 <div className="space-y-3">
-                  {order.statusHistory.map((history) => (
+                  {order.statusHistory.map(history => (
                     <div
                       key={history.id}
                       className="flex items-start gap-3 border-b border-gray-200 pb-3 last:border-b-0 last:pb-0"

@@ -14,11 +14,11 @@ export default function StoreNav(props: {
   const segment = useSelectedLayoutSegment();
 
   const navItems = [
-    // {
-    //   name: 'Dashboard',
-    //   href: `/site/${props.site.id}/store`,
-    //   segment: null
-    // },
+    {
+      name: 'Dashboard',
+      href: `/site/${props.site.id}/store`,
+      segment: null
+    },
     {
       name: 'Orders',
       href: `/site/${props.site.id}/store/orders`,

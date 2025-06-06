@@ -341,7 +341,7 @@ export async function seedCreatorSystem() {
         message:
           'Félicitations ! Vous avez terminé la quête "{questTitle}". Réclamez vos récompenses !',
         priority: 'HIGH',
-        actionUrl: '/app/affiliation?tab=rewards'
+        actionUrl: '/affiliation?tab=rewards'
       }
     }),
     prisma.notificationTemplate.upsert({
@@ -355,7 +355,7 @@ export async function seedCreatorSystem() {
         message:
           'Bravo ! Vous êtes maintenant {levelName} avec un multiplicateur de {pointsMultiplier}x !',
         priority: 'HIGH',
-        actionUrl: '/app/affiliation?tab=levels'
+        actionUrl: '/affiliation?tab=levels'
       }
     }),
     prisma.notificationTemplate.upsert({
@@ -369,7 +369,7 @@ export async function seedCreatorSystem() {
         message:
           'Une nouvelle quête "{questTitle}" est maintenant disponible. Relevez le défi !',
         priority: 'MEDIUM',
-        actionUrl: '/app/affiliation?tab=quests'
+        actionUrl: '/affiliation?tab=quests'
       }
     }),
     prisma.notificationTemplate.upsert({
@@ -383,7 +383,7 @@ export async function seedCreatorSystem() {
         message:
           'Vous avez gagné {points} points ! Total : {totalPoints} points.',
         priority: 'MEDIUM',
-        actionUrl: '/app/affiliation?tab=analytics'
+        actionUrl: '/affiliation?tab=analytics'
       }
     })
   ]);

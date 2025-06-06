@@ -253,7 +253,7 @@ export function CreatorDashboard() {
                     Terminez vos quêtes pour gagner des récompenses
                   </CardDescription>
                 </div>
-                <Link href="/app/affiliation">
+                <Link href="/affiliation">
                   <Button variant="outline" size="sm">
                     Voir toutes
                     <ArrowRight className="ml-1 h-4 w-4" />
@@ -328,19 +328,19 @@ export function CreatorDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Link href="/app/affiliation">
+              <Link href="/affiliation">
                 <Button className="w-full justify-start" variant="outline">
                   <Target className="mr-2 h-4 w-4" />
                   Voir mes quêtes
                 </Button>
               </Link>
-              <Link href="/app/affiliation">
+              <Link href="/affiliation">
                 <Button className="w-full justify-start" variant="outline">
                   <Trophy className="mr-2 h-4 w-4" />
                   Réclamer récompenses
                 </Button>
               </Link>
-              <Link href="/app/affiliation">
+              <Link href="/affiliation">
                 <Button className="w-full justify-start" variant="outline">
                   <DollarSign className="mr-2 h-4 w-4" />
                   Mon affiliation
