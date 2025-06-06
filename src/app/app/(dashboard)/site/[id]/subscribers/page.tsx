@@ -1,6 +1,13 @@
 import { UserRole } from '@prisma/client';
 import { notFound } from 'next/navigation';
-import { LuArrowUpRight, LuMail, LuUsers, LuUserPlus, LuCalendar } from 'react-icons/lu';
+
+import {
+  LuArrowUpRight,
+  LuCalendar,
+  LuMail,
+  LuUserPlus,
+  LuUsers
+} from 'react-icons/lu';
 
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
 import { Badge } from 'components/ui/badge';
@@ -49,7 +56,7 @@ export default async function SiteSubscribers(props: {
   const thisMonth = new Date();
   thisMonth.setDate(1);
   thisMonth.setHours(0, 0, 0, 0);
-  
+
   const newThisMonth = subscribers.filter(
     sub => new Date(sub.createdAt) >= thisMonth
   ).length;
@@ -58,15 +65,18 @@ export default async function SiteSubscribers(props: {
   lastMonth.setMonth(lastMonth.getMonth() - 1);
   lastMonth.setDate(1);
   lastMonth.setHours(0, 0, 0, 0);
-  
+
   const endLastMonth = new Date(thisMonth);
   endLastMonth.setTime(endLastMonth.getTime() - 1);
-  
+
   const newLastMonth = subscribers.filter(
-    sub => new Date(sub.createdAt) >= lastMonth && new Date(sub.createdAt) <= endLastMonth
+    sub =>
+      new Date(sub.createdAt) >= lastMonth &&
+      new Date(sub.createdAt) <= endLastMonth
   ).length;
 
-  const growthRate = newLastMonth > 0 ? ((newThisMonth - newLastMonth) / newLastMonth * 100) : 0;
+  const growthRate =
+    newLastMonth > 0 ? ((newThisMonth - newLastMonth) / newLastMonth) * 100 : 0;
 
   return (
     <div className="flex flex-1 flex-col gap-6 self-stretch p-8">
@@ -92,11 +102,11 @@ export default async function SiteSubscribers(props: {
             <CardTitle className="text-sm font-medium">
               Total Subscribers
             </CardTitle>
-            <LuUsers className="h-4 w-4 text-muted-foreground" />
+            <LuUsers className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalSubscribers}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               All time subscribers
             </p>
           </CardContent>
@@ -107,28 +117,28 @@ export default async function SiteSubscribers(props: {
             <CardTitle className="text-sm font-medium">
               New This Month
             </CardTitle>
-            <LuUserPlus className="h-4 w-4 text-muted-foreground" />
+            <LuUserPlus className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{newThisMonth}</div>
-            <p className="text-xs text-muted-foreground">
-              {growthRate > 0 ? '+' : ''}{growthRate.toFixed(1)}% from last month
+            <p className="text-muted-foreground text-xs">
+              {growthRate > 0 ? '+' : ''}
+              {growthRate.toFixed(1)}% from last month
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Growth Rate
-            </CardTitle>
-            <LuCalendar className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Growth Rate</CardTitle>
+            <LuCalendar className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {growthRate > 0 ? '+' : ''}{growthRate.toFixed(1)}%
+              {growthRate > 0 ? '+' : ''}
+              {growthRate.toFixed(1)}%
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Month over month growth
             </p>
           </CardContent>
@@ -162,39 +172,48 @@ export default async function SiteSubscribers(props: {
                 .substring(0, 2)
                 .toUpperCase();
               const avatarUrl = `https://avatar.vercel.sh/${subscriber.email}?size=40`;
-              
+
               return (
-                <Card key={subscriber.id} className="hover:shadow-md transition-shadow">
+                <Card
+                  key={subscriber.id}
+                  className="transition-shadow hover:shadow-md"
+                >
                   <CardContent className="flex items-center gap-3 p-4">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={avatarUrl} alt={subscriber.email} />
-                      <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium">
+                      <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 font-medium text-white">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
-                    
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">
+
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">
                         {subscriber.email}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        Joined {new Date(subscriber.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
+                      <p className="text-muted-foreground text-xs">
+                        Joined{' '}
+                        {new Date(subscriber.createdAt).toLocaleDateString(
+                          'en-US',
+                          {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          }
+                        )}
                       </p>
                     </div>
 
-                    <Badge 
+                    <Badge
                       variant={
-                        new Date(subscriber.createdAt) >= thisMonth 
-                          ? 'default' 
+                        new Date(subscriber.createdAt) >= thisMonth
+                          ? 'default'
                           : 'secondary'
                       }
                       className="text-xs"
                     >
-                      {new Date(subscriber.createdAt) >= thisMonth ? 'New' : 'Active'}
+                      {new Date(subscriber.createdAt) >= thisMonth
+                        ? 'New'
+                        : 'Active'}
                     </Badge>
                   </CardContent>
                 </Card>

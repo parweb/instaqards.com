@@ -12,7 +12,14 @@ import {
   type Prisma
 } from '@prisma/client';
 
-import { LuLoader, LuMinus, LuPlus, LuShoppingCart, LuX } from 'react-icons/lu';
+import {
+  LuLoader,
+  LuMinus,
+  LuPlus,
+  LuShoppingCart,
+  LuSparkles,
+  LuX
+} from 'react-icons/lu';
 
 import { Address } from 'components/editor/form/types/address';
 import { useModal } from 'components/modal/provider';
@@ -970,7 +977,7 @@ const FlyingItems = () => {
                   animation: `fadeOut-${item.id} 1.2s ease-out forwards`
                 }}
               >
-                ✨ {item.productName}
+                <LuSparkles /> {item.productName}
               </div>
             </div>
 

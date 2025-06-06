@@ -3,6 +3,7 @@
 import { OrderStatus } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { CiWarning } from 'react-icons/ci';
 
 import {
   LuCircleAlert,
@@ -265,8 +266,8 @@ export function OrderStatusUpdater({
         {!selectedStatus && (
           <div className="mt-2 text-xs text-gray-500">
             <p>
-              ⚠️ Cette action mettra à jour le statut de la commande et ne peut
-              pas être annulée.
+              <CiWarning /> Cette action mettra à jour le statut de la commande
+              et ne peut pas être annulée.
             </p>
           </div>
         )}

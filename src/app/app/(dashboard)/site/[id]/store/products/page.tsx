@@ -1,6 +1,13 @@
 import { EntityType } from '@prisma/client';
 import Form from 'next/form';
-import { LuCopy, LuEllipsisVertical, LuPlus, LuTrash } from 'react-icons/lu';
+
+import {
+  LuCopy,
+  LuEllipsisVertical,
+  LuPackage,
+  LuPlus,
+  LuTrash
+} from 'react-icons/lu';
 
 import ModalButton from 'components/modal-button';
 import InventoryMutateModal from 'components/modal/mutate-inventory';
@@ -181,7 +188,7 @@ export default async function SiteStoreProducts(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
-                <span className="text-xl text-orange-600">⚠️</span>
+                <span className="text-xl text-orange-600"><CiWarning /></span>
               </div>
             </div>
           </CardContent>
@@ -197,7 +204,7 @@ export default async function SiteStoreProducts(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-                <span className="text-xl text-red-600">❌</span>
+                <span className="text-xl text-red-600"><LuX /></span>
               </div>
             </div>
           </CardContent>
@@ -353,7 +360,9 @@ export default async function SiteStoreProducts(props: {
 
             {block.inventories.length === 0 && (
               <div className="col-span-full py-12 text-center">
-                <div className="mb-4 text-4xl text-gray-400">📦</div>
+                <div className="mb-4 text-4xl text-gray-400">
+                  <LuPackage />
+                </div>
 
                 <h3 className="mb-2 text-lg font-medium text-gray-900">
                   Aucun produit

@@ -3,6 +3,7 @@
 import {
   LuAward,
   LuCrown,
+  LuDollarSign,
   LuMedal,
   LuRocket,
   LuShield,
@@ -321,7 +322,7 @@ export function CreatorLeaderboard({
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-2 font-bold">
-                      💰 Conversions:
+                      <LuDollarSign /> Conversions:
                     </span>
                     <span className="text-xl font-bold">
                       {creator.conversions}
@@ -396,8 +397,8 @@ export function CreatorLeaderboard({
                     </Badge>
                   </div>
                   <div className="text-sm font-medium text-gray-600">
-                    🎨 {creator.sitesCreated} sites • 💰 {creator.conversions}{' '}
-                    conversions
+                    🎨 {creator.sitesCreated} sites • <LuDollarSign />{' '}
+                    {creator.conversions} conversions
                   </div>
                 </div>
 
@@ -484,7 +485,7 @@ export function CreatorLeaderboard({
                   </Badge>
                 </div>
                 <div className="text-sm font-medium text-gray-600">
-                  🎨 {currentUser.sitesCreated} sites créés • 💰{' '}
+                  🎨 {currentUser.sitesCreated} sites créés • <LuDollarSign />{' '}
                   {currentUser.conversions} conversions réussies
                 </div>
               </div>

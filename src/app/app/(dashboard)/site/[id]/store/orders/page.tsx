@@ -1,7 +1,8 @@
 import { OrderStatus } from '@prisma/client';
-import { Card, CardContent } from 'components/ui/card';
 import { OrdersClient } from 'components/orders/OrdersClient';
+import { Card, CardContent } from 'components/ui/card';
 import { db } from 'helpers/db';
+import { LuDollarSign, LuHourglass, LuPackage, LuTruck } from 'react-icons/lu';
 
 export default async function SiteStoreOrders(props: {
   params: Promise<{ id: string }>;
@@ -191,7 +192,9 @@ export default async function SiteStoreOrders(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <span className="text-xl text-blue-600">📦</span>
+                <span className="text-xl text-blue-600">
+                  <LuPackage />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -207,7 +210,9 @@ export default async function SiteStoreOrders(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
-                <span className="text-xl text-orange-600">⏳</span>
+                <span className="text-xl text-orange-600">
+                  <LuHourglass />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -223,7 +228,9 @@ export default async function SiteStoreOrders(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <span className="text-xl text-blue-600">🚚</span>
+                <span className="text-xl text-blue-600">
+                  <LuTruck />{' '}
+                </span>
               </div>
             </div>
           </CardContent>
@@ -239,7 +246,9 @@ export default async function SiteStoreOrders(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <span className="text-xl text-green-600">💰</span>
+                <span className="text-xl text-green-600">
+                  <LuDollarSign />
+                </span>
               </div>
             </div>
           </CardContent>

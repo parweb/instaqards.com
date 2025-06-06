@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { LuPackage } from 'react-icons/lu';
 
 import {
   Select,
@@ -218,7 +219,9 @@ export function OrdersClient({
         <div className="flex items-center justify-center p-8">
           <div className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-              <span className="text-2xl">📦</span>
+              <span className="text-2xl">
+                <LuPackage />
+              </span>
             </div>
             <p className="mb-2 text-gray-500">Aucune commande trouvée</p>
             <p className="text-sm text-gray-400">

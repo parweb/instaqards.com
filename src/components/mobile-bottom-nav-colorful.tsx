@@ -9,7 +9,7 @@ import {
   LuGlobe,
   LuLayoutDashboard,
   LuLink,
-  LuSeparatorHorizontal,
+  LuEllipsisVertical,
   LuUsers
 } from 'react-icons/lu';
 
@@ -67,7 +67,7 @@ export const MobileBottomNavColorful = () => {
         {
           name: 'Plus',
           href: '#',
-          icon: <LuSeparatorHorizontal className="h-5 w-5" />,
+          icon: <LuEllipsisVertical className="h-5 w-5" />,
           isActive: false,
           color: 'from-green-400 to-teal-400'
         }
@@ -100,7 +100,7 @@ export const MobileBottomNavColorful = () => {
       {
         name: 'Plus',
         href: '#',
-        icon: <LuSeparatorHorizontal className="h-5 w-5" />,
+        icon: <LuEllipsisVertical className="h-5 w-5" />,
         isActive: false,
         color: 'from-green-400 to-teal-400'
       }

@@ -1,10 +1,13 @@
 import Form from 'next/form';
 
 import {
+  LuChartNoAxesCombined,
   LuCopy,
   LuEllipsisVertical,
+  LuFolderOpen,
   LuPencil,
   LuPlus,
+  LuSquareCheckBig,
   LuTrash
 } from 'react-icons/lu';
 
@@ -125,7 +128,9 @@ export default async function SiteStoreCategories(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
-                <span className="text-xl text-indigo-600">📂</span>
+                <span className="text-xl text-indigo-600">
+                  <LuFolderOpen />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -141,7 +146,9 @@ export default async function SiteStoreCategories(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <span className="text-xl text-green-600">✅</span>
+                <span className="text-xl text-green-600">
+                  <LuSquareCheckBig />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -162,7 +169,9 @@ export default async function SiteStoreCategories(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <span className="text-xl text-blue-600">📊</span>
+                <span className="text-xl text-blue-600">
+                  <LuChartNoAxesCombined />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -188,7 +197,9 @@ export default async function SiteStoreCategories(props: {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="text-gray-400">📁</span>
+                        <span className="text-gray-400">
+                          <LuFolderOpen />
+                        </span>
                         <div>
                           <CardTitle className="text-base">
                             {category.name}

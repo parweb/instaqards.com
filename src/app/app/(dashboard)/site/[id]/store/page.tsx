@@ -1,5 +1,16 @@
 import { OrderStatus } from '@prisma/client';
 import Link from 'next/link';
+import { CiWarning } from 'react-icons/ci';
+import { FaRegMoneyBillAlt } from 'react-icons/fa';
+
+import {
+  LuChartNoAxesCombined,
+  LuChartSpline,
+  LuDollarSign,
+  LuHourglass,
+  LuPackage,
+  LuSquareCheckBig
+} from 'react-icons/lu';
 
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
@@ -283,7 +294,9 @@ export default async function SiteStoreDashboard(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <span className="text-xl text-green-600">💰</span>
+                <span className="text-xl text-green-600">
+                  <LuDollarSign />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -305,7 +318,9 @@ export default async function SiteStoreDashboard(props: {
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <span className="text-xl text-blue-600">📦</span>
+                <span className="text-xl text-blue-600">
+                  <LuPackage />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -324,7 +339,9 @@ export default async function SiteStoreDashboard(props: {
                 <p className="mt-1 text-sm text-gray-500">Ce mois-ci</p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
-                <span className="text-xl text-purple-600">👥</span>
+                <span className="text-xl text-purple-600">
+                  <FaRegMoneyBillAlt />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -343,7 +360,9 @@ export default async function SiteStoreDashboard(props: {
                 <p className="mt-1 text-sm text-gray-500">À traiter</p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
-                <span className="text-xl text-orange-600">📈</span>
+                <span className="text-xl text-orange-600">
+                  <LuChartSpline />
+                </span>
               </div>
             </div>
           </CardContent>
@@ -385,7 +404,9 @@ export default async function SiteStoreDashboard(props: {
                 return (
                   <div className="flex h-40 items-center justify-center">
                     <div className="text-center">
-                      <div className="mb-4 text-4xl text-gray-300">📊</div>
+                      <div className="mb-4 text-4xl text-gray-300">
+                        <LuChartNoAxesCombined />
+                      </div>
                       <p className="text-sm text-gray-500">
                         Aucune vente sur les 7 derniers jours
                       </p>
@@ -630,7 +651,9 @@ export default async function SiteStoreDashboard(props: {
               {lowStockCount > 0 && (
                 <Card className="border-red-200 bg-red-50">
                   <CardContent className="flex items-start gap-3 p-3">
-                    <span className="text-lg text-red-500">⚠️</span>
+                    <span className="text-lg text-red-500">
+                      <CiWarning />
+                    </span>
                     <div>
                       <p className="font-medium text-red-900">Stock faible</p>
                       <p className="text-sm text-red-700">
@@ -646,7 +669,9 @@ export default async function SiteStoreDashboard(props: {
               {pendingOrdersCount > 0 && (
                 <Card className="border-orange-200 bg-orange-50">
                   <CardContent className="flex items-start gap-3 p-3">
-                    <span className="text-lg text-orange-500">⏳</span>
+                    <span className="text-lg text-orange-500">
+                      <LuHourglass />
+                    </span>
                     <div>
                       <p className="font-medium text-orange-900">
                         Commandes en attente
@@ -665,7 +690,9 @@ export default async function SiteStoreDashboard(props: {
 
               <Card className="border-blue-200 bg-blue-50">
                 <CardContent className="flex items-start gap-3 p-3">
-                  <span className="text-lg text-blue-500">📊</span>
+                  <span className="text-lg text-blue-500">
+                    <LuChartNoAxesCombined />
+                  </span>
                   <div>
                     <p className="font-medium text-blue-900">
                       Analytics disponibles
@@ -681,7 +708,9 @@ export default async function SiteStoreDashboard(props: {
                 Number(monthlyRevenue._sum.total || 0) * 0.8 && (
                 <Card className="border-green-200 bg-green-50">
                   <CardContent className="flex items-start gap-3 p-3">
-                    <span className="text-lg text-green-500">✅</span>
+                    <span className="text-lg text-green-500">
+                      <LuSquareCheckBig />
+                    </span>
                     <div>
                       <p className="font-medium text-green-900">
                         Excellentes performances

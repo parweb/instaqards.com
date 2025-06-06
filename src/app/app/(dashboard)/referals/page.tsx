@@ -1,4 +1,3 @@
-
 import { db } from 'helpers/db';
 import { translate } from 'helpers/translate';
 import { UserTree } from './user-tree';

@@ -2,11 +2,13 @@
 
 import {
   LuCrown,
+  LuDollarSign,
   LuFlame,
   LuGem,
   LuRocket,
   LuShield,
   LuSparkles,
+  LuSquareCheckBig,
   LuStar,
   LuTarget,
   LuTrophy,
@@ -197,7 +199,7 @@ export function CreatorLevels({ currentPoints }: CreatorLevelsProps) {
                   </span>
                 </CardTitle>
                 <CardDescription className="text-lg font-medium">
-                  ⚡ {currentPoints} points • 💰 Commission{' '}
+                  ⚡ {currentPoints} points • <LuDollarSign /> Commission{' '}
                   {(5 + (5 * currentLevel.commissionBonus) / 100).toFixed(1)}%
                 </CardDescription>
               </div>
@@ -329,14 +331,14 @@ export function CreatorLevels({ currentPoints }: CreatorLevelsProps) {
                       )}
                       {isUnlocked && !isCurrentLevel && (
                         <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-xs text-white shadow-lg">
-                          ✅ Débloqué
+                          <LuSquareCheckBig /> Débloqué
                         </Badge>
                       )}
                     </div>
 
                     <div className="mb-3 text-sm font-bold">
                       <span className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                        💰 Commission:{' '}
+                        <LuDollarSign /> Commission:{' '}
                         {(5 + (5 * level.commissionBonus) / 100).toFixed(1)}%
                       </span>
                       {level.commissionBonus > 0 && (

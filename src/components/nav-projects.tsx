@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { type IconType as LucideIcon } from 'react-icons';
 
 import {
+  LuEllipsisVertical,
   LuFolder,
-  LuSeparatorHorizontal,
   LuShare,
   LuTrash2
 } from 'react-icons/lu';
@@ -67,7 +67,7 @@ export function NavProjects({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction showOnHover>
-                  <LuSeparatorHorizontal />
+                  <LuEllipsisVertical />
                   <span className="sr-only">More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>

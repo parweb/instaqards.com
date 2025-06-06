@@ -1,9 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { BsLightningCharge } from 'react-icons/bs';
+import { GiPumpkinLantern } from 'react-icons/gi';
 
 import {
   LuAward,
+  LuChartNoAxesCombined,
+  LuChartSpline,
   LuCircleCheck,
   LuClock,
   LuCopy,
@@ -11,18 +15,24 @@ import {
   LuDollarSign,
   LuExternalLink,
   LuFlame,
+  LuFolderOpen,
   LuGem,
+  LuHouse,
+  LuLayoutTemplate,
+  LuLinkedin,
   LuLock,
   LuMousePointer,
   LuRocket,
   LuShare2,
   LuShield,
+  LuSmartphone,
   LuSparkles,
   LuStar,
   LuTarget,
   LuTrendingUp,
   LuTrophy,
   LuUsers,
+  LuX,
   LuZap
 } from 'react-icons/lu';
 
@@ -532,7 +542,7 @@ function ModernBadgeCard({ badge }: { badge: Badge }) {
             <div className="min-w-[140px] flex-1 rounded-lg bg-gray-50 p-3">
               <div className="mb-1 text-xs text-gray-500">Catégorie</div>
               <div className="text-sm font-semibold text-gray-900">
-                📂 {badge.category}
+                <LuFolderOpen /> {badge.category}
               </div>
             </div>
             <div className="min-w-[140px] flex-1 rounded-lg bg-gray-50 p-3">
@@ -650,8 +660,8 @@ function StickyUserStats() {
                   </div>
 
                   <div className="flex-1">
-                    <div className="text-lg font-bold text-white">
-                      🏆 Ma Collection
+                    <div className="flex items-center gap-2 text-lg font-bold text-white">
+                      <LuTrophy /> Ma Collection
                     </div>
                     <div className="text-sm text-white/80">
                       {activeBadges.length} badges actifs •{' '}
@@ -790,7 +800,7 @@ function StickyUserStats() {
                                 onClick={() => setShowBadgesModal(false)}
                                 className="rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 px-8 py-2 text-white shadow-lg hover:from-indigo-600 hover:to-blue-700"
                               >
-                                ✨ Fermer
+                                <LuX /> Fermer
                               </Button>
                             </div>
                           </DialogContent>
@@ -853,7 +863,7 @@ function QuestCard({ quest }: { quest: Quest }) {
             <Badge className={statusColors[quest.status]}>
               {quest.status === 'available' && '🎯'}
               {quest.status === 'in_progress' && '⚡'}
-              {quest.status === 'completed' && '✅'}
+              {quest.status === 'completed' && '<LuSquareCheckBig />'}
               {quest.status === 'locked' && '🔒'}
               {quest.status.replace('_', ' ')}
             </Badge>
@@ -1167,8 +1177,8 @@ export function CreatorAffiliation() {
         <div className="flex flex-wrap gap-6">
           <Card className="min-w-[280px] flex-1 transform bg-gradient-to-br from-blue-500 to-cyan-600 text-white shadow-2xl shadow-blue-200 transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                🎯 Clics totaux
+              <CardTitle className="flex items-center gap-2 text-sm font-medium">
+                <LuTarget /> Clics totaux
               </CardTitle>
               <LuMousePointer className="animate-gentle-pulse h-6 w-6" />
             </CardHeader>
@@ -1182,8 +1192,8 @@ export function CreatorAffiliation() {
 
           <Card className="min-w-[280px] flex-1 transform bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-2xl shadow-green-200 transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                ⚡ Conversions
+              <CardTitle className="flex items-center gap-2 text-sm font-medium">
+                <BsLightningCharge /> Conversions
               </CardTitle>
               <LuUsers className="animate-gentle-pulse h-6 w-6" />
             </CardHeader>
@@ -1199,8 +1209,8 @@ export function CreatorAffiliation() {
 
           <Card className="min-w-[280px] flex-1 transform bg-gradient-to-br from-yellow-500 to-orange-600 text-white shadow-2xl shadow-yellow-200 transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                💰 Gains totaux
+              <CardTitle className="flex items-center gap-2 text-sm font-medium">
+                <LuDollarSign /> Gains totaux
               </CardTitle>
               <LuDollarSign className="animate-gentle-pulse h-6 w-6" />
             </CardHeader>
@@ -1214,8 +1224,8 @@ export function CreatorAffiliation() {
 
           <Card className="min-w-[280px] flex-1 transform bg-gradient-to-br from-purple-500 to-pink-600 text-white shadow-2xl shadow-purple-200 transition-all duration-300 hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                ⭐ Points bonus
+              <CardTitle className="flex items-center gap-2 text-sm font-medium">
+                <LuStar /> Points bonus
               </CardTitle>
               <LuStar className="animate-gentle-pulse h-6 w-6" />
             </CardHeader>
@@ -1230,48 +1240,49 @@ export function CreatorAffiliation() {
 
         {/* Gaming Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="flex w-full flex-wrap gap-1 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 p-1 shadow-2xl">
+          <TabsList className="flex w-full flex-wrap gap-1 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 p-1 text-white shadow-2xl">
             <TabsTrigger
               value="overview"
-              className="min-w-[120px] flex-1 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
+              className="flex min-w-[120px] flex-1 items-center gap-2 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
             >
-              {"🏠 Vue d'ensemble"}
+              <LuHouse />
+              {"Vue d'ensemble"}
             </TabsTrigger>
             <TabsTrigger
               value="quests"
-              className="min-w-[120px] flex-1 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
+              className="flex min-w-[120px] flex-1 items-center gap-2 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
             >
-              🎯 Quêtes
+              <LuTarget /> Quêtes
             </TabsTrigger>
             <TabsTrigger
               value="rewards"
-              className="min-w-[120px] flex-1 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
+              className="flex min-w-[120px] flex-1 items-center gap-2 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
             >
-              🏆 Récompenses
+              <LuTrophy /> Récompenses
             </TabsTrigger>
             <TabsTrigger
               value="levels"
-              className="min-w-[120px] flex-1 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
+              className="flex min-w-[120px] flex-1 items-center gap-2 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
             >
-              📈 Niveaux
+              <LuChartSpline /> Niveaux
             </TabsTrigger>
             <TabsTrigger
               value="leaderboard"
-              className="min-w-[120px] flex-1 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
+              className="flex min-w-[120px] flex-1 items-center gap-2 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
             >
-              👑 Classement
+              <LuTrophy /> Classement
             </TabsTrigger>
             <TabsTrigger
               value="templates"
-              className="min-w-[120px] flex-1 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
+              className="flex min-w-[120px] flex-1 items-center gap-2 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
             >
-              📱 Templates
+              <LuLayoutTemplate /> Templates
             </TabsTrigger>
             <TabsTrigger
               value="analytics"
-              className="min-w-[120px] flex-1 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
+              className="flex min-w-[120px] flex-1 items-center gap-2 transition-all duration-300 data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-lg"
             >
-              📊 Analytics
+              <LuChartNoAxesCombined /> Analytics
             </TabsTrigger>
           </TabsList>
 
@@ -1288,25 +1299,33 @@ export function CreatorAffiliation() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between rounded-lg bg-gradient-to-r from-blue-100 to-purple-100 p-3">
-                    <span className="font-medium">🎨 Sites créés</span>
+                    <span className="flex items-center gap-2 font-medium">
+                      <LuLayoutTemplate /> Sites créés
+                    </span>
                     <span className="font-bold text-blue-600">
                       {mockStats.sitesCreated}
                     </span>
                   </div>
                   <div className="flex justify-between rounded-lg bg-gradient-to-r from-green-100 to-emerald-100 p-3">
-                    <span className="font-medium">📱 Sites partagés</span>
+                    <span className="flex items-center gap-2 font-medium">
+                      <LuSmartphone /> Sites partagés
+                    </span>
                     <span className="font-bold text-green-600">
                       {mockStats.sitesShared}
                     </span>
                   </div>
                   <div className="flex justify-between rounded-lg bg-gradient-to-r from-yellow-100 to-orange-100 p-3">
-                    <span className="font-medium">🏆 Quêtes complétées</span>
+                    <span className="flex items-center gap-2 font-medium">
+                      <LuTrophy /> Quêtes complétées
+                    </span>
                     <span className="font-bold text-orange-600">
                       {mockStats.questsCompleted}
                     </span>
                   </div>
                   <div className="flex justify-between rounded-lg bg-gradient-to-r from-purple-100 to-pink-100 p-3">
-                    <span className="font-medium">⚡ Taux de conversion</span>
+                    <span className="flex items-center gap-2 font-medium">
+                      <LuClock /> Taux de conversion
+                    </span>
                     <span className="font-bold text-purple-600">
                       {mockStats.conversionRate}%
                     </span>
@@ -1329,8 +1348,8 @@ export function CreatorAffiliation() {
                       <LuTarget className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-blue-800">
-                        🎃 Terminer quête Halloween
+                      <div className="flex items-center gap-2 font-bold text-blue-800">
+                        <GiPumpkinLantern /> Terminer quête Halloween
                       </div>
                       <div className="text-sm text-blue-600">
                         2 étapes restantes pour la victoire !
@@ -1342,8 +1361,8 @@ export function CreatorAffiliation() {
                       <LuShare2 className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-green-800">
-                        📱 Partager sur LinkedIn
+                      <div className="flex items-center gap-2 font-bold text-green-800">
+                        <LuLinkedin /> Partager sur LinkedIn
                       </div>
                       <div className="text-sm text-green-600">
                         Augmentez votre portée épique !

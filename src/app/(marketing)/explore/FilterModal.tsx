@@ -7,6 +7,7 @@ import {
   LuFilter,
   LuMapPin,
   LuSearch,
+  LuSparkles,
   LuUserCheck,
   LuUsers
 } from 'react-icons/lu';
@@ -198,7 +199,7 @@ export const FilterModal = () => {
             </span>
           </Button>
           <span className="animate-fade-in text-center text-xs text-purple-400/80 italic">
-            Trouvez exactement ce que vous cherchez, en un éclair ✨
+            Trouvez exactement ce que vous cherchez, en un éclair <LuSparkles />
           </span>
         </footer>
       </div>
