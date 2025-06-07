@@ -335,7 +335,7 @@ function CarouselPictures({ pictures, className = '' }: ImageCarouselProps) {
   return (
     <div
       className={cn(
-        'relative h-64 w-full overflow-hidden rounded-lg bg-gray-200',
+        'relative h-64 w-full overflow-hidden rounded-lg bg-white',
         className
       )}
     >

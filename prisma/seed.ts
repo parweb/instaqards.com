@@ -6,6 +6,7 @@ import { PrismaClient } from '@prisma/client';
 // import { populateAllLeadWithDefaultSite } from './seed/populateAllLeadWithDefaultSite';
 // import { seedWorkflow } from './seed/seedWorkflow';
 // import { testGuestUser } from './seed/testGuestUser';
+// import { importAllEurobisProducts__For__Kartons_fr } from './seed/importAllEurobisProducts__For__Kartons_fr';
 
 export const prisma = new PrismaClient();
 
@@ -16,6 +17,7 @@ export const prisma = new PrismaClient();
   // await importCodeNaf(prisma);
   // await importContactsParis(prisma);
   // await generateFakeCronHistory(prisma);
+  // await importAllEurobisProducts__For__Kartons_fr(prisma);
 })()
   .then(async () => {
     await prisma.$disconnect();

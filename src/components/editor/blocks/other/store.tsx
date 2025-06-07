@@ -287,7 +287,7 @@ const ProductModalInner = ({
       <div className="max-h-[70vh] overflow-y-auto p-6">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Images */}
-          <div className="group relative bg-gray-100">
+          <div className="group relative bg-white">
             <CarouselPictures pictures={medias.map(picture => picture.url)} />
           </div>
 
